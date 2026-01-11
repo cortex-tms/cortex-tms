@@ -98,16 +98,114 @@ These are the immutable laws of the Tiered Memory System. AI agents working on C
 
 ---
 
-### Rule 6: Archive Aggressively
+### Rule 6: Archive & Promote (Maintenance Protocol)
 
-**Completed tasks, old changelogs, and deprecated docs move to `docs/archive/`.**
+**The Maintenance Protocol governs how information flows between tiers: FUTURE → NEXT → ARCHIVE → TRUTH.**
 
-**Archive Trigger Events**:
-- Sprint completes → Move completed tasks from `NEXT-TASKS.md` to `docs/archive/sprint-YYYY-MM.md`
-- Major version ships → Move old changelog to `docs/archive/v1.0-CHANGELOG.md`
-- Pattern deprecated → Move to `docs/archive/deprecated-patterns.md`
+---
 
-**Why**: Historical context is noise for AI agents. Archive = "out of sight, out of context."
+#### 6A. Archive Trigger
+
+**When**: Task marked ✅ Done
+
+**Action**: Execute Maintenance Protocol (see `CLAUDE.md#maintenance-protocol`)
+
+**Archiving Process**:
+1. Verify Archive-Ready Checklist (tests pass, docs updated, committed)
+2. Move task to `docs/archive/sprint-YYYY-MM.md` with date stamp
+3. Update Source of Truth (README, ARCHITECTURE, etc.) - **Truth Syncing**
+4. Remove from `NEXT-TASKS.md`
+
+---
+
+#### 6B. Truth Syncing (Automatic Documentation Updates)
+
+**Before archiving a task**, update the relevant `docs/core/` file to reflect system changes:
+
+| Change Type | Update Target | Example |
+|:------------|:-------------|:--------|
+| Milestone reached | `README.md` → Current Phase | "Phase 2 Complete" |
+| New file added | `ARCHITECTURE.md` → File structure | Add `bin/cortex-tms.js` |
+| Rule changed | `DOMAIN-LOGIC.md` → Specific rule | Update Rule 4 line limits |
+| New pattern | `PATTERNS.md` → Add pattern entry | Document CLI pattern |
+| New decision | `DECISIONS.md` → Add ADR | Why we chose Commander.js |
+| Tech stack change | `ARCHITECTURE.md` → Tech decisions | Switched to Bun from Node |
+
+**AI Checklist Before Archiving**:
+- [ ] Does this task change the system architecture?
+- [ ] If yes, which `docs/core/*.md` file needs updating?
+- [ ] Have I updated that file?
+- [ ] Is the update referenced in the archive entry?
+
+---
+
+#### 6C. Promotion Trigger (User-Triggered)
+
+**When**: `NEXT-TASKS.md` has < 3 active tasks
+
+**Action**: AI asks user:
+> "NEXT-TASKS.md is light (X tasks remaining). Should I promote items from FUTURE-ENHANCEMENTS.md?"
+
+**User Approval Required**: AI cannot auto-promote. User must confirm which tasks to move.
+
+**Why User-Triggered**: Prevents premature commitment. Sprint planning should be intentional, not automatic.
+
+---
+
+#### 6D. Sprint Closure (Bulk Archive)
+
+**When**: ALL tasks in `NEXT-TASKS.md` are ✅ Done
+
+**Action**:
+1. Create `docs/archive/sprint-YYYY-MM-[name].md`
+2. Archive entire sprint context:
+   - Sprint name and "Why this matters"
+   - All completed tasks
+   - Definition of Done checklist
+   - Sprint outcomes and truth updates
+3. Clear `NEXT-TASKS.md`
+4. Promote next sprint from `FUTURE-ENHANCEMENTS.md` (with user approval)
+
+**Sprint Archive Template**:
+```markdown
+# Sprint: [Name] (YYYY-MM-DD to YYYY-MM-DD)
+
+**Why this mattered**: [Original context]
+
+**Completed Tasks**:
+- ✅ Task 1 - [Details]
+- ✅ Task 2 - [Details]
+
+**Outcomes**:
+- [What changed in the system]
+
+**Truth Updates**:
+- [Which docs were updated]
+
+**Next Sprint**: [Link to next sprint in NEXT-TASKS.md]
+```
+
+---
+
+#### 6E. Archive-Ready Checklist
+
+**Before archiving**, verify:
+
+- [ ] Tests passing (if applicable)
+- [ ] Changes committed to git
+- [ ] Documentation updated (Truth Syncing)
+- [ ] User confirmed completion (or 24h elapsed for non-critical)
+
+**Critical Tasks** (infrastructure, security, data):
+- MUST wait for user confirmation before archiving
+- Stay in `NEXT-TASKS.md` with status "✅ Done (Awaiting Verification)"
+
+**Non-Critical Tasks** (docs, refactoring, tooling):
+- CAN archive immediately after Truth Syncing
+
+---
+
+**Why This Rule Exists**: Historical context is noise for AI agents. Archive = "out of sight, out of context." The Maintenance Protocol ensures `NEXT-TASKS.md` never exceeds its 200-line limit while keeping `docs/core/` synchronized with reality.
 
 ---
 

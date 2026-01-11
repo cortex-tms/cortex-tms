@@ -232,6 +232,75 @@ This document records key architectural decisions made during Cortex TMS develop
 
 ---
 
+## [2026-01-11] - Maintenance Protocol & Truth Syncing
+
+**Context**: We needed explicit workflows to prevent TMS from degrading over time. Without governance, even well-designed documentation systems bloat and become stale.
+
+**Problem**:
+- Completed tasks accumulate in `NEXT-TASKS.md` → File exceeds 200-line limit
+- Documentation becomes outdated (README shows "Phase 1" when we're on "Phase 3")
+- No clear process for moving tasks between tiers (FUTURE → NEXT → ARCHIVE)
+- AI agents don't know when to update docs vs when to archive tasks
+
+**Decision**: Implement a formal **Maintenance Protocol** with four workflows:
+
+1. **Archive**: Move ✅ Done tasks from NEXT to COLD tier
+2. **Truth Syncing**: Update `docs/core/` when tasks change the system
+3. **Promotion**: Move high-priority tasks from FUTURE to NEXT (user-triggered)
+4. **Sprint Closure**: Archive entire sprints as cohesive units
+
+**Reasoning**:
+
+**Why "Maintenance Protocol" (not "Janitor Mode")**:
+- Professional terminology that matches TMS tone
+- Frames AI as system maintainer, not just cleanup crew
+- "Protocol" implies rigor and repeatability
+
+**Why User-Triggered Promotion**:
+- Sprint planning should be intentional, not automatic
+- Prevents AI from overloading NEXT-TASKS.md with noise
+- < 3 active tasks triggers suggestion, but user approves
+
+**Why Truth Syncing Table**:
+- Provides explicit mapping: task type → doc file
+- Prevents "orphaned changes" (code changes without doc updates)
+- Makes archiving checklist concrete (not vague "update docs")
+
+**Why Sprint Closure Workflow**:
+- Preserves sprint context (tasks are related)
+- Maintains narrative arc of development
+- Creates natural breakpoints for reflection
+
+**Implementation**:
+- `CLAUDE.md` → Added Maintenance Protocol section
+- `DOMAIN-LOGIC.md` → Expanded Rule 6 to include all workflows
+- `.github/copilot-instructions.md` → Added Post-Task Protocol
+- This ADR → Documents rationale
+
+**Trade-offs**:
+- **More Process**: AI must execute 4-step protocol after each task (adds overhead)
+- **User Interaction Required**: Promotion needs approval (slower than auto-promotion)
+- **Discipline Required**: System only works if AI actually follows the protocol
+
+**Mitigation**:
+- Make protocol explicit in HOT files (CLAUDE.md, copilot-instructions.md)
+- Archive-Ready Checklist provides clear success criteria
+- Truth Syncing table removes ambiguity ("which doc do I update?")
+
+**Validation**:
+- Protocol will be tested during Phase 1 Closure
+- Success metric: `NEXT-TASKS.md` stays under 200 lines across multiple sprints
+- Failure mode: If docs drift from reality, protocol failed
+
+**Alternative Considered**: Automatic archiving with cron job or GitHub Action
+
+**Rejected Because**:
+- AI context is richer than automation (knows WHAT changed, not just that file changed)
+- Truth Syncing requires semantic understanding (which doc section to update)
+- User approval for promotion ensures sprint planning remains intentional
+
+---
+
 ## Decision Log Summary
 
 | Date | Decision | Status |
@@ -246,3 +315,4 @@ This document records key architectural decisions made during Cortex TMS develop
 | 2026-01-11 | TypeScript for CLI | ✅ Active |
 | 2026-01-11 | Strict Line Limits | ✅ Active |
 | 2026-01-11 | ADR Format | ✅ Active |
+| 2026-01-11 | Maintenance Protocol & Truth Syncing | ✅ Active |

@@ -106,10 +106,12 @@ cat NEXT-TASKS.md
 
 See `NEXT-TASKS.md` for current sprint and `FUTURE-ENHANCEMENTS.md` for backlog.
 
-**Current Phase**: Phase 1 - Dogfooding (✅ Complete)
-- [x] Apply TMS to Cortex itself
-- [x] Populate `docs/core/` with Cortex-specific content
-- [x] Create `FUTURE-ENHANCEMENTS.md` backlog
+**Current Phase**: Phase 1 + 1.5 - Foundation & Maintenance Protocol (✅ Complete)
+- [x] Apply TMS to Cortex itself (Phase 1)
+- [x] Populate `docs/core/` with Cortex-specific content (Phase 1)
+- [x] Create `FUTURE-ENHANCEMENTS.md` backlog (Phase 1)
+- [x] Populate all template files with opinionated scaffolding (Phase 1.5)
+- [x] Implement Maintenance Protocol & Truth Syncing workflows (Phase 1.5)
 
 **Next Phase**: Phase 2 - Template Library
 - [ ] Complete all template files
