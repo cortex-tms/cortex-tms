@@ -7,7 +7,7 @@
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
 | **Initialize Project** - Next.js 16 + Shadcn + TMS templates | - | 1h | 🔴 HIGH | ✅ Done |
-| **Build Data Layer** - TypeScript types + localStorage abstraction | - | 30min | 🔴 HIGH | ⬜ Todo |
+| **Build Data Layer** - TypeScript types + localStorage abstraction | - | 30min | 🔴 HIGH | ✅ Done |
 | **Add Shadcn Components** - Button, Input, Card, Checkbox, Dialog | - | 20min | 🔴 HIGH | ⬜ Todo |
 | **Build TodoForm** - Add new todo input component | - | 30min | 🔴 HIGH | ⬜ Todo |
 | **Build TodoItem** - Individual todo with edit/delete/complete | - | 45min | 🔴 HIGH | ⬜ Todo |
@@ -38,4 +38,4 @@
 
 ## 📝 Current Focus
 
-Working on data layer implementation (types and localStorage abstraction).
+Data layer complete. Next: Add Shadcn UI components (Button, Input, Card, Checkbox, Dialog).
