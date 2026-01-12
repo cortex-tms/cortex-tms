@@ -13,8 +13,8 @@
 | **Build TodoItem** - Individual todo with edit/delete/complete | - | 45min | 🔴 HIGH | ✅ Done |
 | **Build TodoList** - List container with filtering | - | 45min | 🔴 HIGH | ✅ Done |
 | **Build Main Page** - Assemble components with state management | - | 45min | 🔴 HIGH | ✅ Done |
-| **Add Polish** - Styling, transitions, responsive design | - | 30min | 🟡 MED | ⬜ Todo |
-| **Validate Templates** - Ensure docs match implementation | - | 30min | 🟡 MED | ⬜ Todo |
+| **Add Polish** - Styling, transitions, responsive design | - | 30min | 🟡 MED | ✅ Done |
+| **Validate Templates** - Ensure docs match implementation | - | 30min | 🟡 MED | ✅ Done |
 
 **Ref Column**:
 - `[#123]` = GitHub Issue
@@ -38,4 +38,4 @@
 
 ## 📝 Current Focus
 
-Main page assembled with global state + TodoFilters. Next: Add Polish (styling, transitions, responsive design).
+**MVP COMPLETE!** All tasks done. Todo app is fully functional with polished UX and validated documentation. Ready for Phase 3 closure and archival.
