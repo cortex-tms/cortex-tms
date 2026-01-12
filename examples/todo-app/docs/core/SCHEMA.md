@@ -1,190 +1,353 @@
-# Schema: Data Models & Relationships
+# Schema: Data Models & TypeScript Types
 
-<!-- This file documents your data models, database schema, and type definitions. -->
-<!-- If your project doesn't use a database, you can document TypeScript types, API contracts, or state shape instead. -->
+<!-- This todo app uses TypeScript types + localStorage (no database). -->
+<!-- This file documents the type definitions and localStorage contract. -->
 
 ---
 
 ## Overview
 
-**Database/Store Type**: [e.g., PostgreSQL, MongoDB, Redis, In-Memory]
-**ORM/Query Tool**: [e.g., Prisma, TypeORM, Mongoose, Raw SQL]
-**Schema Migration Strategy**: [e.g., Prisma Migrate, TypeORM migrations, Alembic]
+**Storage Type**: localStorage (Browser Web Storage API)
+**Data Format**: JSON
+**Type System**: TypeScript (strict mode enabled)
+**Schema Migration Strategy**: Manual (localStorage is unversioned, relies on code migrations if needed)
 
 ---
 
-## Core Entities
+## Core Type Definitions
 
-<!-- List your main data entities/tables/collections. For each, document: -->
-<!-- - Purpose (what it represents) -->
-<!-- - Key fields -->
-<!-- - Relationships to other entities -->
+### Todo Interface
 
-### [Entity Name 1: e.g., User]
+**Purpose**: Represents a single task in the todo list.
 
-**Purpose**: [e.g., Stores user account information and authentication data]
+**Source File**: `src/types/todo.ts`
 
-**Fields**:
+```typescript
+export interface Todo {
+  id: string;          // UUID v4
+  text: string;        // The task description
+  completed: boolean;  // Task status
+  createdAt: number;   // Unix timestamp for sorting
+}
+```
 
-| Field | Type | Required | Default | Notes |
-|:------|:-----|:---------|:--------|:------|
-| `id` | [e.g., UUID, Integer] | Yes | Auto-generated | Primary key |
-| `email` | [e.g., String] | Yes | - | Unique, validated |
-| `passwordHash` | [e.g., String] | Yes | - | bcrypt hashed |
-| `createdAt` | [e.g., Timestamp] | Yes | NOW() | UTC timezone |
-| `updatedAt` | [e.g., Timestamp] | Yes | NOW() | Auto-updated |
+**Field Details**:
 
-**Relationships**:
-- [e.g., One User has many Posts (1:N)]
-- [e.g., One User belongs to one Organization (N:1)]
+| Field | Type | Required | Validation | Notes |
+|:------|:-----|:---------|:-----------|:------|
+| `id` | `string` | Yes | Must be UUID v4 format | Generated via `crypto.randomUUID()` |
+| `text` | `string` | Yes | Non-empty after trim | User-provided task description |
+| `completed` | `boolean` | Yes | `true` or `false` only | Completion status |
+| `createdAt` | `number` | Yes | Unix timestamp (ms) | Generated via `Date.now()` |
 
-**Indexes**:
-- [e.g., `email` (unique)]
-- [e.g., `createdAt` (for sorting)]
+**Default Values** (on creation):
 
-**Validation Rules**:
-- [e.g., Email must match regex pattern]
-- [e.g., Password minimum 8 characters]
+```typescript
+{
+  id: crypto.randomUUID(),        // e.g., "550e8400-e29b-41d4-a716-446655440000"
+  text: "[User input]",           // Trimmed, non-empty string
+  completed: false,                // Always false on creation
+  createdAt: Date.now()           // e.g., 1705123200000
+}
+```
 
----
+**Relationships**: None (flat structure, no foreign keys)
 
-### [Entity Name 2: e.g., Post]
-
-**Purpose**: [e.g., User-generated content items]
-
-**Fields**:
-
-| Field | Type | Required | Default | Notes |
-|:------|:-----|:---------|:--------|:------|
-| `id` | [Type] | Yes | Auto-generated | Primary key |
-| `userId` | [Type] | Yes | - | Foreign key → User.id |
-| `title` | [String] | Yes | - | Max 200 chars |
-| `content` | [Text] | Yes | - | Markdown supported |
-| `publishedAt` | [Timestamp] | No | NULL | NULL = draft |
-
-**Relationships**:
-- [e.g., One Post belongs to one User (N:1)]
-- [e.g., One Post has many Comments (1:N)]
-
-**Indexes**:
-- [e.g., `userId` (for user's posts lookup)]
-- [e.g., `publishedAt` (for recent posts)]
+**Indexes**: None (in-memory filtering only)
 
 ---
 
-## Relationships
+### TodoFilter Type
 
-<!-- Document complex relationships, especially Many-to-Many (N:M) -->
+**Purpose**: Defines the available filter options for the UI.
 
-### [Relationship Name: e.g., User ↔ Role (Many-to-Many)]
+**Source File**: `src/types/todo.ts`
 
-**Join Table**: [e.g., `user_roles`]
+```typescript
+export type TodoFilter = 'all' | 'active' | 'completed';
+```
 
-**Fields**:
+**Values**:
+- `'all'` - Show all todos (no filtering)
+- `'active'` - Show only incomplete todos (`completed === false`)
+- `'completed'` - Show only completed todos (`completed === true`)
 
-| Field | Type | Required | Notes |
-|:------|:-----|:---------|:------|
-| `userId` | [Type] | Yes | FK → User.id |
-| `roleId` | [Type] | Yes | FK → Role.id |
-| `assignedAt` | [Timestamp] | Yes | When role was granted |
+**Storage**: NOT persisted to localStorage (session-only state)
 
-**Constraints**:
-- [e.g., Unique constraint on (userId, roleId) - prevent duplicates]
+**Default**: `'all'` (shows all todos on page load)
+
+---
+
+## localStorage Schema
+
+### Storage Key
+
+**Key Name**: `cortex-todos`
+
+**Scope**: Per-origin (domain + protocol + port)
+
+**Format**: JSON string representation of `Todo[]` array
+
+### Data Structure
+
+**Stored Value Example**:
+
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "text": "Buy groceries",
+    "completed": false,
+    "createdAt": 1705123200000
+  },
+  {
+    "id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "text": "Write documentation",
+    "completed": true,
+    "createdAt": 1705120000000
+  }
+]
+```
+
+**Empty State**: `[]` (empty array, not `null` or missing)
+
+### Storage Operations
+
+**Source File**: `src/lib/storage.ts`
+
+#### Read Operation
+
+```typescript
+getTodos(): Todo[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error("Failed to load todos:", error);
+    return [];
+  }
+}
+```
+
+**SSR Safety**: Returns `[]` when `window` is undefined (server-side)
+
+#### Write Operation
+
+```typescript
+saveTodos(todos: Todo[]): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+  } catch (error) {
+    console.error("Failed to save todos:", error);
+  }
+}
+```
+
+**Error Handling**: Silent failure with console logging (quota errors, etc.)
+
+#### Clear Operation
+
+```typescript
+clear(): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(STORAGE_KEY);
+}
+```
+
+**Use Case**: Testing, manual reset (not exposed in UI)
+
+---
+
+## Component Prop Types
+
+### TodoFormProps
+
+**Purpose**: Props for the todo creation form component.
+
+**Source File**: `src/components/todo-form.tsx`
+
+```typescript
+interface TodoFormProps {
+  onAddTodo: (todo: Todo) => void;
+}
+```
+
+**Callback Contract**: Parent provides handler that accepts a fully-formed `Todo` object.
+
+---
+
+### TodoItemProps
+
+**Purpose**: Props for individual todo item component.
+
+**Source File**: `src/components/todo-item.tsx`
+
+```typescript
+interface TodoItemProps {
+  todo: Todo;
+  onToggle: (id: string) => void;
+  onEdit: (id: string, newText: string) => void;
+  onDelete: (id: string) => void;
+}
+```
+
+**Callbacks**:
+- `onToggle`: Toggle completion status
+- `onEdit`: Update todo text
+- `onDelete`: Remove todo from list
+
+---
+
+### TodoListProps
+
+**Purpose**: Props for the todo list container component.
+
+**Source File**: `src/components/todo-list.tsx`
+
+```typescript
+interface TodoListProps {
+  todos: Todo[];
+  filter: TodoFilter;
+  onToggle: (id: string) => void;
+  onEdit: (id: string, newText: string) => void;
+  onDelete: (id: string) => void;
+}
+```
+
+**Derived State**: Component computes `filteredTodos` internally based on `filter` prop.
+
+---
+
+### TodoFiltersProps
+
+**Purpose**: Props for the filter button group component.
+
+**Source File**: `src/components/todo-filters.tsx`
+
+```typescript
+interface TodoFiltersProps {
+  currentFilter: TodoFilter;
+  onFilterChange: (filter: TodoFilter) => void;
+}
+```
+
+**UI Contract**: Highlights active filter button, emits filter change events.
+
+---
+
+## Type Guards & Utilities
+
+### Type Validation
+
+**Source File**: `src/lib/storage.ts`
+
+No runtime type guards currently implemented (localStorage is trusted source).
+
+**Future Enhancement**: Add Zod schema validation for localStorage reads.
 
 ---
 
 ## Enums & Constants
 
-<!-- Document any enum types or constant values used in the schema -->
+### Storage Constants
 
-### [Enum Name: e.g., UserStatus]
-
-**Values**:
-- `ACTIVE` - [e.g., User can log in]
-- `SUSPENDED` - [e.g., Temporarily blocked]
-- `DELETED` - [e.g., Soft-deleted account]
-
-**Storage**: [e.g., Stored as String in database]
-
----
-
-## TypeScript Types
-
-<!-- If using TypeScript, document your type definitions -->
-<!-- This is especially important for frontend state or API contracts -->
-
-### [Type Name: e.g., UserProfile]
-
-**Purpose**: [e.g., Client-side user profile (excludes sensitive fields)]
+**Source File**: `src/lib/storage.ts`
 
 ```typescript
-interface UserProfile {
-  id: string
-  email: string
-  displayName: string | null
-  avatarUrl: string | null
-  createdAt: Date
-  // Note: passwordHash is NOT included (security)
-}
+const STORAGE_KEY = "cortex-todos";
 ```
 
-**Derived From**: [e.g., Database User entity, with passwordHash excluded]
-
----
-
-## Migration History
-
-<!-- Track significant schema changes -->
-
-### [Date: e.g., 2026-01-15] - [Change: e.g., Add User.avatarUrl field]
-
-**Reason**: [e.g., Support profile pictures]
-**Migration File**: [e.g., `migrations/20260115_add_avatar_url.sql`]
-**Breaking Change**: [Yes/No]
-
----
-
-### [Date: e.g., 2026-01-20] - [Change: e.g., Split User table into User + UserProfile]
-
-**Reason**: [e.g., Separate auth data from profile data]
-**Migration File**: [e.g., `migrations/20260120_split_user_profile.sql`]
-**Breaking Change**: Yes
-**Rollback Plan**: [e.g., Reverse migration available in same file]
+**Rationale**: Single source of truth for the localStorage key name.
 
 ---
 
 ## Data Flow Diagrams
 
-<!-- Optional: Visual representations of how data moves through the system -->
-
-### [Flow Name: e.g., User Registration]
+### Todo Creation Flow
 
 ```
-1. User submits email + password
+1. User types in TodoForm input
    ↓
-2. Hash password with bcrypt
+2. Form validates (trim, reject if empty)
    ↓
-3. INSERT into User table
+3. Create Todo object:
+   - id: crypto.randomUUID()
+   - text: trimmed input
+   - completed: false
+   - createdAt: Date.now()
    ↓
-4. Send verification email
+4. Call onAddTodo callback
    ↓
-5. Create UserProfile record
+5. Parent (page.tsx) prepends to todos array
+   ↓
+6. updateTodos([newTodo, ...todos])
+   ↓
+7. React state update + localStorage.setItem() (atomic)
+   ↓
+8. UI re-renders with new todo at top
+```
+
+### Todo Toggle Flow
+
+```
+1. User clicks checkbox in TodoItem
+   ↓
+2. Call onToggle(todo.id)
+   ↓
+3. Parent maps over todos, flips completed flag
+   ↓
+4. updateTodos(mappedArray)
+   ↓
+5. React state update + localStorage.setItem() (atomic)
+   ↓
+6. UI re-renders with updated checkbox
+```
+
+### Filter Change Flow
+
+```
+1. User clicks filter button (All/Active/Completed)
+   ↓
+2. TodoFilters calls onFilterChange(newFilter)
+   ↓
+3. Parent updates filter state (NOT persisted)
+   ↓
+4. TodoList re-renders, computes filteredTodos
+   ↓
+5. UI shows filtered subset
 ```
 
 ---
 
 ## Validation Rules
 
-<!-- Document business logic constraints that aren't enforced at the DB level -->
+### Todo Creation Validation
 
-### [Rule: e.g., Post Publishing]
+**Rule**: Todo text cannot be empty after trimming.
 
-**Condition**: User can only publish a post if:
-- Post.title length >= 10 characters
-- User.status === 'ACTIVE'
-- User has 'PUBLISHER' role
+**Condition**: Text input must satisfy:
+- `text.trim().length > 0`
 
-**Enforcement Location**: [e.g., `src/services/postService.ts`]
+**Enforcement Location**: `src/components/todo-form.tsx:17`
+
+```typescript
+const trimmed = text.trim();
+if (!trimmed) return; // Guard: reject empty
+```
+
+### Todo Edit Validation
+
+**Rule**: Edited text cannot be empty. Empty edits revert to original.
+
+**Condition**:
+- `editedText.trim().length > 0` → Save
+- `editedText.trim().length === 0` → Cancel edit
+
+**Enforcement Location**: `src/components/todo-item.tsx` (inline edit logic)
 
 ---
 
@@ -192,22 +355,21 @@ interface UserProfile {
 
 ### Query Patterns
 
-**Most Common Queries**:
-1. [e.g., `SELECT * FROM posts WHERE userId = ? ORDER BY publishedAt DESC LIMIT 20`]
-2. [e.g., `SELECT * FROM users WHERE email = ?`]
+**Most Common Operations**:
+1. **Filter todos**: `todos.filter(t => t.completed === false)`
+2. **Map for update**: `todos.map(t => t.id === targetId ? { ...t, completed: !t.completed } : t)`
+3. **Count active**: `todos.filter(t => !t.completed).length`
 
-**Indexes Supporting These**:
-- [e.g., Index on `posts.userId` + `posts.publishedAt`]
-- [e.g., Unique index on `users.email`]
+**Optimization**: All operations are O(n) with n = number of todos. No indexes needed for small datasets (<1000 items).
 
 ### Expected Scale
 
-**Projected Data Volume** (Year 1):
-- [e.g., Users: ~10,000]
-- [e.g., Posts: ~100,000]
-- [e.g., Comments: ~500,000]
+**Projected Data Volume**:
+- Typical user: 10-50 todos
+- Power user: 100-500 todos
+- localStorage limit: ~5MB (~10,000 todos)
 
-**Growth Strategy**: [e.g., Partition posts table by year after 1M records]
+**Growth Strategy**: If exceeding 1000 todos, consider migrating to IndexedDB or backend sync.
 
 ---
 
@@ -215,32 +377,45 @@ interface UserProfile {
 
 ### Sensitive Fields
 
-**Never expose in API responses**:
-- `User.passwordHash`
-- [e.g., `User.resetToken`]
-- [e.g., `Payment.cardNumber` (store only last 4 digits)]
+**None**: Todo app does not handle sensitive data (no PII, passwords, payments).
 
-**Encryption at Rest**:
-- [e.g., `User.email` - encrypted in production DB]
+**Future**: If adding user authentication, ensure tokens/passwords are NOT stored in localStorage (use httpOnly cookies).
+
+### XSS Prevention
+
+**Text Sanitization**: React auto-escapes all text content (`{todo.text}` is safe).
+
+**HTML Injection Risk**: None (no `dangerouslySetInnerHTML` used).
 
 ---
 
 ## AI Agent Notes
 
-**When generating database queries**:
-- ⚠️ Always use parameterized queries (prevent SQL injection)
-- ⚠️ All timestamps are stored in UTC (convert to user timezone in frontend)
-- ⚠️ Soft deletes: Check `deletedAt IS NULL` in WHERE clauses
+**When generating code that interacts with todos**:
+
+- ⚠️ Always use the `Todo` interface from `src/types/todo.ts`
+- ⚠️ Never mutate todos directly (use `.map()` and object spread)
+- ⚠️ All CRUD operations MUST use `updateTodos()` helper (atomic state + storage sync)
+- ⚠️ UUID generation: Use `crypto.randomUUID()` (not `Math.random()` or manual strings)
+- ⚠️ Timestamps: Use `Date.now()` for Unix timestamps in milliseconds
 
 **Common Mistakes to Avoid**:
-- ❌ Don't use `SELECT *` in production code (explicit columns only)
-- ❌ Don't expose `passwordHash` in any API response
-- ❌ Don't perform N+1 queries (use JOINs or eager loading)
+
+- ❌ Don't use `localStorage.getItem()` directly outside `storage.ts`
+- ❌ Don't create todos with missing fields (all 4 required: id, text, completed, createdAt)
+- ❌ Don't persist filter state to localStorage (session-only)
+- ❌ Don't use `useState(() => storage.getTodos())` (causes SSR hydration errors)
 
 ---
 
 ## References
 
-- **ORM Documentation**: [Link to Prisma/TypeORM/etc. docs]
-- **Database Docs**: [Link to PostgreSQL/MongoDB/etc. docs]
-- **Migration Guide**: [Link to your migration strategy doc]
+- **TypeScript Handbook**: [Interfaces](https://www.typescriptlang.org/docs/handbook/interfaces.html)
+- **Web Storage API**: [MDN localStorage docs](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+- **UUID**: [RFC 4122](https://tools.ietf.org/html/rfc4122)
+
+---
+
+**Last Updated**: 2026-01-12
+**TypeScript Version**: 5.7.3
+**Strict Mode**: Enabled

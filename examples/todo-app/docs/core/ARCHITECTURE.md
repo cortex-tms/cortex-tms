@@ -37,9 +37,11 @@ A client-side todo application built with Next.js 16, React 19, and Shadcn UI. T
 
 1. **User adds todo**: Form captures input → Creates Todo object with UUID → Updates React state → Persists to localStorage
 2. **User toggles complete**: Checkbox clicked → Updates todo.completed → React re-renders → Syncs to localStorage
-3. **User deletes todo**: Delete button → Confirmation dialog → Removes from state → Updates localStorage
-4. **User filters todos**: Filter button clicked → Updates filter state → TodoList re-renders with filtered subset
-5. **Page reload**: App mounts → Reads from localStorage → Initializes React state → Renders todos
+3. **User edits todo**: Click todo text → Inline edit mode → Save → Updates state + localStorage
+4. **User deletes todo**: Delete button → Confirmation dialog → Removes from state → Updates localStorage
+5. **User clears completed**: "Clear completed" button → Filters out completed todos → Updates state + localStorage
+6. **User filters todos**: Filter button clicked → Updates filter state → TodoList re-renders with filtered subset
+7. **Page reload**: App mounts → Reads from localStorage → Initializes React state → Renders todos
 
 **Data Flow Diagram**:
 ```
