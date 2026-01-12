@@ -37,7 +37,10 @@ program
 
 // Register commands
 import { initCommand } from './commands/init.js';
+import { validateCommand } from './commands/validate.js';
+
 program.addCommand(initCommand);
+program.addCommand(validateCommand);
 
 // Handle unknown commands
 program.on('command:*', () => {
