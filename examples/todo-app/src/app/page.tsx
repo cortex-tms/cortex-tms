@@ -1,65 +1,99 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import { Todo, TodoFilter } from "@/types/todo";
+import { storage } from "@/lib/storage";
+import { TodoForm } from "@/components/todo-form";
+import { TodoList } from "@/components/todo-list";
+import { TodoFilters } from "@/components/todo-filters";
+import { ListTodo } from "lucide-react";
+
+export default function TodoApp() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [filter, setFilter] = useState<TodoFilter>("all");
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Initialize: Load todos from storage on mount
+  useEffect(() => {
+    const savedTodos = storage.getTodos();
+    setTodos(savedTodos);
+    setIsLoaded(true);
+  }, []);
+
+  // Sync: Helper to update state and storage simultaneously
+  const updateTodos = (newTodos: Todo[]) => {
+    setTodos(newTodos);
+    storage.saveTodos(newTodos);
+  };
+
+  // Handlers
+  const handleAddTodo = (todo: Todo) => {
+    updateTodos([todo, ...todos]); // Add new at top
+  };
+
+  const handleToggleTodo = (id: string) => {
+    updateTodos(
+      todos.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+    );
+  };
+
+  const handleEditTodo = (id: string, text: string) => {
+    updateTodos(todos.map((t) => (t.id === id ? { ...t, text } : t)));
+  };
+
+  const handleDeleteTodo = (id: string) => {
+    updateTodos(todos.filter((t) => t.id !== id));
+  };
+
+  // Prevent flash of empty state during hydration
+  if (!isLoaded) return null;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-background py-12 px-4">
+      <div className="container max-w-2xl mx-auto space-y-8">
+        {/* Header Section */}
+        <header className="flex flex-col items-center sm:items-start gap-2">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary p-2 rounded-lg">
+              <ListTodo className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              Cortex Tasks
+            </h1>
+          </div>
+          <p className="text-muted-foreground text-sm">
+            A TMS reference implementation built with Next.js 15
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+        </header>
+
+        {/* Action Section */}
+        <div className="space-y-6">
+          <TodoForm onAddTodo={handleAddTodo} />
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <TodoFilters
+              currentFilter={filter}
+              onFilterChange={setFilter}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <div className="text-xs text-muted-foreground text-center sm:text-right italic">
+              {todos.filter(t => !t.completed).length} items remaining
+            </div>
+          </div>
+
+          <TodoList
+            todos={todos}
+            filter={filter}
+            onToggle={handleToggleTodo}
+            onEdit={handleEditTodo}
+            onDelete={handleDeleteTodo}
+          />
         </div>
-      </main>
-    </div>
+
+        {/* Footer info */}
+        <footer className="pt-8 text-center text-xs text-muted-foreground border-t">
+          <p>Built with Cortex TMS Documentation Standards</p>
+        </footer>
+      </div>
+    </main>
   );
 }
