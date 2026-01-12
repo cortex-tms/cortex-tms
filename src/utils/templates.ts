@@ -9,7 +9,8 @@ import fs from 'fs-extra';
 import { join, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import type { TemplateFile } from '../types/cli.js';
+import type { TemplateFile, ProjectScope } from '../types/cli.js';
+import { getScopePreset } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -128,7 +129,7 @@ export async function getTemplateFiles(
 }
 
 /**
- * Copy all templates to destination directory
+ * Copy templates to destination directory based on scope
  *
  * @param templatesDir - Source templates directory
  * @param destDir - Destination directory (user's project)
@@ -141,17 +142,33 @@ export async function copyTemplates(
   replacements: Record<string, string>,
   options: {
     overwrite?: boolean;
-    includeExamples?: boolean;
+    scope?: 'nano' | 'standard' | 'enterprise';
   } = {}
 ): Promise<{ copied: number; skipped: number }> {
-  const { overwrite = false, includeExamples = false } = options;
+  const { overwrite = false, scope = 'standard' } = options;
 
   const allFiles = await getTemplateFiles(templatesDir);
 
-  // Filter out examples if not requested
-  const filesToCopy = includeExamples
-    ? allFiles
-    : allFiles.filter((f) => f.category !== 'example');
+  // Get scope preset to determine which files to copy
+  const preset = getScopePreset(scope);
+
+  if (!preset) {
+    throw new Error(`Unknown scope: ${scope}`);
+  }
+
+  // Combine mandatory and optional files for this scope
+  const allowedFiles = [...preset.mandatoryFiles, ...preset.optionalFiles];
+
+  // Filter files based on scope - match against full destination path
+  const filesToCopy = allFiles.filter((f) => {
+    // Always exclude examples directory
+    if (f.category === 'example') {
+      return false;
+    }
+
+    // Check if the file's destination path is in the allowed list
+    return allowedFiles.includes(f.destination);
+  });
 
   let copied = 0;
   let skipped = 0;

@@ -10,7 +10,7 @@
 export interface InitPromptAnswers {
   projectName: string;
   description?: string;
-  includeTemplates: TemplateSelection[];
+  scope: ProjectScope;
   overwrite: boolean;
 }
 

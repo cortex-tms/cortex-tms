@@ -19,6 +19,7 @@ import {
   copyTemplates,
   generateReplacements,
 } from '../utils/templates.js';
+import { createConfigFromScope, saveConfig } from '../utils/config.js';
 import type { InitCommandOptions } from '../types/cli.js';
 
 /**
@@ -101,18 +102,14 @@ async function runInit(options: InitCommandOptions): Promise<void> {
     answers = {
       projectName: defaultName,
       description: undefined,
-      includeTemplates: options.minimal
-        ? ['workflow-files']
-        : ['core-docs', 'workflow-files', 'project-files'],
+      scope: options.minimal ? 'nano' : 'standard',
       overwrite: true,
     };
 
     if (options.verbose) {
       console.log(chalk.gray('\nUsing default values (--force enabled):'));
       console.log(chalk.gray(`  Project Name: ${answers.projectName}`));
-      console.log(
-        chalk.gray(`  Templates: ${answers.includeTemplates.join(', ')}`)
-      );
+      console.log(chalk.gray(`  Scope: ${answers.scope}`));
       console.log();
     }
   } else {
@@ -149,19 +146,28 @@ async function runInit(options: InitCommandOptions): Promise<void> {
 
   try {
     const templatesDir = getTemplatesDir();
-
-    // Determine what to copy based on user selection
-    const includeExamples = answers.includeTemplates.includes('example-app');
     const overwrite = options.force || answers.overwrite;
 
     const result = await copyTemplates(templatesDir, cwd, replacements, {
       overwrite,
-      includeExamples,
+      scope: answers.scope,
     });
 
     copySpinner.succeed(
       `Templates copied: ${chalk.bold(result.copied)} files${result.skipped > 0 ? chalk.gray(` (skipped ${result.skipped})`) : ''}`
     );
+
+    // Step 7: Save .cortexrc configuration
+    const configSpinner = ora('Creating .cortexrc configuration...').start();
+
+    try {
+      const config = createConfigFromScope(answers.scope, answers.projectName);
+      await saveConfig(cwd, config);
+      configSpinner.succeed('Configuration saved');
+    } catch (error) {
+      configSpinner.fail('Failed to save configuration');
+      throw error;
+    }
 
     // Step 7: Success message
     console.log(chalk.green.bold('\n✨ Success!'), chalk.gray('Cortex TMS initialized.\n'));

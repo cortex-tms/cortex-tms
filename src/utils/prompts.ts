@@ -7,6 +7,7 @@
 import inquirer from 'inquirer';
 import type { InitPromptAnswers, ProjectContext } from '../types/cli.js';
 import { getDefaultProjectName } from './detection.js';
+import { SCOPE_PRESETS } from './config.js';
 
 /**
  * Run interactive prompts for the init command
@@ -44,32 +45,14 @@ export async function runInitPrompts(
       default: undefined,
     },
     {
-      type: 'checkbox',
-      name: 'includeTemplates',
-      message: 'Which documentation templates do you want to include?',
-      choices: [
-        {
-          name: 'Core Documentation (ARCHITECTURE, PATTERNS, DOMAIN-LOGIC, etc.)',
-          value: 'core-docs',
-          checked: true,
-        },
-        {
-          name: 'Workflow Files (NEXT-TASKS, CLAUDE, copilot-instructions)',
-          value: 'workflow-files',
-          checked: true,
-        },
-        {
-          name: 'Project Files (README, FUTURE-ENHANCEMENTS)',
-          value: 'project-files',
-          checked: true,
-        },
-      ],
-      validate: (choices: string[]) => {
-        if (choices.length === 0) {
-          return 'Please select at least one template category';
-        }
-        return true;
-      },
+      type: 'list',
+      name: 'scope',
+      message: 'What project scope would you like?',
+      choices: SCOPE_PRESETS.map((preset) => ({
+        name: `${preset.displayName} - ${preset.description}`,
+        value: preset.name,
+      })),
+      default: 'standard',
     },
   ]);
 
@@ -100,12 +83,16 @@ export function showInitSummary(
   answers: InitPromptAnswers,
   context: ProjectContext
 ): void {
+  const preset = SCOPE_PRESETS.find((p) => p.name === answers.scope);
+
   console.log('\n📋 Summary:');
   console.log(`  Project: ${answers.projectName}`);
   if (answers.description) {
     console.log(`  Description: ${answers.description}`);
   }
-  console.log(`  Templates: ${answers.includeTemplates.join(', ')}`);
+  console.log(
+    `  Scope: ${preset?.displayName || answers.scope} (${preset?.mandatoryFiles.length || 0} mandatory files)`
+  );
 
   if (context.isGitRepo) {
     console.log(`  Git: Repository detected ✓`);
