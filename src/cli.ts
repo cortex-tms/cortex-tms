@@ -36,22 +36,8 @@ program
   .helpOption('-h, --help', 'Display help for command');
 
 // Register commands
-// TODO: Import and register init command
-// import { initCommand } from './commands/init.js';
-// program.addCommand(initCommand);
-
-// Placeholder init command for Phase 4 Step 1
-program
-  .command('init')
-  .description('Initialize Cortex TMS in your project')
-  .action(() => {
-    console.log(chalk.green('✨ Welcome to Cortex TMS!'));
-    console.log(chalk.gray('The init command is coming in the next commit...'));
-    console.log(
-      chalk.cyan('\nCurrent version:'),
-      chalk.bold(packageJson.version)
-    );
-  });
+import { initCommand } from './commands/init.js';
+program.addCommand(initCommand);
 
 // Handle unknown commands
 program.on('command:*', () => {
