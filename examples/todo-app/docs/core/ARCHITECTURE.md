@@ -85,6 +85,64 @@ export type TodoFilter = 'all' | 'active' | 'completed';
 
 ---
 
+## 📊 Observability & Monitoring
+
+**Error Tracking**:
+- **Tool**: None (Client-side demo app)
+- **Coverage**: Browser console errors only
+- **Alert Threshold**: N/A (no production monitoring)
+
+**Logging**:
+- **Strategy**: Browser console.error for development
+- **Levels**: ERROR (localStorage failures), WARN (quota limits)
+- **Retention**: Session-only (browser console)
+- **Sensitive Data**: No PII stored (todos are local-only)
+
+**Metrics & Analytics**:
+- **Performance**: Chrome DevTools Performance tab for profiling
+- **Business Metrics**: None (demo app)
+- **Health Checks**: N/A (client-side only)
+
+**Alerting**:
+- **Critical**: N/A (no production environment)
+- **Warning**: Browser console warnings for quota limits
+- **Info**: N/A
+
+**Demo App Context**: This is a learning/demonstration project. Production apps should integrate Sentry, LogRocket, or similar for real error tracking.
+
+---
+
+## 📈 Scalability & Performance
+
+**Current Load Profile**:
+- **Users**: Single user per browser (local-only)
+- **Request Volume**: Zero network requests (client-side only)
+- **Data Size**: localStorage limit (~5-10MB per origin)
+
+**Performance Targets**:
+- **Initial Load**: First Contentful Paint < 1.5s
+- **Interaction**: Todo add/edit/delete < 50ms
+- **Render Performance**: Smooth 60fps scrolling for < 1000 todos
+
+**Scaling Strategy**:
+- **Horizontal Scaling**: N/A (client-side app)
+- **Caching**: localStorage acts as persistent cache
+- **Database**: localStorage with atomic read-modify-write
+- **Bottlenecks**:
+  - Large todo lists (1000+ items) may cause render lag
+  - localStorage quota (~5-10MB)
+
+**Known Limits**:
+- **Single-point failures**: Browser localStorage corruption (rare)
+- **Rate Limits**: None (no external APIs)
+- **Resource Constraints**:
+  - localStorage 5-10MB quota (browser-dependent)
+  - No cross-device sync (data is browser-specific)
+
+**Future Scaling Path**: For production use, migrate to IndexedDB (100MB+) or backend sync with PostgreSQL/Supabase.
+
+---
+
 ## 🎨 UI Component Structure
 
 ### Component Hierarchy
@@ -205,5 +263,5 @@ See `FUTURE-ENHANCEMENTS.md` for backlog. Key items:
 
 ---
 
-**Last Updated**: 2026-01-12
+**Last Updated**: 2026-01-13 (v2.2.0 Enterprise sync)
 **Tech Stack Version**: Next.js 16.1.1, React 19.2.3, Tailwind CSS 4.1.18

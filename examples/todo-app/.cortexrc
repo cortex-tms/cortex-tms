@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "scope": "enterprise",
+  "paths": {
+    "docs": "docs/core",
+    "tasks": "NEXT-TASKS.md",
+    "archive": "docs/archive"
+  },
+  "limits": {
+    "NEXT-TASKS.md": 200,
+    "FUTURE-ENHANCEMENTS.md": 500,
+    "ARCHITECTURE.md": 500,
+    "PATTERNS.md": 500,
+    "DOMAIN-LOGIC.md": 300,
+    "DECISIONS.md": 400,
+    "GLOSSARY.md": 200,
+    "SCHEMA.md": 600,
+    "TROUBLESHOOTING.md": 400
+  },
+  "validation": {
+    "ignorePatterns": [],
+    "ignoreFiles": []
+  },
+  "metadata": {
+    "created": "2026-01-13T04:31:28.963Z",
+    "projectName": "todo-app"
+  }
+}
