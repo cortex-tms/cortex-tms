@@ -5,25 +5,71 @@ All notable changes to Cortex TMS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.3.0] - 2026-01-13
+
+### 🎉 "Confidence & Comfort" Release
+
+This release transforms Cortex TMS from a documentation utility into a **Project Cockpit**, focusing on user trust, developer experience, and daily workflow integration.
 
 ### Added
-- **VS Code Snippet Library**: Complete snippet collection for TMS documentation patterns (TMS-234)
-  - 12 snippets covering ADRs, patterns, glossary terms, tasks, and more
-  - Auto-installed during `init` for Standard/Enterprise scopes
-  - Reduces documentation friction with instant scaffolding
-  - Installed to `.vscode/tms.code-snippets`
-- **Status Command**: New `cortex-tms status` dashboard for project health visibility (TMS-235)
-  - High-level project dashboard showing scope, sprint progress, and health
-  - Visual progress bar for current sprint completion percentage
-  - Task breakdown (done/in progress/todo) extracted from NEXT-TASKS.md
+
+#### Status Dashboard (TMS-235)
+- **`cortex-tms status` command**: Visual project health dashboard
+  - Project identity display (name, scope, TMS version)
+  - Health status with validation summary
+  - Current sprint progress with visual bar (ASCII art)
+  - Task breakdown (done/in progress/todo)
   - Backlog size from FUTURE-ENHANCEMENTS.md
-  - Quick action suggestions based on project state
-  - Fast, read-only operation ideal for daily standups and context switching
+  - Contextual quick actions based on project state
+  - Fast execution (< 1 second) for daily standups and context switching
+
+#### VS Code Snippet Library (TMS-234)
+- **12 productivity-boosting snippets** for TMS documentation patterns
+  - `tms-adr`: Complete Architecture Decision Record scaffold
+  - `tms-pattern`: Implementation pattern entry
+  - `tms-term`, `tms-acronym`: Glossary definitions
+  - `tms-task`, `tms-sprint`: Task and sprint scaffolding
+  - `tms-domain`, `tms-trouble`, `tms-arch`: Structured documentation
+  - `tms-code`, `tms-xref`, `tms-dod`: Utility snippets
+- Auto-installed during `init` for Standard/Enterprise scopes
+- Installed to `.vscode/tms.code-snippets`
+- Eliminates "blank page" friction for documentation maintenance
+
+#### Self-Healing Validation (TMS-233)
+- **`--fix` flag for `validate` command**: Automatically repairs common issues
+  - Creates missing mandatory files (NEXT-TASKS.md, CLAUDE.md, etc.)
+  - Generates missing .cortexrc configuration
+  - Copies templates with proper placeholder replacement
+  - Ensures `.github/copilot-instructions.md` exists
+- Non-destructive: Only fixes missing files, never overwrites existing ones
+
+#### Dry Run Mode (TMS-231)
+- **`--dry-run` flag for `init` command**: Preview changes before execution
+  - Shows which files would be created, updated, or skipped
+  - Impact analysis with file counts
+  - Safe exploration of TMS setup without side effects
+  - Ideal for understanding scope differences
+
+#### Non-Interactive Mode (TMS-231)
+- **`--scope` flag for `init` command**: CI/CD-friendly initialization
+  - No TTY required (works in automated environments)
+  - Auto-installs snippets for Standard/Enterprise scopes
+  - Uses sensible defaults (project name from directory)
+  - Enables scripted TMS deployment
 
 ### Improved
 - **Init Workflow**: Added interactive prompt for VS Code snippet installation
-- **CLI Documentation**: Comprehensive sections for VS Code snippets and status command with examples and usage tips
+- **CLI Documentation**: Comprehensive sections for all new features with examples and usage tips
+- **Error Handling**: Better error messages for non-TTY environments
+- **Validation Logic**: Improved placeholder detection and scope-aware line limits
+- **UX Polish**: Visual progress indicators and contextual command suggestions
+
+### Changed
+- **CLI-USAGE.md**: Updated to version 2.3.0 with new command documentation
+
+### Fixed
+- Fixed TTY detection crashes in CI/CD environments
+- Improved TypeScript strict mode compliance for status parsing
 
 ## [2.2.0] - 2026-01-13
 
