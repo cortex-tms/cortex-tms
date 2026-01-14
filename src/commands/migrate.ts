@@ -149,23 +149,51 @@ async function runMigrate(options: {
   }
 
   if (dryRun) {
-    console.log(
-      chalk.gray('\n💡 Tip: Run without --dry-run to apply the migration.\n')
-    );
+    printNextSteps(outdated.length, customized.length);
     return;
   }
 
-  // TODO: Phase 2 - Implement actual migration logic
+  // Phase 2: Automatic upgrades coming in v2.5
+  printNextSteps(outdated.length, customized.length);
+}
+
+/**
+ * Print next steps and guidance for manual migration
+ */
+function printNextSteps(outdatedCount: number, customizedCount: number): void {
+  console.log(chalk.bold('\n📋 Next Steps:\n'));
+
+  if (outdatedCount > 0) {
+    console.log(
+      chalk.blue('  1. Review OUTDATED files marked above')
+    );
+    console.log(
+      chalk.gray('     → These match the old template and can be safely upgraded')
+    );
+  }
+
+  if (customizedCount > 0) {
+    console.log(
+      chalk.yellow(`  ${outdatedCount > 0 ? '2' : '1'}. Review CUSTOMIZED files marked above`)
+    );
+    console.log(
+      chalk.gray('     → These have custom changes - preserve your modifications')
+    );
+  }
+
   console.log(
-    chalk.yellow('\n🚧 Migration execution coming in next phase...\n')
+    chalk.gray(`  ${outdatedCount > 0 || customizedCount > 0 ? (outdatedCount > 0 && customizedCount > 0 ? '3' : '2') : '1'}. Check the latest templates at:`)
   );
   console.log(
-    chalk.gray(
-      '   The migration engine will automatically upgrade safe files and'
-    )
+    chalk.cyan('     https://github.com/cortex-tms/cortex-tms/tree/main/templates')
+  );
+
+  console.log(
+    chalk.bold.cyan('\n🚀 Coming in v2.5:'),
+    chalk.gray('Automatic upgrades with backup/rollback')
   );
   console.log(
-    chalk.gray('   create backups for customized ones.\n')
+    chalk.gray('   For now, please manually review and update files as needed.\n')
   );
 }
 
