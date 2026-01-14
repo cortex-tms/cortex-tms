@@ -20,8 +20,9 @@
 
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
-| **Migration Command** - Add `cortex-tms migrate` for version upgrades | [TMS-236] | 4h | 🔴 HIGH | ⬜ Todo |
-| **Template Versioning** - Add version metadata to templates | [TMS-237] | 2h | 🟡 MED | ⬜ Todo |
+| **Migration Engine** - Implement version tagging infrastructure | [TMS-237] | 2h | 🔴 HIGH | ✅ Done |
+| **Upgrade Logic** - Add `cortex-tms migrate` command | [TMS-236] | 4h | 🔴 HIGH | 🔄 In Progress |
+| **Prompt Engine** - CLI command & `PROMPTS.md` | [TMS-240] | 4h | 🟡 MED | ⬜ Todo |
 | **Interactive Tutorial** - In-CLI onboarding walkthrough | [TMS-238] | 3h | 🟡 MED | ⬜ Todo |
 
 ---
