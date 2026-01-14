@@ -5,6 +5,17 @@ All notable changes to Cortex TMS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.1] - 2026-01-14
+
+### Fixed
+- **Critical Documentation Sync**: Updated README.md in npm package to reflect v2.4.0 features
+  - Fixed version header displaying outdated v2.1.1
+  - Added complete CLI commands documentation (migrate, prompt, status, validate, init)
+  - Added "What's New in v2.4.0" section
+  - Marked all roadmap phases as complete
+  - Updated status from "In Development" to "Stable / Production Ready"
+- **Note**: This is a documentation-only patch release with no code changes
+
 ## [2.4.0] - 2026-01-14
 
 ### 🎉 "Scaling Intelligence" Release

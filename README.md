@@ -1,6 +1,6 @@
 # Cortex TMS 🧠
 
-**The Universal AI-Optimized Project Boilerplate (v2.4.0)**
+**The Universal AI-Optimized Project Boilerplate (v2.4.1)**
 
 Cortex TMS is an **interactive operating system for AI-assisted development**. It's not just documentation—it's an **activation layer** that turns your repository into a machine-legible project constitution with intelligent tooling for version management and AI collaboration.
 
@@ -318,9 +318,9 @@ MIT
 
 ## Status
 
-**Version**: 2.4.0 (Stable / Production Ready)
+**Version**: 2.4.1 (Stable / Production Ready)
 **Last Updated**: 2026-01-14
 **Current Sprint**: v2.5 Planning - "Guidance & Growth"
 **Completed Sprints**: v2.1, v2.2, v2.3, v2.4 (see `docs/archive/`)
 
-<!-- @cortex-tms-version 2.4.0 -->
+<!-- @cortex-tms-version 2.4.1 -->
