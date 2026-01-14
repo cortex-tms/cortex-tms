@@ -17,6 +17,33 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
+ * Get the current package version from package.json
+ */
+export function getPackageVersion(): string {
+  const packageJsonPath = join(__dirname, '../../package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+  return packageJson.version;
+}
+
+/**
+ * Inject version metadata into file content
+ *
+ * Appends a hidden comment with version information to track template versions.
+ * This enables the migrate command to detect and upgrade templates safely.
+ *
+ * @param content - Original file content
+ * @param version - Version string (e.g., "2.3.0")
+ * @returns Content with version metadata appended
+ */
+export function injectVersionMetadata(content: string, version: string): string {
+  // Ensure content ends with newline
+  const normalizedContent = content.endsWith('\n') ? content : content + '\n';
+
+  // Append version comment
+  return `${normalizedContent}\n<!-- @cortex-tms-version ${version} -->\n`;
+}
+
+/**
  * File change status for impact analysis
  */
 export type FileStatus = 'CREATE' | 'UPDATE' | 'SKIP' | 'CONFLICT';
@@ -71,17 +98,27 @@ export function replacePlaceholders(
  * @param sourcePath - Absolute path to source template file
  * @param destPath - Absolute path to destination file
  * @param replacements - Placeholder replacements
+ * @param options - Processing options
  */
 export async function processTemplate(
   sourcePath: string,
   destPath: string,
-  replacements: Record<string, string>
+  replacements: Record<string, string>,
+  options: { injectVersion?: boolean } = {}
 ): Promise<void> {
+  const { injectVersion = true } = options;
+
   // Read template content
   const content = await fs.readFile(sourcePath, 'utf-8');
 
   // Replace placeholders
-  const processed = replacePlaceholders(content, replacements);
+  let processed = replacePlaceholders(content, replacements);
+
+  // Inject version metadata for markdown files
+  if (injectVersion && destPath.endsWith('.md')) {
+    const version = getPackageVersion();
+    processed = injectVersionMetadata(processed, version);
+  }
 
   // Ensure destination directory exists
   await fs.ensureDir(dirname(destPath));
@@ -214,7 +251,13 @@ export async function copyTemplates(
         // Check if content would actually change
         const existingContent = await fs.readFile(destPath, 'utf-8');
         const templateContent = await fs.readFile(file.source, 'utf-8');
-        const processedContent = replacePlaceholders(templateContent, replacements);
+        let processedContent = replacePlaceholders(templateContent, replacements);
+
+        // Inject version for markdown files (same as processTemplate)
+        if (destPath.endsWith('.md')) {
+          const version = getPackageVersion();
+          processedContent = injectVersionMetadata(processedContent, version);
+        }
 
         if (existingContent !== processedContent) {
           changes.push({

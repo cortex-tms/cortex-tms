@@ -41,3 +41,5 @@ After completing a task, follow the **Maintenance Protocol**:
 7. **Suggest Next Priority**: If `NEXT-TASKS.md` has < 3 tasks, propose new ones.
 
 **Exception**: Small tasks (typos, formatting) only require git commit and branch cleanup.
+
+<!-- @cortex-tms-version 2.3.0 -->

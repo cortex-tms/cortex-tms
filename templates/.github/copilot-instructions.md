@@ -26,3 +26,5 @@ AI agents MUST follow this order before proposing code:
 - [ ] Logic verified against DOMAIN-LOGIC.md.
 - [ ] Tests added/updated and passing.
 - [ ] No `console.log` statements remaining.
+
+<!-- @cortex-tms-version 2.3.0 -->

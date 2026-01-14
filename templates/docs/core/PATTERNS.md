@@ -53,3 +53,5 @@ AI agents MUST follow this order before proposing or writing code:
 1. Read `NEXT-TASKS.md` to understand the "Why" and "What."
 2. Check `docs/core/PATTERNS.md` for existing canonical examples.
 3. Propose -> Justify -> Recommend.
+
+<!-- @cortex-tms-version 2.3.0 -->

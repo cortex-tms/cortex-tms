@@ -170,3 +170,5 @@ This project follows conventional commit standards and uses AI-assisted developm
 ---
 
 **Built with [Cortex TMS](https://github.com/[your-org]/cortex-tms) - AI-Optimized Project Documentation**
+
+<!-- @cortex-tms-version 2.3.0 -->

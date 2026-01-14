@@ -352,3 +352,5 @@ When you encounter a new issue while developing Cortex:
 **AI Agent Note**: All templates should be validated this way before merging.
 
 **Reference**: `docs/core/DOMAIN-LOGIC.md#rule-9-test-templates-with-ai-agents`
+
+<!-- @cortex-tms-version 2.3.0 -->
