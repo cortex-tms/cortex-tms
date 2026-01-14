@@ -150,3 +150,5 @@
 - **Domain Logic**: See `docs/core/DOMAIN-LOGIC.md` for business rules
 - **Decisions**: See `docs/core/DECISIONS.md` for detailed ADRs
 - **Schema**: See `docs/core/SCHEMA.md` for data models (if applicable)
+
+<!-- @cortex-tms-version 2.3.0 -->

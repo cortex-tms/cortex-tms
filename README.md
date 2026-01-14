@@ -256,3 +256,5 @@ MIT
 **Last Updated**: 2026-01-12
 **Current Sprint**: Phase 4 - CLI Tool 🔄 In Progress
 **Completed Sprints**: Phase 1, 1.5, 2, 3 (see `docs/archive/sprint-2026-01.md`)
+
+<!-- @cortex-tms-version 2.3.0 -->

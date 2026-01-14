@@ -361,3 +361,5 @@ interface ValidationResult {
 - **TypeScript Types**: See `src/types.ts` (when implemented)
 - **CLI Implementation**: See `bin/cortex-tms.js` (when implemented)
 - **Validation Logic**: See `src/validators.ts` (when implemented)
+
+<!-- @cortex-tms-version 2.3.0 -->

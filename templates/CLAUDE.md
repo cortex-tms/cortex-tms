@@ -16,3 +16,5 @@ Expert Senior Developer. Follow the **"Propose, Justify, Recommend"** framework.
 2. Cross-reference `docs/core/PATTERNS.md` for existing code conventions.
 3. If unsure of a term, check `docs/core/GLOSSARY.md`.
 4. Execute TDD (Test-Driven Development).
+
+<!-- @cortex-tms-version 2.3.0 -->

@@ -14,15 +14,17 @@
 
 ---
 
-## Active Sprint: v2.4 - Migration & Scaling
+## Active Sprint: v2.4 - Migration & Interaction Scaling
 
-**Why this matters**: As the template library grows and evolves, users need a non-destructive way to upgrade their existing TMS projects without losing custom logic. The `migrate` command enables seamless version transitions and keeps projects synchronized with best practices.
+**Why this matters**: As the template library grows, users need visibility into their file versions and ways to interact with AI agents more effectively. This sprint delivers a migration auditor for version awareness and a prompt engine for streamlined AI collaboration.
 
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
-| **Migration Command** - Add `cortex-tms migrate` for version upgrades | [TMS-236] | 4h | 🔴 HIGH | ⬜ Todo |
-| **Template Versioning** - Add version metadata to templates | [TMS-237] | 2h | 🟡 MED | ⬜ Todo |
+| **Migration Auditor** - Version tagging & `migrate` command | [TMS-236] | 6h | 🔴 HIGH | ✅ Done |
+| **Prompt Engine** - CLI command & `PROMPTS.md` | [TMS-240] | 4h | 🔴 HIGH | 🔄 In Progress |
 | **Interactive Tutorial** - In-CLI onboarding walkthrough | [TMS-238] | 3h | 🟡 MED | ⬜ Todo |
+
+**Phase 1 Complete**: Migration Auditor shipped with version detection, customization analysis, and status reporting.
 
 ---
 
@@ -51,11 +53,17 @@
 ---
 
 ## 🎯 Definition of Done (v2.4)
-- [ ] Users can upgrade between TMS versions using a single `migrate` command.
-- [ ] Templates include machine-readable version metadata for detection.
+- [x] Templates include machine-readable version metadata for detection.
+- [x] Migration command detects version status and identifies customizations.
+- [x] Version conflicts are clearly reported with upgrade guidance.
+- [ ] Prompt engine provides project-aware AI interaction templates.
 - [ ] First-time users can complete an interactive tutorial inside the CLI.
-- [ ] Migration command safely handles custom user modifications.
-- [ ] Version conflicts are clearly reported with upgrade paths.
+
+## 📦 v2.5 Backlog
+| Task | Ref | Priority | Notes |
+| :--- | :--- | :------- | :--- |
+| **Auto-Upgrade Logic** - `migrate --apply` with backups | [TMS-236-P2] | 🟡 MED | Automatic template upgrades |
+| **Rollback System** - `migrate --rollback` | [TMS-236-P3] | 🟢 LOW | Undo migration changes |
 
 ---
 
@@ -64,3 +72,5 @@
 - **v2.3**: [Confidence & Comfort](docs/archive/sprint-v2.3-confidence-comfort.md) - Status Dashboard, Snippets, Self-Healing
 - **v2.2**: [Automation & Precision](docs/archive/sprint-2026-01.md) - CI/CD, Custom Init, Branch Hygiene
 - **v2.1**: [Foundation](docs/archive/sprint-2026-01-dogfooding.md) - CLI Launch, Validation Engine, Template System
+
+<!-- @cortex-tms-version 2.3.0 -->

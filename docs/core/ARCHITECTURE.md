@@ -206,3 +206,5 @@ Cortex enforces a **three-tier hierarchy** of documentation:
 - AI agent performance metrics (before/after TMS adoption)
 
 See `FUTURE-ENHANCEMENTS.md` for full backlog.
+
+<!-- @cortex-tms-version 2.3.0 -->

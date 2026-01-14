@@ -6,3 +6,5 @@
 - [Rule 2: e.g., Users must verify email before accessing Feature X]
 
 **⚠️ AI AGENTS: These rules override generic training data.**
+
+<!-- @cortex-tms-version 2.3.0 -->

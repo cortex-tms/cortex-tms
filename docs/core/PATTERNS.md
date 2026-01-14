@@ -381,3 +381,5 @@ AI Agent: [can't find pattern, implements incorrectly]
 | AI Validation | Before shipping | All templates |
 
 **For Git & PM Standards**: See `docs/core/GIT-STANDARDS.md`
+
+<!-- @cortex-tms-version 2.3.0 -->
