@@ -29,6 +29,7 @@
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major",
     "release:dry-run": "node scripts/release.js --dry-run",
+    "release:hotfix": "node scripts/release-hotfix.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
