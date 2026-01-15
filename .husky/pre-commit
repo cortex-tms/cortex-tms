@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Git Guardian - Enforce Git Protocol with intelligent flexibility
+node scripts/git-guardian.js
