@@ -25,7 +25,7 @@
 | **Prompt Refinement** - Command-driven maintenance protocol | [TMS-252] | 15m | 🔴 HIGH | ✅ Done |
 | **Backup Engine** - Atomic snapshot utility | [TMS-236-P2A] | 2h | 🔴 HIGH | ✅ Done |
 | **Apply Logic** - Non-destructive `migrate --apply` | [TMS-236-P2B] | 4h | 🔴 HIGH | ✅ Done |
-| **Rollback Command** - `migrate --rollback` capability | [TMS-236-P2C] | 2h | 🟡 MED | ⬜ Todo |
+| **Rollback Command** - `migrate --rollback` capability | [TMS-236-P2C] | 2h | 🔴 HIGH | ✅ Done |
 | **Interactive Tutorial** - In-CLI onboarding walkthrough | [TMS-238] | 3h | 🟡 MED | ⬜ Todo |
 | **Custom Templates** - User-defined template support | [TMS-241] | 4h | 🟡 MED | ⬜ Todo |
 
@@ -82,7 +82,7 @@
 - [x] Maintenance protocol references automated tooling instead of manual steps.
 - [x] Users can automatically upgrade templates with `migrate --apply`.
 - [x] Backup system creates restore points before migrations.
-- [ ] Rollback command can restore from backups.
+- [x] Rollback command can restore from backups with interactive selection.
 - [ ] First-time users can complete an interactive tutorial inside the CLI.
 - [ ] Custom template directories can be specified for team-specific patterns.
 
