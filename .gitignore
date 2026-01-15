@@ -103,6 +103,9 @@ yarn-error.log*
 lerna-debug.log*
 pnpm-debug.log*
 
+# Git Guardian bypass audit log (keep local, never commit)
+.guardian-bypass.log
+
 # ====================
 # Temporary Files
 # ====================
