@@ -97,17 +97,37 @@
 - Verify 53/53 tests remain passing
 - Gather community feedback
 
-### 📋 Next Steps
+### 📋 Next Steps: v2.6.0 Stable Release (After Monitoring Completes)
 
-**Immediate** (After 48h stability period):
-1. **Decision Point**: Promote beta.1 to stable OR create v2.6.0 final release
-   - Criteria: No critical bugs, all tests passing, positive feedback
-2. **Archive Sprint**: Document Stability Sprint retrospective
+**Target Date**: 2026-01-18 (after 48-hour monitoring period)
+**Detailed Plan**: See `/temp/PLAN-v2.6-stable-release.md` for step-by-step execution
+
+| Task | Ref | Effort | Priority | Status |
+| :--- | :--- | :----- | :------- | :----- |
+| **Pre-flight Validation** - Verify tests + validation passing | [TMS-269a] | 30min | 🔴 HIGH | ⬜ Todo |
+| **Archive v2.6 Sprint** - Add final retrospective to archive | [TMS-269b] | 1h | 🔴 HIGH | ⬜ Todo |
+| **Update NEXT-TASKS** - Prepare v2.7 planning slate | [TMS-269c] | 30min | 🔴 HIGH | ⬜ Todo |
+| **Run Release Engine** - Execute v2.6.0 stable via Atomic Engine | [TMS-269d] | 1h | 🔴 HIGH | ⬜ Todo |
+| **Post-release Verification** - Verify NPM, GitHub, tests | [TMS-269e] | 30min | 🔴 HIGH | ⬜ Todo |
+| **Announcement** - Update README badge, post release notes | [TMS-269f] | 30min | 🟡 MED | ⬜ Todo |
+
+**Total Effort**: 4 hours
+
+**Release Strategy** (Recommended):
+- **Option B**: Fresh v2.6.0 release via `pnpm run release --version 2.6.0`
+- **Why**: Exercises Atomic Release Engine (dogfooding), clean version number, proper GitHub release
+
+**Go/No-Go Criteria**:
+- ✅ 48-hour monitoring complete (Jan 18)
+- ✅ All 53 tests passing
+- ✅ No critical bugs reported
+- ✅ Strict validation passing
+- ✅ Clean git working tree
 
 **Future** (v2.7 Planning):
-1. Custom Templates architecture (TMS-241) - deferred from v2.6
-2. Design migration logic for custom template sources
-3. Document "Upgrade-Friendly Documentation" patterns
+- Custom Templates architecture (TMS-241) - deferred from v2.6
+- Design migration logic for custom template sources
+- Additional enhancements in `FUTURE-ENHANCEMENTS.md`
 
 ---
 
