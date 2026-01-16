@@ -23,9 +23,10 @@ const ROOT_DIR = path.join(__dirname, '..');
 const PACKAGE_JSON_PATH = path.join(ROOT_DIR, 'package.json');
 
 // Universal version tag pattern (applies to ALL markdown files)
+// Supports semver prerelease format: 2.6.0, 2.6.0-beta.0, 2.6.0-alpha.1, etc.
 const UNIVERSAL_TAG_PATTERN = {
-  regex: /(<!-- @cortex-tms-version )\d+\.\d+\.\d+( -->)/,
-  replacement: (version) => `$1${version}$2`,
+  regex: /(<!-- @cortex-tms-version )\d+\.\d+\.\d+(-[a-z]+\.\d+)?( -->)/,
+  replacement: (version) => `$1${version}$3`,
   description: 'Version metadata tag'
 };
 
@@ -36,12 +37,12 @@ const EXPLICIT_FILE_PATTERNS = [
     path: path.join(ROOT_DIR, 'README.md'),
     patterns: [
       {
-        regex: /(\*\*The Universal AI-Optimized Project Boilerplate \()v\d+\.\d+\.\d+(\)\*\*)/,
-        replacement: (version) => `$1v${version}$2`,
+        regex: /(\*\*The Universal AI-Optimized Project Boilerplate \()v\d+\.\d+\.\d+(-[a-z]+\.\d+)?(\)\*\*)/,
+        replacement: (version) => `$1v${version}$3`,
         description: 'Main version header'
       },
       {
-        regex: /(\*\*Version\*\*: )\d+\.\d+\.\d+/,
+        regex: /(\*\*Version\*\*: )\d+\.\d+\.\d+(-[a-z]+\.\d+)?/,
         replacement: (version) => `$1${version}`,
         description: 'Status section version'
       },
@@ -53,8 +54,8 @@ const EXPLICIT_FILE_PATTERNS = [
     path: path.join(ROOT_DIR, 'templates/README.md'),
     patterns: [
       {
-        regex: /(\*\*Cortex TMS v)\d+\.\d+\.\d+(\*\*)/,
-        replacement: (version) => `$1${version}$2`,
+        regex: /(\*\*Cortex TMS v)\d+\.\d+\.\d+(-[a-z]+\.\d+)?(\*\*)/,
+        replacement: (version) => `$1${version}$3`,
         description: 'Template version header'
       },
       UNIVERSAL_TAG_PATTERN
@@ -65,7 +66,7 @@ const EXPLICIT_FILE_PATTERNS = [
     path: path.join(ROOT_DIR, 'docs/guides/CLI-USAGE.md'),
     patterns: [
       {
-        regex: /(\*\*Version\*\*: )\d+\.\d+\.\d+/,
+        regex: /(\*\*Version\*\*: )\d+\.\d+\.\d+(-[a-z]+\.\d+)?/,
         replacement: (version) => `$1${version}`,
         description: 'CLI guide version'
       },
@@ -163,7 +164,9 @@ function checkChangelogEntry(version) {
   }
 
   const content = fs.readFileSync(changelogPath, 'utf-8');
-  const versionHeaderRegex = new RegExp(`^## \\[${version.replace(/\./g, '\\.')}\\]`, 'm');
+  // Escape version string for regex (handles dots and hyphens in prerelease tags)
+  const escapedVersion = version.replace(/[.[\](){}?*+^$\\|]/g, '\\$&');
+  const versionHeaderRegex = new RegExp(`^## \\[${escapedVersion}\\]`, 'm');
 
   return versionHeaderRegex.test(content);
 }
@@ -186,7 +189,7 @@ function syncFile(fileConfig, targetVersion, mode) {
     const match = content.match(pattern.regex);
 
     if (match) {
-      const currentVersion = match[0].match(/\d+\.\d+\.\d+/)?.[0];
+      const currentVersion = match[0].match(/\d+\.\d+\.\d+(-[a-z]+\.\d+)?/)?.[0];
 
       if (currentVersion !== targetVersion) {
         changesDetected = true;
