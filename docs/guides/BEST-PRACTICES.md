@@ -46,7 +46,7 @@
 
 **File**: `scripts/git-guardian.js`
 **Purpose**: Enforce Git Protocol while allowing emergency flexibility
-**Lines of Code**: 309
+**Lines of Code**: 308
 
 ### The Problem
 
@@ -198,7 +198,7 @@ Generic errors force users to debug. **Contextualized errors guide.**
 
 **File**: `scripts/release-hotfix.js`
 **Purpose**: Streamlined workflow for urgent documentation fixes
-**Lines of Code**: 299
+**Lines of Code**: 298
 
 ### The Problem
 
@@ -729,5 +729,5 @@ Build systems humans trust, not systems humans disable.
 ---
 
 **Last Updated**: 2026-01-16
-**Version**: 2.6.0-beta.0
+**Version**: 2.6.0-beta.1
 **Maintainer**: Cortex TMS Team
