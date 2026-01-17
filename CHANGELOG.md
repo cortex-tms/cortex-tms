@@ -5,6 +5,44 @@ All notable changes to Cortex TMS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-01-18
+
+### 🎉 Stable Release - Integrity & Atomicity
+
+This stable release promotes v2.6.0-beta.1 to production after successful 48-hour monitoring period. No code changes from beta - this release validates the stability of the "Integrity & Atomicity" features.
+
+### Improved
+
+- **NPM Discoverability**: Enhanced package keywords (15 optimized terms) and description for better search visibility
+  - Added keywords: ai-assistant, llm, scaffolding, project-structure, task-management, workflow, typescript, starter-kit
+  - Updated description with search-optimized language
+  - Improved README intro for NPM indexing
+
+### Meta
+
+- **48-Hour Beta Testing**: 0 critical bugs reported, 53/53 tests passing throughout
+- **GitHub CLI Integration**: Verified working for automated release creation
+- **Documentation**: Sprint retrospective completed, v2.7 roadmap initialized
+
+### Validation Metrics
+
+- Test Coverage: 53/53 tests passing (validate, init, release suites)
+- Strict Validation: 11/11 checks passing
+- Version Sync: 34 files synchronized automatically
+- NPM Status: Beta versions stable (2.6.0-beta.0, 2.6.0-beta.1)
+
+For complete details, see [sprint-v2.6-integrity-atomicity.md](docs/archive/sprint-v2.6-integrity-atomicity.md).
+
+---
+
+## [2.6.0-beta.1] - 2026-01-16
+
+### Fixed
+- **Repository URL**: Corrected package.json URLs from `cortex-tms/cortex-tms` to `jantonca/cortex-tms`
+- **Documentation Audit**: Verified all file references and line counts in BEST-PRACTICES.md
+
+---
+
 ## [2.6.0-beta.0] - 2026-01-16
 
 ### 🛡️ "Stability Sprint" Beta Release
@@ -418,4 +456,4 @@ See `FUTURE-ENHANCEMENTS.md` for planned features in upcoming versions.
 [2.1.1]: https://github.com/cortex-tms/cortex-tms/releases/tag/v2.1.1
 [2.1.0]: https://github.com/cortex-tms/cortex-tms/releases/tag/v2.1.0
 
-<!-- @cortex-tms-version 2.6.0-beta.1 -->
+<!-- @cortex-tms-version 2.6.0 -->

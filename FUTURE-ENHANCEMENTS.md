@@ -4,6 +4,33 @@ This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TAS
 
 ---
 
+## 🔥 Known Issues (To Fix)
+
+### Release Script: Prerelease Version Support (TMS-272)
+**Issue**: The Atomic Release Engine cannot promote prerelease versions (e.g., `2.6.0-beta.1` → `2.6.0`) automatically.
+
+**Root Cause**:
+```javascript
+// scripts/release.js line 234
+const [major, minor, patch] = currentVersion.split('.').map(Number);
+// "2.6.0-beta.1".split('.') = ['2', '6', '0-beta', '1']
+// Number('0-beta') = NaN ❌
+```
+
+**Current Workaround**: Manually update `package.json` version, then run sync script.
+
+**Fix Required**:
+- Add prerelease version parsing (strip `-beta.X`, `-alpha.X`, `-rc.X` suffixes)
+- Add `--version X.Y.Z` flag to explicitly set version
+- Support beta→stable promotion workflow
+- Update tests to cover prerelease scenarios
+
+**Priority**: 🟡 Medium (affects release workflow but has workaround)
+**Effort**: 2-3 hours
+**Discovered**: v2.6.0 stable release (2026-01-18)
+
+---
+
 ## 🔴 High Priority (Next 1-2 Months)
 
 ### CLI Tool Enhancements
@@ -185,4 +212,4 @@ This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TAS
 
 **Archive Trigger**: When this file exceeds 300 lines, move completed sections to `docs/archive/backlog-YYYY-MM.md`.
 
-<!-- @cortex-tms-version 2.6.0-beta.1 -->
+<!-- @cortex-tms-version 2.6.0 -->
