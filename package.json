@@ -57,14 +57,18 @@
     "typescript",
     "starter-kit"
   ],
-  "author": "Cortex TMS Contributors",
+  "author": {
+    "name": "Cortex TMS Contributors",
+    "email": "maintainers@cortex-tms.org"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/cortex-tms/cortex-tms.git"
   },
   "bugs": {
-    "url": "https://github.com/cortex-tms/cortex-tms/issues"
+    "url": "https://github.com/cortex-tms/cortex-tms/issues",
+    "email": "support@cortex-tms.org"
   },
   "homepage": "https://github.com/cortex-tms/cortex-tms#readme",
   "dependencies": {

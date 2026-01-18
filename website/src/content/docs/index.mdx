@@ -15,16 +15,13 @@ hero:
       variant: minimal
 ---
 
-## What is Cortex TMS?
+## The Problem
 
-Cortex TMS is a **CLI tool for scaffolding AI-optimized project documentation**. It creates the perfect environment for AI coding agents like Claude Code and GitHub Copilot to understand your codebase, maintain consistency, and prevent documentation drift.
+AI coding assistants struggle when your documentation is scattered, outdated, or formatted for humans instead of LLMs. They hallucinate conventions, reinvent patterns you've already established, and drift from your architectural decisions.
 
-### Key Features
+**Cortex TMS solves this.** It scaffolds a project structure that AI agents can parse, navigate, and trust—keeping your codebase and its documentation in perfect sync.
 
-- **Zero-Drift Governance**: Automated validation ensures your documentation always matches reality. No more outdated ADRs or forgotten task lists.
-- **LLM-Optimized Structure**: Documentation organized exactly how AI agents expect it—parseable, hierarchical, and semantic.
-- **Instant Setup**: One command to scaffold your entire project structure with best practices baked in.
-- **Open Source & Extensible**: MIT licensed with template system for custom workflows and project types.
+---
 
 ## Quick Installation
 
@@ -36,21 +33,53 @@ npm install -g cortex-tms@2.6.0
 npx cortex-tms@2.6.0 init
 ```
 
+---
+
 ## Key Features
 
-- **Claude Code Integration**: Built-in `CLAUDE.md` instructions that Claude Code reads automatically
-- **Task Management**: NEXT-TASKS.md for tracking current objectives with AI agents
-- **Architecture Decisions**: ADR templates for documenting "why" decisions were made
-- **Pattern Library**: PATTERNS.md for codifying conventions that AI can follow
-- **Automated Validation**: CLI commands to verify documentation health
+### Zero-Drift Governance
+Automated validation ensures your documentation always matches reality. No more outdated ADRs or forgotten task lists. The CLI continuously checks for drift and alerts you when documentation needs updating.
+
+### LLM-Optimized Structure
+Documentation organized exactly how AI agents expect it—parseable, hierarchical, and semantic. Every file has a defined purpose, location, and format that LLMs can reliably consume.
+
+### Instant Setup
+One command to scaffold your entire project structure with best practices baked in. From task management to architectural decision records, everything is configured and ready to use.
+
+### Open Source & Extensible
+MIT licensed with a powerful template system for custom workflows and project types. Extend Cortex TMS to match your team's unique processes and requirements.
+
+---
+
+## What's Included
+
+When you run `cortex-tms init`, you get a complete suite of AI-optimized documentation:
+
+- **CLAUDE.md** - Instructions Claude Code reads automatically on every session
+- **NEXT-TASKS.md** - Task tracking that keeps AI focused on current objectives
+- **docs/decisions/** - ADR templates for documenting architectural "why"
+- **docs/core/PATTERNS.md** - Codified conventions that AI agents follow
+- **docs/core/GLOSSARY.md** - Project terminology for consistent language
+- **docs/core/INFRASTRUCTURE.md** - System architecture and deployment overview
+- **docs/playbooks/** - Runbooks for common operations and troubleshooting
+- **Validation CLI** - Commands to verify documentation health and prevent drift
+
+---
 
 ## Who Is This For?
 
-- **Solo developers** using AI coding assistants
-- **Teams** collaborating with LLM-augmented workflows
-- **Open source maintainers** onboarding AI-powered contributors
-- **Educators** teaching AI-assisted development practices
+**Solo Developers** using Claude Code, GitHub Copilot, or Cursor to accelerate their workflow. Get the benefits of enterprise-grade documentation without the overhead.
+
+**Teams** collaborating with LLM-augmented workflows. Ensure every team member (human and AI) has access to the same source of truth.
+
+**Open Source Maintainers** onboarding AI-powered contributors. Let AI agents understand your project instantly, from first principles to implementation patterns.
+
+**Educators & Students** teaching AI-assisted development practices. Demonstrate professional-grade project structure and documentation hygiene.
+
+---
 
 ## Ready to Start?
 
 Jump into the [Introduction](/getting-started/introduction/) to learn core concepts, or skip straight to the [Quick Start](/getting-started/quick-start/) for a 5-minute tutorial.
+
+**Need help?** Contact us at [support@cortex-tms.org](mailto:support@cortex-tms.org)

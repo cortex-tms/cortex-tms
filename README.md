@@ -344,6 +344,15 @@ cortex-tms/
 
 ---
 
+## Contact
+
+- **Support**: [support@cortex-tms.org](mailto:support@cortex-tms.org)
+- **Maintainers**: [maintainers@cortex-tms.org](mailto:maintainers@cortex-tms.org)
+- **Developer Inquiries**: [dev@cortex-tms.org](mailto:dev@cortex-tms.org)
+- **GitHub Issues**: [Report a bug](https://github.com/cortex-tms/cortex-tms/issues)
+
+---
+
 ## License
 
 MIT
