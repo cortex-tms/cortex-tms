@@ -3,6 +3,8 @@ title: Quick Start
 description: Get Cortex TMS running in 5 minutes
 ---
 
+import { Steps, FileTree, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
 This guide will have you up and running with Cortex TMS in under 5 minutes.
 
 ## Prerequisites
@@ -13,19 +15,39 @@ This guide will have you up and running with Cortex TMS in under 5 minutes.
 
 ## Installation & Setup
 
-1. **Install Cortex TMS globally**
+<Steps>
 
-   ```bash
-   npm install -g cortex-tms@2.6.0
-   ```
+1. **Install Cortex TMS**
 
-   Or use `npx` to skip installation:
+   Choose your preferred installation method:
 
-   ```bash
-   npx cortex-tms@2.6.0 init
-   ```
+   <Tabs>
+     <TabItem label="npm">
+       ```bash
+       npm install -g cortex-tms@2.6.0
+       ```
+     </TabItem>
 
-### Step 2: Initialize your project
+     <TabItem label="npx (no install)">
+       ```bash
+       npx cortex-tms@2.6.0 init
+       ```
+     </TabItem>
+
+     <TabItem label="pnpm">
+       ```bash
+       pnpm add -g cortex-tms@2.6.0
+       ```
+     </TabItem>
+
+     <TabItem label="yarn">
+       ```bash
+       yarn global add cortex-tms@2.6.0
+       ```
+     </TabItem>
+   </Tabs>
+
+2. **Initialize your project**
 
    Navigate to your project directory and run:
 
@@ -38,28 +60,30 @@ This guide will have you up and running with Cortex TMS in under 5 minutes.
    - **Project type**: Basic, Full, or Custom
    - **Features**: ADRs, Patterns, Glossary, etc.
 
-   For this tutorial, select **"Full"** to get all features.
+   <Aside type="tip" title="Recommended">
+     Select **"Full"** to get all features for this tutorial.
+   </Aside>
 
-### Step 3: Review generated files
+3. **Review generated files**
 
    Cortex TMS creates this structure:
 
-   ```
-   your-project/
-   ├── CLAUDE.md              # AI agent instructions
-   ├── NEXT-TASKS.md          # Current objectives
-   ├── CHANGELOG.md           # Version history
-   ├── docs/
-   │   ├── core/
-   │   │   ├── PATTERNS.md    # Code conventions
-   │   │   └── GLOSSARY.md    # Terminology
-   │   └── adr/
-   │       └── 0001-example-adr.md
-   └── .github/
-       └── copilot-instructions.md
-   ```
+   <FileTree>
+   - your-project/
+     - CLAUDE.md AI agent instructions
+     - NEXT-TASKS.md Current objectives
+     - CHANGELOG.md Version history
+     - docs/
+       - core/
+         - PATTERNS.md Code conventions
+         - GLOSSARY.md Terminology
+       - adr/
+         - 0001-example-adr.md
+     - .github/
+       - copilot-instructions.md
+   </FileTree>
 
-### Step 4: Customize for your project
+4. **Customize for your project**
 
    Open `CLAUDE.md` and update:
    - **Role**: Your AI assistant's persona
@@ -76,7 +100,7 @@ This guide will have you up and running with Cortex TMS in under 5 minutes.
    - **Build**: `npm run build`
    ```
 
-### Step 5: Test with Claude Code (if installed)
+5. **Test with Claude Code** (if installed)
 
    Open your project in Claude Code:
 
@@ -87,6 +111,8 @@ This guide will have you up and running with Cortex TMS in under 5 minutes.
    Claude will automatically read `CLAUDE.md` and follow your instructions!
 
    Try asking: _"What's the current task?"_ — Claude will read `NEXT-TASKS.md`.
+
+</Steps>
 
 ## Verify Setup
 
@@ -151,54 +177,68 @@ Edit `docs/core/PATTERNS.md` to add conventions:
 
 ## Using with AI Agents
 
-### With Claude Code
+<Tabs>
+  <TabItem label="Claude Code">
+    Claude Code reads `CLAUDE.md` automatically. Just open your project:
 
-Claude Code reads `CLAUDE.md` automatically. Just open your project:
+    ```bash
+    claude-code .
+    ```
 
-```bash
-claude-code .
-```
+    <Aside type="tip">
+      Claude will automatically follow your instructions and workflows defined in `CLAUDE.md`.
+    </Aside>
+  </TabItem>
 
-### With GitHub Copilot
+  <TabItem label="GitHub Copilot">
+    Copilot reads `.github/copilot-instructions.md`. Cortex TMS generates this with a reference to your main docs:
 
-Copilot reads `.github/copilot-instructions.md`. Cortex TMS generates this with a reference to your main docs:
+    ```markdown
+    See CLAUDE.md for full project conventions.
+    ```
 
-```markdown
-See CLAUDE.md for full project conventions.
-```
+    <Aside type="note">
+      GitHub Copilot uses the `.github/copilot-instructions.md` file to understand your project conventions.
+    </Aside>
+  </TabItem>
 
-### With Cursor
+  <TabItem label="Cursor">
+    Cursor supports `.cursorrules` files. You can copy `CLAUDE.md` content there:
 
-Cursor supports `.cursorrules` files. You can copy `CLAUDE.md` content there:
+    ```bash
+    cp CLAUDE.md .cursorrules
+    ```
 
-```bash
-cp CLAUDE.md .cursorrules
-```
+    <Aside type="tip">
+      Keep both files in sync by creating a symlink: `ln -s CLAUDE.md .cursorrules`
+    </Aside>
+  </TabItem>
+</Tabs>
 
 ## Troubleshooting
 
-### "Command not found: cortex-tms"
+<Aside type="caution" title="Command not found: cortex-tms">
+  Ensure npm global bin is in your PATH:
 
-Ensure npm global bin is in your PATH:
+  ```bash
+  npm config get prefix
+  ```
 
-```bash
-npm config get prefix
-```
+  The output should be in your `$PATH`. If not, add it:
 
-The output should be in your `$PATH`. If not, add it:
+  ```bash
+  export PATH="$(npm config get prefix)/bin:$PATH"
+  ```
+</Aside>
 
-```bash
-export PATH="$(npm config get prefix)/bin:$PATH"
-```
+<Aside type="caution" title="Validation failed: NEXT-TASKS.md malformed">
+  Check that `NEXT-TASKS.md` has:
+  - A `## Current Objective` heading
+  - At least one task description
+  - Proper Markdown formatting
 
-### "Validation failed: NEXT-TASKS.md malformed"
-
-Check that `NEXT-TASKS.md` has:
-- A `## Current Objective` heading
-- At least one task description
-- Proper Markdown formatting
-
-Run `cortex-tms validate --help` for detailed error messages.
+  Run `cortex-tms validate --help` for detailed error messages.
+</Aside>
 
 ## Next Steps
 

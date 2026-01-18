@@ -31,9 +31,58 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Getting Started',
-          autogenerate: { directory: 'getting-started' },
+          items: [
+            { label: 'Introduction', link: '/getting-started/introduction/' },
+            { label: 'Installation', link: '/getting-started/installation/' },
+            { label: 'Quick Start', link: '/getting-started/quick-start/' },
+          ],
+        },
+        {
+          label: 'Core Concepts',
+          collapsed: true,
+          autogenerate: { directory: 'concepts' },
+        },
+        {
+          label: 'Guides',
+          collapsed: true,
+          autogenerate: { directory: 'guides' },
+        },
+        {
+          label: 'CLI Reference',
+          collapsed: true,
+          autogenerate: { directory: 'reference/cli' },
+        },
+        {
+          label: 'File Reference',
+          collapsed: true,
+          autogenerate: { directory: 'reference/files' },
+        },
+        {
+          label: 'Use Cases',
+          collapsed: true,
+          autogenerate: { directory: 'use-cases' },
+        },
+        {
+          label: 'Comparisons',
+          collapsed: true,
+          autogenerate: { directory: 'comparisons' },
+        },
+        {
+          label: 'Troubleshooting',
+          collapsed: true,
+          autogenerate: { directory: 'troubleshooting' },
+        },
+        {
+          label: 'Community',
+          collapsed: true,
+          items: [
+            { label: 'Known Issues', link: '/community/known-issues/' },
+            { label: 'Changelog', link: '/community/changelog/' },
+            { label: 'Contributing', link: '/community/contributing/' },
+          ],
         },
       ],
+      lastUpdated: true,
       head: [
         {
           tag: 'meta',

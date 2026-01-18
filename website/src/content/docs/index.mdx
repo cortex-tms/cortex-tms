@@ -15,6 +15,8 @@ hero:
       variant: minimal
 ---
 
+import { Card, CardGrid, Aside } from '@astrojs/starlight/components';
+
 ## The Problem
 
 AI coding assistants struggle when your documentation is scattered, outdated, or formatted for humans instead of LLMs. They hallucinate conventions, reinvent patterns you've already established, and drift from your architectural decisions.
@@ -37,17 +39,23 @@ npx cortex-tms@2.6.0 init
 
 ## Key Features
 
-### Zero-Drift Governance
-Automated validation ensures your documentation always matches reality. No more outdated ADRs or forgotten task lists. The CLI continuously checks for drift and alerts you when documentation needs updating.
+<CardGrid>
+  <Card title="Zero-Drift Governance" icon="approve-check">
+    Automated validation ensures your documentation always matches reality. No more outdated ADRs or forgotten task lists. The CLI continuously checks for drift and alerts you when documentation needs updating.
+  </Card>
 
-### LLM-Optimized Structure
-Documentation organized exactly how AI agents expect it—parseable, hierarchical, and semantic. Every file has a defined purpose, location, and format that LLMs can reliably consume.
+  <Card title="LLM-Optimized Structure" icon="seti:config">
+    Documentation organized exactly how AI agents expect it—parseable, hierarchical, and semantic. Every file has a defined purpose, location, and format that LLMs can reliably consume.
+  </Card>
 
-### Instant Setup
-One command to scaffold your entire project structure with best practices baked in. From task management to architectural decision records, everything is configured and ready to use.
+  <Card title="Instant Setup" icon="rocket">
+    One command to scaffold your entire project structure with best practices baked in. From task management to architectural decision records, everything is configured and ready to use.
+  </Card>
 
-### Open Source & Extensible
-MIT licensed with a powerful template system for custom workflows and project types. Extend Cortex TMS to match your team's unique processes and requirements.
+  <Card title="Open Source & Extensible" icon="open-book">
+    MIT licensed with a powerful template system for custom workflows and project types. Extend Cortex TMS to match your team's unique processes and requirements.
+  </Card>
+</CardGrid>
 
 ---
 
@@ -55,26 +63,61 @@ MIT licensed with a powerful template system for custom workflows and project ty
 
 When you run `cortex-tms init`, you get a complete suite of AI-optimized documentation:
 
-- **CLAUDE.md** - Instructions Claude Code reads automatically on every session
-- **NEXT-TASKS.md** - Task tracking that keeps AI focused on current objectives
-- **docs/decisions/** - ADR templates for documenting architectural "why"
-- **docs/core/PATTERNS.md** - Codified conventions that AI agents follow
-- **docs/core/GLOSSARY.md** - Project terminology for consistent language
-- **docs/core/INFRASTRUCTURE.md** - System architecture and deployment overview
-- **docs/playbooks/** - Runbooks for common operations and troubleshooting
-- **Validation CLI** - Commands to verify documentation health and prevent drift
+<CardGrid stagger>
+  <Card title="CLAUDE.md" icon="document">
+    Instructions Claude Code reads automatically on every session
+  </Card>
+
+  <Card title="NEXT-TASKS.md" icon="list-format">
+    Task tracking that keeps AI focused on current objectives
+  </Card>
+
+  <Card title="docs/decisions/" icon="puzzle">
+    ADR templates for documenting architectural "why"
+  </Card>
+
+  <Card title="docs/core/PATTERNS.md" icon="setting">
+    Codified conventions that AI agents follow
+  </Card>
+
+  <Card title="docs/core/GLOSSARY.md" icon="translate">
+    Project terminology for consistent language
+  </Card>
+
+  <Card title="docs/core/INFRASTRUCTURE.md" icon="laptop">
+    System architecture and deployment overview
+  </Card>
+
+  <Card title="docs/playbooks/" icon="open-book">
+    Runbooks for common operations and troubleshooting
+  </Card>
+
+  <Card title="Validation CLI" icon="approve-check-circle">
+    Commands to verify documentation health and prevent drift
+  </Card>
+</CardGrid>
 
 ---
 
 ## Who Is This For?
 
-**Solo Developers** using Claude Code, GitHub Copilot, or Cursor to accelerate their workflow. Get the benefits of enterprise-grade documentation without the overhead.
+<CardGrid stagger>
+  <Card title="Solo Developers" icon="star">
+    Using Claude Code, GitHub Copilot, or Cursor to accelerate your workflow. Get the benefits of enterprise-grade documentation without the overhead.
+  </Card>
 
-**Teams** collaborating with LLM-augmented workflows. Ensure every team member (human and AI) has access to the same source of truth.
+  <Card title="Teams" icon="group">
+    Collaborating with LLM-augmented workflows. Ensure every team member (human and AI) has access to the same source of truth.
+  </Card>
 
-**Open Source Maintainers** onboarding AI-powered contributors. Let AI agents understand your project instantly, from first principles to implementation patterns.
+  <Card title="Open Source Maintainers" icon="github">
+    Onboarding AI-powered contributors. Let AI agents understand your project instantly, from first principles to implementation patterns.
+  </Card>
 
-**Educators & Students** teaching AI-assisted development practices. Demonstrate professional-grade project structure and documentation hygiene.
+  <Card title="Educators & Students" icon="information">
+    Teaching AI-assisted development practices. Demonstrate professional-grade project structure and documentation hygiene.
+  </Card>
+</CardGrid>
 
 ---
 
@@ -82,4 +125,6 @@ When you run `cortex-tms init`, you get a complete suite of AI-optimized documen
 
 Jump into the [Introduction](/getting-started/introduction/) to learn core concepts, or skip straight to the [Quick Start](/getting-started/quick-start/) for a 5-minute tutorial.
 
-**Need help?** <a href="https://github.com/cortex-tms/cortex-tms/issues/new" target="_blank" rel="noopener noreferrer">Open an issue</a> on GitHub for support, bug reports, or feature requests
+<Aside type="tip" title="Need Help?">
+  <a href="https://github.com/cortex-tms/cortex-tms/issues/new" target="_blank" rel="noopener noreferrer">Open an issue</a> on GitHub for support, bug reports, or feature requests.
+</Aside>

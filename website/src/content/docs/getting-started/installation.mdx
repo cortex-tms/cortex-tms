@@ -3,6 +3,8 @@ title: Installation
 description: Detailed installation options for Cortex TMS
 ---
 
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
 ## System Requirements
 
 - **Node.js**: 18.0.0 or higher
@@ -19,96 +21,100 @@ git --version   # Should be 2.0.0 or higher
 
 ## Installation Methods
 
-### Option 1: Install Globally with npm
+<Tabs>
+  <TabItem label="npm">
+    **Install globally** to use across all projects:
 
-Install Cortex TMS globally to use it across all projects:
+    ```bash
+    npm install -g cortex-tms@2.6.0
+    ```
 
-```bash
-npm install -g cortex-tms@2.6.0
-```
+    **Verify installation**:
 
-**Verify installation**:
+    ```bash
+    cortex-tms --version
+    # Output: 2.6.0
+    ```
 
-```bash
-cortex-tms --version
-# Output: 2.6.0
-```
+    **Usage**:
 
-**Usage**:
+    ```bash
+    cd your-project
+    cortex-tms init
+    ```
 
-```bash
-cd your-project
-cortex-tms init
-```
+    **Pros**: Use `cortex-tms` command anywhere, fastest execution (no download on each run)
 
-**Pros**: Use `cortex-tms` command anywhere, no need to prefix with `npx`, fastest execution (no download on each run)
+    **Cons**: Requires global install permissions, may conflict with other versions
+  </TabItem>
 
-**Cons**: Requires global install permissions, may conflict with other versions
+  <TabItem label="npx">
+    **Run without installing** globally:
 
-### Option 2: Run with npx (No Installation)
+    ```bash
+    npx cortex-tms@2.6.0 init
+    ```
 
-Use Cortex TMS without installing it globally:
+    **Verify** (will download and run):
 
-```bash
-npx cortex-tms@2.6.0 init
-```
+    ```bash
+    npx cortex-tms@2.6.0 --version
+    # Output: 2.6.0
+    ```
 
-**Verify** (will download and run):
+    **Pros**: No global installation required, always run specific version, no permission issues
 
-```bash
-npx cortex-tms@2.6.0 --version
-# Output: 2.6.0
-```
+    **Cons**: Slower (downloads on first run per session), must specify version each time
 
-**Pros**: No global installation required, always run specific version, no permission issues
+    <Aside type="tip" title="Create an Alias">
+      Add to `~/.bashrc` or `~/.zshrc`:
 
-**Cons**: Slower (downloads on first run per session), must specify version each time
+      ```bash
+      alias cortex="npx cortex-tms@2.6.0"
+      ```
 
-**Tip**: Create an alias for convenience:
+      Then use: `cortex init`
+    </Aside>
+  </TabItem>
 
-```bash
-# Add to ~/.bashrc or ~/.zshrc
-alias cortex="npx cortex-tms@2.6.0"
+  <TabItem label="pnpm">
+    **Install with pnpm** as your package manager:
 
-# Usage:
-cortex init
-```
+    ```bash
+    pnpm add -g cortex-tms@2.6.0
+    ```
 
-### Option 3: Install with pnpm
+    **Usage**:
 
-If you use pnpm as your package manager:
+    ```bash
+    cortex-tms init
+    ```
 
-```bash
-pnpm add -g cortex-tms@2.6.0
-```
+    **Pros**: Faster installs with pnpm's symlink strategy, disk space efficient, monorepo-friendly
+  </TabItem>
 
-**Usage**:
+  <TabItem label="Yarn">
+    **Install with Yarn** as your package manager:
 
-```bash
-cortex-tms init
-```
+    ```bash
+    yarn global add cortex-tms@2.6.0
+    ```
 
-**Pros**: Faster installs with pnpm's symlink strategy, disk space efficient, monorepo-friendly
+    **Usage**:
 
-### Option 4: Install with Yarn
+    ```bash
+    cortex-tms init
+    ```
 
-If you use Yarn as your package manager:
+    <Aside type="caution">
+      Ensure Yarn's global bin is in your PATH:
 
-```bash
-yarn global add cortex-tms@2.6.0
-```
-
-**Usage**:
-
-```bash
-cortex-tms init
-```
-
-**Note**: Ensure Yarn's global bin is in your PATH:
-
-```bash
-export PATH="$(yarn global bin):$PATH"
-```
+      ```bash
+      export PATH="$(yarn global bin):$PATH"
+      ```
+    </Aside>
+  </TabItem>
+</Tabs>
 
 ## Verifying Installation
 
@@ -138,80 +144,80 @@ You should see:
 
 ## Troubleshooting Installation
 
-### "Command not found: cortex-tms"
+<Aside type="caution" title="Command not found: cortex-tms">
+  **Cause**: npm's global bin directory is not in your PATH.
 
-**Cause**: npm's global bin directory is not in your PATH.
+  **Solution**:
 
-**Solution**:
+  1. Find npm's global bin path:
+     ```bash
+     npm config get prefix
+     ```
 
-1. Find npm's global bin path:
-   ```bash
-   npm config get prefix
-   ```
+  2. Add it to your PATH (Linux/macOS):
+     ```bash
+     echo 'export PATH="$(npm config get prefix)/bin:$PATH"' >> ~/.bashrc
+     source ~/.bashrc
+     ```
 
-2. Add it to your PATH (Linux/macOS):
-   ```bash
-   echo 'export PATH="$(npm config get prefix)/bin:$PATH"' >> ~/.bashrc
-   source ~/.bashrc
-   ```
+  3. For Windows PowerShell:
+     ```powershell
+     $env:Path += ";$(npm config get prefix)"
+     ```
+</Aside>
 
-3. For Windows PowerShell:
-   ```powershell
-   $env:Path += ";$(npm config get prefix)"
-   ```
+<Aside type="caution" title="Permission denied when installing globally">
+  **Cause**: npm lacks permissions to install global packages.
 
-### "Permission denied" when installing globally
+  **Solution 1**: Use npx instead:
 
-**Cause**: npm lacks permissions to install global packages.
+  ```bash
+  npx cortex-tms@2.6.0 init
+  ```
 
-**Solution (Option 1)**: Use npx instead:
+  **Solution 2**: Configure npm to use a user directory:
 
-```bash
-npx cortex-tms@2.6.0 init
-```
+  ```bash
+  mkdir ~/.npm-global
+  npm config set prefix '~/.npm-global'
+  echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+  source ~/.bashrc
 
-**Solution (Option 2)**: Configure npm to use a user directory:
+  # Now install globally
+  npm install -g cortex-tms@2.6.0
+  ```
+</Aside>
 
-```bash
-mkdir ~/.npm-global
-npm config set prefix '~/.npm-global'
-echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
-source ~/.bashrc
+<Aside type="caution" title="Version mismatch or outdated version">
+  **Cause**: Cached old version or multiple installations.
 
-# Now install globally
-npm install -g cortex-tms@2.6.0
-```
+  **Solution**:
 
-### Version mismatch or outdated version
+  1. Uninstall all versions:
+     ```bash
+     npm uninstall -g cortex-tms
+     ```
 
-**Cause**: Cached old version or multiple installations.
+  2. Clear npm cache:
+     ```bash
+     npm cache clean --force
+     ```
 
-**Solution**:
+  3. Reinstall specific version:
+     ```bash
+     npm install -g cortex-tms@2.6.0
+     ```
+</Aside>
 
-1. Uninstall all versions:
-   ```bash
-   npm uninstall -g cortex-tms
-   ```
+<Aside type="caution" title="Windows-specific issues">
+  **Issue**: Scripts disabled in PowerShell.
 
-2. Clear npm cache:
-   ```bash
-   npm cache clean --force
-   ```
+  **Solution**: Enable script execution:
 
-3. Reinstall specific version:
-   ```bash
-   npm install -g cortex-tms@2.6.0
-   ```
-
-### Windows-specific issues
-
-**Issue**: Scripts disabled in PowerShell.
-
-**Solution**: Enable script execution:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-```
+  ```powershell
+  Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+  ```
+</Aside>
 
 ## Updating Cortex TMS
 
