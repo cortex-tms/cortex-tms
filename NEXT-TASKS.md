@@ -50,7 +50,7 @@
 
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
-| **Repository Infrastructure** - Internal repository setup | [TMS-276] | 2-3h | 🔴 HIGH | ⬜ Todo |
+| **Repository Infrastructure** - Internal repository setup | [TMS-276] | 2-3h | 🔴 HIGH | ✅ Done |
 
 **Details**: See internal planning documentation.
 
