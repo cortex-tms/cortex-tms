@@ -8,22 +8,104 @@ This document tracks the infrastructure assets and deployment configuration for 
 
 **Registered**: 2026-01-18
 
-| Domain | Purpose | Status | Registrar | Notes |
-|:-------|:--------|:------:|:----------|:------|
-| **cortex-tms.dev** | Primary documentation site | ✅ Active | TBD | Main brand domain |
-| **cortextms.dev** | Alternate/redirect | ✅ Active | TBD | Variant without hyphen |
+| Domain | Purpose | Status | Target Audience |
+|:-------|:--------|:------:|:----------------|
+| **cortex-tms.org** | Open source community hub | ✅ Active | Developers, contributors, OSS users |
+| **cortex-tms.dev** | Technical documentation & CLI reference | ✅ Active | Developer tools, API docs, integrations |
+| **cortextms.dev** | Alternate/redirect | ✅ Active | SEO, typo prevention |
 
 **DNS Configuration**: TBD (pending Starlight deployment)
 
-**Why .dev?**
-- Modern, developer-focused TLD
-- Enforced HTTPS (security by default)
-- Strong association with developer tools
-- .com variants were already taken
+**Future Acquisition Targets**:
+- **cortex-tms.com** - Currently taken, potential future acquisition for business/enterprise focus
 
-**Domain Strategy**:
-- Primary: `cortex-tms.dev` (matches npm package name)
-- Redirect: `cortextms.dev` → `cortex-tms.dev` (prevents typo squatting)
+---
+
+### Domain Strategy: Community vs Product Separation
+
+**Why Three Domains?**
+
+This multi-domain strategy follows the pattern used by successful open-source projects (Next.js, Supabase, TypeScript) to create clear separation between community/OSS and product/business concerns.
+
+#### cortex-tms.org (Community & Open Source) 🌍
+**TLD Meaning**: .org signals trust, community, non-profit focus
+
+**Planned Content**:
+- Community documentation and tutorials
+- Open source contribution guidelines
+- Project blog and case studies
+- Community showcase (projects using Cortex TMS)
+- Free tier documentation and resources
+- GitHub sponsorship/donation information
+
+**Audience**: Developers exploring the tool, contributors, OSS community
+
+**Example Sites**: nextjs.org, supabase.org, typescriptlang.org
+
+#### cortex-tms.dev (Developer Tools & Technical) 🛠️
+**TLD Meaning**: .dev signals developer tooling, enforced HTTPS, technical focus
+
+**Planned Content**:
+- CLI tool documentation and API reference
+- Technical integration guides
+- Release notes and changelog
+- Developer tools (validators, playground concepts)
+- NPM package documentation
+
+**Audience**: Developers actively using the CLI, integrators, power users
+
+**Benefits**:
+- Enforced HTTPS (security by default)
+- Modern, developer-focused TLD
+- Matches npm package name (`cortex-tms`)
+
+#### cortextms.dev (Redirect Only) 🔄
+**Purpose**:
+- Prevents typo squatting (users might forget the hyphen)
+- Redirects to primary domain (TBD: .org or .dev)
+- SEO protection
+
+---
+
+### Implementation Plan (v2.7)
+
+**Short-term (Week 1-2)**: Launch Primary Site
+- Deploy Starlight to **cortex-tms.org** (recommended primary)
+- Focus on community/OSS content (most approachable)
+- Redirect: `cortextms.dev` → `cortex-tms.org`
+- Keep `cortex-tms.dev` parked for future use
+
+**Mid-term (Post-v2.7)**: Differentiate Domains
+- **cortex-tms.org**: Community hub, tutorials, showcase, blog
+- **cortex-tms.dev**: Technical API docs, CLI reference, integrations
+
+**Long-term (Post-monetization)**: Business Separation
+- Acquire **cortex-tms.com** (if/when needed for Pro/Enterprise)
+- .org = Free tier community & open source
+- .com = Pro/Enterprise business, pricing, sales
+- .dev = Technical documentation (all tiers)
+
+**Example**: Supabase's strategy:
+- supabase.org = community, docs, open source
+- supabase.com = business, pricing, enterprise
+
+---
+
+### Recommended Primary Domain
+
+**For v2.7 Launch**: Use **cortex-tms.org** as primary
+
+**Why .org over .dev for primary?**
+1. **Trust Signal**: .org = community-first, not profit-driven (important for OSS adoption)
+2. **Broader Appeal**: More approachable for non-technical stakeholders
+3. **Future-Proof**: Easier to separate .org (community) and .com (business) later
+4. **Industry Pattern**: Most successful OSS projects lead with .org (Next.js, Supabase, TypeScript)
+
+**Keep .dev for**:
+- Technical deep-dives
+- API reference documentation
+- CLI-specific content
+- Developer tools
 
 ---
 
