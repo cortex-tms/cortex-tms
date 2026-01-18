@@ -67,8 +67,7 @@
     "url": "https://github.com/cortex-tms/cortex-tms.git"
   },
   "bugs": {
-    "url": "https://github.com/cortex-tms/cortex-tms/issues",
-    "email": "support@cortex-tms.org"
+    "url": "https://github.com/cortex-tms/cortex-tms/issues"
   },
   "homepage": "https://github.com/cortex-tms/cortex-tms#readme",
   "dependencies": {

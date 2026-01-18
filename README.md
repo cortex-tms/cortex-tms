@@ -346,10 +346,10 @@ cortex-tms/
 
 ## Contact
 
-- **Support**: [support@cortex-tms.org](mailto:support@cortex-tms.org)
-- **Maintainers**: [maintainers@cortex-tms.org](mailto:maintainers@cortex-tms.org)
-- **Developer Inquiries**: [dev@cortex-tms.org](mailto:dev@cortex-tms.org)
-- **GitHub Issues**: [Report a bug](https://github.com/cortex-tms/cortex-tms/issues)
+- **Bug Reports**: [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues/new) - Report bugs or technical issues
+- **Feature Requests**: [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues/new) - Suggest new features or improvements
+- **Questions & Discussions**: [GitHub Discussions](https://github.com/cortex-tms/cortex-tms/discussions) - Get help and discuss ideas
+- **Security Issues**: Use [GitHub Security Advisories](https://github.com/cortex-tms/cortex-tms/security/advisories/new) for responsible disclosure
 
 ---
 
