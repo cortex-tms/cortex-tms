@@ -96,7 +96,7 @@ class AtomicRelease {
       log.step('✅ Release Complete!\n');
       log.success(`Version ${this.newVersion} released successfully in ${duration}s`);
       log.detail(`NPM: https://www.npmjs.com/package/cortex-tms`);
-      log.detail(`GitHub: https://github.com/jantonca/cortex-tms/releases/tag/v${this.newVersion}`);
+      log.detail(`GitHub: https://github.com/cortex-tms/cortex-tms/releases/tag/v${this.newVersion}`);
 
     } catch (error) {
       log.step('❌ Release Failed\n');

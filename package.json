@@ -58,12 +58,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jantonca/cortex-tms.git"
+    "url": "https://github.com/cortex-tms/cortex-tms.git"
   },
   "bugs": {
-    "url": "https://github.com/jantonca/cortex-tms/issues"
+    "url": "https://github.com/cortex-tms/cortex-tms/issues"
   },
-  "homepage": "https://github.com/jantonca/cortex-tms#readme",
+  "homepage": "https://github.com/cortex-tms/cortex-tms#readme",
   "dependencies": {
     "chalk": "^5.3.0",
     "clipboardy": "^4.0.0",

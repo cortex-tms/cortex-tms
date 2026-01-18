@@ -113,16 +113,19 @@ This multi-domain strategy follows the pattern used by successful open-source pr
 
 **Current** (as of v2.6.0):
 ```
-github.com/jantonca/cortex-tms (public)
-├── Main CLI package
-├── Documentation
-└── Templates
+GitHub Organization: cortex-tms
+└── cortex-tms/cortex-tms (public)
+    ├── Main CLI package
+    ├── Documentation
+    └── Templates
 ```
+
+**Transferred**: 2026-01-18 from `jantonca/cortex-tms` → `cortex-tms/cortex-tms`
 
 **Planned** (v2.7+):
 ```
 GitHub Organization: cortex-tms
-├── cortex-tms/core (public) - Main CLI package
+├── cortex-tms/cortex-tms (public) - Main CLI package (current)
 ├── cortex-tms/internal (private) - Business strategy, planning
 ├── cortex-tms/docs (public) - Starlight documentation site
 └── cortex-tms/[future] - Pro/Enterprise features (TBD)
@@ -170,8 +173,8 @@ npm install -g cortex-tms@latest
 
 ### Public Assets
 - NPM package: `cortex-tms`
-- GitHub repo: `github.com/jantonca/cortex-tms`
-- Documentation site: `cortex-tms.dev` (planned)
+- GitHub repo: `github.com/cortex-tms/cortex-tms`
+- Documentation site: `cortex-tms.org` (planned)
 
 ### Private Assets (Planned - TMS-276)
 - Business strategy repo: `cortex-tms-internal` (TBD)
