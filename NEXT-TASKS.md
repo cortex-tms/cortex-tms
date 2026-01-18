@@ -20,7 +20,7 @@
 
 **Theme**: "From Tool to Platform"
 **Timeline**: 4 weeks (Jan 19 - Feb 15, 2026)
-**Focus**: Distribution, documentation, monetization validation
+**Focus**: Distribution, documentation, community growth
 
 ### Phase 1: Foundation (Week 1-2)
 
@@ -46,34 +46,13 @@
 
 ---
 
-## 🔒 Infrastructure & Security (Post-v2.6.0)
-
-**Context**: Project transitioning from "Project" to "Venture" - need to protect commercial strategy before public launch.
+## 🔒 Infrastructure & Security
 
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
-| **Private Repo Migration** - Create cortex-tms-internal, migrate /temp/ contents | [TMS-276] | 2-3h | 🔴 HIGH | ⬜ Todo |
+| **Repository Infrastructure** - Internal repository setup | [TMS-276] | 2-3h | 🔴 HIGH | ⬜ Todo |
 
-**TMS-276 Details** (Private Repo Migration):
-
-**Rationale**:
-- **Security Risk**: Business strategy in gitignored /temp/ is one `git add -f` away from leaking
-- **Professional Practice**: Separate business strategy (private repo) from technical work (public repo)
-- **Context Separation**: Opening Claude Code in different repos prevents accidental strategy leaks
-
-**Implementation (Phase 1 - Before v2.7 launch)**:
-1. Create private repo: `cortex-tms-internal` (under personal account)
-2. Copy /temp/ contents to new private repo with organized structure
-3. Delete /temp/ from public repo, remove from .gitignore
-4. Update CLAUDE.md with confidentiality rule
-5. Test workflow: Two VS Code windows (public + private repos)
-
-**Phase 2 (Later - When ready for GitHub org)**:
-- Create GitHub Organization `cortex-tms`
-- Transfer repos to org: `cortex-tms/core`, `cortex-tms/internal`
-- Only when team collaboration needed
-
-**Evidence**: Business plan (COMPREHENSIVE-BUSINESS-MODEL-v3.md) already defines this architecture.
+**Details**: See internal planning documentation.
 
 ---
 
@@ -81,8 +60,7 @@
 
 ### CLI Enhancements
 - Custom Templates architecture (TMS-241) - Deferred pending user demand
-- Pro tier implementation - Pending validation signals
-- MCP server - Pending Anthropic API stability
+- MCP server integration - Pending Anthropic API stability
 
 ### Migration Experience Improvements
 
