@@ -53,11 +53,6 @@ export default defineConfig({
           autogenerate: { directory: 'reference/cli' },
         },
         {
-          label: 'File Reference',
-          collapsed: true,
-          autogenerate: { directory: 'reference/files' },
-        },
-        {
           label: 'Use Cases',
           collapsed: true,
           autogenerate: { directory: 'use-cases' },
