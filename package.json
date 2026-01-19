@@ -4,7 +4,8 @@
   "description": "AI-powered project scaffolding CLI for documentation, task management, and workflow automation. Optimized for Claude Code, GitHub Copilot, and LLM-assisted development.",
   "type": "module",
   "bin": {
-    "cortex-tms": "./bin/cortex-tms.js"
+    "cortex-tms": "./bin/cortex-tms.js",
+    "cortex": "./bin/cortex.js"
   },
   "files": [
     "bin/",

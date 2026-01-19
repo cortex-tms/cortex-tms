@@ -149,6 +149,7 @@ examples/**/*.tsbuildinfo
 # Compiled CLI binaries (future Phase 4)
 bin/*.js
 !bin/cortex-tms.js
+!bin/cortex.js
 
 # ====================
 # Documentation Generators
