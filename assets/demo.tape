@@ -12,22 +12,28 @@ Set Theme "Dracula"
 Set TypingSpeed 50ms
 Set PlaybackSpeed 0.8
 
+# Change to cortex-tms directory silently (don't show real path)
+Hide
+Type "cd /home/jma/repos-ubuntu/github/cortex-tms" Enter
+Sleep 500ms
+Show
+
 # Initial setup
 Type "# Cortex TMS Demo - Project Dashboard & Migration" Sleep 500ms Enter
 Sleep 1s
 
-# Show cortex status
-Type "cortex status" Sleep 500ms Enter
-Sleep 3s
+# Show cortex status (using node directly to avoid global install requirement)
+Type "node bin/cortex.js status" Sleep 500ms Enter
+Sleep 4s
 
 # Clear for next command
 Sleep 1s
 Type "clear" Enter
 Sleep 500ms
 
-# Show cortex migrate
-Type "cortex migrate" Sleep 500ms Enter
-Sleep 3s
+# Show cortex migrate (using node directly)
+Type "node bin/cortex.js migrate" Sleep 500ms Enter
+Sleep 4s
 
 # Final pause
 Sleep 2s
