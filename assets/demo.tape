@@ -12,8 +12,9 @@ Set Theme "Dracula"
 Set TypingSpeed 50ms
 Set PlaybackSpeed 0.8
 
-# Change to cortex-tms directory silently (don't show real path)
+# Set a clean, generic prompt (no real paths shown)
 Hide
+Type "export PS1='$ '" Enter
 Type "cd /home/jma/repos-ubuntu/github/cortex-tms" Enter
 Sleep 500ms
 Show
