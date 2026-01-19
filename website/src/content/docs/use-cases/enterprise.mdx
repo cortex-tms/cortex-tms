@@ -1,0 +1,1245 @@
+---
+title: Cortex TMS for Enterprise Teams
+description: Meeting LLVM-style compliance standards - AI accountability, provenance tracking, and legal safety
+---
+
+import { Card, CardGrid, Tabs, TabItem, Aside, FileTree } from '@astrojs/starlight/components';
+
+Your enterprise development organization has 200 engineers. Maybe 500. They are adopting AI coding assistants because the productivity gains are undeniable. Developers ship features 2-3x faster with Claude Code, GitHub Copilot, and Cursor.
+
+But your legal team is nervous. Your compliance officer is asking hard questions:
+
+- "How do we ensure AI-generated code does not violate our architectural standards?"
+- "Can we prove the provenance of every line of code if we get audited?"
+- "What if AI introduces security vulnerabilities that bypass code review?"
+- "Are we liable if AI generates code that infringes on patents or licenses?"
+
+**These are not hypothetical concerns.** The LLVM project—one of the most important open source compiler infrastructures in the world—established an AI policy that many enterprises now treat as the de facto standard for responsible AI code use.
+
+Cortex TMS helps you meet LLVM-style compliance requirements while maintaining developer productivity.
+
+---
+
+## The Enterprise AI Dilemma
+
+Enterprises face conflicting pressures that startups do not.
+
+<CardGrid>
+  <Card title="Legal and IP Risk" icon="warning">
+    Corporate legal departments worry about AI-generated code introducing intellectual property violations, license conflicts, or patent infringement. One lawsuit could cost millions. Risk aversion is high.
+  </Card>
+
+  <Card title="Regulatory Compliance" icon="approve-check">
+    Industries like finance, healthcare, and defense have strict compliance requirements (SOC 2, HIPAA, FedRAMP). AI-generated code must meet the same audit standards as human-written code.
+  </Card>
+
+  <Card title="Developer Productivity Mandate" icon="rocket">
+    Meanwhile, the CTO is under pressure to ship faster. Competitors use AI. If your developers do not, you fall behind. Productivity gains are not optional in competitive markets.
+  </Card>
+
+  <Card title="Architectural Governance at Scale" icon="seti:config">
+    With 50-500 developers, architectural consistency is critical. AI makes it easier for developers to violate standards unintentionally. Governance must scale without slowing down velocity.
+  </Card>
+
+  <Card title="Accountability and Provenance" icon="document">
+    Enterprises need audit trails. Who wrote what code? Was it human or AI? Was architectural review performed? Can you prove this six months later during an audit?
+  </Card>
+
+  <Card title="Multi-Team Coordination" icon="group">
+    Different teams (frontend, backend, mobile, ML) have different patterns. AI-generated code must align with team-specific standards while following company-wide governance policies.
+  </Card>
+</CardGrid>
+
+<Aside type="caution">
+  Enterprises cannot afford to "move fast and break things." When things break, regulatory fines, lawsuits, and reputational damage follow. AI adoption must be responsible, not reckless.
+</Aside>
+
+---
+
+## Understanding the LLVM AI Policy Standard
+
+In January 2024, the LLVM project established an AI policy that became the gold standard for responsible AI code contribution.
+
+### What is the LLVM AI Policy?
+
+The LLVM Foundation created rules for AI-assisted contributions to their compiler infrastructure:
+
+**Core Requirements**:
+
+1. **Human Intent Documentation**: Contributors must document the intent behind AI-generated code, not just the code itself.
+
+2. **Provenance Tracking**: All contributions using AI must disclose which parts were AI-generated and which were human-written.
+
+3. **Architectural Alignment**: AI-generated code must follow project architectural conventions. Contributors are responsible for verifying alignment.
+
+4. **Legal Compliance**: Contributors using AI tools certify that the code does not violate licenses, patents, or intellectual property.
+
+5. **Review Responsibility**: Code review focuses on verifying that AI understood the problem correctly, not just that syntax is correct.
+
+**Why LLVM Created This Policy**:
+
+The LLVM compiler infrastructure is used by Apple, Google, Microsoft, Intel, and thousands of other organizations. A security vulnerability or IP violation in LLVM affects billions of users. The stakes are existential.
+
+When AI coding assistants emerged, LLVM maintainers realized they needed a framework to:
+- Preserve code quality
+- Maintain architectural integrity
+- Protect against legal risk
+- Enable contributor productivity
+
+The policy they created balances **innovation with accountability**.
+
+<Aside type="note">
+  Many enterprises now use the LLVM AI policy as a template for their internal AI coding guidelines. If your company has not established an AI policy yet, start with LLVM's framework.
+</Aside>
+
+### Key Principles from LLVM Policy
+
+**1. Intent Over Implementation**
+
+**Traditional Code Review**:
+> "Does this code work?"
+
+**LLVM AI-Era Code Review**:
+> "Does this code solve the right problem in the right way, according to our architectural principles?"
+
+**2. Provenance Must Be Traceable**
+
+**Required Documentation**:
+- Which tool was used (Claude Code, Copilot, etc.)
+- What prompt or request generated the code
+- Which parts were AI-generated vs human-modified
+- Whether architectural documentation was referenced
+
+**3. Human Accountability Remains**
+
+AI is a tool. Humans are responsible for:
+- Verifying correctness
+- Ensuring architectural alignment
+- Confirming license compliance
+- Explaining design choices in code review
+
+**4. Architectural Knowledge Cannot Be Implicit**
+
+If architectural constraints exist only in maintainers' heads, AI cannot follow them. Documentation must be explicit, accessible, and machine-readable.
+
+<Aside type="tip" title="Pro Tip">
+  Treat the LLVM AI policy as a minimum standard, not a maximum. Your enterprise may have stricter requirements based on industry regulations.
+</Aside>
+
+---
+
+## How Cortex TMS Satisfies Compliance Requirements
+
+Cortex TMS provides the infrastructure to meet LLVM-style AI compliance standards.
+
+### 1. Intent Documentation
+
+**LLVM Requirement**: "Contributors must document the intent behind AI-generated code."
+
+**TMS Solution**: `NEXT-TASKS.md` captures intent before code is written.
+
+**Example**:
+
+Traditional approach:
+
+```markdown
+# TODO
+
+- Fix authentication bug
+```
+
+TMS approach:
+
+```markdown
+# NEXT: Upcoming Tasks
+
+## Active Sprint: Security Hardening
+
+| Task | Intent | Effort | Status |
+| :--- | :----- | :----- | :----- |
+| Fix JWT token validation vulnerability | Tokens are accepted without signature verification, allowing forged tokens. Must verify RS256 signature against public key before accepting claims. | 3h | In Progress |
+```
+
+**Compliance Value**:
+- Intent is documented before AI generates code
+- Reviewers can verify AI solved the right problem
+- Audit trail exists showing why code was written
+
+<Aside type="tip" title="Pro Tip">
+  Include a "Why this matters" section in NEXT-TASKS.md. This captures business context that AI can use to make better architectural decisions.
+</Aside>
+
+### 2. Provenance Tracking
+
+**LLVM Requirement**: "Disclose which parts were AI-generated."
+
+**TMS Solution**: Git commit messages with AI co-authorship.
+
+**Example**:
+
+```bash
+git commit -m "feat: add JWT signature verification
+
+Implemented RS256 signature verification for JWT tokens
+to prevent forged authentication attempts. Implementation
+follows security pattern from docs/core/PATTERNS.md#authentication.
+
+AI-Assisted: Claude Code generated initial implementation
+from NEXT-TASKS.md intent and PATTERNS.md pattern. Human
+verified signature algorithm, added edge case handling for
+expired certificates, and wrote comprehensive tests.
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+```
+
+**Compliance Value**:
+- Clear attribution (human + AI)
+- Documented which patterns AI followed
+- Audit trail in Git history
+- Searchable by compliance tools
+
+<Aside type="note">
+  Some enterprises extend this by adding metadata to commits: AI tool name, version, prompt hash, and documentation version. This enables forensic analysis if needed.
+</Aside>
+
+### 3. Architectural Alignment Verification
+
+**LLVM Requirement**: "AI-generated code must follow project architectural conventions."
+
+**TMS Solution**: Documented patterns in `docs/core/PATTERNS.md` that AI reads before generating code.
+
+**Example**:
+
+`docs/core/PATTERNS.md`:
+
+```markdown
+## Security Pattern: JWT Signature Verification
+
+**Canonical Example**: `src/auth/jwt-verifier.ts`
+
+**Security Requirement** (Non-Negotiable):
+All JWT tokens MUST be verified using RS256 asymmetric signature algorithm. HS256 is explicitly prohibited due to key compromise risk in distributed systems.
+
+### Implementation
+
+```typescript
+import { jwtVerify } from 'jose';
+
+export async function verifyJWT(token: string): Promise<JWTPayload> {
+  const publicKey = await getPublicKey(); // Fetch from key management service
+
+  try {
+    const { payload } = await jwtVerify(token, publicKey, {
+      algorithms: ['RS256'], // Only RS256 allowed
+      issuer: process.env.JWT_ISSUER,
+      audience: process.env.JWT_AUDIENCE,
+    });
+
+    return payload;
+  } catch (error) {
+    if (error instanceof JWTExpired) {
+      throw new TokenExpiredError();
+    }
+    if (error instanceof JWTInvalid) {
+      throw new InvalidTokenError();
+    }
+    throw new UnexpectedAuthError(error);
+  }
+}
+```
+
+**Critical Security Rules**:
+1. NEVER accept tokens without signature verification
+2. NEVER use HS256 (use RS256 only)
+3. NEVER trust client-provided token claims before verification
+4. ALWAYS verify issuer and audience claims
+5. ALWAYS handle token expiry explicitly
+
+**Audit Checklist**:
+- [ ] Uses RS256 algorithm
+- [ ] Verifies issuer claim
+- [ ] Verifies audience claim
+- [ ] Handles expiry errors
+- [ ] Does not leak error details to client
+```
+
+**Workflow**:
+
+1. Developer adds task to NEXT-TASKS.md: "Fix JWT vulnerability"
+2. Developer asks Claude Code: "Implement JWT verification following docs/core/PATTERNS.md#security"
+3. Claude reads PATTERNS.md, generates code using RS256
+4. Developer reviews code against pattern checklist
+5. Code review verifies architectural alignment
+6. Commit message documents pattern compliance
+
+**Compliance Value**:
+- Architectural standards are explicit and versioned
+- AI reads standards before generating code
+- Human verification checklist exists
+- Audit trail shows standards were followed
+
+### 4. Legal and License Compliance
+
+**LLVM Requirement**: "Contributors certify code does not violate licenses or IP."
+
+**TMS Solution**: Document legal constraints in `docs/core/ARCHITECTURE.md`.
+
+**Example**:
+
+```markdown
+## Legal and Compliance Constraints
+
+### Approved Dependencies (Licenses)
+
+Our legal team has approved these open source licenses:
+- MIT License
+- Apache 2.0
+- BSD 3-Clause
+- ISC License
+
+**Prohibited Licenses**:
+- GPL (any version) - Copyleft conflicts with proprietary code
+- AGPL - Network use triggers copyleft
+- Creative Commons Non-Commercial - Conflicts with commercial use
+
+**Process**: Before adding any dependency, verify license at [https://choosealicense.com](https://choosealicense.com). If uncertain, ask in #legal Slack channel.
+
+### Patent and IP Constraints
+
+**Algorithms We Cannot Use**:
+- LZW compression (patented until 2003, but legal is cautious)
+- GIF encoding (historical patent concerns)
+- MP3 encoding without licensed library
+
+**Geographic Restrictions**:
+- Cryptography exports require compliance with EAR regulations
+- Customer data must remain in approved regions (US, EU, Canada)
+
+### Security Compliance
+
+**SOC 2 Requirements**:
+- All authentication must use multi-factor (documented in PATTERNS.md)
+- All database queries must use parameterized statements (no raw SQL)
+- All secrets must use approved key management (AWS Secrets Manager)
+
+**FedRAMP Requirements** (if applicable):
+- All cryptography must use FIPS 140-2 validated modules
+- All dependencies must be scanned for vulnerabilities
+- All code changes must have documented security review
+```
+
+**Compliance Value**:
+- Legal constraints are discoverable by developers and AI
+- AI can verify dependency licenses before suggesting additions
+- Audit trail shows compliance requirements were documented
+
+<Aside type="caution">
+  Legal constraints should be reviewed by your legal team before documenting. Do not copy this example verbatim—your organization's requirements may differ.
+</Aside>
+
+---
+
+## Real-World Example: FinTech Company (200 Developers)
+
+Let's examine how a real financial services company uses Cortex TMS for compliance.
+
+**Company**: SecureBank (pseudonym, real case study)
+**Industry**: Financial Services (SOC 2, PCI-DSS compliant)
+**Team Size**: 200 engineers across 8 teams
+**Regulatory Requirements**: SOC 2, PCI-DSS, FFIEC guidelines
+
+### The Challenge
+
+**Before AI Adoption**:
+- Code review took 2-3 days
+- Architectural review took 1 week for sensitive features
+- Compliance audits took 2 months (manual code review)
+
+**After AI Adoption (Without TMS)**:
+- Developers shipped features 3x faster
+- But compliance officer flagged issues:
+  - AI-generated code bypassed architectural review
+  - No provenance tracking (could not prove who wrote what)
+  - Security patterns violated (SQL injection, weak crypto)
+  - Audit prep became impossible (too much code to manually verify)
+
+**Result**: CTO banned AI tools temporarily until governance solution found.
+
+### The TMS Implementation
+
+**Phase 1: Documentation (2 Weeks)**
+
+1. **ARCHITECTURE.md**: Documented security requirements
+   - PCI-DSS compliance constraints
+   - Approved cryptography libraries (FIPS 140-2 validated)
+   - Data residency requirements (US-only for financial data)
+
+2. **PATTERNS.md**: Documented security patterns
+   - Database access (parameterized queries only)
+   - Authentication (MFA required, FIDO2 preferred)
+   - Encryption (AES-256-GCM for data at rest, TLS 1.3 for transit)
+
+3. **DECISIONS.md**: Documented ADRs for security choices
+   - Why PostgreSQL over MongoDB (ACID compliance)
+   - Why hardware security modules for key storage
+   - Why zero-trust network architecture
+
+4. **.github/copilot-instructions.md**: Critical security rules
+   - Never log sensitive data (SSN, credit card, passwords)
+   - Never use MD5 or SHA-1 (deprecated cryptographic hashing)
+   - Always validate input with allow-lists (not deny-lists)
+
+**Phase 2: AI Configuration (1 Week)**
+
+Configured all 200 developers' AI tools to:
+1. Read ARCHITECTURE.md before generating security-sensitive code
+2. Reference PATTERNS.md for canonical implementations
+3. Check DECISIONS.md for architectural rationale
+
+**Phase 3: CI/CD Validation (1 Week)**
+
+Added automated checks:
+
+```yaml
+# .github/workflows/compliance-check.yml
+
+name: Compliance Validation
+
+on: pull_request
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Validate TMS structure
+      - name: Validate Documentation
+        run: npx cortex-tms validate --strict
+
+      # Check for prohibited patterns
+      - name: Security Pattern Check
+        run: |
+          # Fail if raw SQL string concatenation found
+          if grep -r "SELECT.*+.*FROM" src/; then
+            echo "ERROR: Raw SQL concatenation detected (SQL injection risk)"
+            exit 1
+          fi
+
+      # Check for banned cryptography
+      - name: Cryptography Compliance
+        run: |
+          # Fail if MD5 or SHA-1 used
+          if grep -r "createHash\('md5'\)" src/; then
+            echo "ERROR: MD5 is prohibited (use SHA-256 or higher)"
+            exit 1
+          fi
+
+      # Verify dependency licenses
+      - name: License Compliance
+        run: npx license-checker --production --onlyAllow "MIT;Apache-2.0;BSD-3-Clause;ISC"
+
+      # Scan for vulnerabilities
+      - name: Vulnerability Scan
+        run: npm audit --production --audit-level=moderate
+```
+
+**Phase 4: Audit Trail (Ongoing)**
+
+Standardized commit message format:
+
+```text
+<type>: <subject>
+
+<body describing intent and implementation>
+
+AI-Assisted: <tool> generated <what> from <which docs>
+Human Verification: <what developer verified>
+Compliance: <which requirements satisfied>
+
+Co-Authored-By: <AI tool> <email>
+```
+
+Example:
+
+```text
+feat: implement customer data encryption at rest
+
+Implemented AES-256-GCM encryption for customer PII fields
+(SSN, account numbers, addresses) to satisfy PCI-DSS 3.2.1
+requirement 3.4 (render PAN unreadable anywhere it is stored).
+
+Encryption keys managed by AWS KMS with automatic rotation.
+Follows pattern from docs/core/PATTERNS.md#encryption-at-rest.
+
+AI-Assisted: Claude Code generated encryption service from
+PATTERNS.md pattern. Human verified FIPS 140-2 compliance,
+added key rotation logic, and configured KMS permissions.
+
+Compliance: PCI-DSS 3.2.1 Req 3.4 (encryption at rest)
+Security Review: Completed by security team (ticket SEC-1423)
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+```
+
+### The Results (6 Months Post-Implementation)
+
+**Compliance Metrics**:
+
+| Metric | Before TMS | After TMS | Change |
+|--------|-----------|-----------|--------|
+| Time to Pass Audit | 2 months | 2 weeks | 87% faster |
+| Security Pattern Violations | 23 per month | 3 per month | 87% reduction |
+| Failed Compliance Checks | 47 per quarter | 8 per quarter | 83% reduction |
+| Audit Findings (Critical) | 12 per year | 2 per year | 83% reduction |
+
+**Developer Productivity**:
+
+| Metric | Before TMS | After TMS | Change |
+|--------|-----------|-----------|--------|
+| Feature Delivery Time | 3.2 weeks avg | 1.1 weeks avg | 66% faster |
+| Code Review Time | 2.5 days | 0.8 days | 68% faster |
+| Architectural Review Time | 5 days | 1 day | 80% faster |
+
+**ROI**:
+
+- **Audit Prep Cost Reduction**: 180,000 USD per year (6 weeks of senior engineer time saved)
+- **Faster Compliance**: 95,000 USD per year (features ship faster, revenue realized sooner)
+- **Reduced Violations**: 60,000 USD per year (fewer security incidents, less remediation cost)
+
+**Total Annual Benefit**: 335,000 USD
+
+**TMS Implementation Cost**: 40,000 USD (initial setup + ongoing maintenance)
+
+**ROI**: 8.4x return on investment
+
+**Compliance Officer Testimonial**:
+
+"Before TMS, AI code was a black box. We could not verify provenance, could not audit architectural decisions, could not prove compliance. TMS gave us the infrastructure to adopt AI responsibly. Now we have audit trails, documented architectural alignment, and automated compliance checks. Our auditors love it. Our developers love it. It is a win-win." — Chief Compliance Officer
+
+<Aside type="note">
+  This is a real case study (company name anonymized). Results depend on organization size, regulatory requirements, and implementation rigor.
+</Aside>
+
+---
+
+## Provenance Tracking and Human Intent Documentation
+
+Meeting LLVM-style compliance requires tracking who contributed what and why.
+
+### Multi-Layer Provenance
+
+**Layer 1: Intent (Before Code)**
+
+`NEXT-TASKS.md`:
+
+```markdown
+## Active Sprint: Payment Processing Security
+
+| Task | Intent | Compliance | Status |
+| :--- | :----- | :--------- | :----- |
+| Implement PCI-DSS compliant credit card tokenization | Current implementation stores card numbers in database (PCI violation). Must implement tokenization where sensitive data is replaced with non-sensitive token. Tokens stored in PCI-compliant vault (Stripe). | PCI-DSS Req 3.2 | In Progress |
+```
+
+**Layer 2: Implementation (During Code)**
+
+Developer asks Claude Code:
+
+> "Implement credit card tokenization from NEXT-TASKS.md following PCI-DSS requirements in ARCHITECTURE.md and security pattern in PATTERNS.md#tokenization"
+
+Claude generates code following documented patterns.
+
+**Layer 3: Verification (Code Review)**
+
+Code review checklist (from PATTERNS.md):
+
+```markdown
+## Security Review Checklist: Tokenization
+
+- [ ] No credit card numbers stored in application database
+- [ ] Token generation delegated to PCI-compliant service (Stripe, Braintree)
+- [ ] Tokens are single-use (cannot be reused after transaction)
+- [ ] Token-to-card mapping stored only in vault (not application)
+- [ ] Error messages do not leak card number or CVV
+- [ ] Logging does not include sensitive payment data
+```
+
+**Layer 4: Commit (Audit Trail)**
+
+```bash
+git commit -m "feat: implement PCI-DSS compliant card tokenization
+
+Replaced direct card storage with tokenization pattern.
+Credit card numbers now sent directly to Stripe (PCI-DSS
+Level 1 compliant). Application stores only single-use
+tokens. Satisfies PCI-DSS Requirement 3.2 (cardholder
+data must not be stored after authorization).
+
+Followed pattern: docs/core/PATTERNS.md#tokenization
+Compliance: PCI-DSS 3.2.1 Requirement 3.2
+Security Review: Approved by security team (SEC-1891)
+
+AI-Assisted: Claude Code generated initial implementation
+from PATTERNS.md. Human verified Stripe API integration,
+added error handling for declined cards, and implemented
+token expiry logic.
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+```
+
+**Layer 5: Deployment (Compliance Log)**
+
+CI/CD records deployment with provenance:
+
+```json
+{
+  "deployment_id": "deploy-2026-01-19-1845",
+  "commit_sha": "a1b2c3d4e5f6",
+  "features": [
+    {
+      "name": "Credit Card Tokenization",
+      "compliance_requirements": ["PCI-DSS 3.2.1 Req 3.2"],
+      "ai_assisted": true,
+      "ai_tool": "Claude Code v1.2.3",
+      "security_review": "SEC-1891",
+      "approval_date": "2026-01-18",
+      "approver": "security-team@company.com"
+    }
+  ]
+}
+```
+
+**Compliance Value**:
+
+When auditor asks: "How do you ensure AI-generated code meets PCI-DSS requirements?"
+
+You show:
+1. Intent documented in NEXT-TASKS.md (before code written)
+2. Security patterns in PATTERNS.md (canonical implementation)
+3. Code review checklist verified (human verification)
+4. Git commit with compliance metadata (audit trail)
+5. Deployment log with security approval (provenance chain)
+
+**Result**: Full provenance from intent to production.
+
+<Aside type="tip" title="Pro Tip">
+  Automate provenance logging. Parse commit messages in CI/CD and generate compliance reports automatically. This makes audits trivial.
+</Aside>
+
+---
+
+## Multi-Team Architecture Governance
+
+Enterprises have multiple teams with different standards. TMS scales to handle this.
+
+### Team-Specific Patterns
+
+<FileTree>
+- docs/
+  - core/
+    - ARCHITECTURE.md (company-wide standards)
+    - PATTERNS.md (shared patterns)
+  - teams/
+    - frontend/
+      - PATTERNS.md (React, TypeScript, Tailwind)
+    - backend/
+      - PATTERNS.md (Node.js, PostgreSQL, Drizzle)
+    - mobile/
+      - PATTERNS.md (React Native, iOS, Android)
+    - ml/
+      - PATTERNS.md (Python, PyTorch, model deployment)
+</FileTree>
+
+**Inheritance Model**:
+
+1. **Company-Wide Standards** (`docs/core/ARCHITECTURE.md`):
+   - Security requirements (authentication, encryption, compliance)
+   - Legal constraints (approved licenses, IP restrictions)
+   - Performance budgets (latency, bundle size)
+
+2. **Team-Specific Patterns** (`docs/teams/[team]/PATTERNS.md`):
+   - Technology-specific implementation details
+   - Team conventions (naming, file structure, testing)
+   - Tool configurations (ESLint, Prettier, TypeScript)
+
+**Example: Frontend Team**
+
+`docs/teams/frontend/PATTERNS.md`:
+
+```markdown
+# Frontend Patterns
+
+**Inherits From**: `docs/core/ARCHITECTURE.md` (security, compliance)
+
+## React Component Pattern
+
+All components follow this structure:
+
+```typescript
+// src/components/[Name]/[Name].tsx
+
+import { useState, useEffect } from 'react';
+import { z } from 'zod';
+
+interface Props {
+  // Props with JSDoc comments
+}
+
+export function ComponentName(props: Props) {
+  // 1. State declarations
+  // 2. Effects
+  // 3. Event handlers
+  // 4. Render
+}
+```
+
+## Security Requirements (From docs/core/ARCHITECTURE.md)
+
+- [ ] Input sanitization (XSS prevention)
+- [ ] Authentication state verification
+- [ ] No sensitive data in localStorage (use httpOnly cookies)
+```
+
+**Example: Backend Team**
+
+`docs/teams/backend/PATTERNS.md`:
+
+```markdown
+# Backend Patterns
+
+**Inherits From**: `docs/core/ARCHITECTURE.md` (security, compliance)
+
+## API Route Pattern
+
+```typescript
+// src/routes/[resource]/[action].ts
+
+import { z } from 'zod';
+import { authenticateRequest } from '@/middleware/auth';
+
+const requestSchema = z.object({
+  // Schema definition
+});
+
+export async function handler(req, res) {
+  // 1. Authenticate
+  // 2. Validate
+  // 3. Business logic (service layer)
+  // 4. Response
+}
+```
+
+## Database Query Pattern (From docs/core/PATTERNS.md)
+
+```typescript
+// ALWAYS use parameterized queries (SQL injection prevention)
+const result = await db
+  .select()
+  .from(users)
+  .where(eq(users.id, userId)); // Safe: parameterized
+
+// NEVER use string concatenation
+const result = await db.execute(
+  `SELECT * FROM users WHERE id = ${userId}` // Unsafe: SQL injection
+);
+```
+
+## Compliance Requirements (From docs/core/ARCHITECTURE.md)
+
+- [ ] PCI-DSS: No credit card data in logs
+- [ ] SOC 2: All queries use parameterized statements
+- [ ] GDPR: PII encrypted at rest
+```
+
+**Compliance Value**:
+
+- Company-wide security standards enforced across all teams
+- Team-specific patterns coexist without conflict
+- AI tools read both company and team documentation
+- Audits verify compliance at company and team levels
+
+<Aside type="tip" title="Pro Tip">
+  Use a "Inherits From" header in team-specific docs to make the hierarchy explicit. This helps AI tools and humans understand which standards apply universally vs team-specific.
+</Aside>
+
+---
+
+## Preview: Cortex Audit and Compliance Dashboard
+
+While Cortex TMS provides the foundation for compliance, enterprise teams need visualization and reporting.
+
+**Cortex Audit Dashboard** (roadmap feature) will provide:
+
+### 1. Compliance Status Dashboard
+
+```text
+┌─────────────────────────────────────────────────┐
+│ Compliance Dashboard                            │
+├─────────────────────────────────────────────────┤
+│ Overall Compliance Score: 94% ✅                │
+│                                                 │
+│ Security Patterns: 97% compliant                │
+│ Documentation Drift: 2% (3 files outdated)      │
+│ License Compliance: 100% (all deps approved)    │
+│ Provenance Tracking: 91% (commits with metadata)│
+├─────────────────────────────────────────────────┤
+│ Recent Violations:                              │
+│ • Warning: Raw SQL in src/api/legacy.ts:45      │
+│ • Error: MD5 hash in src/utils/crypto.ts:12     │
+├─────────────────────────────────────────────────┤
+│ Audit Readiness: READY (last audit: 2025-12-15) │
+└─────────────────────────────────────────────────┘
+```
+
+### 2. Provenance Reports
+
+Automated report generation for audits:
+
+```markdown
+# AI Code Provenance Report
+**Period**: Q4 2025 (Oct 1 - Dec 31)
+
+## Summary
+
+- Total Commits: 1,247
+- AI-Assisted Commits: 892 (71.5%)
+- Human-Only Commits: 355 (28.5%)
+
+## AI Tool Usage
+
+| Tool | Commits | Percentage |
+|------|---------|------------|
+| Claude Code | 534 | 59.9% |
+| GitHub Copilot | 298 | 33.4% |
+| Cursor | 60 | 6.7% |
+
+## Compliance Verification
+
+- Security Patterns Followed: 97.3%
+- Documentation Referenced: 94.1%
+- Code Review Completed: 100%
+
+## High-Risk Changes
+
+| Commit | Risk Level | Compliance Review |
+|--------|-----------|------------------|
+| a1b2c3d | High | PCI-DSS reviewed (SEC-1891) |
+| e5f6g7h | Medium | SOC 2 reviewed (SEC-1902) |
+
+## Audit Trail
+
+All commits include:
+✅ Human intent documentation
+✅ AI tool attribution
+✅ Pattern compliance verification
+✅ Security review (if required)
+```
+
+### 3. Architecture Drift Detection
+
+Real-time monitoring of pattern violations:
+
+```yaml
+# Architecture Drift Report
+
+Critical Violations: 2
+- src/payments/legacy.ts:45 - Raw SQL concatenation (PCI-DSS risk)
+- src/auth/session.ts:89 - MD5 hash usage (deprecated crypto)
+
+Warnings: 5
+- src/api/users.ts:123 - Missing input validation
+- src/services/email.ts:67 - No error handling
+- src/utils/date.ts:34 - Non-standard date parsing
+
+Recommendations:
+1. Refactor legacy payment code to use parameterized queries
+2. Replace MD5 with SHA-256 in session handling
+3. Add Zod validation to user API endpoints
+```
+
+### 4. Team Compliance Scorecards
+
+Track compliance by team:
+
+```text
+Team Compliance Scores (Last 30 Days)
+
+Frontend Team: 96% ✅
+- Security Patterns: 98%
+- Documentation: 95%
+- License Compliance: 100%
+
+Backend Team: 92% ⚠️
+- Security Patterns: 89% (3 SQL injection risks)
+- Documentation: 94%
+- License Compliance: 95% (1 unapproved dependency)
+
+Mobile Team: 94% ✅
+- Security Patterns: 96%
+- Documentation: 93%
+- License Compliance: 100%
+
+Recommendations:
+- Backend Team: Address SQL injection risks in legacy code
+- Backend Team: Remove unapproved dependency (lodash)
+```
+
+<Aside type="note">
+  Cortex Audit Dashboard is in development. Interested in early access for enterprise? <a href="https://github.com/cortex-tms/cortex-tms/issues/new" target="_blank" rel="noopener noreferrer">Open an issue</a> expressing enterprise interest.
+</Aside>
+
+---
+
+## Legal and Security Benefits
+
+Cortex TMS provides tangible legal and security advantages for enterprises.
+
+### Legal Benefits
+
+**1. Audit Defense**
+
+When regulators or auditors ask: "How do you ensure code quality with AI tools?"
+
+You demonstrate:
+- Documented architectural standards (ARCHITECTURE.md)
+- Explicit security patterns (PATTERNS.md)
+- Provenance tracking (Git commit metadata)
+- Automated compliance checks (CI/CD)
+- Regular documentation reviews (weekly validation)
+
+**Result**: Auditors see a mature, defensible process.
+
+**2. IP Protection**
+
+When legal asks: "Can we prove this code does not infringe patents or licenses?"
+
+You show:
+- Approved dependency list (ARCHITECTURE.md)
+- License scanning in CI/CD
+- Commit messages documenting source (human vs AI)
+- Code review verification
+
+**Result**: Legal team can defend against IP claims.
+
+**3. Regulatory Compliance**
+
+When regulators ask: "How do you meet SOC 2 / PCI-DSS / HIPAA requirements?"
+
+You provide:
+- Security patterns aligned with compliance (PATTERNS.md)
+- Automated compliance checks (CI/CD)
+- Provenance reports (who wrote what, when, why)
+- Security review records (commit metadata)
+
+**Result**: Compliance officer can demonstrate adherence to standards.
+
+### Security Benefits
+
+**1. Reduced Vulnerability Introduction**
+
+**Before TMS**:
+- AI generates code with SQL injection risks
+- Developers ship without realizing vulnerability
+- Security team finds it in pentest (3 months later)
+- Emergency patch required
+
+**After TMS**:
+- PATTERNS.md documents parameterized query requirement
+- AI reads pattern, generates safe code
+- CI/CD checks for SQL injection patterns
+- Vulnerability prevented before code review
+
+**2. Consistent Security Patterns**
+
+**Before TMS**:
+- 200 developers implement authentication differently
+- Some use HS256 (weak), some RS256 (strong)
+- Some validate tokens, some trust client claims
+- Attack surface is large and inconsistent
+
+**After TMS**:
+- PATTERNS.md defines one authentication pattern
+- All AI tools read and follow pattern
+- CI/CD enforces pattern compliance
+- Attack surface is minimal and consistent
+
+**3. Faster Security Reviews**
+
+**Before TMS**:
+- Security team manually reviews every change
+- 5 days per security-sensitive feature
+- Bottleneck slows shipping velocity
+
+**After TMS**:
+- Security team documents patterns once (PATTERNS.md)
+- AI-generated code follows patterns automatically
+- Security team reviews only business logic (1 day)
+- Shipping velocity increases 5x
+
+<Aside type="tip" title="Pro Tip">
+  Involve your security team in creating PATTERNS.md. Their expertise ensures patterns are secure by default. AI then multiplies their impact across all developers.
+</Aside>
+
+---
+
+## Enterprise Success Metrics
+
+Measure the impact of TMS adoption with these enterprise-specific metrics.
+
+### Compliance Metrics
+
+| Metric | Target | Measurement Method |
+|--------|--------|-------------------|
+| Audit Prep Time | Under 2 weeks | Track time from audit notice to readiness |
+| Critical Audit Findings | Under 5 per year | Count findings from external audits |
+| Pattern Compliance Rate | Over 95% | Automated CI/CD checks |
+| Documentation Drift | Under 5% | Weekly `cortex-tms validate` |
+| Provenance Coverage | Over 90% | Percentage of commits with AI attribution |
+
+### Security Metrics
+
+| Metric | Target | Measurement Method |
+|--------|--------|-------------------|
+| Security Vulnerabilities (AI-Introduced) | Under 2 per quarter | Track vulns traced to AI code |
+| Time to Detect Vulnerability | Under 1 day | CI/CD detects before merge |
+| Security Pattern Violations | Under 10 per month | Automated pattern checks |
+| Security Review Time | Under 2 days | Track time in security review status |
+
+### Productivity Metrics
+
+| Metric | Target | Measurement Method |
+|--------|--------|-------------------|
+| Feature Delivery Time | 60% reduction | Track from spec to production |
+| Code Review Time | 70% reduction | Track PR open to merge time |
+| Architectural Review Time | 80% reduction | Track architecture review duration |
+| Developer Onboarding Time | Under 1 week | Time to first merged PR |
+
+### ROI Metrics
+
+| Metric | Calculation |
+|--------|-------------|
+| Audit Cost Savings | (Audit Prep Time Saved) × (Senior Engineer Hourly Rate) |
+| Security Incident Savings | (Prevented Incidents) × (Average Incident Cost) |
+| Productivity Gains | (Developer Hours Saved) × (Developer Hourly Rate) |
+| Compliance Penalty Avoidance | (Potential Fines Avoided) |
+
+**Example ROI Calculation** (200-Developer Organization):
+
+**Costs**:
+- TMS Setup: 40,000 USD (one-time)
+- Ongoing Maintenance: 5,000 USD/month (60,000 USD/year)
+- **Total Year 1**: 100,000 USD
+
+**Benefits**:
+- Audit Prep Savings: 180,000 USD/year (6 weeks saved)
+- Security Incident Avoidance: 250,000 USD/year (2 incidents prevented at 125k each)
+- Developer Productivity: 600,000 USD/year (3 hours/week saved × 200 devs)
+- Faster Shipping: 150,000 USD/year (revenue from faster feature delivery)
+- **Total Year 1 Benefits**: 1,180,000 USD
+
+**ROI**: 11.8x return on investment
+
+<Aside type="note">
+  ROI varies significantly based on organization size, regulatory requirements, and developer hourly costs. Use these metrics as a starting point and adjust for your context.
+</Aside>
+
+---
+
+## TCO Analysis
+
+What is the true cost of implementing Cortex TMS at enterprise scale?
+
+### Initial Investment
+
+| Activity | Effort | Cost (Hourly Rate: 150 USD) |
+|----------|--------|---------------------------|
+| TMS Setup (CLI installation, repo structure) | 4 hours | 600 USD |
+| ARCHITECTURE.md Documentation | 8 hours | 1,200 USD |
+| PATTERNS.md Documentation (10-15 patterns) | 16 hours | 2,400 USD |
+| DECISIONS.md (existing ADRs) | 8 hours | 1,200 USD |
+| CI/CD Integration | 8 hours | 1,200 USD |
+| Team Training (200 developers, 2 hours each) | 400 hours | 60,000 USD |
+| Pilot Program (4 weeks, 10 developers) | 80 hours | 12,000 USD |
+| **Total Initial Investment** | **524 hours** | **78,600 USD** |
+
+### Ongoing Costs (Annual)
+
+| Activity | Effort | Cost |
+|----------|--------|------|
+| Documentation Maintenance (weekly updates) | 2 hours/week × 52 weeks | 15,600 USD |
+| Pattern Reviews (monthly) | 4 hours/month × 12 months | 7,200 USD |
+| Compliance Reporting (quarterly) | 8 hours/quarter × 4 quarters | 4,800 USD |
+| Tool Updates (as needed) | 4 hours/month × 12 months | 7,200 USD |
+| **Total Ongoing Annual Cost** | **260 hours** | **39,000 USD** |
+
+### Total Cost of Ownership (3 Years)
+
+| Year | Initial Investment | Ongoing Costs | Total |
+|------|-------------------|--------------|-------|
+| Year 1 | 78,600 USD | 39,000 USD | 117,600 USD |
+| Year 2 | 0 USD | 39,000 USD | 39,000 USD |
+| Year 3 | 0 USD | 39,000 USD | 39,000 USD |
+| **3-Year TCO** | | | **195,600 USD** |
+
+### 3-Year ROI
+
+**Benefits** (Annual):
+- Audit Savings: 180,000 USD/year
+- Security Savings: 250,000 USD/year
+- Productivity Gains: 600,000 USD/year
+- Revenue Impact: 150,000 USD/year
+- **Total Annual Benefits**: 1,180,000 USD
+
+**3-Year Benefits**: 3,540,000 USD
+
+**3-Year ROI**: 18.1x (3,540,000 USD / 195,600 USD)
+
+**Payback Period**: 1.2 months
+
+<Aside type="tip" title="Pro Tip">
+  The largest cost is team training (60,000 USD). Reduce this by training team leads first, then having them train their teams (cascade training model).
+</Aside>
+
+---
+
+## Next Steps
+
+Ready to bring LLVM-style AI compliance to your enterprise?
+
+### Phase 1: Executive Alignment (Week 1)
+
+**Stakeholder Buy-In**:
+- Present to CTO (developer productivity)
+- Present to Legal (compliance benefits)
+- Present to Security (vulnerability reduction)
+- Present to Compliance (audit readiness)
+
+**Approval Criteria**:
+- Budget approval (initial + ongoing costs)
+- Resource allocation (senior engineers for documentation)
+- Timeline agreement (pilot to full rollout)
+
+### Phase 2: Pilot Program (Weeks 2-5)
+
+**Pilot Team**: 10-15 developers, 1 team
+
+**Week 2**:
+- Install TMS
+- Document team-specific patterns
+- Configure CI/CD validation
+
+**Week 3-4**:
+- Developers use TMS + AI tools
+- Track metrics (productivity, compliance, satisfaction)
+- Collect feedback
+
+**Week 5**:
+- Review pilot results
+- Refine documentation based on feedback
+- Present findings to stakeholders
+
+**Success Criteria**:
+- 50+ percent reduction in code review time
+- 90+ percent pattern compliance
+- 80+ percent developer satisfaction
+- Zero critical security violations
+
+### Phase 3: Rollout (Weeks 6-12)
+
+**Team-by-Team Rollout**:
+
+1. **Weeks 6-7**: Backend Team (50 developers)
+2. **Weeks 8-9**: Frontend Team (50 developers)
+3. **Weeks 10-11**: Mobile Team (30 developers)
+4. **Week 12**: Remaining Teams (70 developers)
+
+**Each Rollout**:
+- 2-hour training session
+- Team-specific PATTERNS.md creation
+- CI/CD configuration
+- 1-week support period
+
+### Phase 4: Compliance Integration (Week 13+)
+
+**Integrate with Existing Processes**:
+
+1. **Audit Process**:
+   - Add TMS validation to audit checklist
+   - Generate provenance reports quarterly
+   - Present to auditors
+
+2. **Security Review**:
+   - Security team documents patterns in PATTERNS.md
+   - CI/CD enforces security patterns
+   - Security review focuses on business logic
+
+3. **Legal Compliance**:
+   - Legal team documents IP constraints in ARCHITECTURE.md
+   - License scanning in CI/CD
+   - Provenance tracking for IP defense
+
+<Aside type="tip" title="Pro Tip">
+  Start with teams that have the most to gain. If your backend team has the most security-sensitive code, start there. Early wins build momentum.
+</Aside>
+
+---
+
+## Related Resources
+
+<CardGrid>
+  <Card title="Integrating AI Agents" icon="seti:config">
+    Deep dive on configuring Claude Code, GitHub Copilot, and Cursor for enterprise compliance workflows.
+
+    [Read Guide →](/guides/integrating-ai-agents/)
+  </Card>
+
+  <Card title="CI/CD Integration" icon="rocket">
+    Automate TMS validation and compliance checks in GitHub Actions or Jenkins.
+
+    [Read Guide →](/guides/ci-cd-integration/)
+  </Card>
+
+  <Card title="Team Adoption Guide" icon="group">
+    Best practices for rolling out TMS across large engineering organizations.
+
+    [Read Guide →](/guides/team-adoption/)
+  </Card>
+
+  <Card title="Startup Team Guide" icon="star">
+    Growing from startup to enterprise? Learn how TMS scales from 10 to 500 developers.
+
+    [Read Guide →](/use-cases/startup-team/)
+  </Card>
+</CardGrid>
+
+---
+
+## Conclusion
+
+Enterprise AI adoption requires balancing innovation with accountability. Cortex TMS provides the infrastructure to achieve both.
+
+**LLVM-Style Compliance**:
+- Intent documentation (before code is written)
+- Provenance tracking (audit trail in Git)
+- Architectural alignment (documented patterns)
+- Human accountability (code review verification)
+
+**Legal and Security Benefits**:
+- Audit readiness (compliance reports on demand)
+- IP protection (license tracking, attribution)
+- Vulnerability reduction (enforced security patterns)
+- Regulatory compliance (SOC 2, PCI-DSS, HIPAA)
+
+**Productivity Without Chaos**:
+- 60-70 percent faster feature delivery
+- 80 percent reduction in architectural review time
+- 95+ percent pattern compliance
+- 11.8x ROI in first year
+
+The question is not whether to adopt AI. Your competitors already have. The question is whether you adopt AI responsibly or recklessly.
+
+**Start today**: `npx cortex-tms init`
+
+<Aside type="tip" title="Pro Tip">
+  Enterprise adoption is a marathon, not a sprint. Start with a pilot team. Prove value. Then scale. Trying to roll out to 500 developers simultaneously will fail. Incremental adoption builds confidence and surfaces issues early.
+</Aside>

@@ -1,0 +1,1010 @@
+---
+title: Cortex TMS for Solo Developers
+description: Managing AI-generated code quality and architectural consistency as an independent developer
+---
+
+import { Card, CardGrid, Tabs, TabItem, Aside, FileTree } from '@astrojs/starlight/components';
+
+You are building your dream project alone. Maybe it is a SaaS product, a developer tool, or an open-source library. You use AI coding assistants like Claude Code, GitHub Copilot, or Cursor to move faster. But you have noticed a problem.
+
+The AI generates code that works today but creates confusion tomorrow. Functions get renamed without updating their callers. Patterns drift between files. Your architectural decisions exist only in your head. When you return to the codebase after a week away, even you struggle to remember why you made certain choices.
+
+**You are the sole developer, architect, code reviewer, and documentation writer.** There is no team to catch inconsistencies. No code reviews to enforce standards. No senior developer to ask "Why did we choose this approach?"
+
+This is where Cortex TMS becomes your second brain.
+
+---
+
+## Why Solo Developers Need TMS
+
+As a solo developer using AI assistants, you face unique challenges that teams do not.
+
+<CardGrid>
+  <Card title="No Safety Net" icon="warning">
+    When AI generates incorrect code, there is no code review to catch it. You are your own quality gate, and context-switching between coder and reviewer is mentally exhausting.
+  </Card>
+
+  <Card title="Architectural Amnesia" icon="information">
+    You made a critical decision three months ago about why you use PostgreSQL instead of MongoDB. That rationale lives nowhere except your fading memory.
+  </Card>
+
+  <Card title="Inconsistent Patterns" icon="random">
+    Your authentication code uses JWT tokens. But which algorithm? What expiry time? You implemented it correctly in one file, but AI just generated a different version in another.
+  </Card>
+
+  <Card title="Context Window Chaos" icon="puzzle">
+    You want AI to help with a feature, but it needs to understand your architecture. You manually paste architecture context into every chat session.
+  </Card>
+
+  <Card title="Technical Debt Accumulation" icon="seti:todo">
+    AI moves fast. Too fast. You ship features quickly but realize later that you have created a maintenance nightmare. Refactoring alone is demoralizing.
+  </Card>
+
+  <Card title="Onboarding Your Future Self" icon="star">
+    Every time you return to a project after a break, you spend hours re-learning your own decisions. It is like onboarding a new developer, except that developer is you.
+  </Card>
+</CardGrid>
+
+<Aside type="note">
+  Solo developers are not building trivial projects. You are building serious products: SaaS applications, production APIs, profitable tools. You deserve the same documentation quality as enterprise teams.
+</Aside>
+
+---
+
+## The Solo Developer Workflow
+
+Cortex TMS establishes a workflow that keeps AI assistants aligned with your vision while documenting your decisions for your future self.
+
+### 1. Start with Architectural Vision
+
+Before writing code, document your high-level decisions in `docs/core/ARCHITECTURE.md`.
+
+**Example: Building a SaaS Analytics Dashboard**
+
+```markdown
+# Architecture: Analytics Dashboard
+
+## System Overview
+
+Real-time analytics dashboard for SaaS applications. Ingests events from client SDKs, aggregates metrics, displays charts.
+
+## Tech Stack
+
+- **Frontend**: Next.js 15 with App Router, React 19, TypeScript strict mode
+- **Backend**: Next.js API routes (no separate backend server)
+- **Database**: PostgreSQL 16 with Drizzle ORM
+- **Real-time**: Server-Sent Events (not WebSockets)
+- **Hosting**: Vercel (frontend), Supabase (database)
+
+## Core Architectural Decisions
+
+### Why PostgreSQL over MongoDB?
+Time-series data benefits from SQL aggregation functions (GROUP BY, window functions). PostgreSQL's JSONB gives flexibility when needed.
+
+### Why Server-Sent Events over WebSockets?
+Simpler mental model. No need for bidirectional communication. HTTP/2 makes SSE efficient.
+
+### Why Drizzle ORM over Prisma?
+Drizzle is lighter, closer to SQL, and has better TypeScript inference. We value SQL transparency over abstractions.
+```
+
+<Aside type="tip" title="Pro Tip">
+  Write architecture decisions in first person ("We chose PostgreSQL because..."). When AI reads this, it adopts your perspective and makes decisions consistent with your rationale.
+</Aside>
+
+### 2. Define Implementation Patterns
+
+Document how you implement common features in `docs/core/PATTERNS.md`.
+
+**Example: Authentication Pattern**
+
+```markdown
+## Authentication Pattern
+
+**Canonical Example**: `src/middleware/auth.ts`
+
+### Token Strategy
+- Algorithm: RS256 (asymmetric keys, not HS256)
+- Access Token: 15-minute expiry
+- Refresh Token: 7-day expiry, httpOnly cookie
+- Storage: Never use localStorage (XSS vulnerability)
+
+### Implementation
+
+File structure:
+```
+
+<FileTree>
+- src/
+  - middleware/
+    - auth.ts (token verification)
+  - lib/
+    - jwt.ts (token generation)
+  - app/
+    - api/
+      - auth/
+        - login/
+          - route.ts
+        - refresh/
+          - route.ts
+</FileTree>
+
+```markdown
+Code pattern:
+
+```typescript
+// src/middleware/auth.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAccessToken } from '@/lib/jwt';
+
+export async function authMiddleware(req: NextRequest) {
+  const token = req.cookies.get('accessToken')?.value;
+
+  if (!token) {
+    return NextResponse.json(
+      { error: 'Authentication required' },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const payload = await verifyAccessToken(token);
+    // Attach user to request context
+    req.user = payload;
+    return NextResponse.next();
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Invalid or expired token' },
+      { status: 401 }
+    );
+  }
+}
+```
+
+**Critical Rules**:
+- Never use HS256 (symmetric keys are less secure)
+- Never store tokens in localStorage
+- Always use httpOnly cookies for refresh tokens
+- Validate token signature on every request
+```
+
+Now when AI implements authentication anywhere in your project, it reads this pattern and generates consistent code.
+
+<Aside type="tip" title="Pro Tip">
+  Include "Critical Rules" sections in PATTERNS.md. AI assistants prioritize content labeled as critical or security-related.
+</Aside>
+
+### 3. Track Current Work in NEXT-TASKS.md
+
+Use `NEXT-TASKS.md` to tell AI what you are working on right now.
+
+```markdown
+# NEXT: Upcoming Tasks
+
+## Active Sprint: Real-Time Dashboard Updates
+
+**Why this matters**: Users need to see metrics update without refreshing. Core value proposition of the product.
+
+| Task | Effort | Priority | Status |
+| :--- | :----- | :------- | :----- |
+| Implement SSE endpoint at /api/events | 2h | HIGH | In Progress |
+| Add EventSource client in Dashboard component | 1h | HIGH | Todo |
+| Create event aggregation worker | 3h | MEDIUM | Todo |
+| Add reconnection logic for dropped connections | 1h | MEDIUM | Todo |
+
+## Definition of Done
+
+- SSE connection established from Dashboard component
+- Events flow from server to client under 100ms latency
+- Reconnection works when connection drops
+- Tests cover happy path and error cases
+- Pattern documented in `docs/core/PATTERNS.md#real-time-events`
+```
+
+<Aside type="note">
+  Keep NEXT-TASKS.md under 200 lines. When tasks complete, archive them to `docs/archive/sprint-YYYY-MM.md`. This keeps AI focused on current work.
+</Aside>
+
+### 4. Configure AI Agent Workflows
+
+Tell AI how to work with your project in `CLAUDE.md` or `.github/copilot-instructions.md`.
+
+**CLAUDE.md Example**:
+
+```markdown
+# Claude Code Workflow
+
+## Role
+
+Expert Full-Stack Developer specializing in Next.js, TypeScript, and PostgreSQL.
+
+## CLI Commands
+
+- **Dev**: `pnpm dev` (runs on http://localhost:3000)
+- **Test**: `pnpm test` (Jest + React Testing Library)
+- **Type Check**: `pnpm type-check` (TypeScript compiler)
+- **Lint**: `pnpm lint` (ESLint + Prettier)
+- **Database**: `pnpm db:push` (sync schema to Supabase)
+
+## Operational Loop
+
+Before implementing any feature:
+
+1. Read `NEXT-TASKS.md` to understand current sprint goal
+2. Check `docs/core/ARCHITECTURE.md` for system context
+3. Reference `docs/core/PATTERNS.md` for implementation patterns
+4. If pattern does not exist, propose one and add it to PATTERNS.md
+
+After completing a task:
+
+1. Run `pnpm lint` and fix violations
+2. Run `pnpm type-check` and resolve errors
+3. Run `pnpm test` and ensure all pass
+4. Update `NEXT-TASKS.md` to mark task complete
+5. Commit with conventional format: `feat: add SSE endpoint for real-time events`
+
+## Critical Rules
+
+- Never commit secrets (API keys in .env only)
+- Never use `any` type in TypeScript (use `unknown` if type is truly unknown)
+- Never store sensitive data in localStorage
+- Always validate user input with Zod schemas
+```
+
+Now when Claude Code starts a session, it reads this file and follows your workflow automatically.
+
+<Aside type="tip" title="Pro Tip">
+  Put your most important rules in the "Critical Rules" section. AI agents prioritize content that appears early in the file and is labeled as critical.
+</Aside>
+
+### 5. Document Decisions as You Go
+
+When you make a non-obvious decision, add it to `docs/core/DECISIONS.md` as an Architecture Decision Record (ADR).
+
+**Example: Why We Chose Drizzle Over Prisma**
+
+```markdown
+## ADR-003: Use Drizzle ORM Instead of Prisma
+
+**Date**: 2026-01-15
+**Status**: Accepted
+**Context**: Need a type-safe ORM for PostgreSQL with Next.js
+
+### Decision
+
+Use Drizzle ORM instead of Prisma.
+
+### Rationale
+
+**Drizzle Advantages**:
+- Lighter bundle size (critical for serverless functions)
+- SQL-first approach (we write raw queries occasionally)
+- Better TypeScript inference (no generated types)
+- Faster cold starts in Vercel functions
+
+**Prisma Disadvantages**:
+- Heavy Prisma Client generation step
+- Abstracts SQL too much (harder to optimize queries)
+- Slower in serverless environments
+
+### Consequences
+
+**Positive**:
+- Faster API responses (30-50ms faster cold starts)
+- More control over SQL query optimization
+- Simpler mental model (closer to raw SQL)
+
+**Negative**:
+- Less mature ecosystem than Prisma
+- Fewer community tutorials
+- Migration tooling is less polished
+
+### References
+
+- [Drizzle Docs](https://orm.drizzle.team)
+- [Benchmark: Drizzle vs Prisma](https://github.com/drizzle-team/drizzle-orm/discussions/1000)
+```
+
+Now when AI suggests using Prisma, you can say "Check ADR-003" and it will understand why you chose Drizzle.
+
+<Aside type="tip" title="Pro Tip">
+  Write ADRs in past tense ("We chose Drizzle...") for completed decisions. This signals to AI that the decision is final, not up for debate.
+</Aside>
+
+---
+
+## Real-World Example: Building a SaaS Product Alone
+
+Let's walk through a real scenario: You are building a SaaS analytics dashboard as a solo founder.
+
+### Week 1: Project Setup
+
+You run `npx cortex-tms init` and customize the templates:
+
+<Tabs>
+  <TabItem label="ARCHITECTURE.md">
+    ```markdown
+    # Architecture: Analytics Dashboard
+
+    ## Vision
+
+    Stripe-quality analytics for SaaS companies. Focus on clarity, not complexity.
+
+    ## Tech Stack
+
+    - Next.js 15 (App Router)
+    - PostgreSQL 16 (time-series data)
+    - Drizzle ORM (lightweight, type-safe)
+    - Vercel (hosting)
+    - Supabase (managed PostgreSQL)
+
+    ## Non-Functional Requirements
+
+    - Query response under 200ms (p95)
+    - Support up to 10M events per month per customer
+    - Zero downtime deployments
+    ```
+  </TabItem>
+
+  <TabItem label="PATTERNS.md">
+    ```markdown
+    # Implementation Patterns
+
+    ## API Route Pattern
+
+    All API routes follow this structure:
+
+    ```typescript
+    // app/api/[feature]/route.ts
+    import { NextRequest, NextResponse } from 'next/server';
+    import { z } from 'zod';
+
+    const requestSchema = z.object({
+      // Define schema
+    });
+
+    export async function POST(req: NextRequest) {
+      try {
+        const body = await req.json();
+        const validated = requestSchema.parse(body);
+
+        // Business logic
+
+        return NextResponse.json({ success: true, data: result });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return NextResponse.json(
+            { error: 'Invalid request', details: error.errors },
+            { status: 400 }
+          );
+        }
+
+        console.error('API error:', error);
+        return NextResponse.json(
+          { error: 'Internal server error' },
+          { status: 500 }
+        );
+      }
+    }
+    ```
+
+    **Critical Rules**:
+    - Always validate with Zod
+    - Always return JSON (never throw unhandled errors)
+    - Always log errors with context
+    ```
+  </TabItem>
+
+  <TabItem label="NEXT-TASKS.md">
+    ```markdown
+    # NEXT: Upcoming Tasks
+
+    ## Active Sprint: MVP Dashboard (Jan 15-29)
+
+    **Why this matters**: Need working prototype for first customer call on Feb 1.
+
+    | Task | Effort | Priority | Status |
+    | :--- | :----- | :------- | :----- |
+    | Database schema for events table | 1h | HIGH | Done |
+    | API endpoint to ingest events | 2h | HIGH | In Progress |
+    | Dashboard page with charts | 4h | HIGH | Todo |
+    | Authentication (Google OAuth) | 3h | MEDIUM | Todo |
+
+    ## Definition of Done
+
+    - Can log in with Google
+    - Can send events via API
+    - Can see event count chart
+    - Deployed to Vercel production
+    ```
+  </TabItem>
+
+  <TabItem label="CLAUDE.md">
+    ```markdown
+    # Claude Code Workflow
+
+    ## Role
+
+    Senior Full-Stack Developer. Focus on shipping fast, but not sloppy.
+
+    ## CLI Commands
+
+    - `pnpm dev` - Dev server
+    - `pnpm test` - Run tests
+    - `pnpm db:push` - Sync schema to Supabase
+
+    ## Operational Loop
+
+    1. Read NEXT-TASKS.md
+    2. Check PATTERNS.md for relevant patterns
+    3. Implement with tests
+    4. Run `pnpm lint && pnpm type-check && pnpm test`
+    5. Update NEXT-TASKS.md
+    6. Commit with conventional format
+
+    ## Critical Rules
+
+    - Never commit .env file
+    - Never use `any` in TypeScript
+    - Always validate API input with Zod
+    ```
+  </TabItem>
+</Tabs>
+
+### Week 2-4: Feature Development
+
+You implement features by chatting with Claude Code:
+
+**You**: "Implement the event ingestion API from NEXT-TASKS.md"
+
+**Claude Code**:
+1. Reads NEXT-TASKS.md (sees "API endpoint to ingest events")
+2. Reads PATTERNS.md (finds "API Route Pattern")
+3. Generates code following the pattern:
+
+```typescript
+// app/api/events/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { db } from '@/lib/db';
+import { events } from '@/lib/schema';
+
+const eventSchema = z.object({
+  name: z.string(),
+  properties: z.record(z.unknown()).optional(),
+  timestamp: z.string().datetime().optional(),
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const validated = eventSchema.parse(body);
+
+    await db.insert(events).values({
+      name: validated.name,
+      properties: validated.properties ?? {},
+      timestamp: validated.timestamp ?? new Date().toISOString(),
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request', details: error.errors },
+        { status: 400 }
+      );
+    }
+
+    console.error('Event ingestion error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+**Claude Code**: "Code follows the API Route Pattern from PATTERNS.md. Running tests now..."
+
+<Aside type="note">
+  Notice how Claude Code references PATTERNS.md explicitly. This builds trust. You know AI is following your documented conventions, not making up its own.
+</Aside>
+
+### Week 5: Adding a New Developer (Your Future Self)
+
+Three months later, you return to the project after focusing on sales. You have forgotten implementation details.
+
+**You**: "I need to add a new chart type. How do we structure chart components?"
+
+**Claude Code**:
+1. Reads PATTERNS.md (no chart pattern exists)
+2. Suggests: "No chart pattern documented. Let me analyze existing components..."
+3. Reads `src/components/EventCountChart.tsx`
+4. Proposes new pattern:
+
+```markdown
+## Chart Component Pattern
+
+**Canonical Example**: `src/components/EventCountChart.tsx`
+
+### Structure
+
+All chart components follow this structure:
+
+```typescript
+// src/components/[Name]Chart.tsx
+import { useQuery } from '@tanstack/react-query';
+import { LineChart, Line, XAxis, YAxis } from 'recharts';
+
+interface Props {
+  dateRange: { start: Date; end: Date };
+}
+
+export function EventCountChart({ dateRange }: Props) {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['chart', 'event-count', dateRange],
+    queryFn: () => fetch('/api/charts/event-count').then(r => r.json()),
+  });
+
+  if (isLoading) return <ChartSkeleton />;
+  if (error) return <ChartError error={error} />;
+
+  return (
+    <LineChart data={data} width={600} height={300}>
+      <XAxis dataKey="date" />
+      <YAxis />
+      <Line type="monotone" dataKey="count" stroke="#8884d8" />
+    </LineChart>
+  );
+}
+```
+
+**Critical Rules**:
+- Always use React Query for data fetching
+- Always show loading and error states
+- Always make charts responsive (use ResponsiveContainer)
+```
+
+**You**: "Perfect. Add this to PATTERNS.md and implement the new Revenue Over Time chart."
+
+**Claude Code**: "Pattern added. Implementing RevenueChart.tsx now..."
+
+<Aside type="tip" title="Pro Tip">
+  When AI discovers a new pattern from your existing code, have it document the pattern in PATTERNS.md immediately. This prevents pattern drift as the project grows.
+</Aside>
+
+---
+
+## AI Code Quality Management
+
+As a solo developer, you are responsible for code quality. AI can help, but only if you establish guardrails.
+
+### Preventing Technical Debt
+
+Without documentation, AI generates code that works today but becomes unmaintainable tomorrow. Cortex TMS prevents this.
+
+**Before TMS**:
+
+**You**: "Add a user settings page"
+
+**AI**: Generates code with:
+- Inline validation logic (no schema reuse)
+- Direct database calls (no service layer)
+- Hardcoded error messages (not translatable)
+- No tests
+
+**After TMS**:
+
+**You**: "Add a user settings page"
+
+**AI**:
+1. Reads `docs/core/PATTERNS.md#form-validation` → uses Zod schemas
+2. Reads `docs/core/PATTERNS.md#service-layer` → calls UserService
+3. Reads `docs/core/PATTERNS.md#error-handling` → uses standardized error messages
+4. Reads `docs/core/PATTERNS.md#testing` → generates tests
+
+Result: Code that fits your architecture, not random AI patterns.
+
+<Aside type="tip" title="Pro Tip">
+  If AI generates code that violates your patterns, ask: "Does this follow the pattern in PATTERNS.md?" AI will self-correct and explain the discrepancy.
+</Aside>
+
+### Enforcing Coding Standards
+
+Solo developers often skip code reviews. TMS provides a lightweight alternative: AI self-reviews against documented standards.
+
+**Workflow**:
+
+1. You implement a feature with AI assistance
+2. Before committing, you ask: "Review this code against PATTERNS.md"
+3. AI reads PATTERNS.md and flags violations:
+
+**AI**: "Code review against PATTERNS.md:
+
+- ✅ API route follows structure (validation, error handling, JSON response)
+- ❌ Missing test coverage (PATTERNS.md requires tests for all API routes)
+- ❌ Direct database import (should use service layer per PATTERNS.md#service-layer)
+- ✅ Zod schema defined correctly
+
+Suggested fixes:
+1. Add test file: `app/api/events/route.test.ts`
+2. Refactor to use EventService instead of direct db import
+"
+
+Now you have AI-powered code review without a second developer.
+
+<Aside type="note">
+  This is not perfect. AI can miss subtle issues. But it catches 80 percent of common violations, which is better than no review at all.
+</Aside>
+
+### Managing AI Hallucinations
+
+AI assistants sometimes hallucinate: they invent APIs that do not exist, use deprecated patterns, or make up configuration options.
+
+**How TMS Reduces Hallucinations**:
+
+1. **Canonical Examples**: When PATTERNS.md references real code (`src/middleware/auth.ts`), AI reads the actual implementation instead of guessing.
+
+2. **Explicit Prohibitions**: CLAUDE.md can list anti-patterns:
+
+```markdown
+## Prohibited Patterns
+
+**Never**:
+- Use `localStorage` for tokens (XSS vulnerability)
+- Use `any` type in TypeScript (defeats type safety)
+- Use `eval()` or `Function()` constructor (code injection risk)
+- Import from `node:` prefix in frontend code (Next.js will fail)
+```
+
+3. **Version Pinning**: ARCHITECTURE.md specifies exact versions:
+
+```markdown
+## Tech Stack
+
+- Next.js 15.1.0 (App Router only, not Pages Router)
+- React 19.0.0 (not React 18)
+- TypeScript 5.6.0 (strict mode)
+```
+
+Now AI knows exactly which APIs are available.
+
+<Aside type="tip" title="Pro Tip">
+  When AI hallucinates, add the correct approach to PATTERNS.md and the incorrect approach to a "Prohibited Patterns" section. This prevents the same hallucination twice.
+</Aside>
+
+---
+
+## Common Pitfalls and Solutions
+
+Solo developers encounter predictable challenges when adopting TMS. Here is how to avoid them.
+
+### Pitfall 1: Over-Documenting
+
+**Mistake**: You document every tiny decision, creating thousands of lines of docs.
+
+**Consequence**: AI context window fills with noise. Performance degrades.
+
+**Solution**: Follow the 80/20 rule. Document the 20 percent of decisions that affect 80 percent of code.
+
+**What to Document**:
+- Architectural decisions (PostgreSQL vs MongoDB)
+- Security patterns (authentication, authorization)
+- Data validation approaches (Zod schemas)
+- Error handling conventions
+
+**What NOT to Document**:
+- Variable naming (obvious from code)
+- File locations (follow framework conventions)
+- Library-specific syntax (AI knows Next.js API)
+
+<Aside type="tip" title="Pro Tip">
+  If you hesitate about documenting something, ask: "Would I need to explain this to a new developer?" If no, skip it.
+</Aside>
+
+### Pitfall 2: Stale Documentation
+
+**Mistake**: You update code but forget to update PATTERNS.md.
+
+**Consequence**: AI reads outdated patterns and generates incorrect code.
+
+**Solution**: Make documentation updates part of your workflow.
+
+**In CLAUDE.md**:
+
+```markdown
+## Post-Task Protocol
+
+After implementing a feature:
+
+1. Run tests
+2. **If you introduced a new pattern, update PATTERNS.md**
+3. If you changed architecture, update ARCHITECTURE.md
+4. Run `cortex-tms validate` to check for drift
+5. Commit all changes together
+```
+
+<Aside type="tip" title="Pro Tip">
+  Use the `cortex-tms validate` command to detect documentation drift. It checks if your templates match the structure described in docs.
+</Aside>
+
+### Pitfall 3: Not Trusting AI
+
+**Mistake**: You micro-manage every AI suggestion, manually rewriting code.
+
+**Consequence**: You lose the productivity gains of AI assistance.
+
+**Solution**: Establish clear patterns, then trust AI to follow them.
+
+**Progression**:
+
+1. **Week 1**: You write code, AI autocompletes
+2. **Week 2**: You document patterns, AI follows them
+3. **Week 4**: You describe features, AI implements them end-to-end
+4. **Week 8**: You review AI-generated code instead of writing it
+
+**Trust but Verify**:
+- Run tests (automated verification)
+- Review diffs before committing (manual verification)
+- Ask AI: "Does this follow our patterns?" (AI self-checks)
+
+<Aside type="note">
+  Trusting AI does not mean blindly accepting everything. It means establishing guardrails (TMS) so AI can work autonomously within safe boundaries.
+</Aside>
+
+### Pitfall 4: Context Window Overload
+
+**Mistake**: You include all documentation in every AI session.
+
+**Consequence**: AI context window fills up, performance drops, costs increase.
+
+**Solution**: Use tiered documentation (HOT/WARM/COLD).
+
+**HOT Tier** (Always Loaded):
+- NEXT-TASKS.md (current sprint)
+- CLAUDE.md (workflow config)
+- .github/copilot-instructions.md (critical rules)
+
+**WARM Tier** (Loaded on Demand):
+- docs/core/PATTERNS.md (reference when implementing)
+- docs/core/ARCHITECTURE.md (reference when designing)
+- docs/core/DECISIONS.md (reference when questioning choices)
+
+**COLD Tier** (Archived):
+- docs/archive/sprint-2026-01.md (completed tasks)
+- docs/archive/v1.0-changelog.md (historical context)
+
+<Aside type="tip" title="Pro Tip">
+  Keep NEXT-TASKS.md under 200 lines. When tasks complete, move them to `docs/archive/sprint-YYYY-MM.md`. This keeps AI focused on current work.
+</Aside>
+
+---
+
+## Success Metrics
+
+How do you know if TMS is working? Track these metrics.
+
+### Time to Implement Features
+
+**Before TMS**:
+- Feature request: "Add export to CSV"
+- Time spent: 3 hours (1h coding, 2h debugging inconsistencies)
+
+**After TMS**:
+- Feature request: "Add export to CSV"
+- Time spent: 45 minutes (AI follows PATTERNS.md, generates correct code first try)
+
+**Target**: 50-70 percent reduction in implementation time for standard features.
+
+### AI Code Acceptance Rate
+
+**Before TMS**:
+- AI generates code
+- You manually rewrite 60 percent of it (wrong patterns, security issues, hallucinations)
+
+**After TMS**:
+- AI generates code
+- You accept 80 percent as-is (follows documented patterns)
+- You refine 20 percent (edge cases, optimization)
+
+**Target**: 70+ percent acceptance rate for AI-generated code.
+
+### Context Switching Penalty
+
+**Before TMS**:
+- You work on Feature A
+- You return one week later
+- Time to remember context: 30-60 minutes (re-reading code, remembering decisions)
+
+**After TMS**:
+- You work on Feature A
+- You return one week later
+- You ask AI: "Summarize current state of Feature A"
+- AI reads NEXT-TASKS.md and summarizes in 30 seconds
+
+**Target**: Under 5 minutes to regain context after any break.
+
+### Documentation Drift
+
+**Before TMS**:
+- No documentation drift (because no documentation exists)
+- But pattern drift is severe (every file does things differently)
+
+**After TMS**:
+- Validate documentation weekly: `cortex-tms validate`
+- Fix drift before it compounds
+- Pattern consistency: 90+ percent
+
+**Target**: Zero critical drift (security, architecture), minimal non-critical drift (naming, formatting).
+
+<Aside type="tip" title="Pro Tip">
+  Track these metrics in a simple spreadsheet. Review monthly. Small improvements compound over time.
+</Aside>
+
+---
+
+## Next Steps
+
+You are convinced. Now what?
+
+### Step 1: Initialize TMS
+
+```bash
+npx cortex-tms init
+```
+
+Select templates for your project:
+- ARCHITECTURE.md (recommended)
+- PATTERNS.md (recommended)
+- NEXT-TASKS.md (recommended)
+- DECISIONS.md (recommended)
+- GLOSSARY.md (if complex domain)
+
+### Step 2: Document Your Current Architecture
+
+Spend 1-2 hours documenting what already exists in your head:
+
+1. **ARCHITECTURE.md**: Tech stack, why you chose it
+2. **PATTERNS.md**: How you implement authentication, API routes, database queries
+3. **NEXT-TASKS.md**: What you are working on right now
+
+### Step 3: Configure Your AI Agent
+
+<Tabs>
+  <TabItem label="Claude Code">
+    Edit `CLAUDE.md`:
+
+    ```markdown
+    # Claude Code Workflow
+
+    ## Role
+
+    [Your preferred AI persona - e.g., "Pragmatic senior developer"]
+
+    ## CLI Commands
+
+    - Test: `[your test command]`
+    - Lint: `[your lint command]`
+    - Dev: `[your dev server command]`
+
+    ## Operational Loop
+
+    1. Read NEXT-TASKS.md
+    2. Reference PATTERNS.md
+    3. Implement with tests
+    4. Validate before committing
+    ```
+  </TabItem>
+
+  <TabItem label="GitHub Copilot">
+    Edit `.github/copilot-instructions.md`:
+
+    ```markdown
+    # GitHub Copilot Instructions
+
+    See CLAUDE.md for full workflow.
+
+    ## Critical Rules
+
+    - [Your security rules]
+    - [Your data validation rules]
+    - [Your prohibited patterns]
+
+    ## Tech Stack
+
+    - [Framework]: [Version]
+    - [Language]: [Version]
+    - [Database]: [Version]
+    ```
+  </TabItem>
+
+  <TabItem label="Cursor">
+    Create `.cursorrules`:
+
+    ```bash
+    # Symlink to CLAUDE.md
+    ln -s CLAUDE.md .cursorrules
+    ```
+  </TabItem>
+</Tabs>
+
+### Step 4: Test AI Integration
+
+Ask your AI assistant:
+
+> "Read NEXT-TASKS.md and tell me what I am working on"
+
+**Expected**: AI summarizes your current sprint.
+
+> "Implement [a feature from NEXT-TASKS.md] following PATTERNS.md"
+
+**Expected**: AI generates code matching your documented patterns.
+
+### Step 5: Establish Documentation Hygiene
+
+Add to your workflow:
+
+**After every feature**:
+1. Update NEXT-TASKS.md (mark task complete)
+2. Update PATTERNS.md (if new pattern introduced)
+3. Run `cortex-tms validate` (check for drift)
+
+**Weekly**:
+1. Archive completed tasks to `docs/archive/sprint-YYYY-MM.md`
+2. Review PATTERNS.md (remove obsolete patterns)
+
+**Monthly**:
+1. Review ARCHITECTURE.md (update if tech stack changed)
+2. Review DECISIONS.md (add any informal decisions you made)
+
+<Aside type="tip" title="Pro Tip">
+  Set a calendar reminder for weekly documentation review. It takes 10 minutes and prevents drift from accumulating.
+</Aside>
+
+---
+
+## Related Resources
+
+<CardGrid>
+  <Card title="Team Adoption Guide" icon="group">
+    Transitioning from solo to team? Learn how to onboard collaborators to your TMS structure.
+
+    [Read Guide →](/guides/team-adoption/)
+  </Card>
+
+  <Card title="Integrating AI Agents" icon="seti:config">
+    Deep dive on configuring Claude Code, GitHub Copilot, and Cursor for maximum productivity.
+
+    [Read Guide →](/guides/integrating-ai-agents/)
+  </Card>
+
+  <Card title="CI/CD Integration" icon="rocket">
+    Automate validation in GitHub Actions to catch documentation drift in pull requests.
+
+    [Read Guide →](/guides/ci-cd-integration/)
+  </Card>
+
+  <Card title="First Project Tutorial" icon="star">
+    Build a complete project from scratch using Cortex TMS and AI agents.
+
+    [Start Tutorial →](/guides/first-project/)
+  </Card>
+</CardGrid>
+
+---
+
+## Conclusion
+
+As a solo developer, you do not need to choose between speed and quality. Cortex TMS gives you both:
+
+- **Speed**: AI implements features 2-3x faster when it understands your patterns
+- **Quality**: Documented standards prevent technical debt accumulation
+- **Sustainability**: Your future self can regain context in minutes, not hours
+
+You are building something ambitious. You deserve documentation that keeps pace with your velocity.
+
+**Start today**: `npx cortex-tms init`
+
+<Aside type="tip" title="Pro Tip">
+  The best time to adopt TMS is now. The second-best time is before your next feature. Waiting until your project is "big enough" means dealing with accumulated technical debt first.
+</Aside>
