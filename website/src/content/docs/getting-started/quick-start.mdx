@@ -47,13 +47,30 @@ This guide will have you up and running with Cortex TMS in under 5 minutes.
      </TabItem>
    </Tabs>
 
+   <Aside type="tip" title="Global Install Benefits">
+     Installing globally unlocks the **`cortex` shorthand command** for faster workflows:
+
+     ```bash
+     # Instead of typing:
+     cortex-tms status
+     cortex-tms review src/file.ts
+
+     # You can use:
+     cortex status
+     cortex review src/file.ts
+     ```
+
+     This is especially useful for frequent commands and prepares you for v2.8 cross-project features like `cortex list`.
+   </Aside>
+
 2. **Initialize your project**
 
    Navigate to your project directory and run:
 
    ```bash
    cd your-project
-   cortex-tms init
+   cortex init
+   # Or: cortex-tms init (both commands work identically)
    ```
 
    You'll be prompted to choose:
@@ -119,7 +136,8 @@ This guide will have you up and running with Cortex TMS in under 5 minutes.
 Run the validation command to ensure everything is configured correctly:
 
 ```bash
-cortex-tms validate --strict
+cortex validate --strict
+# Or: cortex-tms validate --strict
 ```
 
 You should see:
@@ -158,7 +176,7 @@ Implement user authentication using JWT tokens.
 When you make an architectural decision, document it:
 
 ```bash
-cortex-tms adr new "Use PostgreSQL for user data storage"
+cortex adr new "Use PostgreSQL for user data storage"
 ```
 
 This creates `docs/adr/0002-use-postgresql-for-user-data-storage.md` with a template.
@@ -217,7 +235,7 @@ Edit `docs/core/PATTERNS.md` to add conventions:
 
 ## Troubleshooting
 
-<Aside type="caution" title="Command not found: cortex-tms">
+<Aside type="caution" title="Command not found: cortex-tms or cortex">
   Ensure npm global bin is in your PATH:
 
   ```bash
@@ -229,6 +247,8 @@ Edit `docs/core/PATTERNS.md` to add conventions:
   ```bash
   export PATH="$(npm config get prefix)/bin:$PATH"
   ```
+
+  Both `cortex` and `cortex-tms` commands should work after global installation.
 </Aside>
 
 <Aside type="caution" title="Validation failed: NEXT-TASKS.md malformed">
@@ -237,7 +257,7 @@ Edit `docs/core/PATTERNS.md` to add conventions:
   - At least one task description
   - Proper Markdown formatting
 
-  Run `cortex-tms validate --help` for detailed error messages.
+  Run `cortex validate --help` for detailed error messages.
 </Aside>
 
 ## Next Steps
