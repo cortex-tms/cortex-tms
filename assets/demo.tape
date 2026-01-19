@@ -14,12 +14,13 @@ Set PlaybackSpeed 0.8
 
 # Set a clean, generic prompt (no real paths shown)
 Type "export PS1='$ '" Enter
+Sleep 200ms
 Type "cd /home/jma/repos-ubuntu/github/cortex-tms" Enter
-Sleep 500ms
+Sleep 200ms
 
 # Clear screen to hide setup commands
-Ctrl+L
-Sleep 500ms
+Type "clear" Enter
+Sleep 1s
 
 # Initial setup
 Type "# Cortex TMS Demo - Project Dashboard & Migration" Sleep 500ms Enter
