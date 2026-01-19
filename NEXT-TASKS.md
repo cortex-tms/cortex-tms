@@ -171,6 +171,34 @@
 
 ---
 
+### Development Workflow Improvements
+
+**Source**: Learning from Guardian MVP development (MDX syntax error caught post-commit)
+
+| Task | Ref | Effort | Priority | Trigger Condition |
+| :--- | :--- | :----- | :------- | :---------------- |
+| **Pre-Commit MDX Build Validation** | [TMS-291] | 1h | 🟢 LOW | Implement if 3+ MDX errors occur in single sprint |
+| **Automated Test Runs on Code Changes** | [TMS-292] | 30m | 🟢 LOW | Implement if test failures reach production |
+
+**Pre-Commit Build Validation Details**:
+- Add website build check for `.mdx` file changes
+- Only runs when documentation is modified
+- Adds ~15-30s to docs commits
+- **Trade-off**: Slows iteration vs prevents syntax errors
+- **Current Decision**: Manual validation sufficient (errors caught in <2 min during preview)
+
+**Deferred Rationale**:
+- MDX errors are rare (1 occurrence in 10 commits to date)
+- Fast feedback from browser preview works well
+- Pre-commit overhead not justified for current frequency
+- Will reassess if error rate increases
+
+**Review Date**: After v2.7 completion (Feb 2026) - evaluate if patterns have changed
+
+**Total**: 1.5 hours | **Business Value**: Marginal (prevents rare errors that are already caught quickly)
+
+---
+
 ### CLI Enhancements (Low Priority)
 
 - Custom Templates architecture (TMS-241) - Pending user demand

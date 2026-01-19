@@ -247,6 +247,44 @@ If multiple AI agents (Claude + Copilot) work on the same project simultaneously
 
 ---
 
+### Development Workflow Constraints
+
+**Pre-Commit Validation Scope**
+
+<Aside type="note">
+Pre-commit hooks validate Git protocol and TMS structure, but do NOT run builds or tests. This is a deliberate trade-off to maintain fast commit cycles.
+</Aside>
+
+1. **MDX Syntax Errors Not Caught Pre-Commit**: Website documentation syntax errors (MDX, JSX) pass through pre-commit validation.
+
+   **Impact**: Low - Errors surface immediately during local development preview or website build.
+
+   **Example**: Using `<200` instead of `&lt;200` in MDX files passes pre-commit but fails build.
+
+   **Workaround**:
+   - Run `npm run build` from website directory before committing documentation changes
+   - Preview website locally during development (`npm run dev`)
+   - Rely on website build errors for immediate feedback
+
+   **Why Not Fixed**: Adding website build to pre-commit adds 15-30 seconds to every documentation commit. Current manual validation is sufficient given:
+   - Documentation commits are ~10% of total commits
+   - Errors are caught within minutes during preview
+   - Fast feedback loop is more important than automated validation for current team size
+
+   **Future Enhancement**: Will implement automated build validation if MDX errors become recurring (threshold: 3+ errors in a sprint). Deferred to v2.9+ unless frequency increases.
+
+2. **No Automated Test Runs Pre-Commit**: Test suite (74 tests) runs on-demand, not automatically before commit.
+
+   **Rationale**: Tests take ~500ms but run frequently during development. Auto-running adds friction without proportional benefit.
+
+   **Workaround**: Run `npm test` manually before commits that touch core logic.
+
+   **CI/CD Safety Net**: All tests run in GitHub Actions before merge to main.
+
+**Trade-off Philosophy**: Cortex TMS prioritizes *fast iteration* over *perfect automation*. Pre-commit hooks enforce critical rules (Git protocol) while trusting developers for quality checks (tests, builds).
+
+---
+
 ## Planned Improvements
 
 ### Roadmap: v2.7 (Custom Extensibility)
