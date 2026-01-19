@@ -37,8 +37,6 @@ Choose your scope (Nano/Standard/Enterprise) and start building with AI-optimize
 
 **Watch** the `cortex status` dashboard and `cortex migrate` workflow in action. See how Cortex TMS provides real-time project health metrics and intelligent version management.
 
-> 📝 *Demo GIF coming soon. Run `vhs assets/demo.tape` to generate locally ([VHS required](https://github.com/charmbracelet/vhs)).*
-
 ---
 
 ## 🎯 The Philosophy: Signal over Noise
