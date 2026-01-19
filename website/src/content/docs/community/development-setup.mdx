@@ -1,0 +1,1161 @@
+---
+title: Development Setup
+description: Setting up a local development environment for Cortex TMS
+---
+
+import { Tabs, TabItem, Aside, FileTree } from '@astrojs/starlight/components';
+
+This guide will help you set up a complete development environment for contributing to Cortex TMS. Whether you're fixing a bug, adding a feature, or improving documentation, this guide has you covered.
+
+<Aside type="tip" title="Estimated Setup Time">
+First-time setup: 15-20 minutes
+Returning contributors: 5 minutes
+</Aside>
+
+---
+
+## Prerequisites
+
+### Required Software
+
+Before you begin, ensure you have the following installed:
+
+**1. Node.js 18.0.0 or Higher**
+
+Check your version:
+```bash
+node --version
+# Should output: v18.x.x or higher
+```
+
+If you need to install or upgrade Node.js:
+
+<Tabs>
+  <TabItem label="nvm (Recommended)">
+    Node Version Manager allows easy switching between Node.js versions.
+
+    ```bash
+    # Install nvm (macOS/Linux)
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+    # Install Node.js 18 (LTS)
+    nvm install 18
+    nvm use 18
+    nvm alias default 18
+
+    # Verify
+    node --version
+    ```
+  </TabItem>
+
+  <TabItem label="Official Installer">
+    Download from [nodejs.org](https://nodejs.org/):
+    - **LTS (Long-Term Support)**: Recommended for stability
+    - **Current**: Latest features (may be less stable)
+
+    After installation, verify:
+    ```bash
+    node --version
+    npm --version
+    ```
+  </TabItem>
+
+  <TabItem label="Package Manager">
+    **macOS (Homebrew)**:
+    ```bash
+    brew install node@18
+    ```
+
+    **Ubuntu/Debian**:
+    ```bash
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+    ```
+
+    **Windows (Chocolatey)**:
+    ```bash
+    choco install nodejs-lts
+    ```
+  </TabItem>
+</Tabs>
+
+**2. Git**
+
+Check if installed:
+```bash
+git --version
+# Should output: git version 2.x.x
+```
+
+Install if needed:
+- **macOS**: `brew install git` or install Xcode Command Line Tools
+- **Ubuntu/Debian**: `sudo apt-get install git`
+- **Windows**: Download from [git-scm.com](https://git-scm.com/)
+
+**3. Package Manager**
+
+Cortex TMS uses **pnpm** (recommended) but also supports npm and yarn.
+
+<Tabs>
+  <TabItem label="pnpm (Recommended)">
+    ```bash
+    # Install pnpm globally
+    npm install -g pnpm
+
+    # Verify installation
+    pnpm --version
+    # Should output: 8.x.x or higher
+    ```
+
+    **Why pnpm?**
+    - **Faster**: Disk space efficient with shared dependencies
+    - **Strict**: Prevents phantom dependencies
+    - **Monorepo-Friendly**: Used by Cortex TMS website subdirectory
+  </TabItem>
+
+  <TabItem label="npm (Built-in)">
+    npm comes with Node.js, so no installation needed!
+
+    ```bash
+    npm --version
+    # Should output: 9.x.x or higher
+    ```
+
+    **Note**: Commands in this guide use `pnpm`. Replace `pnpm` with `npm` if using npm.
+  </TabItem>
+
+  <TabItem label="yarn">
+    ```bash
+    # Install yarn globally
+    npm install -g yarn
+
+    # Verify installation
+    yarn --version
+    # Should output: 1.x.x or higher
+    ```
+
+    Replace `pnpm` with `yarn` in all commands.
+  </TabItem>
+</Tabs>
+
+**4. Code Editor**
+
+**VS Code (Recommended)**: Download from [code.visualstudio.com](https://code.visualstudio.com/)
+
+**Recommended Extensions for VS Code**:
+- **ESLint**: JavaScript/TypeScript linting
+- **Prettier**: Code formatting
+- **Vitest**: Test runner integration
+- **GitLens**: Enhanced Git integration
+- **Error Lens**: Inline error display
+
+Install extensions:
+```bash
+code --install-extension dbaeumer.vscode-eslint
+code --install-extension esbenp.prettier-vscode
+code --install-extension ZixuanChen.vitest-explorer
+code --install-extension eamodio.gitlens
+code --install-extension usernamehw.errorlens
+```
+
+**Alternatives**: WebStorm, Sublime Text, Vim, Emacs (all work fine!)
+
+---
+
+## Clone the Repository
+
+### 1. Fork on GitHub
+
+Visit [github.com/cortex-tms/cortex-tms](https://github.com/cortex-tms/cortex-tms) and click **"Fork"** in the top-right corner.
+
+This creates a copy of the repository under your GitHub account.
+
+### 2. Clone Your Fork Locally
+
+```bash
+# Replace YOUR_USERNAME with your GitHub username
+git clone https://github.com/YOUR_USERNAME/cortex-tms.git
+cd cortex-tms
+```
+
+### 3. Add Upstream Remote
+
+Link your fork to the original repository:
+
+```bash
+git remote add upstream https://github.com/cortex-tms/cortex-tms.git
+git fetch upstream
+```
+
+**Verify remotes**:
+```bash
+git remote -v
+# Should show:
+# origin    https://github.com/YOUR_USERNAME/cortex-tms.git (fetch)
+# origin    https://github.com/YOUR_USERNAME/cortex-tms.git (push)
+# upstream  https://github.com/cortex-tms/cortex-tms.git (fetch)
+# upstream  https://github.com/cortex-tms/cortex-tms.git (push)
+```
+
+<Aside type="note">
+**origin** = your fork (where you push changes)
+**upstream** = original repo (where you pull updates)
+</Aside>
+
+---
+
+## Install Dependencies
+
+### 1. Install Main Project Dependencies
+
+<Tabs>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm install
+    ```
+  </TabItem>
+
+  <TabItem label="npm">
+    ```bash
+    npm install
+    ```
+  </TabItem>
+
+  <TabItem label="yarn">
+    ```bash
+    yarn install
+    ```
+  </TabItem>
+</Tabs>
+
+This installs all dependencies from `package.json` and `pnpm-lock.yaml`.
+
+**Expected Output**:
+```text
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 123, reused 120, downloaded 3, added 123, done
+
+dependencies:
++ chalk 5.3.0
++ clipboardy 4.0.0
++ commander 12.1.0
++ fs-extra 11.2.0
++ glob 11.0.0
++ inquirer 10.2.2
++ ora 8.1.0
+
+devDependencies:
++ @types/fs-extra 11.0.4
++ @types/inquirer 9.0.7
++ @types/node 20.17.10
++ eslint 9.17.0
++ husky 9.1.7
++ prettier 3.4.2
++ tsx 4.19.2
++ typescript 5.7.3
++ vitest 4.0.17
+
+Done in 8.2s
+```
+
+### 2. Install Git Hooks (Optional but Recommended)
+
+Cortex TMS uses **Husky** for Git hooks (pre-commit validation):
+
+```bash
+pnpm run prepare
+```
+
+This sets up:
+- **Pre-commit hook**: Runs Git Guardian to prevent accidental commits to `main`
+- **Pre-push hook**: (Future) Runs tests before pushing
+
+<Aside type="caution" title="Git Guardian Enforcement">
+The pre-commit hook will block direct commits to `main` branch. Always work on feature branches (e.g., `feat/my-feature`).
+</Aside>
+
+### 3. Verify Installation
+
+Check that everything is installed correctly:
+
+```bash
+# Check TypeScript compiler
+npx tsc --version
+# Should output: Version 5.7.3 or higher
+
+# Check Vitest (test runner)
+npx vitest --version
+# Should output: Vitest v4.0.17 or higher
+
+# Check ESLint (linter)
+npx eslint --version
+# Should output: v9.17.0 or higher
+```
+
+---
+
+## Project Structure Overview
+
+Understanding the repository structure will help you navigate the codebase:
+
+<FileTree>
+- cortex-tms/
+  - bin/
+    - cortex-tms.js CLI entry point (executable)
+  - src/
+    - commands/
+      - init.ts `cortex-tms init` command
+      - validate.ts `cortex-tms validate` command
+      - migrate.ts `cortex-tms migrate` command
+      - status.ts `cortex-tms status` command
+      - prompt.ts `cortex-tms prompt` command
+      - tutorial.ts `cortex-tms tutorial` command
+    - utils/
+      - template.ts Template processing logic
+      - validation.ts Validation rules engine
+      - backup.ts Backup/restore utilities
+      - version.ts Version metadata parsing
+    - types/
+      - index.ts TypeScript type definitions
+    - __tests__/
+      - init.test.ts Unit tests for init command
+      - validate.test.ts Unit tests for validate command
+      - release.test.ts Integration tests for release engine
+      - utils/
+        - test-helpers.ts Test utilities and fixtures
+    - cli.ts Main CLI orchestrator
+  - templates/ User-facing template files
+    - NEXT-TASKS.md
+    - CLAUDE.md
+    - PROMPTS.md
+    - README.md
+    - .github/
+      - copilot-instructions.md
+    - docs/
+      - core/
+        - ARCHITECTURE.md
+        - PATTERNS.md
+        - DOMAIN-LOGIC.md
+        - GIT-STANDARDS.md
+        - DECISIONS.md
+        - GLOSSARY.md
+        - SCHEMA.md
+        - TROUBLESHOOTING.md
+      - archive/
+        - v1.0-CHANGELOG.md Example archived changelog
+    - vscode/
+      - tms.code-snippets VS Code snippets
+  - scripts/
+    - sync-project.js Version sync automation
+    - release.js Atomic release engine
+    - release-hotfix.js Emergency hotfix workflow
+  - docs/ Cortex TMS project documentation
+    - core/
+      - ARCHITECTURE.md System architecture
+      - PATTERNS.md Template design patterns
+      - DOMAIN-LOGIC.md TMS principles
+      - GIT-STANDARDS.md Git conventions
+      - GLOSSARY.md Terminology
+    - archive/
+      - sprint-v2.5-guidance-growth.md Historical sprint notes
+      - sprint-v2.6-integrity-atomicity.md
+    - guides/
+      - BEST-PRACTICES.md Pragmatic rigor framework
+  - website/ Astro documentation website (subdirectory)
+    - src/
+      - content/
+        - docs/ Website documentation pages
+  - examples/ Reference implementations
+    - todo-app/ Next.js 15 example with TMS
+  - .github/
+    - workflows/
+      - tms-validate.yml CI/CD validation pipeline
+    - copilot-instructions.md AI agent instructions
+    - pre-commit Git Guardian hook script
+  - .cortexrc Project configuration
+  - .gitignore Git ignore rules
+  - package.json Project metadata and dependencies
+  - pnpm-lock.yaml Locked dependency versions
+  - pnpm-workspace.yaml Monorepo workspace config
+  - tsconfig.cli.json TypeScript config for CLI build
+  - vitest.config.ts Vitest test configuration
+  - README.md Project README
+  - CHANGELOG.md Version history
+  - NEXT-TASKS.md Current development tasks
+  - CLAUDE.md AI workflow instructions
+  - LICENSE MIT license
+</FileTree>
+
+**Key Directories**:
+- **`src/`**: Core CLI implementation (TypeScript)
+- **`templates/`**: User-facing boilerplate files
+- **`scripts/`**: Automation scripts (release, sync)
+- **`docs/`**: Project documentation (Cortex TMS meta-docs)
+- **`website/`**: Astro documentation site (separate workspace)
+- **`examples/`**: Reference implementations
+
+---
+
+## Development Workflow
+
+### Running the CLI Locally
+
+#### Method 1: Using `npm link` (Recommended for Development)
+
+Link your local development version globally:
+
+```bash
+# In cortex-tms directory
+npm link
+```
+
+Now you can run your local version anywhere:
+
+```bash
+cortex-tms --version
+# Should output: 2.6.0 (or your current development version)
+
+cortex-tms init --help
+cortex-tms validate
+cortex-tms status
+```
+
+**Tip**: Changes to TypeScript files require rebuilding (see below).
+
+#### Method 2: Using `npx` with Local Path
+
+Test the CLI without global installation:
+
+```bash
+# From cortex-tms directory
+npx . init
+npx . validate
+npx . status
+```
+
+#### Method 3: Direct Node Execution (for Quick Testing)
+
+Run TypeScript directly using `tsx`:
+
+```bash
+npx tsx src/cli.ts init
+npx tsx src/cli.ts validate --verbose
+```
+
+**When to Use**:
+- Quick iteration during development
+- Testing TypeScript changes without building
+- Debugging with source maps
+
+<Aside type="caution" title="npm link on Windows">
+On Windows, `npm link` may require administrator privileges or Developer Mode for symlink creation. Use WSL2 or enable Developer Mode if you encounter permission errors.
+</Aside>
+
+### Building the Project
+
+Compile TypeScript to JavaScript:
+
+<Tabs>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm run build
+    ```
+  </TabItem>
+
+  <TabItem label="npm">
+    ```bash
+    npm run build
+    ```
+  </TabItem>
+
+  <TabItem label="yarn">
+    ```bash
+    yarn build
+    ```
+  </TabItem>
+</Tabs>
+
+**What Happens**:
+- TypeScript files in `src/` are compiled to JavaScript in `dist/`
+- Source maps are generated for debugging
+- Type definitions (.d.ts files) are emitted
+
+**Output**:
+```text
+src/cli.ts → dist/cli.js
+src/commands/init.ts → dist/commands/init.js
+src/commands/validate.ts → dist/commands/validate.js
+...
+Build completed successfully!
+```
+
+**Build Configuration**: See `tsconfig.cli.json` for TypeScript compiler options.
+
+### Running Tests
+
+Cortex TMS uses **Vitest** for testing:
+
+<Tabs>
+  <TabItem label="Run All Tests">
+    ```bash
+    pnpm test
+    ```
+
+    **Expected Output**:
+    ```text
+    ✓ src/__tests__/init.test.ts (15 tests) 234ms
+    ✓ src/__tests__/validate.test.ts (15 tests) 187ms
+    ✓ src/__tests__/release.test.ts (23 tests) 412ms
+
+    Test Files  3 passed (3)
+         Tests  53 passed (53)
+      Start at  14:23:45
+      Duration  1.02s
+    ```
+  </TabItem>
+
+  <TabItem label="Watch Mode">
+    ```bash
+    pnpm test:watch
+    ```
+
+    **Use Case**: Automatically re-run tests when files change (great for TDD).
+
+    **Keyboard Shortcuts in Watch Mode**:
+    - `a` - Run all tests
+    - `f` - Run only failed tests
+    - `p` - Filter by filename pattern
+    - `q` - Quit watch mode
+  </TabItem>
+
+  <TabItem label="Coverage Report">
+    ```bash
+    pnpm test:coverage
+    ```
+
+    **Generates**:
+    - HTML coverage report in `coverage/` directory
+    - Terminal summary with line/branch/function coverage
+
+    **View Report**:
+    ```bash
+    open coverage/index.html  # macOS
+    xdg-open coverage/index.html  # Linux
+    start coverage/index.html  # Windows
+    ```
+  </TabItem>
+
+  <TabItem label="Specific Test File">
+    ```bash
+    pnpm test src/__tests__/init.test.ts
+    ```
+
+    **Use Case**: Run only tests related to your current work.
+  </TabItem>
+</Tabs>
+
+**Writing Tests**:
+See `src/__tests__/` for examples. All test files use the `.test.ts` extension.
+
+### Running the Linter
+
+Check code style and catch common errors:
+
+<Tabs>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm run lint
+    ```
+  </TabItem>
+
+  <TabItem label="npm">
+    ```bash
+    npm run lint
+    ```
+  </TabItem>
+
+  <TabItem label="yarn">
+    ```bash
+    yarn lint
+    ```
+  </TabItem>
+</Tabs>
+
+**Auto-Fix Linting Issues**:
+```bash
+pnpm run lint -- --fix
+```
+
+**Linter Configuration**: See `.eslintrc` (coming soon) or inline ESLint config in `package.json`.
+
+### Testing Changes in a Sample Project
+
+**Best Practice**: Test CLI changes in a real project environment.
+
+#### 1. Create a Test Project
+
+```bash
+mkdir ~/test-cortex-project
+cd ~/test-cortex-project
+npm init -y
+```
+
+#### 2. Initialize TMS Using Your Local Build
+
+```bash
+# Assuming you ran `npm link` earlier
+cortex-tms init --scope standard
+```
+
+#### 3. Test Your Changes
+
+```bash
+# Test validation
+cortex-tms validate --verbose
+
+# Test migration
+cortex-tms migrate
+
+# Test status dashboard
+cortex-tms status
+
+# Test prompt engine
+cortex-tms prompt init-session
+```
+
+#### 4. Verify Output
+
+- Check that generated files are correct
+- Verify terminal output is clear and helpful
+- Test error scenarios (e.g., invalid config, missing files)
+
+#### 5. Clean Up
+
+```bash
+cd ~
+rm -rf ~/test-cortex-project
+```
+
+<Aside type="tip" title="Use Different Scopes">
+Test all scopes (nano, standard, enterprise, custom) to ensure changes work universally.
+</Aside>
+
+---
+
+## Website Development
+
+The Cortex TMS documentation website is in the `website/` subdirectory (Astro framework).
+
+### 1. Navigate to Website Directory
+
+```bash
+cd website
+```
+
+### 2. Install Website Dependencies
+
+<Tabs>
+  <TabItem label="pnpm (Monorepo)">
+    From the **root** directory:
+    ```bash
+    pnpm install
+    ```
+
+    This installs dependencies for both the CLI and website (monorepo setup).
+  </TabItem>
+
+  <TabItem label="npm">
+    From the **website/** directory:
+    ```bash
+    npm install
+    ```
+  </TabItem>
+</Tabs>
+
+### 3. Run Development Server
+
+<Tabs>
+  <TabItem label="pnpm (from root)">
+    ```bash
+    pnpm run website:dev
+    ```
+  </TabItem>
+
+  <TabItem label="pnpm (from website/)">
+    ```bash
+    cd website
+    pnpm dev
+    ```
+  </TabItem>
+
+  <TabItem label="npm">
+    ```bash
+    cd website
+    npm run dev
+    ```
+  </TabItem>
+</Tabs>
+
+**Expected Output**:
+```text
+🚀 astro v4.x.x started in XXms
+
+  ┃ Local    http://localhost:4321/
+  ┃ Network  use --host to expose
+
+  ┃ Press o to open in browser
+```
+
+Visit `http://localhost:4321/` to see the documentation site.
+
+### 4. Edit Documentation Pages
+
+Documentation files are in `website/src/content/docs/`:
+
+<FileTree>
+- website/src/content/docs/
+  - getting-started/
+    - quick-start.mdx
+    - installation.mdx
+  - guides/
+    - best-practices.mdx
+    - migration-guide.mdx
+  - reference/
+    - cli/
+      - init.mdx
+      - validate.mdx
+  - community/
+    - contributing.mdx
+    - changelog.mdx
+</FileTree>
+
+**Hot Reload**: Changes are automatically reflected in the browser.
+
+### 5. Build for Production
+
+```bash
+# From website/ directory
+pnpm build
+
+# Or from root directory
+pnpm run website:build
+```
+
+**Output**: Static HTML files in `website/dist/`
+
+### 6. Preview Production Build
+
+```bash
+pnpm run website:preview
+```
+
+Visit `http://localhost:4322/` to preview the production build.
+
+---
+
+## Debugging Tips
+
+### Using VS Code Debugger
+
+Create `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug CLI: init",
+      "runtimeArgs": [
+        "--loader",
+        "tsx",
+        "${workspaceFolder}/src/cli.ts",
+        "init",
+        "--scope",
+        "standard"
+      ],
+      "cwd": "${workspaceFolder}/test-project",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug CLI: validate",
+      "runtimeArgs": [
+        "--loader",
+        "tsx",
+        "${workspaceFolder}/src/cli.ts",
+        "validate",
+        "--verbose"
+      ],
+      "cwd": "${workspaceFolder}/test-project",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Tests",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
+```
+
+**Usage**:
+1. Set breakpoints in VS Code (click left gutter next to line numbers)
+2. Press `F5` or click "Run and Debug" → Select configuration
+3. Step through code with `F10` (step over), `F11` (step into), `Shift+F11` (step out)
+
+### Adding Console Logs (Then Removing!)
+
+**Temporary Debugging**:
+```typescript
+console.log('DEBUG: filePath =', filePath);
+console.log('DEBUG: config =', JSON.stringify(config, null, 2));
+```
+
+<Aside type="caution" title="Remove Before Committing">
+**Always remove `console.log` statements before committing!** Use proper logging utilities (`ora`, `chalk`) for production output.
+</Aside>
+
+### Using --verbose Flag
+
+Many commands support `--verbose` for detailed output:
+
+```bash
+cortex-tms validate --verbose
+cortex-tms migrate --verbose
+```
+
+**In Your Code**:
+```typescript
+if (options.verbose) {
+  console.log('[DEBUG] Processing file:', filePath);
+}
+```
+
+### Testing in Different Environments
+
+**macOS**:
+```bash
+# Test in macOS (native)
+cortex-tms init
+```
+
+**Linux (via Docker)**:
+```bash
+docker run -it --rm -v $(pwd):/app node:18 bash
+cd /app
+npm install -g pnpm
+pnpm install
+pnpm test
+```
+
+**Windows (via WSL2)**:
+```bash
+wsl
+cd /mnt/c/Users/YourName/cortex-tms
+pnpm test
+```
+
+---
+
+## Configuration Files Explained
+
+### `.nvmrc` (Node Version Manager)
+
+Specifies the Node.js version for the project:
+
+```text
+18
+```
+
+**Usage**:
+```bash
+nvm use
+# Automatically switches to Node.js 18
+```
+
+### `.editorconfig` (Editor Consistency)
+
+Ensures consistent coding style across editors:
+
+```ini
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+```
+
+**Supported Editors**: VS Code (with extension), WebStorm, Sublime Text, Vim, Emacs
+
+### `tsconfig.cli.json` (TypeScript Configuration)
+
+TypeScript compiler options for CLI build:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ES2020",
+    "lib": ["ES2020"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "declaration": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/__tests__/**/*", "node_modules"]
+}
+```
+
+**Key Settings**:
+- `strict: true` - Enables all strict type-checking options
+- `declaration: true` - Generates `.d.ts` type definition files
+- `exclude` - Tests are excluded from CLI build
+
+### `vitest.config.ts` (Test Configuration)
+
+Vitest test runner configuration:
+
+```typescript
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      exclude: ['dist/**', 'node_modules/**', '**/*.test.ts']
+    }
+  }
+});
+```
+
+**Key Settings**:
+- `globals: true` - No need to import `describe`, `it`, `expect`
+- `environment: 'node'` - Tests run in Node.js environment (not browser)
+- `coverage` - Configures code coverage reporting
+
+---
+
+## Submitting Changes
+
+### Pre-Submission Checklist
+
+Before pushing your changes:
+
+- [ ] **Tests Pass**: Run `pnpm test` (all tests should pass)
+- [ ] **Linter Passes**: Run `pnpm run lint` (no errors)
+- [ ] **Build Succeeds**: Run `pnpm run build` (no TypeScript errors)
+- [ ] **Documentation Updated**: Update relevant docs (CLI-USAGE.md, website docs)
+- [ ] **Commit Messages Follow Convention**: Use `feat:`, `fix:`, `docs:`, etc.
+- [ ] **Changes Tested Manually**: Test in a real project scenario
+- [ ] **No Console Logs**: Remove debug `console.log` statements
+
+### Run Full Validation
+
+Cortex TMS has a validation command to check the project itself:
+
+```bash
+cd ~/cortex-tms
+cortex-tms validate --strict
+```
+
+**Expected Output**:
+```text
+✓ All mandatory files present
+✓ No placeholders detected
+✓ All files within line limits
+✓ Archive size acceptable
+
+🎉 Validation passed! (11 checks)
+```
+
+### Commit and Push
+
+```bash
+git add .
+git commit -m "feat(cli): add JSON export for status command
+
+Implements --json flag for programmatic consumption.
+
+Closes #123
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+
+git push origin feat/TMS-123-json-export
+```
+
+### Create Pull Request
+
+See [Contributing Guide](/community/contributing#10-submit-a-pull-request) for detailed PR instructions.
+
+---
+
+## Staying Up-to-Date
+
+### Sync with Upstream
+
+Regularly pull changes from the original repository:
+
+```bash
+# Fetch latest changes from upstream
+git fetch upstream
+
+# Merge into your main branch
+git checkout main
+git merge upstream/main
+
+# Push to your fork
+git push origin main
+```
+
+### Update Dependencies
+
+Check for outdated dependencies:
+
+```bash
+pnpm outdated
+```
+
+**Update All Dependencies**:
+```bash
+pnpm update
+```
+
+**Update Specific Dependency**:
+```bash
+pnpm update typescript --latest
+```
+
+<Aside type="caution" title="Major Version Updates">
+Major version updates may introduce breaking changes. Test thoroughly after updating dependencies.
+</Aside>
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### "Cannot find module 'tsx'"
+
+**Cause**: Missing `tsx` dev dependency.
+
+**Fix**:
+```bash
+pnpm install tsx --save-dev
+```
+
+#### "EPERM: operation not permitted, symlink" (Windows)
+
+**Cause**: Windows requires admin privileges or Developer Mode for symlinks.
+
+**Fix**:
+1. Enable Developer Mode: Settings → Update & Security → For Developers
+2. Or run terminal as Administrator
+3. Or use WSL2 for development
+
+#### Tests Failing Locally
+
+**Cause**: Stale build artifacts or cached files.
+
+**Fix**:
+```bash
+# Clean build
+rm -rf dist/
+
+# Reinstall dependencies
+rm -rf node_modules/
+pnpm install
+
+# Re-run tests
+pnpm test
+```
+
+#### "Module not found" in Tests
+
+**Cause**: Vitest cannot resolve TypeScript paths.
+
+**Fix**: Ensure `vitest.config.ts` includes:
+```typescript
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  }
+});
+```
+
+#### Git Hooks Not Running
+
+**Cause**: Husky not initialized.
+
+**Fix**:
+```bash
+pnpm run prepare
+```
+
+### Getting Help
+
+If you're stuck:
+
+1. **Search GitHub Issues**: Someone may have encountered the same problem
+2. **Check Known Issues**: [/community/known-issues](/community/known-issues)
+3. **Ask in Discussions**: [GitHub Discussions](https://github.com/cortex-tms/cortex-tms/discussions)
+4. **Open an Issue**: [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues/new)
+
+---
+
+## Next Steps
+
+Once your environment is set up:
+
+1. **Read the Contributing Guide**: [/community/contributing](/community/contributing)
+2. **Explore the Codebase**: Start with `src/cli.ts` and `src/commands/`
+3. **Run the Tutorial**: `cortex-tms tutorial` to understand the user experience
+4. **Pick a Good First Issue**: [Browse Issues](https://github.com/cortex-tms/cortex-tms/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+5. **Join the Community**: Star the repo, watch for updates
+
+---
+
+## Additional Resources
+
+- **Contributing Guide**: [/community/contributing](/community/contributing) - Contribution workflow and guidelines
+- **Architecture Documentation**: `docs/core/ARCHITECTURE.md` - System design
+- **Patterns Documentation**: `docs/core/PATTERNS.md` - Template patterns
+- **Git Standards**: `docs/core/GIT-STANDARDS.md` - Commit conventions
+- **GitHub Repository**: [cortex-tms/cortex-tms](https://github.com/cortex-tms/cortex-tms)
+
+---
+
+**Thank you for setting up your development environment!** You're now ready to contribute to Cortex TMS. Happy coding!
+
+**Last Updated**: January 19, 2026
+**Maintained By**: Cortex TMS Contributors
+**Feedback**: Improve this guide via [GitHub PR](https://github.com/cortex-tms/cortex-tms/pulls)

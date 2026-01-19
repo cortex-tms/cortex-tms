@@ -1,0 +1,1194 @@
+---
+title: Known Issues & Limitations
+description: Current limitations, known bugs, and planned improvements for Cortex TMS
+---
+
+import { Aside, CardGrid, Card } from '@astrojs/starlight/components';
+
+This page provides an honest, transparent view of Cortex TMS's current limitations, known issues, and planned improvements. Understanding these constraints will help you make informed decisions and set appropriate expectations.
+
+## Current Version Information
+
+**Cortex TMS v2.6.0** (Latest Stable Release)
+**Release Date**: January 18, 2026
+**Status**: Production Ready
+**Node.js Requirement**: 18.0.0 or higher
+
+<Aside type="note">
+Cortex TMS follows semantic versioning. Minor versions (2.x) add features while maintaining backward compatibility. Patch versions (2.6.x) fix bugs without breaking changes.
+</Aside>
+
+---
+
+## Critical Known Issues
+
+<Aside type="caution" title="No Critical Issues">
+As of v2.6.0, there are **no critical bugs** affecting core functionality. All 53 tests are passing, and the system has been validated in production environments.
+</Aside>
+
+If you discover a critical issue, please report it immediately via [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues/new) with the "critical" label.
+
+---
+
+## Platform-Specific Limitations
+
+### Windows-Specific Issues
+
+<CardGrid>
+  <Card title="Symlink Creation Requires Admin" icon="warning">
+    **Symptom**: `EPERM: operation not permitted, symlink` errors during `npm link` testing.
+
+    **Cause**: Windows requires administrator privileges or Developer Mode for symlink creation.
+
+    **Workaround**:
+    1. Enable Developer Mode (Settings → Update & Security → For Developers)
+    2. Run terminal as Administrator
+    3. Use WSL2 for development (recommended)
+  </Card>
+
+  <Card title="Path Separator Differences" icon="information">
+    **Symptom**: Template paths using forward slashes (`/`) may not resolve correctly.
+
+    **Status**: Cortex TMS uses `path.join()` internally, so this is largely resolved.
+
+    **Edge Case**: If you manually construct file paths in custom scripts, use `path.join()` or `path.resolve()`.
+  </Card>
+
+  <Card title="Line Ending Inconsistencies (CRLF vs LF)" icon="information">
+    **Symptom**: Git reports file changes when no actual content changed.
+
+    **Cause**: Windows uses CRLF (`\r\n`) while Unix uses LF (`\n`).
+
+    **Solution**: Configure Git to auto-convert line endings:
+    ```bash
+    git config --global core.autocrlf true  # Windows
+    git config --global core.autocrlf input  # macOS/Linux
+    ```
+  </Card>
+</CardGrid>
+
+### macOS-Specific Issues
+
+**Case-Sensitive File Systems (Optional)**
+
+- macOS defaults to case-insensitive file systems (APFS is case-preserving but not case-sensitive)
+- If you've manually formatted your drive as case-sensitive, be aware that `PATTERNS.md` and `patterns.md` are different files
+- Cortex TMS follows the uppercase convention (e.g., `PATTERNS.md`, `ARCHITECTURE.md`)
+
+### Linux-Specific Issues
+
+**Snap-Installed Node.js Permissions**
+
+- If Node.js is installed via Snap, you may encounter permission issues with global package installations
+- **Workaround**: Use `nvm` (Node Version Manager) or install Node.js via your distribution's package manager
+
+---
+
+## Feature Limitations
+
+### CLI Command Constraints
+
+<Aside type="tip">
+These limitations are by design to maintain simplicity and predictability. Most can be worked around with standard shell scripting.
+</Aside>
+
+**`cortex-tms init`**
+
+1. **No Multi-Project Batch Initialization**: You cannot initialize multiple projects in one command. You must run `cortex-tms init` in each project directory individually.
+
+   **Workaround** (Bash):
+   ```bash
+   for dir in project1 project2 project3; do
+     cd $dir && cortex-tms init --scope standard && cd ..
+   done
+   ```
+
+2. **Cannot Re-initialize Without Overwriting**: If you run `cortex-tms init` in a project that already has TMS files, you'll be prompted to overwrite. There's no "merge" mode.
+
+   **Workaround**: Use `cortex-tms migrate` to upgrade existing files.
+
+3. **Interactive Prompts Require TTY**: Non-interactive environments (CI/CD pipelines) must use `--scope` flag explicitly.
+
+   ```bash
+   # ✅ Works in CI/CD
+   cortex-tms init --scope standard
+
+   # ❌ Fails in CI/CD (no TTY for prompts)
+   cortex-tms init
+   ```
+
+**`cortex-tms validate`**
+
+1. **Line Count Enforcement is Static**: The default line limits (200 for `NEXT-TASKS.md`, 100 for `copilot-instructions.md`) are hardcoded. While you can override them in `.cortexrc`, you cannot disable line limit checking entirely.
+
+   **Workaround**: Set extremely high limits in `.cortexrc` if you truly need unlimited files:
+   ```json
+   {
+     "lineLimits": {
+       "NEXT-TASKS.md": 999999
+     }
+   }
+   ```
+
+2. **No Partial Validation**: You cannot validate only specific files; `cortex-tms validate` always checks all mandatory files.
+
+3. **Archive Detection Heuristic**: The archive warning (when `docs/archive/` has more than 5 files) is a heuristic, not a strict rule. Some projects legitimately need many archived documents.
+
+**`cortex-tms migrate`**
+
+1. **Cannot Customize Template Source**: The migration system always pulls templates from the installed `cortex-tms` package. You cannot specify a custom template directory.
+
+   **Roadmap**: Custom template directories planned for v2.7.
+
+2. **Backup Pruning is Automatic**: Backups older than the 10 most recent are automatically deleted. You cannot configure retention policy.
+
+   **Workaround**: Manually copy `.cortex/backups/` to a separate location for long-term archival.
+
+3. **No Selective File Migration**: When you run `migrate --apply`, you cannot choose which specific files to upgrade. It upgrades all OUTDATED files in batch.
+
+   **Workaround**: Manually copy individual templates from `node_modules/cortex-tms/templates/`.
+
+**`cortex-tms status`**
+
+1. **No JSON Output**: The status dashboard is designed for human readability only. There's no `--json` flag for programmatic consumption.
+
+   **Use Case**: If you need to parse project status in scripts, directly read `NEXT-TASKS.md` and parse the markdown.
+
+2. **Progress Bar is Approximate**: The sprint progress percentage is calculated from task status markers (`✅ Done`, `⬜ Todo`). If tasks have uneven complexity, the visual bar may not reflect true completion.
+
+**`cortex-tms prompt`**
+
+1. **Clipboard Integration Fails in Headless Environments**: SSH sessions and Docker containers without X11 forwarding cannot access the clipboard.
+
+   **Workaround**: The prompt text is still printed to stdout. Manually copy it or redirect to a file:
+   ```bash
+   cortex-tms prompt init-session > /tmp/prompt.txt
+   ```
+
+2. **Prompt Library is Static**: The Essential 7 prompts are embedded in the CLI. While you can customize `PROMPTS.md` in your project, the CLI doesn't read from it.
+
+   **Why**: Ensures consistency across installations. Custom prompts are for AI agents to read directly from `PROMPTS.md`.
+
+---
+
+### File Size and Content Constraints
+
+**Hard Limits**
+
+1. **File Names Must Use Exact Casing**: Template files expect uppercase naming (e.g., `PATTERNS.md`, not `patterns.md`). The validation system is case-sensitive.
+
+2. **Placeholder Syntax is Required**: If you want the validation system to detect unfilled templates, use `[Description]` syntax. Other placeholder styles (like `TODO`, `FIXME`, `<placeholder>`) are not recognized.
+
+3. **Archive Directory Must Be Named `archive/`**: The validation system specifically checks for `docs/archive/`. Renaming it to `historical/` or `old/` will break archive detection.
+
+4. **Version Comments Must Match Format**: Files use `<!-- @cortex-tms-version 2.6.0 -->` for version tracking. Deviating from this format (e.g., `<!-- Version: 2.6.0 -->`) breaks migration detection.
+
+**Soft Limits (Configurable)**
+
+1. **Default Line Limits**:
+   - `NEXT-TASKS.md`: 200 lines
+   - `.github/copilot-instructions.md`: 100 lines
+   - All other `docs/core/` files: 1000 lines (configurable via `.cortexrc`)
+
+2. **Maximum Files in Archive**: No hard limit, but validation warns if `docs/archive/` exceeds 5 files (suggests cleanup).
+
+---
+
+### Template System Limitations
+
+**Framework Compatibility**
+
+Cortex TMS templates are framework-agnostic by design, meaning:
+
+- **✅ Works With**: Any language/framework (JavaScript, Python, Rust, Go, etc.)
+- **❌ No Framework-Specific Features**: No integration with Next.js config, Django settings, etc.
+- **Trade-Off**: You gain flexibility but lose framework-specific automation
+
+**Example**: Cortex TMS won't auto-populate your `ARCHITECTURE.md` with your Next.js routes or database schema. You must fill those in manually.
+
+**Template Customization**
+
+1. **Cannot Override Individual Template Sections**: When you run `migrate --apply`, the entire file is replaced. You cannot selectively upgrade just the header or footer.
+
+2. **No Template Inheritance**: You cannot create a "child" template that inherits from a "parent" template. Each template file is standalone.
+
+3. **Placeholder Replacement is Manual**: The CLI does not auto-replace placeholders like `[Project Name]` with your actual project name from `package.json`. This is intentional—AI agents handle replacement during sessions.
+
+---
+
+### AI Agent Integration Constraints
+
+**Edge Cases in AI Behavior**
+
+<Aside type="tip">
+These are not bugs in Cortex TMS but rather quirks of LLM behavior. Understanding them helps you work more effectively with AI agents.
+</Aside>
+
+1. **File Size Affects Token Budget**: Even though Cortex TMS keeps files small (200 lines for NEXT-TASKS.md), AI agents may still struggle with dense technical content.
+
+   **Best Practice**: Use bullet points, not paragraphs, in task descriptions.
+
+2. **Agents May Skip WARM Tier Files**: If you don't explicitly prompt the agent to read `docs/core/PATTERNS.md`, it might not discover it on its own.
+
+   **Mitigation**: Use `cortex-tms prompt feature` to generate prompts that reference PATTERNS.md explicitly.
+
+3. **Historical Noise in Git Commits**: Even with aggressive archiving, AI agents sometimes read old Git commit messages. This is outside Cortex TMS's control.
+
+   **Workaround**: Use conventional commits (enforced by Git Guardian in v2.6.0) to make commit history more parseable.
+
+4. **Placeholder Detection Failures**: If you write `[TODO: Add description]`, the validation system sees `[TODO` as a placeholder and flags it. Use `TODO` without brackets or `[Add description]` instead.
+
+**Multi-Agent Conflicts**
+
+If multiple AI agents (Claude + Copilot) work on the same project simultaneously:
+
+- **Risk**: Race conditions when updating `NEXT-TASKS.md`
+- **Mitigation**: Treat `NEXT-TASKS.md` as single-writer (one AI agent at a time). Use Git branches for parallel work.
+
+---
+
+## Planned Improvements
+
+### Roadmap: v2.7 (Custom Extensibility)
+
+<CardGrid>
+  <Card title="Custom Template Directories" icon="puzzle">
+    **Status**: Planned
+    **Goal**: Allow users to specify custom template sources via `.cortexrc`
+
+    **Use Case**: Organizations can maintain internal template libraries
+  </Card>
+
+  <Card title="User-Defined Pattern Sets" icon="setting">
+    **Status**: Planned
+    **Goal**: Extend validation rules with custom pattern matching
+
+    **Use Case**: Enforce company-specific conventions (e.g., ticket ID format)
+  </Card>
+
+  <Card title="Telemetry (Opt-In)" icon="information">
+    **Status**: Under Consideration
+    **Goal**: Anonymous usage metrics to prioritize features
+
+    **Privacy**: Fully opt-in, no data collection by default
+  </Card>
+</CardGrid>
+
+### Roadmap: v3.0 (Long-Term Vision)
+
+1. **Plugin System**: Allow third-party extensions for validators, migrators, and prompt engines
+2. **IDE Extensions**: VS Code/JetBrains plugins for inline TMS awareness
+3. **Template Marketplace**: Community-contributed templates for specific frameworks (Next.js, Django, FastAPI, etc.)
+4. **Multi-Language Support**: Non-English template translations
+
+<Aside type="note">
+Roadmap priorities are subject to change based on community feedback. Vote on features via [GitHub Discussions](https://github.com/cortex-tms/cortex-tms/discussions).
+</Aside>
+
+---
+
+## Workarounds for Common Limitations
+
+### Workaround: Merging Template Updates with Custom Content
+
+**Problem**: You've customized `PATTERNS.md` heavily, but a new template version has important updates.
+
+**Solution** (3-way merge):
+
+```bash
+# 1. Backup your current file
+cp docs/core/PATTERNS.md docs/core/PATTERNS.md.backup
+
+# 2. Get the new template
+cortex-tms migrate --apply
+
+# 3. Compare and merge manually
+git diff --no-index docs/core/PATTERNS.md.backup docs/core/PATTERNS.md
+```
+
+Use a merge tool like `meld`, `vimdiff`, or VS Code's diff viewer to selectively apply changes.
+
+### Workaround: Batch Validation Across Multiple Projects
+
+**Problem**: You maintain 10 projects with Cortex TMS and want to validate all at once.
+
+**Solution** (Shell Script):
+
+```bash
+#!/bin/bash
+for project in ~/projects/*; do
+  if [ -f "$project/.cortexrc" ]; then
+    echo "Validating $project..."
+    cd "$project" && cortex-tms validate --strict
+  fi
+done
+```
+
+### Workaround: Custom Line Limit per Environment
+
+**Problem**: You want strict limits in production but relaxed limits during development.
+
+**Solution** (Multiple `.cortexrc` files):
+
+```bash
+# .cortexrc.dev
+{
+  "lineLimits": { "NEXT-TASKS.md": 500 }
+}
+
+# .cortexrc.prod
+{
+  "lineLimits": { "NEXT-TASKS.md": 200 }
+}
+
+# Use via symlink or environment variable
+ln -sf .cortexrc.dev .cortexrc  # Development
+ln -sf .cortexrc.prod .cortexrc  # Production
+```
+
+### Workaround: Programmatic Access to Status Data
+
+**Problem**: You want to display TMS status on a dashboard.
+
+**Solution** (Parse Markdown):
+
+```javascript
+// read-status.js
+import fs from 'fs';
+
+const tasks = fs.readFileSync('NEXT-TASKS.md', 'utf-8');
+const doneCount = (tasks.match(/✅ Done/g) || []).length;
+const todoCount = (tasks.match(/⬜ Todo/g) || []).length;
+
+console.log(JSON.stringify({ done: doneCount, todo: todoCount }));
+```
+
+---
+
+## Reporting New Issues
+
+### Before You Report
+
+1. **Check this page** to see if it's a known limitation
+2. **Search existing issues** on [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues)
+3. **Reproduce in a minimal example** (isolate the problem from your specific project)
+4. **Verify your version** (`cortex-tms --version` should show 2.6.0 or higher)
+
+### What to Include in a Bug Report
+
+<CardGrid>
+  <Card title="Environment Information" icon="laptop">
+    - Operating System (Windows 11, macOS 14, Ubuntu 22.04, etc.)
+    - Node.js version (`node --version`)
+    - Cortex TMS version (`cortex-tms --version`)
+    - Package manager (npm, pnpm, yarn)
+  </Card>
+
+  <Card title="Reproduction Steps" icon="list-format">
+    1. Exact commands you ran
+    2. Expected behavior
+    3. Actual behavior
+    4. Error messages (full stack trace if available)
+  </Card>
+
+  <Card title="Context" icon="information">
+    - New project or existing project?
+    - First time using Cortex TMS or upgrading from older version?
+    - Any custom `.cortexrc` configuration?
+    - Output of `cortex-tms validate --verbose`
+  </Card>
+</CardGrid>
+
+### Issue Templates
+
+Use the appropriate GitHub Issue template:
+
+- **Bug Report**: For unexpected behavior or errors
+- **Feature Request**: For new functionality suggestions
+- **Documentation Issue**: For unclear or incorrect documentation
+- **Question**: For usage help and clarification
+
+<Aside type="caution" title="Security Issues">
+For security vulnerabilities, **do not** open a public issue. Instead, report via [GitHub Security Advisories](https://github.com/cortex-tms/cortex-tms/security/advisories/new) for responsible disclosure.
+</Aside>
+
+---
+
+## Contribution Opportunities
+
+Many of these limitations are open for community contribution! If you're interested in helping:
+
+1. **Start with "Good First Issue"** labels on [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+2. **Review the Contributing Guide** at [contributing.mdx](/community/contributing)
+3. **Set up your development environment** using [development-setup.mdx](/community/development-setup)
+4. **Join the discussion** in GitHub Discussions or Discord (coming soon)
+
+Popular contribution areas:
+- **Windows Testing**: Help validate Windows-specific fixes
+- **Documentation**: Improve clarity of edge cases and workarounds
+- **Custom Template System**: Build the v2.7 custom template feature
+- **IDE Extensions**: Prototype VS Code snippets and integrations
+
+---
+
+## Platform-Specific Edge Cases
+
+### Cross-Platform Development Considerations
+
+**Git Line Endings in Mixed Environments**
+
+If your team uses both Windows and Unix-based systems:
+
+**Problem**: Files show changes in Git even when content is identical.
+
+**Root Cause**: Windows uses `\r\n` (CRLF), while Unix uses `\n` (LF).
+
+**Complete Solution**:
+
+1. **Global Git Configuration**:
+   ```bash
+   # Windows developers
+   git config --global core.autocrlf true
+
+   # macOS/Linux developers
+   git config --global core.autocrlf input
+   ```
+
+2. **Add `.gitattributes` to Repository**:
+   ```text
+   # Ensure consistent line endings across platforms
+   * text=auto
+
+   # Force LF for specific files
+   *.md text eol=lf
+   *.ts text eol=lf
+   *.js text eol=lf
+   *.json text eol=lf
+
+   # Force CRLF for Windows scripts (if any)
+   *.bat text eol=crlf
+   *.ps1 text eol=crlf
+
+   # Binary files (no line ending conversion)
+   *.png binary
+   *.jpg binary
+   *.ico binary
+   ```
+
+3. **Normalize Existing Repository**:
+   ```bash
+   # After adding .gitattributes
+   git add --renormalize .
+   git commit -m "chore: normalize line endings"
+   ```
+
+**Verification**:
+```bash
+# Check line endings in a file (Unix)
+file NEXT-TASKS.md
+# Should output: ASCII text, with LF line terminators
+
+# Or use hexdump
+hexdump -C NEXT-TASKS.md | grep "0d 0a"
+# Should return nothing if LF-only
+```
+
+### File Path Length Limitations
+
+**Windows MAX_PATH Constraint (260 characters)**
+
+**Symptom**: Errors when creating deeply nested backup directories:
+```text
+Error: ENAMETOOLONG: name too long
+```
+
+**Cortex TMS Impact**: Backup paths like `.cortex/backups/2026-01-19_143022/docs/archive/sprint-v2.5-very-long-name.md` may exceed 260 characters.
+
+**Workaround (Windows 10+)**:
+1. Enable long path support (requires admin):
+   ```powershell
+   # Run in PowerShell as Administrator
+   New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+     -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+   ```
+
+2. Update Git configuration:
+   ```bash
+   git config --system core.longpaths true
+   ```
+
+3. Restart your terminal/IDE
+
+**Alternative**: Use WSL2 for development (no path length limitations).
+
+### File System Case Sensitivity
+
+**macOS APFS vs HFS+**
+
+- **APFS (Default since macOS High Sierra)**: Case-preserving but case-insensitive
+- **HFS+ (Legacy)**: Also case-insensitive
+
+**Impact**: `PATTERNS.md` and `patterns.md` are treated as the same file.
+
+**Edge Case**:
+```bash
+# This silently overwrites the first file on macOS
+touch PATTERNS.md
+touch patterns.md
+
+# List files
+ls -l
+# Shows only PATTERNS.md (last write wins)
+```
+
+**Cortex TMS Convention**: Always use uppercase for template files (e.g., `PATTERNS.md`, `ARCHITECTURE.md`).
+
+**Linux (Case-Sensitive by Default)**
+
+If you develop on Linux and deploy to macOS, be aware:
+
+```bash
+# Linux: These are different files
+touch README.md
+touch readme.md
+
+# macOS: These collide
+# May cause unexpected behavior when cloning repo
+```
+
+**Best Practice**: Use consistent casing across all platforms (follow Cortex TMS uppercase convention).
+
+---
+
+## Feature Limitations (Expanded)
+
+### Advanced CLI Scenarios
+
+**Batch Operations Across Multiple Projects**
+
+**Limitation**: Cortex TMS commands operate on one project at a time. There's no built-in support for batch operations.
+
+**Use Case**: You maintain 20 microservices, all using Cortex TMS, and want to upgrade templates in all projects simultaneously.
+
+**Workaround (Shell Script)**:
+
+```bash
+#!/bin/bash
+# upgrade-all-projects.sh
+
+PROJECTS=(
+  ~/projects/api-gateway
+  ~/projects/auth-service
+  ~/projects/user-service
+  ~/projects/notification-service
+)
+
+for project in "${PROJECTS[@]}"; do
+  echo "Upgrading $project..."
+  cd "$project" || exit
+
+  # Check if TMS is initialized
+  if [ ! -f .cortexrc ]; then
+    echo "  ⚠️  Skipping (no .cortexrc found)"
+    continue
+  fi
+
+  # Run migration
+  cortex-tms migrate --apply --force
+
+  # Commit changes
+  git add .
+  git commit -m "chore: upgrade Cortex TMS templates to v2.6.0"
+
+  echo "  ✅ Upgraded successfully"
+done
+
+echo "🎉 All projects upgraded!"
+```
+
+**Future Enhancement (v2.7+)**: Consider proposing a `cortex-tms batch` command for multi-project operations.
+
+### Configuration System Constraints
+
+**No Environment-Specific Configuration**
+
+**Limitation**: `.cortexrc` is a single file with no support for environment overrides (dev, staging, production).
+
+**Use Case**: You want stricter line limits in production but relaxed limits during development.
+
+**Current Workaround**:
+
+1. **Approach A: Multiple Config Files**:
+   ```bash
+   # Store configs in version control
+   .cortexrc.dev
+   .cortexrc.prod
+
+   # Symlink based on environment
+   ln -sf .cortexrc.dev .cortexrc  # Development
+   ln -sf .cortexrc.prod .cortexrc  # Production
+   ```
+
+2. **Approach B: CI/CD Override**:
+   ```yaml
+   # .github/workflows/validate.yml
+   - name: Validate with Strict Rules
+     run: |
+       # Temporarily replace .cortexrc
+       mv .cortexrc .cortexrc.backup
+       cp .cortexrc.ci .cortexrc
+       cortex-tms validate --strict
+       mv .cortexrc.backup .cortexrc
+   ```
+
+**Proposed Enhancement**: Environment variable overrides:
+```bash
+CORTEX_LINE_LIMIT_NEXT_TASKS=500 cortex-tms validate
+```
+
+### Validation System Limitations
+
+**Custom Validation Rules Cannot Be Added**
+
+**Limitation**: The validation engine has hardcoded rules. You cannot add custom validators without modifying Cortex TMS source code.
+
+**Use Case**: Your organization requires all task descriptions to include a Jira ticket ID (e.g., `[PROJ-123]`).
+
+**Current Workaround (External Script)**:
+
+```bash
+#!/bin/bash
+# custom-validate.sh
+
+# Check for Jira ticket IDs in NEXT-TASKS.md
+if ! grep -E '\[PROJ-[0-9]+\]' NEXT-TASKS.md > /dev/null; then
+  echo "❌ NEXT-TASKS.md must include Jira ticket IDs"
+  exit 1
+fi
+
+# Run Cortex TMS validation
+cortex-tms validate --strict
+
+echo "✅ Custom validation passed!"
+```
+
+Add to CI/CD:
+```yaml
+- name: Run Custom Validation
+  run: ./scripts/custom-validate.sh
+```
+
+**Roadmap (v2.7)**: Plugin system for custom validators:
+```typescript
+// .cortex/validators/jira-ticket.ts
+export function validateJiraTicket(file: string): ValidationResult {
+  const content = fs.readFileSync(file, 'utf-8');
+  const hasTicket = /\[PROJ-\d+\]/.test(content);
+  return {
+    valid: hasTicket,
+    message: hasTicket ? 'Jira ticket found' : 'Missing Jira ticket ID'
+  };
+}
+```
+
+**File Validation is Content-Based, Not Schema-Based**
+
+**Limitation**: Cortex TMS validates file existence, line counts, and placeholders. It does NOT validate markdown structure, frontmatter schema, or content semantics.
+
+**Example**: The following is considered "valid" even though it's nonsensical:
+
+```markdown
+# NEXT: Upcoming Tasks
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+[Placeholder that doesn't describe anything useful]
+```
+
+**Why This Design**: Cortex TMS is framework-agnostic and intentionally permissive. Enforcing strict schemas would limit flexibility.
+
+**When You Need Stricter Validation**:
+
+Use a markdown linter like `markdownlint`:
+
+```bash
+npm install -g markdownlint-cli
+
+# Lint all markdown files
+markdownlint '**/*.md' --ignore node_modules
+```
+
+Create `.markdownlint.json`:
+```json
+{
+  "MD013": { "line_length": 120 },
+  "MD033": false,
+  "MD041": false
+}
+```
+
+### Migration System Edge Cases
+
+**Cannot Migrate Files Modified Outside Standard Templates**
+
+**Scenario**: You created a custom file `docs/core/INTEGRATION-TESTS.md` in your project (not part of standard templates).
+
+**Problem**: `cortex-tms migrate` doesn't track or manage custom files.
+
+**Impact**: If Cortex TMS later adds `INTEGRATION-TESTS.md` as a standard template, there's no automatic merge—manual resolution required.
+
+**Best Practice**: Prefix custom files with your project name or convention:
+- `docs/core/MYPROJECT-INTEGRATION-TESTS.md` (less likely to conflict)
+- Or keep custom docs in `docs/project/` (separate from `docs/core/`)
+
+**Backup Restore Overwrites All Files in Scope**
+
+**Limitation**: `cortex-tms migrate --rollback` restores the ENTIRE backup directory, not selective files.
+
+**Use Case**: You want to restore only `PATTERNS.md` from a backup but keep other updated files.
+
+**Workaround (Manual Selective Restore)**:
+
+```bash
+# 1. List available backups
+ls -la .cortex/backups/
+
+# 2. Navigate to backup
+cd .cortex/backups/2026-01-19_143022/
+
+# 3. Manually copy specific file
+cp docs/core/PATTERNS.md ~/your-project/docs/core/PATTERNS.md
+
+# 4. Verify
+cd ~/your-project
+git diff docs/core/PATTERNS.md
+```
+
+**Future Enhancement**: Add `--files` flag for selective rollback:
+```bash
+cortex-tms migrate --rollback --files "PATTERNS.md,GLOSSARY.md"
+```
+
+---
+
+## AI Agent Integration - Deep Dive
+
+### Context Window Management Issues
+
+**Large Projects Exceed Context Limits**
+
+**Symptom**: Claude Code or GitHub Copilot becomes slow or unresponsive in large codebases, even with Cortex TMS.
+
+**Cause**: AI agents read not just TMS files but also source code, node_modules metadata, Git history, etc.
+
+**Metrics** (typical context usage):
+- Small project (CLI tool): ~50K tokens
+- Medium project (API + frontend): ~200K tokens
+- Large monorepo: ~1M+ tokens (exceeds most context limits)
+
+**Mitigation Strategies**:
+
+1. **Use .gitignore Aggressively**:
+   ```gitignore
+   # Reduce noise for AI agents
+   node_modules/
+   dist/
+   build/
+   coverage/
+   .cache/
+   .next/
+   .DS_Store
+   *.log
+   ```
+
+2. **Explicitly Prompt Tier Awareness**:
+   ```text
+   Read NEXT-TASKS.md (HOT tier) first.
+   Only read docs/core/ files if you need domain logic or patterns.
+   NEVER read docs/archive/ unless explicitly asked.
+   ```
+
+3. **Use Focused Sessions**:
+   ```bash
+   # Good: Specific, bounded task
+   cortex-tms prompt feature
+   "Implement user authentication following PATTERNS.md section 4"
+
+   # Bad: Open-ended, requires full codebase scan
+   "Review the entire project and suggest improvements"
+   ```
+
+4. **Leverage Status Command**:
+   ```bash
+   # Generate concise summary for AI
+   cortex-tms status
+
+   # Share output with AI instead of asking it to scan files
+   "Here's the current status: [paste status output]"
+   ```
+
+### Placeholder Ambiguity
+
+**AI Agents Sometimes Miss Placeholders**
+
+**Symptom**: AI generates code referencing `[Project Name]` literally instead of replacing it with the actual project name.
+
+**Example**:
+```typescript
+// AI-generated code (incorrect)
+console.log('Welcome to [Project Name]');
+
+// Expected
+console.log('Welcome to My Todo App');
+```
+
+**Root Cause**: Some LLMs interpret `[Bracket Text]` as markdown link syntax or code comments, not placeholders.
+
+**Best Practice in Templates**:
+
+```markdown
+<!-- ✅ Clear Placeholder -->
+**Project Name**: [Replace with your project name, e.g., "My Todo App"]
+
+<!-- ❌ Ambiguous Placeholder -->
+**Project Name**: [Project Name]
+```
+
+**Mitigation**: Use descriptive placeholders with examples:
+```markdown
+[Your API base URL, e.g., https://api.example.com]
+```
+
+### Prompt Engineering for TMS Projects
+
+**Effective Prompts for AI Agents**:
+
+```text
+# 📊 GOOD: Explicit, Bounded, References TMS Files
+"Read NEXT-TASKS.md and docs/core/PATTERNS.md.
+Implement the authentication feature following Pattern 3 (JWT Auth).
+Use the task description in NEXT-TASKS.md line 23."
+
+# ❌ BAD: Vague, No File References
+"Add authentication to the project."
+```
+
+**Template for Feature Implementation**:
+
+```text
+Context:
+- Current Sprint: [sprint name from NEXT-TASKS.md]
+- Architecture: [relevant section from ARCHITECTURE.md]
+- Patterns: [specific pattern from PATTERNS.md]
+
+Task:
+[Detailed task description]
+
+Constraints:
+- Follow existing patterns in PATTERNS.md
+- Update NEXT-TASKS.md when complete
+- Add tests following examples in src/__tests__/
+
+Definition of Done:
+[Checklist from NEXT-TASKS.md]
+```
+
+---
+
+## Performance Limitations
+
+### Large Archive Directories
+
+**Issue**: Projects with hundreds of archived files (e.g., 6 months of sprint retrospectives) may experience slow validation.
+
+**Current Behavior**: `cortex-tms validate` scans all files in `docs/archive/` to count them.
+
+**Impact**:
+- Small archive (< 10 files): ~50ms
+- Medium archive (50 files): ~200ms
+- Large archive (200+ files): ~1-2 seconds
+
+**Mitigation**:
+
+1. **Compress Old Archives**:
+   ```bash
+   # Compress archives older than 3 months
+   tar -czf docs/archive-2025-Q4.tar.gz docs/archive/2025-10-* docs/archive/2025-11-* docs/archive/2025-12-*
+   rm -rf docs/archive/2025-10-* docs/archive/2025-11-* docs/archive/2025-12-*
+   ```
+
+2. **Move to External Storage**:
+   ```bash
+   # Move to separate repo or S3 bucket
+   aws s3 cp docs/archive/ s3://my-project-archives/ --recursive
+   ```
+
+3. **Disable Archive Check** (if really needed):
+   ```json
+   // .cortexrc
+   {
+     "validation": {
+       "skipArchiveCheck": true
+     }
+   }
+   ```
+
+### Template Copy Performance
+
+**Issue**: Copying templates on `cortex-tms init` is slow on networked file systems (NFS, Samba).
+
+**Metrics**:
+- Local SSD: ~100ms for 12 files
+- HDD: ~500ms
+- Network share: ~2-5 seconds
+
+**Why**: Multiple small file I/O operations are slow on network filesystems.
+
+**Mitigation**:
+
+1. **Use Local Development Environment**: Don't develop on network shares
+2. **Batch Copy Operations**: (Future enhancement in Cortex TMS)
+3. **Pre-fetch Templates**: Cache templates locally:
+   ```bash
+   # Copy templates to local cache
+   mkdir -p ~/.cortex-cache/templates
+   cp -r /path/to/cortex-tms/templates/* ~/.cortex-cache/templates/
+   ```
+
+---
+
+## Security Considerations
+
+### Placeholder Exposure in Public Repositories
+
+**Risk**: Accidentally committing sensitive data in placeholder fields.
+
+**Example**:
+```markdown
+**Database URL**: [Replace with production URL: postgres://admin:SECRET_PASSWORD@prod.db.com/mydb]
+```
+
+**Impact**: If pushed to public GitHub, secrets are exposed.
+
+**Best Practice**:
+
+1. **Use Generic Placeholder Examples**:
+   ```markdown
+   **Database URL**: [e.g., postgres://user:password@localhost:5432/dbname]
+   ```
+
+2. **Add Pre-commit Hook** (check for secrets):
+   ```bash
+   # .github/pre-commit (using gitleaks)
+   #!/bin/bash
+   gitleaks detect --source . --no-git --verbose
+   ```
+
+3. **Use .env Files for Secrets**:
+   ```markdown
+   **Database URL**: [Load from .env file, see .env.example]
+   ```
+
+   ```bash
+   # .env.example (safe to commit)
+   DATABASE_URL=postgres://user:password@localhost:5432/dbname
+
+   # .env (never commit, add to .gitignore)
+   DATABASE_URL=postgres://admin:REAL_PASSWORD@prod.db.com/mydb
+   ```
+
+### Backup Files May Contain Sensitive Data
+
+**Risk**: Backup directories (`.cortex/backups/`) may contain old versions of files with hardcoded secrets.
+
+**Scenario**:
+1. Developer commits API key to `ARCHITECTURE.md`
+2. Realizes mistake and removes it
+3. `cortex-tms migrate --apply` creates backup with old version containing key
+4. Backup directory is committed to Git
+
+**Mitigation**:
+
+1. **Add to .gitignore**:
+   ```gitignore
+   # Cortex TMS backups (may contain sensitive data)
+   .cortex/backups/
+   ```
+
+2. **Audit Backups Before Committing**:
+   ```bash
+   # Search for potential secrets
+   grep -r "password\|secret\|api_key" .cortex/backups/
+   ```
+
+3. **Encrypted Backups** (future enhancement):
+   ```bash
+   cortex-tms migrate --apply --encrypt
+   # Encrypts backups with GPG key
+   ```
+
+---
+
+## Dependency and Compatibility Limitations
+
+### Node.js Version Requirements
+
+**Hard Requirement**: Node.js 18.0.0 or higher
+
+**Why**: Cortex TMS uses ES modules, which are stable in Node.js 18+.
+
+**Impact on Older Projects**:
+
+If your project uses Node.js 16 or 14:
+
+**Option 1: Upgrade Node.js**:
+```bash
+nvm install 18
+nvm use 18
+```
+
+**Option 2: Use npx with Specific Node Version**:
+```bash
+npx -p node@18 -c 'cortex-tms init'
+```
+
+**Option 3: Docker**:
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+RUN npm install -g cortex-tms
+CMD ["cortex-tms", "validate"]
+```
+
+### Package Manager Compatibility
+
+**Tested With**:
+- pnpm 8.x (recommended)
+- npm 9.x
+- yarn 1.x (classic)
+
+**Known Issues**:
+
+1. **Yarn 2+ (Berry)**:
+   - Plug'n'Play (PnP) mode may cause module resolution issues
+   - **Workaround**: Use `nodeLinker: node-modules` in `.yarnrc.yml`:
+     ```yaml
+     nodeLinker: node-modules
+     ```
+
+2. **npm < 7**:
+   - Peer dependency resolution may fail
+   - **Workaround**: Upgrade to npm 9+ or use `--legacy-peer-deps`:
+     ```bash
+     npm install -g cortex-tms --legacy-peer-deps
+     ```
+
+### TypeScript Version Conflicts
+
+**Cortex TMS Uses**: TypeScript 5.7.3
+
+**Potential Conflict**: Your project uses TypeScript 4.x or different 5.x minor version.
+
+**Impact**: Type definitions may be incompatible if you import Cortex TMS types directly (rare).
+
+**Mitigation**:
+
+1. **Don't Import Cortex TMS Types** (recommended):
+   - Cortex TMS is a CLI tool, not a library
+   - No need to import its types into your project
+
+2. **Version Pinning**:
+   ```json
+   // package.json
+   {
+     "devDependencies": {
+       "typescript": "5.7.3"
+     }
+   }
+   ```
+
+---
+
+## Documentation and Learning Limitations
+
+### No Interactive Examples in CLI
+
+**Limitation**: The CLI doesn't provide interactive tutorials or code playgrounds.
+
+**Use Case**: New users want to try Cortex TMS commands without affecting their projects.
+
+**Workaround (Sandbox Environment)**:
+
+```bash
+# Create temporary test directory
+mkdir /tmp/cortex-sandbox
+cd /tmp/cortex-sandbox
+
+# Initialize TMS
+npx cortex-tms init --scope standard
+
+# Experiment freely
+cortex-tms status
+cortex-tms validate --verbose
+cortex-tms migrate
+
+# Clean up when done
+cd ~
+rm -rf /tmp/cortex-sandbox
+```
+
+**Future Enhancement**: `cortex-tms demo` command that creates a pre-configured sandbox.
+
+### No Video Tutorials
+
+**Current State**: Documentation is text-based only (markdown, code examples).
+
+**Gap**: Visual learners may prefer video walkthroughs.
+
+**Community Contribution Opportunity**:
+
+1. Record screen casts of Cortex TMS workflows
+2. Upload to YouTube with "Cortex TMS" tag
+3. Link from community resources
+
+**Template for Video Tutorials**:
+- "Cortex TMS Quick Start" (5 min)
+- "Understanding the Tiered Memory System" (10 min)
+- "Safe Template Migration Workflow" (8 min)
+- "Integrating with Claude Code" (12 min)
+
+---
+
+## Roadmap Transparency
+
+### Features NOT Planned
+
+To set expectations, here are features explicitly **not** planned:
+
+1. **GUI Application**: Cortex TMS will remain CLI-only (use IDE extensions for visual interfaces)
+2. **Template Hosting Service**: No centralized template marketplace (use GitHub for sharing)
+3. **Real-Time Collaboration**: No multi-user live editing (use Git for collaboration)
+4. **Cloud Sync**: No automatic sync to cloud storage (use Git remotes)
+5. **Built-in AI Agent**: Cortex TMS won't embed an AI model (works with external agents)
+
+**Why These Decisions**:
+- **Focus**: CLI tools are fast, scriptable, and composable
+- **Simplicity**: Avoid feature creep and maintain single responsibility
+- **Ecosystem**: Leverage existing tools (Git, GitHub, IDEs) instead of reinventing
+
+---
+
+## Additional Resources
+
+- **Troubleshooting Guide**: [/troubleshooting/common-errors](/troubleshooting/common-errors) - Solutions for frequent issues
+- **Changelog**: [/community/changelog](/community/changelog) - Full version history and migration notes
+- **GitHub Issues**: [cortex-tms/cortex-tms/issues](https://github.com/cortex-tms/cortex-tms/issues) - Report bugs and track fixes
+- **Architecture Documentation**: [/concepts/tiered-memory](/concepts/tiered-memory) - Understand the design decisions behind constraints
+- **Best Practices**: [/guides/best-practices](/guides/best-practices) - Pragmatic rigor framework
+- **Contributing**: [/community/contributing](/community/contributing) - Help improve Cortex TMS
+
+---
+
+**Last Updated**: January 19, 2026 (for Cortex TMS v2.6.0)
+**Maintained By**: Cortex TMS Contributors
+**Feedback**: Open an issue or submit a PR to improve this page

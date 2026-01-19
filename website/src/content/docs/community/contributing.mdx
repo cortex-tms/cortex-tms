@@ -1,0 +1,834 @@
+---
+title: Contributing to Cortex TMS
+description: How to contribute code, documentation, and ideas to Cortex TMS
+---
+
+import { CardGrid, Card, Aside, FileTree } from '@astrojs/starlight/components';
+
+We're thrilled that you're interested in contributing to Cortex TMS! This guide will help you get started, whether you're fixing a typo, proposing a feature, or submitting your first pull request.
+
+Cortex TMS is built on the principle of **"Pragmatic Rigor"**—we value quality, clarity, and user trust while keeping the barrier to contribution low.
+
+---
+
+## Ways to Contribute
+
+<CardGrid>
+  <Card title="Bug Reports" icon="warning">
+    Found a bug? Report it via [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues/new).
+
+    Include:
+    - Steps to reproduce
+    - Expected vs actual behavior
+    - Environment details (OS, Node version)
+    - Error messages or screenshots
+  </Card>
+
+  <Card title="Feature Requests" icon="rocket">
+    Have an idea for a new feature? Open a [GitHub Issue](https://github.com/cortex-tms/cortex-tms/issues/new) with the "enhancement" label.
+
+    Describe:
+    - The problem it solves
+    - Your proposed solution
+    - Alternative approaches considered
+    - Willingness to implement it yourself
+  </Card>
+
+  <Card title="Code Contributions" icon="seti:typescript">
+    Fix bugs, add features, or improve performance by submitting pull requests.
+
+    Focus areas:
+    - CLI commands (init, validate, migrate, etc.)
+    - Template system enhancements
+    - Test coverage improvements
+    - Performance optimizations
+  </Card>
+
+  <Card title="Documentation Improvements" icon="document">
+    Help make Cortex TMS more accessible by improving documentation.
+
+    Opportunities:
+    - Fix typos and grammar
+    - Add missing examples
+    - Clarify confusing sections
+    - Write tutorials and guides
+  </Card>
+
+  <Card title="Community Support" icon="comment-alt">
+    Help other users succeed with Cortex TMS.
+
+    Activities:
+    - Answer questions in GitHub Issues
+    - Share your usage patterns and tips
+    - Review pull requests
+    - Test beta releases and provide feedback
+  </Card>
+
+  <Card title="Translations (Future)" icon="translate">
+    **Coming in v3.0**: Help translate templates and documentation into other languages.
+
+    Target languages:
+    - Spanish, French, German
+    - Chinese, Japanese
+    - Portuguese, Russian
+  </Card>
+</CardGrid>
+
+---
+
+## Code of Conduct
+
+<Aside type="tip" title="Be Kind, Be Constructive">
+Cortex TMS follows the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). We are committed to providing a welcoming and inclusive environment for all contributors.
+</Aside>
+
+**Core Principles**:
+- **Respect**: Treat all contributors with respect, regardless of experience level
+- **Constructive Feedback**: Focus on ideas, not individuals. Use "we" instead of "you"
+- **Assume Good Intent**: Contributors are here to help. Assume positive intent in all interactions
+- **No Gatekeeping**: Welcome newcomers warmly. There are no "stupid questions"
+
+**Reporting Issues**: If you experience or witness unacceptable behavior, contact the maintainers at maintainers@cortex-tms.org (confidential).
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+Before contributing, ensure you have:
+- **Node.js 18+** installed (check with `node --version`)
+- **Git** installed and configured
+- **pnpm** package manager (recommended) or npm/yarn
+- A GitHub account
+- Familiarity with TypeScript and command-line tools (for code contributions)
+
+<Aside type="note">
+New to open source? Check out [First Timers Only](https://www.firsttimersonly.com/) for beginner-friendly guidance.
+</Aside>
+
+### Finding Good First Issues
+
+Look for issues labeled **"good first issue"** or **"help wanted"**:
+
+[Browse Good First Issues →](https://github.com/cortex-tms/cortex-tms/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+
+**Recommended Areas for First-Time Contributors**:
+1. **Documentation**: Fix typos, improve clarity, add examples
+2. **Error Messages**: Make error messages more helpful
+3. **Tests**: Add test coverage for edge cases
+4. **Templates**: Improve placeholder descriptions or add inline guidance
+5. **Validation**: Enhance validation rules or add new checks
+
+### Setting Up Your Development Environment
+
+See [Development Setup](/community/development-setup) for detailed instructions on:
+- Cloning the repository
+- Installing dependencies
+- Running tests locally
+- Building the project
+- Testing changes in a sample project
+
+---
+
+## Contribution Workflow
+
+### 1. Fork the Repository
+
+Click the **"Fork"** button on the [Cortex TMS GitHub page](https://github.com/cortex-tms/cortex-tms).
+
+This creates a copy of the repository under your GitHub account.
+
+### 2. Clone Your Fork Locally
+
+```bash
+git clone https://github.com/YOUR_USERNAME/cortex-tms.git
+cd cortex-tms
+```
+
+### 3. Add Upstream Remote
+
+Link your fork to the original repository:
+
+```bash
+git remote add upstream https://github.com/cortex-tms/cortex-tms.git
+git fetch upstream
+```
+
+This allows you to pull in the latest changes from the main repository.
+
+### 4. Create a Feature Branch
+
+Follow the **branch naming convention** from [Git Standards](/reference/git-standards):
+
+```bash
+git checkout -b feat/TMS-123-add-json-export
+# or
+git checkout -b fix/234-validate-crash
+# or
+git checkout -b docs/update-contributing-guide
+```
+
+**Branch Name Format**: `[type]/[ID]-[description]`
+
+**Types**:
+- `feat/` - New features
+- `fix/` - Bug fixes
+- `docs/` - Documentation only
+- `refactor/` - Code restructuring
+- `chore/` - Maintenance tasks
+- `test/` - Test additions/fixes
+
+<Aside type="caution" title="Never Work Directly on main">
+**Rule**: ALWAYS create a feature branch. NEVER commit directly to `main`. This is enforced by Git Guardian pre-commit hooks in the main repository.
+</Aside>
+
+### 5. Make Your Changes
+
+Follow the patterns and conventions documented in:
+- **TypeScript Guidelines**: See [Code Guidelines](#code-guidelines) below
+- **Testing Requirements**: Add tests for new features
+- **Documentation Standards**: Update docs alongside code changes
+
+**Before You Code**:
+1. Read `docs/core/PATTERNS.md` to understand template design patterns
+2. Read `docs/core/DOMAIN-LOGIC.md` to understand TMS principles
+3. Check existing tests in `src/__tests__/` for examples
+
+### 6. Write Tests
+
+Every code change should include tests:
+
+```typescript
+// src/__tests__/my-feature.test.ts
+import { describe, it, expect } from 'vitest';
+import { myNewFeature } from '../commands/myNewFeature';
+
+describe('myNewFeature', () => {
+  it('should handle valid input correctly', () => {
+    const result = myNewFeature('valid-input');
+    expect(result).toBe('expected-output');
+  });
+
+  it('should throw error on invalid input', () => {
+    expect(() => myNewFeature(null)).toThrow('Input cannot be null');
+  });
+});
+```
+
+**Test Coverage Requirements**:
+- **New Features**: Must have at least 80% code coverage
+- **Bug Fixes**: Must include a regression test proving the bug is fixed
+- **Refactoring**: Existing tests must pass without modification
+
+Run tests locally:
+```bash
+pnpm test
+```
+
+### 7. Update Documentation
+
+Documentation changes should accompany code changes:
+
+**For CLI Commands**:
+- Update `CLI-USAGE.md` with command syntax and examples
+- Add website documentation in `website/src/content/docs/reference/cli/`
+
+**For Template Changes**:
+- Update `templates/README.md` if template structure changes
+- Update `docs/core/PATTERNS.md` with new patterns
+
+**For New Features**:
+- Add usage examples to website documentation
+- Update `CHANGELOG.md` under "Unreleased" section (if major feature)
+
+### 8. Commit Your Changes
+
+Follow **Conventional Commits** format:
+
+```bash
+git add .
+git commit -m "feat(cli): add JSON export for status command
+
+Implements --json flag for cortex-tms status to enable
+programmatic consumption of project health data.
+
+Closes #123
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+```
+
+**Commit Message Format**: `[type]([scope]): [subject]`
+
+**Types**:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation only
+- `style`: Code formatting (no logic change)
+- `refactor`: Code restructuring (no behavior change)
+- `test`: Adding or fixing tests
+- `chore`: Maintenance tasks (dependencies, build scripts)
+
+**Scopes** (optional but recommended):
+- `cli`: CLI command changes
+- `validate`: Validation engine
+- `migrate`: Migration system
+- `templates`: Template files
+- `docs`: Documentation
+- `tests`: Test suite
+
+**Good Commit Examples**:
+```bash
+✅ feat(migrate): add selective file upgrade option
+✅ fix(validate): handle missing .cortexrc gracefully
+✅ docs: update contributing guide with commit examples
+✅ refactor(backup): simplify manifest creation logic
+✅ test(release): add rollback failure scenario
+```
+
+**Bad Commit Examples**:
+```bash
+❌ update files (too vague)
+❌ fix bug (no context)
+❌ feat: added new feature (past tense, no scope)
+```
+
+<Aside type="tip" title="AI Co-Authorship">
+If you used Claude Code, GitHub Copilot, or other AI tools to help write code, add a `Co-Authored-By` line to give credit. This maintains transparency and tracks AI contribution patterns.
+</Aside>
+
+### 9. Push to Your Fork
+
+```bash
+git push origin feat/TMS-123-add-json-export
+```
+
+### 10. Submit a Pull Request
+
+1. Go to your fork on GitHub
+2. Click **"Compare & pull request"**
+3. Fill out the PR template (see below)
+4. Click **"Create pull request"**
+
+**Pull Request Title**: Should match your commit message format
+
+```text
+feat(cli): add JSON export for status command
+```
+
+**Pull Request Description Template**:
+
+```markdown
+## Summary
+Adds `--json` flag to `cortex-tms status` command for programmatic consumption.
+
+## Related References
+- Closes #123
+- Related to #45 (API documentation request)
+
+## Changes
+- Added `--json` flag to status command
+- Implemented JSON serializer for project health data
+- Updated CLI-USAGE.md with examples
+- Added 5 tests covering JSON output scenarios
+
+## Testing
+- ✅ Unit tests passing (5 new tests added)
+- ✅ Manual testing: `cortex-tms status --json | jq .`
+- ✅ Backward compatibility verified (default behavior unchanged)
+
+## Screenshots/Examples
+```bash
+$ cortex-tms status --json
+{
+  "projectName": "my-project",
+  "scope": "standard",
+  "health": "passing",
+  "sprintProgress": 0.75,
+  "tasks": {
+    "done": 6,
+    "inProgress": 2,
+    "todo": 0
+  }
+}
+```
+
+## Checklist
+- [x] Tests added and passing
+- [x] Documentation updated (CLI-USAGE.md)
+- [x] Commit messages follow conventional format
+- [x] No breaking changes (or documented in CHANGELOG.md)
+- [x] Code follows TypeScript style guide
+```
+
+### 11. PR Review Process
+
+**What to Expect**:
+1. **Automated Checks** (GitHub Actions):
+   - Linting (`pnpm run lint`)
+   - Tests (`pnpm test`)
+   - Build verification (`pnpm build`)
+   - Validation (`cortex-tms validate --strict`)
+   - Documentation sync check (`pnpm run docs:check`)
+
+2. **Maintainer Review** (1-3 days typically):
+   - Code quality and style
+   - Test coverage
+   - Documentation completeness
+   - Alignment with project philosophy
+
+3. **Feedback and Iteration**:
+   - Address review comments by pushing new commits to the same branch
+   - Engage in discussion if you disagree with feedback (constructively)
+
+4. **Approval and Merge**:
+   - Once approved, a maintainer will merge your PR
+   - Your branch will be automatically deleted on GitHub (if enabled)
+
+**Tips for Faster Reviews**:
+- Keep PRs focused (one feature/fix per PR)
+- Include tests and documentation
+- Respond promptly to feedback
+- Use clear commit messages
+
+---
+
+## Code Guidelines
+
+### TypeScript Conventions
+
+**Style Rules** (enforced by ESLint):
+
+```typescript
+// ✅ Use explicit types for function parameters
+function validateFile(filePath: string, config: Config): ValidationResult {
+  // ...
+}
+
+// ❌ Avoid implicit any
+function validateFile(filePath, config) {
+  // ...
+}
+
+// ✅ Use const for immutable values
+const MAX_FILE_SIZE = 1000;
+
+// ❌ Avoid let for constants
+let MAX_FILE_SIZE = 1000;
+
+// ✅ Use async/await for asynchronous operations
+async function readTemplate(path: string): Promise<string> {
+  return await fs.readFile(path, 'utf-8');
+}
+
+// ❌ Avoid callback hell
+function readTemplate(path: string, callback: Function) {
+  fs.readFile(path, 'utf-8', (err, data) => {
+    callback(err, data);
+  });
+}
+```
+
+**Naming Conventions**:
+- **Functions**: camelCase (`validateConfig`, `parseMarkdown`)
+- **Classes**: PascalCase (`ReleaseEngine`, `BackupManager`)
+- **Constants**: UPPER_SNAKE_CASE (`MAX_LINE_LIMIT`, `DEFAULT_SCOPE`)
+- **Interfaces/Types**: PascalCase (`Config`, `ValidationResult`)
+
+**Error Handling**:
+
+```typescript
+// ✅ Use descriptive error messages with context
+if (!fs.existsSync(filePath)) {
+  throw new Error(
+    `File not found: ${filePath}\n\n` +
+    `Expected location: ${path.resolve(filePath)}\n` +
+    `Tip: Run 'cortex-tms init' to create missing files.`
+  );
+}
+
+// ❌ Avoid generic error messages
+if (!fs.existsSync(filePath)) {
+  throw new Error('File not found');
+}
+```
+
+**Prefer Functional Patterns**:
+
+```typescript
+// ✅ Use array methods for transformations
+const outdatedFiles = files.filter(f => f.version < currentVersion);
+
+// ❌ Avoid manual loops when array methods suffice
+const outdatedFiles = [];
+for (const file of files) {
+  if (file.version < currentVersion) {
+    outdatedFiles.push(file);
+  }
+}
+```
+
+### Testing Requirements
+
+**Test Structure** (using Vitest):
+
+```typescript
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
+describe('Feature: Template Migration', () => {
+  beforeEach(() => {
+    // Setup: Create test fixtures
+  });
+
+  afterEach(() => {
+    // Cleanup: Remove test files
+  });
+
+  describe('when file is outdated', () => {
+    it('should detect version mismatch', () => {
+      // Arrange
+      const file = createTestFile('2.5.0');
+      const currentVersion = '2.6.0';
+
+      // Act
+      const result = detectOutdated(file, currentVersion);
+
+      // Assert
+      expect(result.isOutdated).toBe(true);
+      expect(result.currentVersion).toBe('2.5.0');
+      expect(result.targetVersion).toBe('2.6.0');
+    });
+  });
+
+  describe('when file is customized', () => {
+    it('should detect user modifications', () => {
+      // Test implementation
+    });
+  });
+});
+```
+
+**Test Coverage Goals**:
+- **Unit Tests**: Test individual functions in isolation
+- **Integration Tests**: Test command workflows end-to-end
+- **Edge Cases**: Test error conditions, empty inputs, boundary values
+
+**Run Tests**:
+```bash
+pnpm test              # Run all tests
+pnpm test:watch        # Run tests in watch mode
+pnpm test:coverage     # Generate coverage report
+```
+
+### Documentation Standards
+
+**Inline Code Comments**:
+
+```typescript
+// ✅ Explain WHY, not WHAT
+// Backup must succeed before any file modifications to ensure rollback safety
+const backupPath = await createBackup(files, 'pre-migration');
+
+// ❌ State the obvious
+// Create a backup
+const backupPath = await createBackup(files, 'pre-migration');
+```
+
+**Function Documentation** (TSDoc format):
+
+```typescript
+/**
+ * Validates project structure against TMS requirements.
+ *
+ * @param projectRoot - Absolute path to project root directory
+ * @param config - Optional configuration overrides from .cortexrc
+ * @returns Validation result with issues array and pass/fail status
+ * @throws Error if projectRoot does not exist
+ *
+ * @example
+ * ```typescript
+ * const result = await validateProject('/path/to/project');
+ * if (!result.isValid) {
+ *   console.error(result.issues);
+ * }
+ * ```
+ */
+export async function validateProject(
+  projectRoot: string,
+  config?: Config
+): Promise<ValidationResult> {
+  // Implementation
+}
+```
+
+**README and Guide Updates**:
+- Use clear, concise language (avoid jargon)
+- Include code examples for all features
+- Add "Before" and "After" comparisons for improvements
+- Test all code examples before committing
+
+---
+
+## Documentation Contributions
+
+Documentation improvements are some of the most valuable contributions! No code changes needed.
+
+### Fixing Typos and Grammar
+
+**Simple Process**:
+1. Fork the repository
+2. Edit the file directly on GitHub (click pencil icon)
+3. Commit with message: `docs: fix typo in contributing guide`
+4. Submit pull request
+
+**No local setup required** for simple documentation fixes!
+
+### Improving Examples
+
+**Good Documentation Examples**:
+- **Concrete**: Show real code, not pseudocode
+- **Runnable**: Examples should work copy-paste
+- **Contextual**: Explain when to use each approach
+- **Complete**: Include imports, error handling
+
+**Before** (unclear):
+```markdown
+Run the validate command with the fix flag.
+```
+
+**After** (clear):
+```markdown
+To automatically repair missing files, run:
+
+```bash
+cortex-tms validate --fix
+```
+
+This will:
+- Create missing mandatory files (NEXT-TASKS.md, CLAUDE.md)
+- Generate .cortexrc if absent
+- Never overwrite existing files (safe to run)
+```
+
+### Adding Tutorials
+
+**Tutorial Structure** (recommended):
+1. **Goal**: What will users accomplish?
+2. **Prerequisites**: What do they need before starting?
+3. **Step-by-Step Instructions**: Numbered steps with code examples
+4. **Verification**: How to confirm it worked?
+5. **Next Steps**: Where to go from here?
+
+**Example Tutorial Outline**:
+```markdown
+---
+title: Creating Custom Validation Rules
+---
+
+## Goal
+By the end of this tutorial, you'll have a custom validator that checks for specific ticket ID formats in task descriptions.
+
+## Prerequisites
+- Cortex TMS 2.6.0 or higher installed
+- Basic TypeScript knowledge
+- Project initialized with `cortex-tms init`
+
+## Step 1: Create Validator File
+[Instructions...]
+
+## Step 2: Register Validator
+[Instructions...]
+
+## Verification
+Run `cortex-tms validate` and confirm your rule executes.
+
+## Next Steps
+- Read [Validation API Reference](/reference/validation-api)
+- Explore [Community Validators](https://github.com/cortex-tms/community-validators)
+```
+
+### Translation Contributions
+
+**Status**: Coming in v3.0
+
+**How to Prepare**:
+1. Join the translation discussion in [GitHub Discussions](https://github.com/cortex-tms/cortex-tms/discussions)
+2. Review template files in `templates/` directory
+3. Familiarize yourself with internationalization (i18n) best practices
+
+---
+
+## Community Support
+
+Help others succeed with Cortex TMS by:
+
+### Answering Questions
+
+**Where to Help**:
+- [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues) - Look for "question" label
+- GitHub Discussions (coming soon)
+- Discord community (coming soon)
+
+**Good Answer Checklist**:
+- ✅ Include code examples or screenshots
+- ✅ Link to relevant documentation
+- ✅ Test your solution before posting
+- ✅ Explain WHY, not just HOW
+- ✅ Be patient and welcoming
+
+### Reviewing Pull Requests
+
+**Anyone can review PRs!** You don't need commit access.
+
+**What to Check**:
+- Does the code solve the stated problem?
+- Are tests included and passing?
+- Is documentation updated?
+- Are there edge cases not covered?
+- Is the code readable and maintainable?
+
+**Leave Constructive Feedback**:
+- ✅ "Consider extracting this logic into a separate function for better testability"
+- ❌ "This code is messy"
+
+### Testing Beta Features
+
+**Help shape future releases**:
+
+```bash
+npm install -g cortex-tms@beta
+```
+
+**Provide Feedback**:
+- Open issues for bugs found
+- Share your experience in GitHub Discussions
+- Suggest UX improvements
+
+---
+
+## Recognition and Credits
+
+### Contributor Recognition
+
+All contributors are recognized in:
+- **GitHub Contributors Page**: Automatically generated
+- **Release Notes**: Major contributors mentioned in release announcements
+- **CHANGELOG.md**: "Co-Authored-By" credits for significant features
+
+### Co-Authorship with AI
+
+Cortex TMS embraces AI-assisted development. If you use Claude Code, GitHub Copilot, or other AI tools:
+
+**Add co-author credit**:
+```bash
+git commit -m "feat(cli): add JSON export
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+```
+
+**Why This Matters**:
+- **Transparency**: Clear about AI involvement
+- **Learning**: Helps community understand AI effectiveness
+- **Future**: Tracks evolution of AI-assisted development patterns
+
+---
+
+## Legal and Licensing
+
+### Contributor License Agreement (CLA)
+
+**Simple CLA** (implicit on first contribution):
+
+By submitting a pull request, you agree that:
+1. Your contribution is your original work
+2. You grant Cortex TMS a perpetual, worldwide, non-exclusive, royalty-free license to use your contribution
+3. You have the right to grant this license
+
+**No Separate Signature Required** - Contributing implies agreement.
+
+### License
+
+Cortex TMS is licensed under the **MIT License**. Your contributions will also be licensed under MIT.
+
+**What This Means**:
+- ✅ Anyone can use Cortex TMS for free (personal or commercial)
+- ✅ Anyone can modify and redistribute Cortex TMS
+- ✅ No warranty or liability for contributors
+
+---
+
+## Getting Help
+
+### Stuck on Something?
+
+**Resources**:
+1. **Development Setup**: [/community/development-setup](/community/development-setup)
+2. **Architecture Docs**: `docs/core/ARCHITECTURE.md` in repository
+3. **GitHub Issues**: Ask questions with "question" label
+4. **Existing Code**: Read `src/__tests__/` for examples
+
+**Before Asking**:
+- Search existing issues and discussions
+- Read relevant documentation
+- Try to isolate the problem
+- Prepare a minimal reproduction example
+
+### Project Maintainers
+
+**How to Reach Us**:
+- **GitHub Issues**: For bugs, features, questions (public)
+- **Email**: maintainers@cortex-tms.org (for private inquiries)
+- **Security Issues**: [GitHub Security Advisories](https://github.com/cortex-tms/cortex-tms/security/advisories/new)
+
+**Response Times** (typical):
+- **Critical Bugs**: Within 24 hours
+- **Pull Requests**: Within 3 business days
+- **Feature Requests**: Within 1 week
+- **Questions**: Within 2-3 business days
+
+---
+
+## Contribution Ideas
+
+Looking for inspiration? Here are high-impact contribution areas:
+
+### High Priority (Always Needed)
+
+1. **Windows Compatibility Testing**: Validate CLI on Windows 10/11
+2. **Error Message Improvements**: Make errors more actionable
+3. **Test Coverage**: Add edge case tests
+4. **Performance Optimization**: Profile and optimize slow operations
+5. **Documentation Clarity**: Simplify complex explanations
+
+### Medium Priority (Nice to Have)
+
+6. **Custom Template System** (v2.7 roadmap): Allow custom template directories
+7. **IDE Extensions**: VS Code snippets, JetBrains plugins
+8. **Example Projects**: Add more reference implementations
+9. **Validation Rules**: New validators for common patterns
+10. **Migration Utilities**: Automated migration from other systems
+
+### Future Vision (v3.0+)
+
+11. **Plugin System**: Extensibility for third-party integrations
+12. **Template Marketplace**: Community template sharing
+13. **Multi-Language Support**: Non-English templates
+14. **Analytics Dashboard**: Visualize project health over time
+
+---
+
+## Additional Resources
+
+- **Development Setup**: [/community/development-setup](/community/development-setup) - Complete setup guide
+- **Known Issues**: [/community/known-issues](/community/known-issues) - Current limitations
+- **Changelog**: [/community/changelog](/community/changelog) - Version history
+- **GitHub Repository**: [cortex-tms/cortex-tms](https://github.com/cortex-tms/cortex-tms)
+- **NPM Package**: [npmjs.com/package/cortex-tms](https://www.npmjs.com/package/cortex-tms)
+
+---
+
+**Thank you for contributing to Cortex TMS!** Every contribution—whether it's a typo fix, a new feature, or answering someone's question—makes the project better for everyone.
+
+**Last Updated**: January 19, 2026
+**Maintained By**: Cortex TMS Contributors
+**Feedback**: Improve this guide via [GitHub PR](https://github.com/cortex-tms/cortex-tms/pulls)
