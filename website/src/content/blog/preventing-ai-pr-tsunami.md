@@ -272,6 +272,65 @@ AI-assisted development is here to stay. The challenge is finding ways to mainta
 
 ---
 
+## Trade-offs & When Guardian Doesn't Help
+
+Guardian is an experiment, and like all tools, it has real costs and limitations.
+
+### 1. False Positive Noise
+
+**The risk**: Guardian can flag violations that aren't actually violations (hallucinations).
+
+**Impact**: Instead of reducing review burden, this creates a NEW type of noise—developers have to evaluate whether Guardian's feedback is correct.
+
+**Our current mitigation**: We treat Guardian as a "second opinion," not ground truth. When Guardian flags something, we manually review and decide whether to fix or dismiss it.
+
+**Future work**: We're considering adding `// guardian-ignore` comments or a CLI flag to suppress specific checks. This would make the "dismiss" decision explicit and portable.
+
+**Why it's hard**: Building a `guardian-ignore` is easy; building one that doesn't just become a way for lazy AI agents to bypass quality checks is the real challenge. We're thinking carefully about how to prevent ignore comments from becoming an escape hatch for low-quality contributions.
+
+### 2. Documentation Drift (Architectural Debt)
+
+**The risk**: Guardian enforces whatever is in `PATTERNS.md`. If your team changes a pattern but forgets to update the doc, Guardian will enforce outdated rules.
+
+**Impact**: Developers get frustrated when Guardian enforces patterns the team no longer follows. This creates architectural debt—the gap between documented patterns and actual practices grows.
+
+**Our mitigation**: We treat PATTERNS.md as "living documentation"—when we change a pattern in code, we update the doc in the same PR. Guardian actually helps here by forcing us to keep docs current.
+
+**The upside**: This friction surfaces documentation drift immediately, preventing the accumulation of architectural debt caused by lack of shared context.
+
+### 3. Cost & Latency
+
+**The risk**: Running an LLM on every pre-commit hook adds latency (5-15 seconds) and API costs ($0.01-0.05 per review).
+
+**Impact**: Slows down the "inner loop" of development. Frequent commits become more expensive.
+
+**Our approach: Two deployment modes**
+
+**Pre-commit (Education Tool)**: Helps developers learn patterns in real-time. You catch violations before they're committed. Best for onboarding and AI-assisted development.
+
+**CI/CD (Safety Net)**: Runs on PR creation/update. Doesn't slow down local commits. Ensures standards are never breached in the main branch. Best for high-frequency workflows.
+
+**Cost transparency (BYOK model)**:
+- **Pre-commit**: Individual contributor pays (uses their API key)
+- **CI/CD**: Project maintainer/org pays (API key stored in CI secrets)
+
+**Cost example**: At ~$0.03 per review and 20 reviews/week, that's ~$0.60/week or ~$30/year per developer. For open source projects, contributors bear the pre-commit cost; maintainers bear the CI cost. Budget accordingly.
+
+**Our workflow**: We use pre-commit for features (learning mode) and CI for hotfixes (safety net mode).
+
+### When You Shouldn't Use Guardian
+
+Skip Guardian if:
+- Your team already has strong pattern adherence (no AI-assisted development)
+- Your patterns aren't clearly documented yet (Guardian will be confused)
+- You're optimizing for commit speed over review quality
+- Your team is skeptical of LLM-based tools (adoption matters more than tech)
+- You can't afford the latency (~10 seconds) or cost (~$0.03 per review)
+
+**Remember**: Guardian is a bet that ~10 seconds of pre-commit checking saves 10+ minutes of human review. If that math doesn't work for your team, don't use it.
+
+---
+
 ## Try Guardian (Experimental)
 
 Guardian is part of Cortex TMS v2.7 (released January 2026). **It's new and experimental**—we're still learning what works.
