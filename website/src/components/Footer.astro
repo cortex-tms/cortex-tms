@@ -63,14 +63,8 @@ import type { Props } from '@astrojs/starlight/props';
 
 <style>
   .cortex-footer {
-    /* Force full width - break out of Starlight container */
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-
+    /* Footer is now outside main element - naturally full width */
+    width: 100%;
     border-top: 1px solid var(--sl-color-gray-5);
     margin-top: 4rem;
     padding: 3rem 1rem 2rem;
