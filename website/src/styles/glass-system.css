@@ -32,18 +32,18 @@
   background-image:
     radial-gradient(
       circle at 15% 50%,
-      rgba(249, 115, 22, 0.15), /* Pumpkin Spice */
-      transparent 50%
+      rgba(249, 115, 22, 0.15),
+      /* Pumpkin Spice */ transparent 50%
     ),
     radial-gradient(
       circle at 85% 30%,
-      rgba(255, 165, 0, 0.1), /* Amber */
-      transparent 50%
+      rgba(255, 165, 0, 0.1),
+      /* Amber */ transparent 50%
     ),
     radial-gradient(
       circle at 50% 90%,
-      rgba(255, 255, 255, 0.03), /* White glow */
-      transparent 50%
+      rgba(255, 255, 255, 0.03),
+      /* White glow */ transparent 50%
     );
 }
 
@@ -140,7 +140,8 @@
 }
 
 @keyframes liquid-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 0.15;
   }

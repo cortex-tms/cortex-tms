@@ -13,7 +13,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
-  color: white;
+  color: var(--sl-color-text);
   font-family: var(--sl-font);
   font-weight: 500;
   cursor: pointer;
@@ -31,6 +31,32 @@
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
   letter-spacing: 1px;
   transform: translateY(-1px);
+}
+
+/* Light mode button adjustments */
+:root[data-theme='light'] .btn-prism {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme='light'] .btn-prism:hover {
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme='light'] .btn-neon {
+  border: 1px solid var(--sl-color-accent);
+}
+
+:root[data-theme='light'] .btn-orb {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme='light'] .btn-orb:hover {
+  background: var(--sl-color-accent);
+  border-color: var(--sl-color-accent);
+  color: white;
 }
 
 /* Neon Flux Button (pumpkin orange accent) */
@@ -86,7 +112,7 @@
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
-  color: white;
+  color: var(--sl-color-text);
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -169,7 +195,7 @@
 .read-more {
   font-size: 0.8rem;
   text-decoration: none;
-  color: white;
+  color: var(--sl-color-text);
   border-bottom: 1px solid var(--sl-color-accent);
   padding-bottom: 2px;
   transition: color 0.3s;
@@ -223,7 +249,7 @@
   font-size: 1.5rem;
   line-height: 1.5;
   margin-bottom: 1.5rem;
-  color: #e2e8f0;
+  color: var(--sl-color-text);
 }
 
 .quote-author {
@@ -245,7 +271,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 1rem;
-  color: white;
+  color: var(--sl-color-text);
   font-family: var(--sl-font);
   font-size: 0.95rem;
   transition: all 0.3s ease;
@@ -260,6 +286,15 @@
 
 .glass-input::placeholder {
   color: var(--sl-color-gray-3);
+}
+
+:root[data-theme='light'] .glass-input {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme='light'] .glass-input:focus {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 /* === PROFILE CARD === */
@@ -372,7 +407,7 @@
 }
 
 .news-link:hover {
-  color: white;
+  color: var(--sl-color-accent);
   transform: translateX(5px);
 }
 
