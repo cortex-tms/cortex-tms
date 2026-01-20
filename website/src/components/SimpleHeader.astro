@@ -4,10 +4,11 @@
  *
  * Standalone header with logo, search, theme switcher, and navigation
  */
-import Search from 'virtual:starlight/components/Search';
-import SimpleThemeSelect from './SimpleThemeSelect.astro';
-import type { Props } from '@astrojs/starlight/props';
-import logoDark from '../assets/logo-dark.svg';
+import Search from 'virtual:starlight/components/Search'
+import SimpleThemeSelect from './SimpleThemeSelect.astro'
+import type { Props } from '@astrojs/starlight/props'
+import logoDark from '../assets/logo-dark.svg'
+import logoLight from '../assets/logo.svg'
 
 // Create minimal props for Starlight components
 const componentProps = {
@@ -30,41 +31,78 @@ const componentProps = {
   sidebar: [],
   siteTitle: 'Cortex TMS',
   siteTitleHref: '/',
-} as Props;
+} as Props
 ---
 
-<header class="simple-site-header">
-  <div class="header-container">
-    <div class="header-content sl-flex">
+<header class='simple-site-header'>
+  <div class='header-container'>
+    <div class='header-content sl-flex'>
       {/* Site Title/Logo */}
-      <div class="title-wrapper sl-flex">
-        <a href="/" class="site-title">
-          <img src={logoDark.src} alt="Cortex TMS Logo" class="logo-image" width="32" height="32" />
-          <span class="logo-text">Cortex TMS</span>
+      <div class='title-wrapper sl-flex'>
+        <a
+          href='/'
+          class='site-title'
+        >
+          <img
+            src={logoDark.src}
+            alt='Cortex TMS Logo'
+            class='logo-image logo-dark'
+            width='32'
+            height='32'
+          />
+          <img
+            src={logoLight.src}
+            alt='Cortex TMS Logo'
+            class='logo-image logo-light'
+            width='32'
+            height='32'
+          />
+          <span class='logo-text'>Cortex TMS</span>
         </a>
       </div>
 
       {/* Search */}
-      <div class="sl-flex search-wrapper print:hidden">
+      <div class='sl-flex search-wrapper print:hidden'>
         <Search {...componentProps} />
       </div>
 
       {/* Right Group: Navigation + Theme + Social */}
-      <div class="right-group sl-flex print:hidden">
+      <div class='right-group sl-flex print:hidden'>
         {/* Navigation Links */}
-        <nav class="main-nav sl-flex">
-          <a href="/blog/" class="nav-link">
+        <nav class='main-nav sl-flex'>
+          <a
+            href='/blog/'
+            class='nav-link'
+          >
             Blog
-            <span class="badge">New</span>
+            <span class='badge'>New</span>
           </a>
-          <a href="/getting-started/introduction/" class="nav-link">Docs</a>
+          <a
+            href='/getting-started/introduction/'
+            class='nav-link'
+            >Docs</a
+          >
         </nav>
 
         {/* Social Icons */}
-        <div class="social-icons sl-flex">
-          <a href="https://github.com/cortex-tms/cortex-tms" class="nav-link" target="_blank" rel="noopener" aria-label="GitHub">
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3"/>
+        <div class='social-icons sl-flex'>
+          <a
+            href='https://github.com/cortex-tms/cortex-tms'
+            class='nav-link'
+            target='_blank'
+            rel='noopener'
+            aria-label='GitHub'
+          >
+            <svg
+              aria-hidden='true'
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='currentColor'
+            >
+              <path
+                d='M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3'
+              ></path>
             </svg>
           </a>
         </div>
@@ -78,16 +116,21 @@ const componentProps = {
 
 <style>
   .simple-site-header {
-    background: rgba(17, 17, 17, 0.8);
+    --simple-header-bg: var(--sl-color-bg-nav, rgba(17, 17, 17, 0.86));
+    --simple-header-border: var(--sl-color-hairline, rgba(255, 255, 255, 0.08));
+    --simple-header-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+
+    background: var(--simple-header-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--simple-header-border);
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 100;
     height: var(--sl-nav-height, 4rem);
+    box-shadow: var(--simple-header-shadow);
   }
 
   .header-container {
@@ -102,6 +145,8 @@ const componentProps = {
     justify-content: space-between;
     align-items: center;
     height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
   }
 
   .title-wrapper {
@@ -114,7 +159,7 @@ const componentProps = {
   .site-title {
     font-size: var(--sl-text-xl);
     font-weight: 600;
-    color: var(--sl-color-white);
+    color: var(--sl-color-text);
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -130,10 +175,27 @@ const componentProps = {
     width: 2rem;
     height: 2rem;
     flex-shrink: 0;
+    display: none;
+  }
+
+  .logo-dark {
+    display: block;
+  }
+
+  :root[data-theme='light'] .logo-dark {
+    display: none;
+  }
+
+  :root[data-theme='light'] .logo-light {
+    display: block;
   }
 
   .logo-text {
-    background: linear-gradient(135deg, var(--sl-color-white), var(--sl-color-accent-high));
+    background: linear-gradient(
+      135deg,
+      var(--sl-color-text),
+      var(--sl-color-accent-high)
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -148,29 +210,33 @@ const componentProps = {
   .right-group {
     gap: 1rem;
     align-items: center;
+    display: flex;
   }
 
   .main-nav {
     gap: 1.5rem;
     align-items: center;
+    display: flex;
   }
 
   .social-icons {
     gap: 1rem;
     align-items: center;
+    display: flex;
   }
 
   .social-icons::after {
     content: '';
     height: 2rem;
-    border-inline-end: 1px solid var(--sl-color-gray-5);
+    border-inline-end: 1px solid var(--sl-color-hairline);
   }
 
   .nav-link {
-    color: var(--sl-color-gray-2);
+    color: var(--sl-color-gray-3);
     text-decoration: none;
     font-weight: 500;
     font-size: var(--sl-text-base);
+    line-height: 1.1;
     transition: color 0.2s;
     display: flex;
     align-items: center;
@@ -178,7 +244,7 @@ const componentProps = {
   }
 
   .nav-link:hover {
-    color: var(--sl-color-white);
+    color: var(--sl-color-text);
   }
 
   .badge {
@@ -195,6 +261,7 @@ const componentProps = {
   .nav-link svg {
     width: 1.25rem;
     height: 1.25rem;
+    flex-shrink: 0;
   }
 
   /* Responsive - hide some elements on mobile */
@@ -222,12 +289,9 @@ const componentProps = {
     }
   }
 
-  /* Desktop layout - similar to Starlight header */
-  @media (min-width: 50rem) {
-    .header-content {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-content: center;
-    }
+  /* Keep flex layout across breakpoints for consistent vertical centering */
+
+  :root[data-theme='light'] .simple-site-header {
+    --simple-header-shadow: 0 12px 28px rgba(17, 17, 17, 0.12);
   }
 </style>
