@@ -49,7 +49,7 @@
 | **Demo GIF** - Record cortex-tms status/migrate workflow | [TMS-284e] | 1h | 🔴 HIGH | ✅ Done |
 | **AI Collaboration Policy** - Create docs/core/AI-COLLABORATION-POLICY.md | [TMS-289a] | 3h | 🔴 HIGH | ✅ Done |
 | **Website About Page** - Add "How We Build" transparency section | [TMS-289b] | 2h | 🟡 MED | ✅ Done |
-| **Homepage Hero Update** - Add "Built Using Our Own Standard" | [TMS-289c] | 1h | 🟡 MED | ⬜ Todo |
+| **Homepage Hero Update** - Add "Built Using Our Own Standard" | [TMS-289c] | 1h | 🟡 MED | ✅ Done |
 | **Global Alias Support** - Add bin/cortex.js entry point | [TMS-290a] | 30m | 🟡 MED | ✅ Done |
 | **Quick Start Update** - Document global install benefits | [TMS-290b] | 30m | 🟡 MED | ✅ Done |
 
