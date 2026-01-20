@@ -32,7 +32,6 @@ export default defineConfig({
         './src/styles/glass-components.css',
       ],
       components: {
-        Page: './src/components/Page.astro',
         Header: './src/components/Header.astro',
         Footer: './src/components/Footer.astro',
       },

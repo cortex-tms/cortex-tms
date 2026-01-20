@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
-import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import SimpleLayout from '../../layouts/SimpleLayout.astro';
 
 export const getStaticPaths = (async () => {
   const blogEntries = await getCollection('blog', ({ data }) => {
@@ -34,12 +34,11 @@ const ogImageUrl = entry.data.heroImage
 const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString();
 ---
 
-<StarlightPage
-  frontmatter={{
-    title: entry.data.title,
-    description: entry.data.description,
-  }}
-  headings={[]}
+<SimpleLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  lang="en"
+  dir="ltr"
 >
   {/* Open Graph / Social Media Meta Tags */}
   <meta slot="head" property="og:type" content="article" />
@@ -247,4 +246,4 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString();
       }
     }
   </style>
-</StarlightPage>
+</SimpleLayout>

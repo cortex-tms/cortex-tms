@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import SimpleLayout from '../../layouts/SimpleLayout.astro';
 import BlogPostCard from '../../components/BlogPostCard.astro';
 
 // Get all blog posts, filter out drafts, and sort by date
@@ -11,11 +11,11 @@ const allPosts = await getCollection('blog', ({ data }) => {
 const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<StarlightPage
-  frontmatter={{
-    title: 'Blog',
-    description: 'Latest updates, insights, and stories from the Cortex TMS team',
-  }}
+<SimpleLayout
+  title="Blog"
+  description="Latest updates, insights, and stories from the Cortex TMS team"
+  lang="en"
+  dir="ltr"
 >
   {/* Ambient background gradients */}
   <div class="liquid-ambient-bg"></div>
@@ -83,4 +83,4 @@ const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.
       }
     }
   </style>
-</StarlightPage>
+</SimpleLayout>

@@ -1,0 +1,100 @@
+---
+/**
+ * Simple Layout - For Homepage, Blog, and Blog Posts
+ *
+ * Three-element structure: header - main - footer
+ * No sidebar, no complex Starlight PageFrame structure
+ */
+import type { Props } from '@astrojs/starlight/props';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Head from 'virtual:starlight/components/Head';
+import ThemeProvider from 'virtual:starlight/components/ThemeProvider';
+
+// Built-in CSS styles
+import '../../../node_modules/@astrojs/starlight/style/props.css';
+import '../../../node_modules/@astrojs/starlight/style/reset.css';
+import '../../../node_modules/@astrojs/starlight/style/util.css';
+
+// Custom CSS
+import 'virtual:starlight/user-css';
+
+interface SimpleLayoutProps {
+  title: string;
+  description: string;
+  lang?: string;
+  dir?: string;
+}
+
+const { title, description, lang = 'en', dir = 'ltr' } = Astro.props as SimpleLayoutProps;
+
+// Create minimal props object for components that need it
+const starlightProps = {
+  ...Astro.props,
+  hasSidebar: false,
+  toc: undefined,
+  entry: {
+    data: {
+      title,
+      description,
+      pagefind: true,
+    },
+    slug: '',
+  },
+  entryMeta: {
+    lang,
+    dir,
+  },
+  lang,
+  dir,
+} as any;
+---
+
+<!DOCTYPE html>
+<html lang={lang} dir={dir} data-theme="dark">
+  <head>
+    <Head {...starlightProps} />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+        background: var(--sl-color-bg);
+        color: var(--sl-color-text);
+      }
+
+      .simple-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        width: 100%;
+      }
+
+      .simple-main {
+        flex: 1;
+        width: 100%;
+        padding-top: calc(var(--sl-nav-height, 4rem));
+      }
+
+      .simple-footer {
+        width: 100%;
+        margin-top: auto;
+      }
+    </style>
+    <ThemeProvider {...starlightProps} />
+  </head>
+  <body>
+    <div class="simple-header">
+      <Header {...starlightProps} />
+    </div>
+
+    <main class="simple-main">
+      <slot />
+    </main>
+
+    <div class="simple-footer">
+      <Footer {...starlightProps} />
+    </div>
+  </body>
+</html>
