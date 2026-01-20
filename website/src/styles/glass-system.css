@@ -98,7 +98,7 @@
 
 /* Tilt effect on hover (3D rotation) */
 .glass-panel[data-tilt] {
-  cursor: pointer;
+  /* cursor: pointer removed - only applied to interactive elements like .post-card */
 }
 
 .glass-panel[data-tilt]:hover {

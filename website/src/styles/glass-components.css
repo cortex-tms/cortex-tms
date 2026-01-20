@@ -30,7 +30,7 @@
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
   letter-spacing: 1px;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 /* Neon Flux Button (pumpkin orange accent) */
@@ -71,7 +71,7 @@
 .btn-neon:hover {
   color: var(--sl-color-black);
   box-shadow: 0 0 20px var(--sl-color-accent);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .btn-neon:hover::before {
@@ -181,12 +181,12 @@
 }
 
 .post-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
 }
 
 .post-card:hover .post-image-wrapper img {
-  transform: scale(1.08);
+  transform: scale(1.04);
 }
 
 /* === GLASS BLOCKQUOTE === */
