@@ -11,7 +11,7 @@ import logoDark from '../assets/logo-dark.svg'
 import logoLight from '../assets/logo.svg'
 
 // Create minimal props for Starlight components
-const componentProps = {
+const componentProps: Partial<Props> = {
   ...Astro.props,
   hasSidebar: false,
   toc: undefined,
@@ -21,17 +21,18 @@ const componentProps = {
       description: 'AI-powered project scaffolding',
     },
     slug: '',
-  },
+  } as any,
   entryMeta: {
     lang: 'en',
     dir: 'ltr',
+    locale: 'en',
   },
   lang: 'en',
   dir: 'ltr',
   sidebar: [],
   siteTitle: 'Cortex TMS',
   siteTitleHref: '/',
-} as Props
+}
 ---
 
 <header class='simple-site-header'>

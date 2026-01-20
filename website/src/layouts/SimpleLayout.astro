@@ -7,6 +7,7 @@
  */
 import SimpleHeader from '../components/SimpleHeader.astro'
 import Footer from '../components/Footer.astro'
+import type { Props as StarlightProps } from '@astrojs/starlight/props'
 
 // Import custom styles
 import '../styles/custom.css'
@@ -17,7 +18,7 @@ interface SimpleLayoutProps {
   title: string
   description: string
   lang?: string
-  dir?: string
+  dir?: 'ltr' | 'rtl'
 }
 
 const {
@@ -30,7 +31,7 @@ const {
 const site = 'https://cortex-tms.org'
 
 // Create minimal props object for components that need it
-const componentProps = {
+const componentProps: Partial<StarlightProps> = {
   hasSidebar: false,
   toc: undefined,
   entry: {
@@ -39,10 +40,11 @@ const componentProps = {
       description,
     },
     slug: '',
-  },
+  } as any,
   entryMeta: {
     lang,
     dir,
+    locale: lang,
   },
   lang,
   dir,
@@ -53,7 +55,7 @@ const componentProps = {
   pagination: undefined,
   siteTitle: 'Cortex TMS',
   siteTitleHref: '/',
-} as any
+}
 ---
 
 <!doctype html>
@@ -278,14 +280,14 @@ const componentProps = {
     </style>
   </head>
   <body>
-    <SimpleHeader />
+    <SimpleHeader {...componentProps as StarlightProps} />
 
     <main class='simple-main'>
       <slot />
     </main>
 
     <div class='simple-footer'>
-      <Footer {...componentProps} />
+      <Footer {...componentProps as StarlightProps} />
     </div>
 
     <style>
