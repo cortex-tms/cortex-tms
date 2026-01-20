@@ -118,13 +118,13 @@ const componentProps: Partial<Props> = {
 <style>
   .simple-site-header {
     --simple-header-bg: var(--sl-color-bg-nav, rgba(17, 17, 17, 0.86));
-    --simple-header-border: var(--sl-color-hairline, rgba(255, 255, 255, 0.08));
     --simple-header-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+    --simple-header-border: var(--sl-color-hairline, rgba(255, 255, 255, 0.08));
 
     background: var(--simple-header-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--simple-header-border);
+    border-bottom: 0px solid var(--simple-header-border);
     position: fixed;
     top: 0;
     left: 0;
@@ -135,7 +135,7 @@ const componentProps: Partial<Props> = {
   }
 
   .header-container {
-    max-width: 100%;
+    max-width: 1280px;
     margin: 0 auto;
     height: 100%;
     padding: var(--sl-nav-pad-y, 0.75rem) var(--sl-nav-pad-x, 1.5rem);
@@ -233,7 +233,7 @@ const componentProps: Partial<Props> = {
   }
 
   .nav-link {
-    color: var(--sl-color-gray-3);
+    color: var(--sl-color-gray-2);
     text-decoration: none;
     font-weight: 500;
     font-size: var(--sl-text-base);
@@ -242,10 +242,15 @@ const componentProps: Partial<Props> = {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    white-space: nowrap;
   }
 
   .nav-link:hover {
-    color: var(--sl-color-text);
+    color: var(--sl-color-white);
+  }
+
+  :root[data-theme='light'] .nav-link:hover {
+    color: var(--sl-color-black);
   }
 
   .badge {
@@ -294,5 +299,30 @@ const componentProps: Partial<Props> = {
 
   :root[data-theme='light'] .simple-site-header {
     --simple-header-shadow: 0 12px 28px rgba(17, 17, 17, 0.12);
+    --simple-header-border: rgba(0, 0, 0, 0.08);
+  }
+
+  /* Light mode search input fixes */
+  :root[data-theme='light']
+    .simple-site-header
+    :global(site-search button[data-open-modal]) {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--sl-color-gray-2);
+  }
+
+  :root[data-theme='light']
+    .simple-site-header
+    :global(site-search button[data-open-modal]:hover) {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+
+  :root[data-theme='light']
+    .simple-site-header
+    :global(site-search .search-input) {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--sl-color-text);
   }
 </style>

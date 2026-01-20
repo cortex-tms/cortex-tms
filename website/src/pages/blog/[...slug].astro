@@ -141,6 +141,19 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
   />
 
   <article class='blog-post'>
+    {
+      entry.data.heroImage && (
+        <figure class='hero-image'>
+          <img
+            src={entry.data.heroImage}
+            alt={entry.data.heroAlt ?? entry.data.title}
+            loading='lazy'
+            decoding='async'
+          />
+        </figure>
+      )
+    }
+
     <header class='post-header'>
       <h1>{entry.data.title}</h1>
       <div class='post-meta'>
@@ -187,8 +200,21 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
 
   <style>
     .blog-post {
-      max-width: 65ch;
+      max-width: min(82ch, 100%);
       margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .hero-image {
+      margin: 0 0 2rem;
+    }
+
+    .hero-image img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 1rem;
+      object-fit: cover;
     }
 
     .post-header {
@@ -201,7 +227,7 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       font-size: 2.5rem;
       line-height: 1.2;
       margin: 0 0 1rem 0;
-      color: var(--sl-color-white);
+      color: var(--sl-color-text);
     }
 
     .post-meta {
@@ -244,12 +270,14 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       margin-top: 2.5rem;
       margin-bottom: 1rem;
       font-size: 1.875rem;
+      color: var(--sl-color-text);
     }
 
     .post-content :global(h3) {
       margin-top: 2rem;
       margin-bottom: 0.75rem;
       font-size: 1.5rem;
+      color: var(--sl-color-text);
     }
 
     .post-content :global(p) {

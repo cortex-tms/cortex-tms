@@ -4,8 +4,8 @@
  *
  * Adds Blog link to navigation and applies glass effect to header
  */
-import type { Props } from '@astrojs/starlight/props';
-import Default from '@astrojs/starlight/components/Header.astro';
+import type { Props } from '@astrojs/starlight/props'
+import Default from '@astrojs/starlight/components/Header.astro'
 ---
 
 <Default {...Astro.props} />
@@ -16,14 +16,25 @@ import Default from '@astrojs/starlight/components/Header.astro';
     background: rgba(17, 17, 17, 0.8) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     position: sticky;
     top: 0;
     z-index: 100;
   }
+  header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  }
+
+  /* Light mode header styling */
+  :root[data-theme='light'] .header {
+    background: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  :root[data-theme='light'] header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
 
   /* Add Blog link to navigation */
-  .header .sl-flex[data-type="nav"]::before,
+  .header .sl-flex[data-type='nav']::before,
   .site-title + div::after {
     content: 'Blog';
     display: inline-flex;
@@ -46,7 +57,7 @@ import Default from '@astrojs/starlight/components/Header.astro';
 
   /* Glass Search Form */
   .search-input,
-  input[type="search"] {
+  input[type='search'] {
     background: rgba(255, 255, 255, 0.05) !important;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -56,10 +67,24 @@ import Default from '@astrojs/starlight/components/Header.astro';
   }
 
   .search-input:focus,
-  input[type="search"]:focus {
+  input[type='search']:focus {
     background: rgba(255, 255, 255, 0.08) !important;
     border-color: var(--sl-color-accent) !important;
     box-shadow: 0 0 20px var(--sl-color-accent-low);
+  }
+
+  /* Light mode search styling */
+  :root[data-theme='light'] .search-input,
+  :root[data-theme='light'] input[type='search'] {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: var(--sl-color-text);
+  }
+
+  :root[data-theme='light'] .search-input:focus,
+  :root[data-theme='light'] input[type='search']:focus {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-color: var(--sl-color-accent) !important;
   }
 
   /* Mobile menu glass effect */
@@ -68,42 +93,46 @@ import Default from '@astrojs/starlight/components/Header.astro';
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
+
+  :root[data-theme='light'] .mobile-preferences {
+    background: rgba(255, 255, 255, 0.95);
+  }
 </style>
 
 <!-- Add Blog link via JavaScript for better compatibility -->
 <script>
   function addBlogLink() {
     // Find the navigation area
-    const nav = document.querySelector('.header nav');
-    const socialLinks = document.querySelector('.social-icons');
+    const nav = document.querySelector('.header nav')
+    const socialLinks = document.querySelector('.social-icons')
 
-    if (!nav || !socialLinks) return;
+    if (!nav || !socialLinks) return
 
     // Check if Blog link already exists
-    if (document.querySelector('.blog-nav-link')) return;
+    if (document.querySelector('.blog-nav-link')) return
 
     // Create Blog link
-    const blogLink = document.createElement('a');
-    blogLink.href = '/blog/';
-    blogLink.className = 'blog-nav-link sl-flex';
+    const blogLink = document.createElement('a')
+    blogLink.href = '/blog/'
+    blogLink.className = 'blog-nav-link sl-flex'
     blogLink.innerHTML = `
       Blog
       <span class="blog-badge">New</span>
-    `;
+    `
 
     // Insert before social icons
-    socialLinks.parentElement?.insertBefore(blogLink, socialLinks);
+    socialLinks.parentElement?.insertBefore(blogLink, socialLinks)
   }
 
   // Add on load and on navigation
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', addBlogLink);
+    document.addEventListener('DOMContentLoaded', addBlogLink)
   } else {
-    addBlogLink();
+    addBlogLink()
   }
 
   // Re-add on Astro page navigation
-  document.addEventListener('astro:page-load', addBlogLink);
+  document.addEventListener('astro:page-load', addBlogLink)
 </script>
 
 <style is:global>
@@ -122,6 +151,10 @@ import Default from '@astrojs/starlight/components/Header.astro';
 
   .blog-nav-link:hover {
     color: var(--sl-color-white);
+  }
+
+  :root[data-theme='light'] .blog-nav-link:hover {
+    color: var(--sl-color-black);
   }
 
   .blog-badge {
