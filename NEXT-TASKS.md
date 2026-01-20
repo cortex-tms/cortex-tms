@@ -79,7 +79,7 @@
 
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
-| **Shields & Topics** - Add badges and topics to README | [TMS-285a-b] | 45m | 🔴 HIGH | ⬜ Todo |
+| **Shields & Topics** - Add badges and topics to README | [TMS-285a-b] | 45m | 🔴 HIGH | ✅ Done |
 | **Demo GIF in README** - Embed workflow recording | [TMS-285c] | 30m | 🔴 HIGH | ✅ Done |
 | **Social Preview Image** - Custom OG image | [TMS-285d] | 2h | 🟡 MED | ⬜ Todo |
 
