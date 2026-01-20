@@ -44,7 +44,7 @@
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
 | **Blog Infrastructure** - Add /blog route and RSS feed | [TMS-284a] | 2h | 🔴 HIGH | ✅ Done |
-| **Blog Post: PR Tsunami** - "How Cortex TMS Prevents Maintainer Burnout" | [TMS-284c] | 4h | 🔴 HIGH | ⬜ Todo |
+| **Blog Post: PR Tsunami** - "Our Approach to the AI PR Problem" | [TMS-284c] | 4h | 🔴 HIGH | ✅ Done |
 | **Blog Post: Tiered Memory** - "Why AI Agents Need More Than a README" | [TMS-284d] | 3h | 🟡 MED | ⬜ Todo |
 | **Demo GIF** - Record cortex-tms status/migrate workflow | [TMS-284e] | 1h | 🔴 HIGH | ✅ Done |
 | **AI Collaboration Policy** - Create docs/core/AI-COLLABORATION-POLICY.md | [TMS-289a] | 3h | 🔴 HIGH | ✅ Done |
