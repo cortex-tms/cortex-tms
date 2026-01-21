@@ -1,6 +1,6 @@
 # Cortex TMS 🧠
 
-**The Universal AI-Optimized Project Boilerplate (v2.6.0)**
+**The Universal AI-Optimized Project Boilerplate (v2.6.1)**
 
 Cortex TMS is a **CLI tool for AI-assisted development** that provides **project scaffolding**, **task management**, and **workflow automation**. It's an **interactive documentation system** optimized for **Claude Code**, **GitHub Copilot**, and **LLM-assisted development**—transforming your repository into a machine-legible project structure with intelligent tooling for version management and AI collaboration.
 
@@ -373,9 +373,9 @@ MIT
 
 ## Status
 
-**Version**: 2.6.0 (Stable / Production Ready)
+**Version**: 2.6.1 (Stable / Production Ready)
 **Last Updated**: 2026-01-15
 **Current Sprint**: v2.6 Planning - "Custom Extensibility"
 **Completed Sprints**: v2.1, v2.2, v2.3, v2.4, v2.5 (see `docs/archive/`)
 
-<!-- @cortex-tms-version 2.6.0 -->
+<!-- @cortex-tms-version 2.6.1 -->

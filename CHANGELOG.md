@@ -5,6 +5,94 @@ All notable changes to Cortex TMS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.1] - 2026-01-21
+
+### 🐛 Emergency Patch - Critical Bug Fixes
+
+**Context**: Four comprehensive external audits identified trust-breaking bugs that prevented safe public adoption. This emergency patch addresses all critical issues discovered.
+
+### Fixed
+
+#### CRITICAL-1: Scope-Aware Validation
+- **Issue**: Fresh nano scope projects failed validation immediately
+- **Root Cause**: Validator required 3 mandatory files, but nano scope only creates 2
+- **Fix**: Made validation scope-aware by reading from `.cortexrc`
+  - Nano scope: requires 2 files (NEXT-TASKS.md, CLAUDE.md)
+  - Standard/Enterprise: requires 3 files (+ .github/copilot-instructions.md)
+- **Impact**: First 60-second user experience now works correctly
+- **Files**: `src/utils/validator.ts`, `src/__tests__/validate.test.ts`
+- **Tests**: +10 new tests covering scope-specific validation
+
+#### CRITICAL-2: Migration Path Handling
+- **Issue**: Migration broke for nested files like `docs/core/PATTERNS.md`
+- **Root Cause**: Path handling only used basename, lost directory structure
+- **Fix**: Preserve relative paths throughout migration pipeline
+  - `analyzeFile()` now uses `path.relative()` instead of basename
+  - `checkIfCustomized()` uses relative path for template lookup
+  - `applyMigration()` processes templates with placeholder substitution
+- **Additional**: Apply placeholder replacements during upgrades (preserves project name/description)
+- **Impact**: Nested file migrations now work correctly, user data preserved
+- **Files**: `src/commands/migrate.ts`, `src/__tests__/migrate.test.ts`
+- **Tests**: +13 new tests for nested paths, prerelease versions, edge cases
+
+#### CRITICAL-3: Prerelease Version Parsing
+- **Issue**: Versions like `2.6.0-beta.1` broke migrate analysis
+- **Root Cause**: Regex only matched digits and dots: `/[\d.]+/`
+- **Fix**: Updated regex to support full semver prerelease tags
+  - Now matches: `2.6.0`, `2.6.0-beta.1`, `2.6.0-alpha.3`, `2.6.0-rc.2`
+- **Additional**: Added `parseVersion()` method to release script
+- **Impact**: Beta releases and prerelease testing now work correctly
+- **Files**: `src/utils/templates.ts`, `scripts/release.js`, `src/__tests__/release.test.ts`
+- **Tests**: +2 new tests for prerelease version formats
+
+### Improved
+
+- **Test Coverage**: Increased from 68 to 93 tests (+25 new tests, 37% increase)
+- **Integration Testing**: Added comprehensive command interaction tests
+- **Error Messages**: Clearer migration error reporting with context
+- **Path Handling**: Robust support for nested directories and special characters
+
+### Documentation
+
+- Added `docs/AUDIT-REMEDIATION-PLAN.md` - Comprehensive bug analysis (900 lines)
+- Added `docs/AUDIT-RESPONSE-SUMMARY.md` - Executive summary (600 lines)
+- Added `docs/ROADMAP-2026-Q1.md` - Strategic roadmap (500 lines)
+- Added `docs/V2.6.1-CHECKLIST.md` - Implementation guide (800 lines)
+- Added `AUDIT-EXECUTIVE-SUMMARY.md` - Quick reference for decision-making
+- Updated `NEXT-TASKS.md` - Prioritized critical issues from audits
+- Updated `FUTURE-ENHANCEMENTS.md` - Added audit insights and strategic opportunities
+
+### Meta
+
+- **Source**: Issues identified via 4 independent external audits (2026-01-21)
+- **Development Time**: ~2 hours focused work
+- **Test Results**: 93/93 tests passing (0 regressions)
+- **Validation**: Self-validation passes (11/11 checks, 1 warning acceptable)
+- **Branch**: `fix/audit-critical-bugs` (3 clean commits)
+
+### Migration Guide
+
+**If upgrading from v2.6.0:**
+1. No breaking changes - safe to upgrade
+2. Nano scope projects will now validate correctly
+3. Nested file migrations will work as expected
+4. Prerelease versions are now supported
+
+**If experiencing issues:**
+- Run: `cortex-tms validate` (should pass without errors)
+- For nano scope: Only NEXT-TASKS.md and CLAUDE.md are required
+- For migration: Nested paths like `docs/core/*` now work correctly
+
+### Credits
+
+- External auditors for comprehensive code analysis
+- QCS Analysis (Quality, Cost, Sustainability framework)
+- Viability Report (evidence-based code audit - found critical bugs)
+- Analysis Report (architecture assessment)
+- Comparison Report (synthesis of findings)
+
+---
+
 ## [2.6.0] - 2026-01-18
 
 ### 🎉 Stable Release - Integrity & Atomicity
@@ -456,4 +544,4 @@ See `FUTURE-ENHANCEMENTS.md` for planned features in upcoming versions.
 [2.1.1]: https://github.com/cortex-tms/cortex-tms/releases/tag/v2.1.1
 [2.1.0]: https://github.com/cortex-tms/cortex-tms/releases/tag/v2.1.0
 
-<!-- @cortex-tms-version 2.6.0 -->
+<!-- @cortex-tms-version 2.6.1 -->
