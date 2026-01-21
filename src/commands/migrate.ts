@@ -14,7 +14,7 @@ import { loadConfig, getScopePreset } from '../utils/config.js';
 import { getPackageVersion, extractVersion, getTemplatesDir, replacePlaceholders, injectVersionMetadata } from '../utils/templates.js';
 import { createBackup, listBackups, restoreBackup, formatBackupSize, getBackupSize } from '../utils/backup.js';
 import fs from 'fs-extra';
-import { relative, basename } from 'path';
+import { relative } from 'path';
 
 /**
  * Migration status for a single file

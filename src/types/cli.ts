@@ -170,6 +170,8 @@ export interface CortexConfig {
     created?: string;
     /** Project name */
     projectName?: string;
+    /** Project description */
+    description?: string;
     /** Custom file list (only for custom scope) */
     customFiles?: string[];
   };

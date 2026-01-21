@@ -13,6 +13,7 @@ import type {
   ValidationResult,
   LineLimits,
   MandatoryFile,
+  ProjectScope,
 } from '../types/cli.js';
 import {
   loadConfig,
@@ -190,7 +191,7 @@ function getMandatoryFilesForScope(scope?: string): MandatoryFile[] {
   }
 
   // Get scope preset
-  const preset = getScopePreset(scope);
+  const preset = getScopePreset(scope as ProjectScope);
 
   if (!preset) {
     // Unknown scope - use defaults
@@ -198,7 +199,7 @@ function getMandatoryFilesForScope(scope?: string): MandatoryFile[] {
   }
 
   // Return mandatory files from scope preset
-  return preset.mandatoryFiles;
+  return preset.mandatoryFiles as MandatoryFile[];
 }
 
 /**
