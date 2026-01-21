@@ -11,9 +11,10 @@ import inquirer from 'inquirer';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { loadConfig, getScopePreset } from '../utils/config.js';
-import { getPackageVersion, extractVersion, getTemplatesDir } from '../utils/templates.js';
+import { getPackageVersion, extractVersion, getTemplatesDir, replacePlaceholders, injectVersionMetadata } from '../utils/templates.js';
 import { createBackup, listBackups, restoreBackup, formatBackupSize, getBackupSize } from '../utils/backup.js';
 import fs from 'fs-extra';
+import { relative, basename } from 'path';
 
 /**
  * Migration status for a single file
@@ -122,7 +123,7 @@ async function runMigrate(options: {
 
   for (const file of allFiles) {
     const filePath = join(cwd, file);
-    const status = await analyzeFile(filePath, targetVersion);
+    const status = await analyzeFile(filePath, targetVersion, cwd);
     migrations.push(status);
   }
 
@@ -246,6 +247,9 @@ async function applyMigration(
   console.log(chalk.bold('🚀 Applying upgrades...\n'));
   const upgradeSpinner = ora('Updating files...').start();
 
+  // Load config for placeholder replacements
+  const config = await loadConfig(projectRoot);
+
   let upgradedCount = 0;
   const templatesDir = getTemplatesDir();
 
@@ -259,8 +263,29 @@ async function applyMigration(
     }
 
     try {
-      // Copy template to destination
-      await fs.copyFile(templatePath, filePath);
+      // Read template content
+      let content = await fs.readFile(templatePath, 'utf-8');
+
+      // Apply placeholder replacements (preserve user's project details)
+      if (config?.metadata?.projectName) {
+        const replacements = {
+          'Project Name': config.metadata.projectName,
+          'project-name': config.metadata.projectName
+            .toLowerCase()
+            .replace(/[^a-z0-9-]/g, '-'),
+          'Description': config.metadata.description || `A project powered by Cortex TMS`,
+        };
+        content = replacePlaceholders(content, replacements);
+      }
+
+      // Inject version metadata (ensures file is tagged with current version)
+      content = injectVersionMetadata(content, targetVersion);
+
+      // Ensure parent directory exists
+      await fs.ensureDir(join(projectRoot, migration.path, '..'));
+
+      // Write upgraded content to destination
+      await fs.writeFile(filePath, content, 'utf-8');
       upgradedCount++;
     } catch (error) {
       upgradeSpinner.warn(`Failed to upgrade ${migration.path}`);
@@ -454,17 +479,22 @@ function printNextSteps(outdatedCount: number, customizedCount: number, applyAva
 
 /**
  * Analyze a single file's migration status
+ * @param filePath - Absolute path to the file
+ * @param targetVersion - Target template version
+ * @param projectRoot - Project root directory (optional, for relative path calculation)
  */
 async function analyzeFile(
   filePath: string,
-  targetVersion: string
+  targetVersion: string,
+  projectRoot?: string
 ): Promise<FileMigration> {
-  const fileName = filePath.split('/').pop() || filePath;
+  // Preserve relative path (not just basename) for correct template lookup
+  const relativePath = projectRoot ? relative(projectRoot, filePath) : (filePath.split('/').pop() || filePath);
 
   // Check if file exists
   if (!existsSync(filePath)) {
     return {
-      path: fileName,
+      path: relativePath,
       status: 'MISSING',
       currentVersion: null,
       targetVersion,
@@ -478,7 +508,7 @@ async function analyzeFile(
   // No version metadata = pre-versioned file
   if (!currentVersion) {
     return {
-      path: fileName,
+      path: relativePath,
       status: 'CUSTOMIZED',
       currentVersion: null,
       targetVersion,
@@ -489,7 +519,7 @@ async function analyzeFile(
   // Already on target version
   if (currentVersion === targetVersion) {
     return {
-      path: fileName,
+      path: relativePath,
       status: 'LATEST',
       currentVersion,
       targetVersion,
@@ -497,10 +527,10 @@ async function analyzeFile(
   }
 
   // Outdated version - check if customized
-  const isCustomized = await checkIfCustomized(filePath);
+  const isCustomized = await checkIfCustomized(filePath, relativePath);
 
   return {
-    path: fileName,
+    path: relativePath,
     status: isCustomized ? 'CUSTOMIZED' : 'OUTDATED',
     currentVersion,
     targetVersion,
@@ -510,14 +540,16 @@ async function analyzeFile(
 
 /**
  * Check if a file has been customized by comparing to original template
+ * @param filePath - Absolute path to the user's file
+ * @param relativePath - Relative path from project root (preserves directory structure)
  */
-async function checkIfCustomized(filePath: string): Promise<boolean> {
+async function checkIfCustomized(filePath: string, relativePath: string): Promise<boolean> {
   try {
-    const fileName = filePath.split('/').pop() || '';
     const templatesDir = getTemplatesDir();
-    const templatePath = join(templatesDir, fileName);
+    // Use relative path to preserve directory structure (e.g., "docs/core/PATTERNS.md")
+    const templatePath = join(templatesDir, relativePath);
 
-    // If template doesn't exist, assume customized
+    // If template doesn't exist at the expected path, assume customized
     if (!existsSync(templatePath)) {
       return true;
     }
@@ -526,12 +558,14 @@ async function checkIfCustomized(filePath: string): Promise<boolean> {
     const userContent = await fs.readFile(filePath, 'utf-8');
     const templateContent = await fs.readFile(templatePath, 'utf-8');
 
-    // Strip version metadata for comparison
-    const stripVersion = (content: string) =>
-      content.replace(/<!-- @cortex-tms-version [\d.]+ -->\n?/g, '').trim();
+    // Strip version metadata and placeholders for comparison
+    const stripMetadata = (content: string) =>
+      content
+        .replace(/<!-- @cortex-tms-version [\d.]+(?:-[a-zA-Z0-9.]+)? -->\n?/g, '')
+        .trim();
 
-    const userStripped = stripVersion(userContent);
-    const templateStripped = stripVersion(templateContent);
+    const userStripped = stripMetadata(userContent);
+    const templateStripped = stripMetadata(templateContent);
 
     // If content matches template, it's not customized
     return userStripped !== templateStripped;
