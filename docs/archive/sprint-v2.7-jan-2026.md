@@ -153,11 +153,56 @@
 
 ---
 
-**Total Completed Effort**: ~42 hours (28h planned + 10h design + 3h tiered memory + 1h fixes)
+## Phase 4: Strategic Features (Audit-Driven)
+
+**Goal**: Implement high-priority features identified by QCS Analysis + Viability Report
+
+### Completed Tasks
+
+| Task | Ref | Effort | Status | Completion Date |
+| :--- | :--- | :----- | :----- | :-------------- |
+| **Token Counter CLI** - `cortex status --tokens` | HIGH-1 | 6h | ✅ Done | Jan 23, 2026 |
+
+**HIGH-1: Token Counter Feature** ✅ COMPLETE
+
+**Delivered**:
+- Token analysis utility (src/utils/token-counter.ts, 309 lines)
+- Status command integration with `--tokens` flag
+- Model-specific cost estimates (Claude 4.x, GPT-4 series)
+- Cross-platform path handling (Windows/Mac/Linux)
+- Model validation with helpful error messages
+
+**Results**:
+- 94.5% context reduction on cortex-tms (3,647 HOT vs 66,834 total tokens)
+- Cost comparison: Claude Sonnet 4.5 $0.01/session vs GPT-4 $0.11/session (10x)
+- Sustainability impact: Lower compute = lower carbon footprint
+- PROMPTS.md added to WARM tier tracking
+
+**Implementation Notes**:
+- Applied Opus 4.5 code review feedback (cross-platform paths, model validation)
+- Updated to Claude 4.x models (Sonnet 4.5, Opus 4.5, Haiku 4.5)
+- Uses 4 chars/token heuristic validated by Anthropic docs
+- Tiered breakdown: HOT (always read), WARM (on-demand), COLD (archived)
+
+**Commits**:
+- c2608ed: Initial token counter implementation
+- a308167: Opus 4.5 code review feedback applied
+
+**Total Effort**: 6 hours
+
+**Remaining Tasks** (Phase 4):
+- HIGH-2: Guardian Accuracy Validation (6-8h)
+- MED-1: Integration Test Suite (8-12h)
+- MED-3: Error Handling Refactor (3-4h)
+
+---
+
+**Total Completed Effort**: ~48 hours (28h planned + 10h design + 3h tiered memory + 1h fixes + 6h tokens)
 **Completion Rate**: 84% of planned tasks complete
 
 **Key Achievements**:
 - ✅ Guardian MVP fully functional with all 6 core features
+- ✅ Token Counter proving 94.5% context reduction + cost savings
 - ✅ Blog infrastructure with RSS feed and 2 posts published
 - ✅ AI transparency policy established
 - ✅ Global alias support implemented

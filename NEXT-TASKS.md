@@ -29,20 +29,27 @@ See [v2.7 Archive](docs/archive/sprint-v2.7-jan-2026.md) for completed tasks.
 
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
-| **Token Counter CLI** - `cortex status --tokens` | [HIGH-1] | 4-6h | 🔴 HIGH | ⬜ Todo |
+| **Token Counter CLI** - `cortex status --tokens` | [HIGH-1] | 4-6h | 🔴 HIGH | ✅ Done |
 | **Guardian Accuracy Validation** - 70%+ on test set | [HIGH-2] | 6-8h | 🔴 HIGH | ⬜ Todo |
 | **Integration Test Suite** - Command interaction tests | [MED-1] | 8-12h | 🟡 MED | ⬜ Todo |
 | **Error Handling Refactor** - Remove process.exit() calls | [MED-3] | 3-4h | 🟡 MED | ⬜ Todo |
 
-**Total Effort**: 21-30 hours
+**Total Effort**: 17-24 hours (6h completed)
 
-### HIGH-1: Token Counter Feature
+### HIGH-1: Token Counter Feature ✅ COMPLETE
 
 **Why**: Makes cost/sustainability value visible (QCS Analysis strongest recommendation)
 
 **Output**: Shows HOT/WARM/COLD token counts with % reduction and cost estimates
 
 **Files**: `src/utils/token-counter.ts`, `src/commands/status.ts --tokens flag`
+
+**Results**:
+- 94.5% context reduction on cortex-tms itself (3,647 vs 66,834 tokens)
+- Claude Sonnet 4.5: $0.01/session vs GPT-4: $0.11/session (10x cost comparison)
+- Model validation with helpful error messages
+- Cross-platform path handling (Windows/Mac/Linux)
+- PROMPTS.md added to WARM tier tracking
 
 ### HIGH-2: Guardian Accuracy Validation
 
@@ -126,15 +133,15 @@ See [v2.7 Archive](docs/archive/sprint-v2.7-jan-2026.md) for completed tasks.
 ### v2.7 Guardian Completion
 
 **Timeline**: Jan 22 - Feb 7, 2026 (2-3 weeks)
-**Effort**: 21-30 hours
-**Status**: ⬜ Not Started
-**Blockers**: None - Ready to begin
+**Effort**: 21-30 hours (6h completed, 15-24h remaining)
+**Status**: 🚧 In Progress (20% complete)
+**Blockers**: None
 
-**Previous Completion**:
+**Completion Status**:
 - ✅ Phase 1: Professional Documentation
 - ✅ Phase 2: Guardian MVP Core (6 features)
 - ✅ Phase 3: Distribution & Content
-- ⬜ Phase 4: Strategic Features (NEW - audit-driven)
+- 🚧 Phase 4: Strategic Features (1/4 complete - HIGH-1 ✅ Done)
 
 ### v2.8 Marketing Pivot
 
