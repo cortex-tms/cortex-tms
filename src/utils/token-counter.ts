@@ -6,6 +6,7 @@
  */
 
 import { readFile } from 'fs/promises';
+import { relative } from 'path';
 import { glob } from 'glob';
 
 /**
@@ -17,16 +18,31 @@ const CHARS_PER_TOKEN = 4;
 /**
  * Pricing estimates (USD per 1M tokens)
  * Updated as of January 2026
+ * Source: Anthropic and OpenAI pricing pages
  */
 export const MODEL_PRICING = {
-  'claude-sonnet-3.5': {
+  // Claude 4.x series (current)
+  'claude-sonnet-4.5': {
     input: 3.0,
     output: 15.0,
   },
-  'claude-opus-3.5': {
+  'claude-sonnet-4': {
+    input: 3.0,
+    output: 15.0,
+  },
+  'claude-opus-4.5': {
+    input: 5.0,
+    output: 25.0,
+  },
+  'claude-opus-4': {
     input: 15.0,
     output: 75.0,
   },
+  'claude-haiku-4.5': {
+    input: 1.0,
+    output: 5.0,
+  },
+  // OpenAI GPT-4 series
   'gpt-4-turbo': {
     input: 10.0,
     output: 30.0,
@@ -111,6 +127,7 @@ const WARM_PATTERNS = [
   'SCHEMA.md',
   'TROUBLESHOOTING.md',
   'FUTURE-ENHANCEMENTS.md',
+  'PROMPTS.md',
 ];
 
 /**
@@ -176,7 +193,7 @@ async function countTierTokens(
     const tokens = estimateTokens(characters);
 
     // Make path relative to cwd for display
-    const relativePath = filePath.replace(cwd + '/', '');
+    const relativePath = relative(cwd, filePath);
 
     counts.push({
       path: relativePath,
@@ -248,7 +265,7 @@ export async function analyzeTokenUsage(cwd: string): Promise<TokenStats> {
  */
 export function calculateCostEstimates(
   hotTokens: number,
-  model: ModelName = 'claude-sonnet-3.5'
+  model: ModelName = 'claude-sonnet-4.5'
 ): CostEstimate {
   const pricing = MODEL_PRICING[model];
 

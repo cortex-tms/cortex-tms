@@ -31,8 +31,8 @@ export function createStatusCommand(): Command {
     .option('-t, --tokens', 'Show token usage analysis and cost estimates')
     .option(
       '-m, --model <model>',
-      'Model for cost estimates (claude-sonnet-3.5, claude-opus-3.5, gpt-4-turbo, gpt-4)',
-      'claude-sonnet-3.5'
+      'Model for cost estimates (claude-sonnet-4.5, claude-opus-4.5, gpt-4-turbo, gpt-4)',
+      'claude-sonnet-4.5'
     )
     .action(async (options) => {
       if (options.tokens) {
@@ -142,7 +142,7 @@ async function runStatus(): Promise<void> {
 /**
  * Token analysis command logic
  */
-async function runTokenAnalysis(modelName: string = 'claude-sonnet-3.5'): Promise<void> {
+async function runTokenAnalysis(modelName: string = 'claude-sonnet-4.5'): Promise<void> {
   const cwd = process.cwd();
 
   console.log(chalk.bold.cyan('\n📊 Token Usage Analysis\n'));
@@ -257,6 +257,11 @@ async function runTokenAnalysis(modelName: string = 'claude-sonnet-3.5'): Promis
       );
       console.log(
         `  ${chalk.cyan('Per Month (20 days):')} ${chalk.bold(formatCost(costs.perMonth))}`
+      );
+    } else {
+      console.log(chalk.yellow(`\n⚠️  Unknown model: ${modelName}`));
+      console.log(
+        chalk.gray(`  Available: ${Object.keys(MODEL_PRICING).join(', ')}`)
       );
     }
 
