@@ -136,12 +136,9 @@ async function runPromptCommand(
         chalk.gray('Run "cortex-tms init" to initialize.\n')
       );
     } else {
-      console.error(
-        chalk.red('\n❌ Error:'),
-        error instanceof Error ? error.message : 'Unknown error'
-      );
+      // Re-throw other errors
+      throw error instanceof Error ? error : new Error('Unknown error');
     }
-    process.exit(1);
   }
 }
 

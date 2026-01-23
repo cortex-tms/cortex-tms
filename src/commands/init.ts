@@ -54,11 +54,9 @@ async function runInit(options: InitCommandOptions): Promise<void> {
   if (options.scope) {
     const validScopes = ['nano', 'standard', 'enterprise', 'custom'];
     if (!validScopes.includes(options.scope)) {
-      console.error(
-        chalk.red('\n❌ Error:'),
+      throw new Error(
         `Invalid scope "${options.scope}". Must be one of: ${validScopes.join(', ')}`
       );
-      process.exit(1);
     }
   }
 
@@ -163,7 +161,7 @@ async function runInit(options: InitCommandOptions): Promise<void> {
       console.log(
         chalk.gray('Example: cortex-tms init --scope standard --force\n')
       );
-      process.exit(1);
+      throw new Error('TMS files already exist');
     }
 
     answers = await runInitPrompts(context, cwd);
@@ -324,7 +322,7 @@ async function runInit(options: InitCommandOptions): Promise<void> {
       console.error(chalk.gray(error.stack));
     }
 
-    process.exit(1);
+    throw error instanceof Error ? error : new Error('Unknown error');
   }
 }
 

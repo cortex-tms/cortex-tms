@@ -302,22 +302,19 @@ async function runValidate(options: ValidateCommandOptions): Promise<void> {
 
     console.log();
 
-    // Exit with appropriate code
-    process.exit(result.passed ? 0 : 1);
+    // Throw error if validation failed
+    if (!result.passed) {
+      throw new Error('Validation failed');
+    }
   } catch (error) {
     spinner.fail('Validation failed');
-
-    console.error(
-      chalk.red('\n❌ Error:'),
-      error instanceof Error ? error.message : 'Unknown error'
-    );
 
     if (options.verbose && error instanceof Error && error.stack) {
       console.error(chalk.gray('\nStack trace:'));
       console.error(chalk.gray(error.stack));
     }
 
-    process.exit(1);
+    throw error instanceof Error ? error : new Error('Unknown error');
   }
 }
 

@@ -62,8 +62,28 @@ program.on('command:*', () => {
   process.exit(1);
 });
 
-// Parse command-line arguments
-program.parse(process.argv);
+// Global error handler - catches errors from commands
+program.exitOverride(); // Prevent Commander from exiting on its own
+
+// Parse command-line arguments and handle errors
+try {
+  await program.parseAsync(process.argv);
+} catch (error) {
+  // Commander throws errors for invalid usage, unknown options, etc.
+  if (error instanceof Error) {
+    // Check if it's a Commander error (validation, etc.)
+    if ('code' in error && typeof error.code === 'string') {
+      // Commander errors are already displayed, just exit
+      process.exit(1);
+    }
+
+    // Application errors from commands - display them
+    if (!error.message.includes('(outputHelp)')) {
+      console.error(chalk.red('\n❌ Error:'), error.message);
+    }
+  }
+  process.exit(1);
+}
 
 // Show help if no command provided
 if (!process.argv.slice(2).length) {

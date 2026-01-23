@@ -54,30 +54,29 @@ async function runReviewCommand(
 ): Promise<void> {
   const cwd = process.cwd();
 
+  console.log(chalk.bold.cyan('\n🛡️  Guardian Code Review\n'));
+
+  // Step 1: Validate TMS files exist
+  const patternsPath = join(cwd, 'docs/core/PATTERNS.md');
+  const domainLogicPath = join(cwd, 'docs/core/DOMAIN-LOGIC.md');
+
+  if (!existsSync(patternsPath)) {
+    console.log(chalk.gray('\nGuardian requires a Cortex TMS project with pattern documentation.'));
+    console.log(chalk.gray('Run'), chalk.cyan('cortex-tms init'), chalk.gray('to set up TMS files.\n'));
+    throw new Error('PATTERNS.md not found at docs/core/PATTERNS.md');
+  }
+
+  if (!existsSync(domainLogicPath)) {
+    console.log(chalk.yellow('⚠️  Warning:'), 'DOMAIN-LOGIC.md not found (optional)');
+  }
+
+  // Step 2: Validate file to review exists
+  const targetPath = resolve(cwd, filePath);
+  if (!existsSync(targetPath)) {
+    throw new Error(`File not found: ${filePath}`);
+  }
+
   try {
-    console.log(chalk.bold.cyan('\n🛡️  Guardian Code Review\n'));
-
-    // Step 1: Validate TMS files exist
-    const patternsPath = join(cwd, 'docs/core/PATTERNS.md');
-    const domainLogicPath = join(cwd, 'docs/core/DOMAIN-LOGIC.md');
-
-    if (!existsSync(patternsPath)) {
-      console.log(chalk.red('❌ Error:'), 'PATTERNS.md not found at docs/core/PATTERNS.md');
-      console.log(chalk.gray('\nGuardian requires a Cortex TMS project with pattern documentation.'));
-      console.log(chalk.gray('Run'), chalk.cyan('cortex-tms init'), chalk.gray('to set up TMS files.\n'));
-      process.exit(1);
-    }
-
-    if (!existsSync(domainLogicPath)) {
-      console.log(chalk.yellow('⚠️  Warning:'), 'DOMAIN-LOGIC.md not found (optional)');
-    }
-
-    // Step 2: Validate file to review exists
-    const targetPath = resolve(cwd, filePath);
-    if (!existsSync(targetPath)) {
-      console.log(chalk.red('❌ Error:'), `File not found: ${filePath}\n`);
-      process.exit(1);
-    }
 
     // Step 3: Read files
     console.log(chalk.gray('📖 Reading project patterns...'));
@@ -104,8 +103,7 @@ async function runReviewCommand(
     }
 
     if (!apiKey) {
-      console.log(chalk.red('\n❌ Error:'), 'API key is required\n');
-      process.exit(1);
+      throw new Error('API key is required');
     }
 
     // Step 5: Build LLM prompt
@@ -140,11 +138,8 @@ async function runReviewCommand(
       );
     }
   } catch (error) {
-    console.error(
-      chalk.red('\n❌ Error:'),
-      error instanceof Error ? error.message : 'Unknown error'
-    );
-    process.exit(1);
+    // Re-throw to let CLI handle it
+    throw error instanceof Error ? error : new Error('Unknown error');
   }
 }
 

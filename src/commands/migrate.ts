@@ -89,11 +89,9 @@ async function runMigrate(options: {
   if (!config) {
     spinner.fail('No .cortexrc found');
     console.log(
-      chalk.red('\n❌ Error:'),
-      'This directory is not a Cortex TMS project.'
+      chalk.gray('Run "cortex-tms init" to initialize.\n')
     );
-    console.log(chalk.gray('Run "cortex-tms init" to initialize.\n'));
-    process.exit(1);
+    throw new Error('This directory is not a Cortex TMS project');
   }
 
   spinner.succeed('Configuration loaded');
@@ -101,12 +99,11 @@ async function runMigrate(options: {
   // Step 2: Get file list from scope
   const preset = getScopePreset(config.scope);
   if (!preset) {
-    console.log(chalk.red('\n❌ Error:'), `Unknown scope: ${config.scope}`);
     console.log(
       chalk.gray('\nValid scopes: nano, micro, standard, enterprise, custom')
     );
     console.log(chalk.gray('Update your .cortexrc with a valid scope.\n'));
-    process.exit(1);
+    throw new Error(`Unknown scope: ${config.scope}`);
   }
 
   const allFiles =
@@ -227,13 +224,12 @@ async function applyMigration(
 
   if (!backupResult.success) {
     spinner.fail('Backup failed');
-    console.log(chalk.red('\n❌ Error:'), backupResult.error);
     console.log(chalk.gray('\nMigration aborted to prevent data loss.'));
     console.log(chalk.bold('\n💡 Troubleshooting:'));
     console.log(chalk.gray('  • Check disk space: df -h'));
     console.log(chalk.gray('  • Check permissions: ls -la .cortex/'));
     console.log(chalk.gray('  • Ensure .cortex/ is not read-only\n'));
-    process.exit(1);
+    throw new Error(backupResult.error || 'Backup failed');
   }
 
   spinner.succeed(`Backup created: ${chalk.cyan(backupResult.backupPath)}`);
@@ -423,7 +419,7 @@ async function runRollback(projectRoot: string): Promise<void> {
     console.log(chalk.cyan(`     cp .cortex/backups/${selectedBackup}/<file> ./`));
     console.log(chalk.gray('  3. Verify restoration: git diff'));
     console.log(chalk.gray('  4. If corrupted, restore from Git: git checkout HEAD -- <file>\n'));
-    process.exit(1);
+    throw new Error('Restoration failed');
   }
 }
 

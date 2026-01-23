@@ -131,11 +131,7 @@ async function runStatus(): Promise<void> {
     console.log(); // Add trailing newline
   } catch (error) {
     spinner.fail('Failed to gather project information');
-    console.error(
-      chalk.red('\n❌ Error:'),
-      error instanceof Error ? error.message : 'Unknown error'
-    );
-    process.exit(1);
+    throw error instanceof Error ? error : new Error('Unknown error');
   }
 }
 
@@ -279,11 +275,7 @@ async function runTokenAnalysis(modelName: string = 'claude-sonnet-4.5'): Promis
     console.log(); // Trailing newline
   } catch (error) {
     spinner.fail('Token analysis failed');
-    console.error(
-      chalk.red('\n❌ Error:'),
-      error instanceof Error ? error.message : 'Unknown error'
-    );
-    process.exit(1);
+    throw error instanceof Error ? error : new Error('Unknown error');
   }
 }
 
