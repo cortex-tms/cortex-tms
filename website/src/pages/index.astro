@@ -173,6 +173,72 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
       </GlassPanel>
     </section>
 
+    {/* Green AI Development Badge */}
+    <section class='content-section sustainability-badge-section'>
+      <GlassPanel variant='bordered'>
+        <div style='padding: 3rem 2rem; text-align: center;'>
+          <div style='display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;'>
+            <Leaf size={48} strokeWidth={1.5} style='color: var(--sl-color-accent);' />
+            <h2 style='margin: 0; font-size: 2rem; color: var(--sl-color-accent);'>
+              Green AI Development
+            </h2>
+          </div>
+
+          <p style='font-size: 1.25rem; line-height: 1.6; color: var(--sl-color-gray-2); max-width: 700px; margin: 0 auto 2rem;'>
+            Every AI query you run wastes energy reading outdated documentation.
+            Cortex TMS reduces your carbon footprint by <strong style='color: var(--sl-color-accent-high);'>94.5%</strong>
+            through intelligent context management.
+          </p>
+
+          <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 800px; margin: 0 auto;'>
+            <div>
+              <div style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+                94.5%
+              </div>
+              <div style='color: var(--sl-color-gray-2); font-weight: 500;'>
+                Less GPU Compute
+              </div>
+              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
+                Lower carbon emissions
+              </div>
+            </div>
+
+            <div>
+              <div style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+                63K
+              </div>
+              <div style='color: var(--sl-color-gray-2); font-weight: 500;'>
+                Tokens Saved
+              </div>
+              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
+                Per session average
+              </div>
+            </div>
+
+            <div>
+              <div style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+                10x
+              </div>
+              <div style='color: var(--sl-color-gray-2); font-weight: 500;'>
+                Efficiency Gain
+              </div>
+              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
+                Signal over noise
+              </div>
+            </div>
+          </div>
+
+          <div style='margin-top: 2.5rem; padding: 1.5rem; background: rgba(var(--sl-color-accent-rgb), 0.05); border-radius: 12px; border: 1px solid rgba(var(--sl-color-accent-rgb), 0.2);'>
+            <p style='margin: 0; font-size: 0.9rem; color: var(--sl-color-gray-3);'>
+              <strong style='color: var(--sl-color-accent);'>Why this matters:</strong>
+              AI models consume significant energy. By reading only what's needed (HOT/WARM/COLD tiers),
+              Cortex TMS dramatically reduces compute requirements—saving costs and carbon emissions.
+            </p>
+          </div>
+        </div>
+      </GlassPanel>
+    </section>
+
     {/* Quick Installation */}
     <section class='content-section'>
       <h2>Quick Installation</h2>
@@ -479,6 +545,22 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
       padding: 3rem 2rem;
       border-radius: 24px;
       border: 1px solid var(--glass-border);
+    }
+
+    /* Sustainability Badge Section */
+    .sustainability-badge-section {
+      margin-bottom: 5rem;
+    }
+
+    .sustainability-badge-section h2 {
+      background: linear-gradient(
+        135deg,
+        var(--sl-color-accent),
+        var(--sl-color-accent-high)
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     /* Code block with glass styling */
