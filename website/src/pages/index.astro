@@ -82,7 +82,7 @@ import GlassQuote from '../components/GlassQuote.astro'
               <strong>After TMS:</strong> 80% fewer violations with Guardian semantic validation
             </p>
             <p style='line-height: 1.6; color: var(--sl-color-accent-high); font-weight: 600;'>
-              Impact: Zero hallucinations
+              Impact: Zero false negatives
             </p>
           </div>
         </GlassPanel>
@@ -184,7 +184,7 @@ import GlassQuote from '../components/GlassQuote.astro'
               <path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path>
             </svg>
           </button>
-          <pre><code>npm install -g cortex-tms@2.6.1</code></pre>
+          <pre><code>npm install -g cortex-tms@2.7.0</code></pre>
         </div>
       </div>
       <p style='margin: 1.5rem 0 1rem; color: var(--sl-color-gray-2);'>Or use with npx (no installation required):</p>
@@ -196,7 +196,7 @@ import GlassQuote from '../components/GlassQuote.astro'
               <path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path>
             </svg>
           </button>
-          <pre><code>npx cortex-tms@2.6.1 init</code></pre>
+          <pre><code>npx cortex-tms@2.7.0 init</code></pre>
         </div>
       </div>
     </section>
@@ -263,13 +263,47 @@ import GlassQuote from '../components/GlassQuote.astro'
         >
           <div style='padding: 2rem;'>
             <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent);'>
-              <span style='font-size: 2rem; margin-right: 0.5rem;'>🚀</span>
-              Instant Setup
+              <span style='font-size: 2rem; margin-right: 0.5rem;'>📝</span>
+              Essential 7 Prompts
             </h3>
             <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
-              One command scaffolds your entire AI-optimized project structure.
-              From task management to architectural decision records, everything
-              is preconfigured with best practices baked in.
+              Project-aware AI prompts guide you through the entire development
+              lifecycle—from init-session to feature implementation to code review.
+              One command copies the right prompt to your clipboard.
+            </p>
+          </div>
+        </GlassPanel>
+
+        <GlassPanel
+          variant='bordered'
+          tilt='full'
+        >
+          <div style='padding: 2rem;'>
+            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent);'>
+              <span style='font-size: 2rem; margin-right: 0.5rem;'>🔑</span>
+              BYOK (Bring Your Own Key)
+            </h3>
+            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+              Guardian uses your OpenAI or Anthropic API key—full privacy and
+              control. No data leaves your machine except API calls you authorize.
+              Compatible with Claude and GPT-4 models.
+            </p>
+          </div>
+        </GlassPanel>
+
+        <GlassPanel
+          variant='bordered'
+          tilt='full'
+        >
+          <div style='padding: 2rem;'>
+            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent);'>
+              <span style='font-size: 2rem; margin-right: 0.5rem;'>⚡</span>
+              &lt; 3 File Reads
+            </h3>
+            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+              Our validation test: "Can an AI agent find what it needs in under
+              3 file reads?" The answer is yes—HOT files give instant context,
+              WARM files provide architectural truth on-demand.
             </p>
           </div>
         </GlassPanel>
