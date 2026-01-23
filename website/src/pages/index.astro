@@ -8,7 +8,17 @@ import SimpleLayout from '../layouts/SimpleLayout.astro'
 import GlassPanel from '../components/GlassPanel.astro'
 import GlassButton from '../components/GlassButton.astro'
 import GlassQuote from '../components/GlassQuote.astro'
-import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap } from '@lucide/astro'
+import {
+  Coins,
+  ShieldCheck,
+  Leaf,
+  Flame,
+  Shield,
+  BarChart3,
+  FileText,
+  Key,
+  Zap,
+} from '@lucide/astro'
 ---
 
 <SimpleLayout
@@ -29,8 +39,9 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
         Stop wasting tokens. Stop burning GPU cycles on old docs.
       </p>
       <p class='hero-description'>
-        Reduce AI API costs by <strong>up to 10x</strong> through intelligent context management.
-        Cut carbon footprint by <strong>94.5%</strong> with Green Governance.
+        Reduce AI API costs by <strong>up to 10x</strong> through intelligent context
+        management. Cut compute requirements by <strong>94.5%</strong> with Green
+        Governance.
       </p>
       <div class='hero-actions'>
         <GlassButton
@@ -52,55 +63,103 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
     <section class='content-section'>
       <h2>Three Pillars, Measurable Results</h2>
       <div class='pillars-grid'>
-        <GlassPanel variant='bordered' tilt='full'>
+        <GlassPanel
+          variant='bordered'
+          tilt='full'
+        >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <Coins size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <Coins
+                size={32}
+                strokeWidth={1.5}
+              />
               Cost Efficiency
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'>
-              <strong>Before TMS:</strong> Wasting $0.19/session reading 66,834 tokens of old docs
+            <p
+              style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'
+            >
+              <strong>Before TMS:</strong> Wasting $0.19/session reading 66,834 tokens
+              of old docs
             </p>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'>
-              <strong>After TMS:</strong> Paying $0.01/session with 94.5% context reduction
+            <p
+              style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'
+            >
+              <strong>After TMS:</strong> Paying $0.01/session with 94.5% context
+              reduction
             </p>
-            <p style='line-height: 1.6; color: var(--sl-color-accent-high); font-weight: 600;'>
+            <p
+              style='line-height: 1.6; color: var(--sl-color-accent-high); font-weight: 600;'
+            >
               Impact: 10x cost reduction
             </p>
           </div>
         </GlassPanel>
 
-        <GlassPanel variant='bordered' tilt='full'>
+        <GlassPanel
+          variant='bordered'
+          tilt='full'
+        >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <ShieldCheck size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <ShieldCheck
+                size={32}
+                strokeWidth={1.5}
+              />
               Quality
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'>
-              <strong>Before TMS:</strong> 40% pattern violations from AI reading outdated examples
+            <p
+              style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'
+            >
+              <strong>Before TMS:</strong> 40% pattern violations from AI reading
+              outdated examples
             </p>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'>
-              <strong>After TMS:</strong> 80% fewer violations with Guardian semantic validation
+            <p
+              style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'
+            >
+              <strong>After TMS:</strong> 80% fewer violations with Guardian semantic
+              validation
             </p>
-            <p style='line-height: 1.6; color: var(--sl-color-accent-high); font-weight: 600;'>
+            <p
+              style='line-height: 1.6; color: var(--sl-color-accent-high); font-weight: 600;'
+            >
               Impact: Zero false negatives
             </p>
           </div>
         </GlassPanel>
 
-        <GlassPanel variant='bordered' tilt='full'>
+        <GlassPanel
+          variant='bordered'
+          tilt='full'
+        >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <Leaf size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <Leaf
+                size={32}
+                strokeWidth={1.5}
+              />
               Sustainability
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'>
-              <strong>Before TMS:</strong> Burning unnecessary GPU cycles on 94.5% noise
+            <p
+              style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'
+            >
+              <strong>Before TMS:</strong> Burning unnecessary GPU cycles on 94.5%
+              noise
             </p>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'>
-              <strong>After TMS:</strong> 94.5% lower carbon footprint through intelligent tiering
+            <p
+              style='line-height: 1.6; color: var(--sl-color-gray-2); margin-bottom: 1rem;'
+            >
+              <strong>After TMS:</strong> 94.5% lower compute requirements through
+              intelligent tiering
             </p>
-            <p style='line-height: 1.6; color: var(--sl-color-accent-high); font-weight: 600;'>
+            <p
+              style='line-height: 1.6; color: var(--sl-color-accent-high); font-weight: 600;'
+            >
               Impact: Greener development
             </p>
           </div>
@@ -120,53 +179,70 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
     {/* Token Savings Proof */}
     <section class='content-section proof-section'>
       <h2>Real Numbers, Real Savings</h2>
-      <p style='text-align: center; font-size: 1.125rem; color: var(--sl-color-gray-2); margin-bottom: 2rem;'>
+      <p
+        style='text-align: center; font-size: 1.125rem; color: var(--sl-color-gray-2); margin-bottom: 2rem;'
+      >
         From Cortex TMS itself (we dogfood everything):
       </p>
 
       <GlassPanel variant='bordered'>
         <div style='padding: 2rem;'>
-          <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center;'>
+          <div
+            style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center;'
+          >
             <div>
-              <div style='font-size: 2.5rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+              <div
+                style='font-size: 2.5rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'
+              >
                 94.5%
               </div>
               <div style='color: var(--sl-color-gray-2);'>
                 Context Reduction
               </div>
-              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
+              <div
+                style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'
+              >
                 3,647 tokens vs 66,834
               </div>
             </div>
 
             <div>
-              <div style='font-size: 2.5rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+              <div
+                style='font-size: 2.5rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'
+              >
                 10x
               </div>
-              <div style='color: var(--sl-color-gray-2);'>
-                Cost Reduction
-              </div>
-              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
+              <div style='color: var(--sl-color-gray-2);'>Cost Reduction</div>
+              <div
+                style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'
+              >
                 $0.01 vs $0.11/session
               </div>
             </div>
 
             <div>
-              <div style='font-size: 2.5rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+              <div
+                style='font-size: 2.5rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'
+              >
                 80%
               </div>
-              <div style='color: var(--sl-color-gray-2);'>
-                Fewer Violations
-              </div>
-              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
+              <div style='color: var(--sl-color-gray-2);'>Fewer Violations</div>
+              <div
+                style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'
+              >
                 Guardian catches drift
               </div>
             </div>
           </div>
 
-          <div style='margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--glass-border);'>
-            <p style='text-align: center; color: var(--sl-color-gray-3); font-size: 0.875rem;'>
-              <strong>How?</strong> HOT/WARM/COLD tier system ensures AI agents only read what matters.
+          <div
+            style='margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--glass-border);'
+          >
+            <p
+              style='text-align: center; color: var(--sl-color-gray-3); font-size: 0.875rem;'
+            >
+              <strong>How?</strong> HOT/WARM/COLD tier system ensures AI agents only
+              read what matters.
             </p>
           </div>
         </div>
@@ -177,62 +253,95 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
     <section class='content-section sustainability-badge-section'>
       <GlassPanel variant='bordered'>
         <div style='padding: 3rem 2rem; text-align: center;'>
-          <div style='display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;'>
-            <Leaf size={48} strokeWidth={1.5} style='color: var(--sl-color-accent);' />
-            <h2 style='margin: 0; font-size: 2rem; color: var(--sl-color-accent);'>
+          <div
+            style='display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;'
+          >
+            <Leaf
+              size={48}
+              strokeWidth={1.5}
+              style='color: var(--sl-color-accent);'
+            />
+            <h2
+              style='margin: 0; font-size: 2rem; color: var(--sl-color-accent);'
+            >
               Green AI Development
             </h2>
           </div>
 
-          <p style='font-size: 1.25rem; line-height: 1.6; color: var(--sl-color-gray-2); max-width: 700px; margin: 0 auto 2rem;'>
+          <p
+            style='font-size: 1.25rem; line-height: 1.6; color: var(--sl-color-gray-2); max-width: 700px; margin: 0 auto 2rem;'
+          >
             Every AI query you run wastes energy reading outdated documentation.
-            Cortex TMS reduces your carbon footprint by <strong style='color: var(--sl-color-accent-high);'>94.5%</strong>
+            Cortex TMS reduces your compute requirements by <strong
+              style='color: var(--sl-color-accent-high);'>94.5%</strong
+            >
             through intelligent context management.
           </p>
 
-          <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 800px; margin: 0 auto;'>
+          <div
+            style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 800px; margin: 0 auto;'
+          >
             <div>
-              <div style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+              <div
+                style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'
+              >
                 94.5%
               </div>
               <div style='color: var(--sl-color-gray-2); font-weight: 500;'>
-                Less GPU Compute
+                Less Context
               </div>
-              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
-                Lower carbon emissions
+              <div
+                style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'
+              >
+                Lower compute requirements
               </div>
             </div>
 
             <div>
-              <div style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+              <div
+                style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'
+              >
                 63K
               </div>
               <div style='color: var(--sl-color-gray-2); font-weight: 500;'>
                 Tokens Saved
               </div>
-              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
+              <div
+                style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'
+              >
                 Per session average
               </div>
             </div>
 
             <div>
-              <div style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'>
+              <div
+                style='font-size: 3rem; font-weight: 700; color: var(--sl-color-accent-high); margin-bottom: 0.5rem;'
+              >
                 10x
               </div>
               <div style='color: var(--sl-color-gray-2); font-weight: 500;'>
                 Efficiency Gain
               </div>
-              <div style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'>
+              <div
+                style='font-size: 0.875rem; color: var(--sl-color-gray-3); margin-top: 0.5rem;'
+              >
                 Signal over noise
               </div>
             </div>
           </div>
 
-          <div style='margin-top: 2.5rem; padding: 1.5rem; background: rgba(var(--sl-color-accent-rgb), 0.05); border-radius: 12px; border: 1px solid rgba(var(--sl-color-accent-rgb), 0.2);'>
-            <p style='margin: 0; font-size: 0.9rem; color: var(--sl-color-gray-3);'>
-              <strong style='color: var(--sl-color-accent);'>Why this matters:</strong>
-              AI models consume significant energy. By reading only what's needed (HOT/WARM/COLD tiers),
-              Cortex TMS dramatically reduces compute requirements—saving costs and carbon emissions.
+          <div
+            style='margin-top: 2.5rem; padding: 1.5rem; background: rgba(var(--sl-color-accent-rgb), 0.05); border-radius: 12px; border: 1px solid rgba(var(--sl-color-accent-rgb), 0.2);'
+          >
+            <p
+              style='margin: 0; font-size: 0.9rem; color: var(--sl-color-gray-3);'
+            >
+              <strong style='color: var(--sl-color-accent);'
+                >Why this matters:</strong
+              >
+              AI models consume significant energy. By reading only what's needed
+              (HOT/WARM/COLD tiers), Cortex TMS dramatically reduces compute requirements—saving
+              costs and energy.
             </p>
           </div>
         </div>
@@ -242,25 +351,65 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
     {/* Quick Installation */}
     <section class='content-section'>
       <h2>Quick Installation</h2>
-      <p style='margin-bottom: 1rem; color: var(--sl-color-gray-2);'>Install globally:</p>
+      <p style='margin-bottom: 1rem; color: var(--sl-color-gray-2);'>
+        Install globally:
+      </p>
       <div class='code-block-wrapper'>
         <div class='code-block'>
-          <button class='copy-code-btn' title='Copy to clipboard'>
-            <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'>
-              <rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect>
-              <path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path>
+          <button
+            class='copy-code-btn'
+            title='Copy to clipboard'
+          >
+            <svg
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              stroke-width='2'
+            >
+              <rect
+                x='9'
+                y='9'
+                width='13'
+                height='13'
+                rx='2'
+                ry='2'
+              ></rect>
+              <path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'
+              ></path>
             </svg>
           </button>
           <pre><code>npm install -g cortex-tms@2.7.0</code></pre>
         </div>
       </div>
-      <p style='margin: 1.5rem 0 1rem; color: var(--sl-color-gray-2);'>Or use with npx (no installation required):</p>
+      <p style='margin: 1.5rem 0 1rem; color: var(--sl-color-gray-2);'>
+        Or use with npx (no installation required):
+      </p>
       <div class='code-block-wrapper'>
         <div class='code-block'>
-          <button class='copy-code-btn' title='Copy to clipboard'>
-            <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'>
-              <rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect>
-              <path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path>
+          <button
+            class='copy-code-btn'
+            title='Copy to clipboard'
+          >
+            <svg
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              stroke-width='2'
+            >
+              <rect
+                x='9'
+                y='9'
+                width='13'
+                height='13'
+                rx='2'
+                ry='2'
+              ></rect>
+              <path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'
+              ></path>
             </svg>
           </button>
           <pre><code>npx cortex-tms@2.7.0 init</code></pre>
@@ -277,15 +426,21 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
           tilt='full'
         >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <Flame size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <Flame
+                size={32}
+                strokeWidth={1.5}
+              />
               HOT/WARM/COLD Tiering
             </h3>
             <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
               Intelligent context management ensures AI only reads what matters.
               <strong>HOT</strong> files (current sprint) are always read,
               <strong>WARM</strong> files (architecture) are on-demand, and
-              <strong>COLD</strong> files (archives) are ignored—achieving 94.5% context reduction.
+              <strong>COLD</strong> files (archives) are ignored—achieving 94.5% context
+              reduction.
             </p>
           </div>
         </GlassPanel>
@@ -295,14 +450,20 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
           tilt='full'
         >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <Shield size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <Shield
+                size={32}
+                strokeWidth={1.5}
+              />
               Guardian Validation
             </h3>
             <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
-              AI-powered semantic validation against PATTERNS.md and DOMAIN-LOGIC.md.
-              Guardian catches pattern drift that grep and regex miss, achieving
-              80% fewer violations and zero false negatives.
+              AI-powered semantic validation against PATTERNS.md and
+              DOMAIN-LOGIC.md. Guardian catches pattern drift that grep and
+              regex miss, achieving 80% fewer violations and zero false
+              negatives.
             </p>
           </div>
         </GlassPanel>
@@ -312,14 +473,19 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
           tilt='full'
         >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <BarChart3 size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <BarChart3
+                size={32}
+                strokeWidth={1.5}
+              />
               Token Counter
             </h3>
             <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
-              Real-time token analysis shows your exact savings with
-              multi-model cost comparison (Claude, GPT-4, and more).
-              Track your carbon footprint reduction and prove ROI to stakeholders.
+              Real-time token analysis shows your exact savings with multi-model
+              cost comparison (Claude, GPT-4, and more). Track your
+              sustainability impact and prove ROI to stakeholders.
             </p>
           </div>
         </GlassPanel>
@@ -329,14 +495,19 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
           tilt='full'
         >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <FileText size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <FileText
+                size={32}
+                strokeWidth={1.5}
+              />
               Essential 7 Prompts
             </h3>
             <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
               Project-aware AI prompts guide you through the entire development
-              lifecycle—from init-session to feature implementation to code review.
-              One command copies the right prompt to your clipboard.
+              lifecycle—from init-session to feature implementation to code
+              review. One command copies the right prompt to your clipboard.
             </p>
           </div>
         </GlassPanel>
@@ -346,14 +517,19 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
           tilt='full'
         >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <Key size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <Key
+                size={32}
+                strokeWidth={1.5}
+              />
               BYOK (Bring Your Own Key)
             </h3>
             <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
               Guardian uses your OpenAI or Anthropic API key—full privacy and
-              control. No data leaves your machine except API calls you authorize.
-              Compatible with Claude and GPT-4 models.
+              control. No data leaves your machine except API calls you
+              authorize. Compatible with Claude and GPT-4 models.
             </p>
           </div>
         </GlassPanel>
@@ -363,8 +539,13 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
           tilt='full'
         >
           <div style='padding: 2rem;'>
-            <h3 style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'>
-              <Zap size={32} strokeWidth={1.5} />
+            <h3
+              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
+            >
+              <Zap
+                size={32}
+                strokeWidth={1.5}
+              />
               &lt; 3 File Reads
             </h3>
             <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
@@ -416,8 +597,8 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
               Track Savings
             </h3>
             <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
-              Run <code>cortex-tms status --tokens</code> to see your exact cost
-              savings and carbon footprint reduction. Prove ROI with real numbers.
+              Run <code>cortex-tms status --tokens</code> to see your exact cost savings
+              and sustainability impact. Prove ROI with real numbers.
             </p>
           </div>
         </GlassPanel>
@@ -691,32 +872,32 @@ import { Coins, ShieldCheck, Leaf, Flame, Shield, BarChart3, FileText, Key, Zap 
   <script>
     // Copy to clipboard functionality for all code blocks
     document.addEventListener('DOMContentLoaded', () => {
-      const codeBlocks = document.querySelectorAll('.code-block');
+      const codeBlocks = document.querySelectorAll('.code-block')
 
       codeBlocks.forEach((block) => {
-        const copyBtn = block.querySelector('.copy-code-btn');
-        const code = block.querySelector('pre code');
+        const copyBtn = block.querySelector('.copy-code-btn')
+        const code = block.querySelector('pre code')
 
         if (copyBtn && code) {
           copyBtn.addEventListener('click', async () => {
             try {
-              await navigator.clipboard.writeText(code.textContent || '');
-              
+              await navigator.clipboard.writeText(code.textContent || '')
+
               // Visual feedback
-              copyBtn.classList.add('copied');
-              copyBtn.title = 'Copied!';
-              
+              copyBtn.classList.add('copied')
+              copyBtn.title = 'Copied!'
+
               // Reset after 2 seconds
               setTimeout(() => {
-                copyBtn.classList.remove('copied');
-                copyBtn.title = 'Copy to clipboard';
-              }, 2000);
+                copyBtn.classList.remove('copied')
+                copyBtn.title = 'Copy to clipboard'
+              }, 2000)
             } catch (err) {
-              console.error('Failed to copy:', err);
+              console.error('Failed to copy:', err)
             }
-          });
+          })
         }
-      });
-    });
+      })
+    })
   </script>
 </SimpleLayout>

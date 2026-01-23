@@ -6,9 +6,9 @@ Cortex TMS is an **AI Governance Platform** built on three pillars:
 
 1. **💰 Cost Efficiency** - Reduce AI API costs by **40-60%** through intelligent context management
 2. **✅ Quality** - Prevent hallucinations from outdated docs with semantic validation
-3. **🌱 Sustainability** - Cut carbon footprint by **94.5%** with Green Governance
+3. **🌱 Sustainability** - Cut compute requirements by **94.5%** with Green Governance
 
-Stop feeding Claude/Copilot/Cursor thousands of outdated lines. **94.5% context reduction** means **10x lower costs**, **zero hallucinations**, and **zero carbon waste** from reading archived docs.
+Stop feeding Claude/Copilot/Cursor thousands of outdated lines. **94.5% context reduction** means **10x lower costs**, **zero hallucinations**, and **less compute waste** from reading archived docs.
 
 [![npm version](https://img.shields.io/npm/v/cortex-tms.svg?style=flat-square)](https://www.npmjs.com/package/cortex-tms)
 [![npm downloads](https://img.shields.io/npm/dm/cortex-tms.svg?style=flat-square)](https://www.npmjs.com/package/cortex-tms)
@@ -59,15 +59,16 @@ Choose your scope (Nano/Standard/Enterprise) and start building with AI-optimize
 cortex status --tokens -m claude-sonnet-4-5
 ```
 
-| Metric | Value | Impact |
-|:-------|:------|:-------|
-| **Context Reduction** | 94.5% | Read 3,647 tokens instead of 66,834 |
-| **Cost per Session** | $0.01 | vs $0.20 without tiering (Claude Sonnet 4.5) |
-| **Cost Comparison** | 10x cheaper | Claude Sonnet vs GPT-4 ($0.01 vs $0.11/session) |
-| **Carbon Footprint** | 94.5% lower | Less compute = greener development |
-| **Quality Improvement** | 80% fewer violations | Guardian catches pattern drift |
+| Metric                  | Value                | Impact                                          |
+| :---------------------- | :------------------- | :---------------------------------------------- |
+| **Context Reduction**   | 94.5%                | Read 3,647 tokens instead of 66,834             |
+| **Cost per Session**    | $0.01                | vs $0.20 without tiering (Claude Sonnet 4.5)    |
+| **Cost Comparison**     | 10x cheaper          | Claude Sonnet vs GPT-4 ($0.01 vs $0.11/session) |
+| **Carbon Footprint**    | 94.5% lower          | Less compute = greener development              |
+| **Quality Improvement** | 80% fewer violations | Guardian catches pattern drift                  |
 
 **How?** The HOT/WARM/COLD tier system ensures AI agents only read what matters:
+
 - **HOT**: Current sprint (always read) - 3,647 tokens
 - **WARM**: Architectural truth (on-demand) - 20,109 tokens
 - **COLD**: Historical archive (ignored) - 43,078 tokens
@@ -93,6 +94,7 @@ Traditional repos drown AI agents in thousands of lines of historical tasks and 
 Cortex TMS provides 7 production-ready commands (v2.6.1):
 
 ### `cortex-tms tutorial`
+
 Interactive walkthrough teaching the "Cortex Way" - perfect for first-time users.
 
 ```bash
@@ -100,6 +102,7 @@ cortex-tms tutorial  # Start the guided tour
 ```
 
 **What You'll Learn**:
+
 - Project Dashboard: Using `status` to see your cockpit
 - AI Activation: Using `prompt` to activate project-aware AI agents
 - Zero-Drift Governance: Automated version sync with `docs:sync`
@@ -111,6 +114,7 @@ cortex-tms tutorial  # Start the guided tour
 ---
 
 ### `cortex-tms init`
+
 Initialize TMS structure in your project with interactive scope selection.
 
 ```bash
@@ -120,6 +124,7 @@ cortex-tms init --dry-run          # Preview changes
 ```
 
 ### `cortex-tms validate`
+
 Verify your project's TMS health and auto-fix common issues.
 
 ```bash
@@ -129,6 +134,7 @@ cortex-tms validate --strict # Strict mode with no warnings
 ```
 
 ### `cortex-tms status`
+
 Project cockpit with health dashboard, sprint progress, and token analysis.
 
 ```bash
@@ -138,6 +144,7 @@ cortex-tms status --tokens -m gpt-4  # Cost comparison across models
 ```
 
 **Token Analysis Features**:
+
 - HOT/WARM/COLD tier breakdown with token counts
 - Context reduction percentage (e.g., 94.5% reduction)
 - Cost estimates per session/day/month
@@ -145,6 +152,7 @@ cortex-tms status --tokens -m gpt-4  # Cost comparison across models
 - Sustainability impact tracking
 
 ### `cortex-tms migrate`
+
 Intelligent version management—detect outdated templates and automatically upgrade with safety backups.
 
 ```bash
@@ -156,18 +164,21 @@ cortex-tms migrate --dry-run          # Preview migration plan
 ```
 
 **Status Categories**:
+
 - `LATEST`: Already on current version
 - `OUTDATED`: Safe to auto-upgrade (matches old template)
 - `CUSTOMIZED`: Manual review needed (has user changes)
 - `MISSING`: Optional file not installed
 
 **Safety Features**:
+
 - Automatic backups in `.cortex/backups/` before any changes
 - Timestamped snapshots with manifest files
 - One-click rollback with interactive backup selection
 - Confirmation prompts prevent accidental overwrites
 
 ### `cortex-tms prompt`
+
 Access project-aware AI prompts from the Essential 7 library.
 
 ```bash
@@ -177,6 +188,7 @@ cortex-tms prompt --list       # Browse all prompts
 ```
 
 **The Essential 7**:
+
 - `init-session` - Start your AI session with context
 - `feature` - Implement new features with architectural anchors
 - `debug` - Troubleshoot with known issues lookup
@@ -186,6 +198,7 @@ cortex-tms prompt --list       # Browse all prompts
 - `finish` - Execute maintenance protocol
 
 ### `cortex-tms review` 🛡️
+
 **Guardian**: AI-powered semantic validation against project patterns and domain logic.
 
 ```bash
@@ -195,18 +208,21 @@ cortex-tms review src/index.ts --model gpt-4      # Specify model
 ```
 
 **What Guardian Does**:
+
 - Analyzes code against `PATTERNS.md` (canonical examples, do/don't patterns)
 - Validates against `DOMAIN-LOGIC.md` (immutable project rules)
 - Uses LLM to catch **semantic violations**, not just syntax errors
 - Reports violations with specific pattern references
 
 **Why Guardian?**
+
 - **Zero False Negatives**: Never misses actual violations (65.5% baseline accuracy)
 - **Semantic Understanding**: Catches violations grep/regex can't find
 - **Pattern Enforcement**: Stops drift from architectural decisions
 - **BYOK (Bring Your Own Key)**: Uses your OpenAI or Anthropic API key
 
 **Example Output**:
+
 ```
 🛡️  Guardian: Code Review
 ✓ PATTERNS.md loaded (12 patterns)
@@ -224,24 +240,25 @@ cortex-tms review src/index.ts --model gpt-4      # Specify model
 
 ## 📂 Documentation Structure
 
-| Folder / File | Purpose | AI Context Tier |
-|:-------------|:--------|:---------------|
-| `NEXT-TASKS.md` | Active sprint and current focus | **HOT** (Always Read) |
-| `PROMPTS.md` | AI interaction templates (Essential 7) | **HOT** (Always Read) |
-| `CLAUDE.md` | CLI commands & workflow config | **HOT** (Always Read) |
-| `.github/copilot-instructions.md` | Global guardrails and critical rules | **HOT** (Always Read) |
-| `FUTURE-ENHANCEMENTS.md` | Living backlog (not current sprint) | **PLANNING** |
-| `docs/core/ARCHITECTURE.md` | System design & tech stack | **WARM** (Read on Demand) |
-| `docs/core/PATTERNS.md` | Canonical code examples (Do/Don't) | **WARM** (Read on Demand) |
-| `docs/core/DOMAIN-LOGIC.md` | Immutable project rules | **WARM** (Read on Demand) |
-| `docs/core/GIT-STANDARDS.md` | Git & PM conventions | **WARM** (Read on Demand) |
-| `docs/core/DECISIONS.md` | Architecture Decision Records | **WARM** (Read on Demand) |
-| `docs/core/GLOSSARY.md` | Project terminology | **WARM** (Read on Demand) |
-| `docs/core/SCHEMA.md` | Data models (optional) | **WARM** (Read on Demand) |
-| `docs/core/TROUBLESHOOTING.md` | Framework gotchas (optional) | **WARM** (Read on Demand) |
-| `docs/archive/` | Historical changelogs | **COLD** (Ignore) |
+| Folder / File                     | Purpose                                | AI Context Tier           |
+| :-------------------------------- | :------------------------------------- | :------------------------ |
+| `NEXT-TASKS.md`                   | Active sprint and current focus        | **HOT** (Always Read)     |
+| `PROMPTS.md`                      | AI interaction templates (Essential 7) | **HOT** (Always Read)     |
+| `CLAUDE.md`                       | CLI commands & workflow config         | **HOT** (Always Read)     |
+| `.github/copilot-instructions.md` | Global guardrails and critical rules   | **HOT** (Always Read)     |
+| `FUTURE-ENHANCEMENTS.md`          | Living backlog (not current sprint)    | **PLANNING**              |
+| `docs/core/ARCHITECTURE.md`       | System design & tech stack             | **WARM** (Read on Demand) |
+| `docs/core/PATTERNS.md`           | Canonical code examples (Do/Don't)     | **WARM** (Read on Demand) |
+| `docs/core/DOMAIN-LOGIC.md`       | Immutable project rules                | **WARM** (Read on Demand) |
+| `docs/core/GIT-STANDARDS.md`      | Git & PM conventions                   | **WARM** (Read on Demand) |
+| `docs/core/DECISIONS.md`          | Architecture Decision Records          | **WARM** (Read on Demand) |
+| `docs/core/GLOSSARY.md`           | Project terminology                    | **WARM** (Read on Demand) |
+| `docs/core/SCHEMA.md`             | Data models (optional)                 | **WARM** (Read on Demand) |
+| `docs/core/TROUBLESHOOTING.md`    | Framework gotchas (optional)           | **WARM** (Read on Demand) |
+| `docs/archive/`                   | Historical changelogs                  | **COLD** (Ignore)         |
 
 **Context Budget Limits**: To keep HOT files efficient:
+
 - `NEXT-TASKS.md`: Stay under **200 lines** (archive completed sprints to `docs/archive/`)
 - `.github/copilot-instructions.md`: Stay under **100 lines** (critical rules only)
 
@@ -252,30 +269,35 @@ cortex-tms review src/index.ts --model gpt-4      # Specify model
 ## 🚀 What's New in v2.6.1
 
 ### Token Counter - Prove Your Savings (GREEN GOVERNANCE)
+
 - **Real-Time Token Analysis**: `cortex status --tokens` shows HOT/WARM/COLD breakdown
 - **Multi-Model Cost Comparison**: Claude Sonnet 4.5, Opus 4.5, GPT-4, and more
-- **Sustainability Metrics**: Track carbon footprint reduction from less compute
+- **Sustainability Metrics**: Track your sustainability impact from less compute
 - **94.5% Context Reduction**: Cortex TMS reads 3,647 tokens instead of 66,834
 - **10x Cost Savings**: $0.01/session (Claude Sonnet) vs $0.11/session (GPT-4)
 
 ### Guardian Semantic Validation (QUALITY ENFORCEMENT)
+
 - **Pattern Enforcement**: `cortex review <file>` validates against PATTERNS.md
 - **Domain Logic Checker**: Audits code against immutable project rules
 - **Zero False Negatives**: Never misses actual violations (65.5% baseline accuracy)
 - **LLM-Powered Detection**: Uses Claude/GPT to catch semantic violations, not just syntax
 
 ### Integration Test Suite (PRODUCTION QUALITY)
+
 - **111 Passing Tests**: 96 unit + 15 integration tests
 - **End-to-End Workflows**: Validates command interactions work correctly
 - **Error Recovery Testing**: Ensures rollback and fix workflows function
 - **CI/CD Ready**: ~8.5s execution time, zero flakiness
 
 ### Error Handling Refactor (DEVELOPER EXPERIENCE)
+
 - **Clean Exit Management**: Removed 17 `process.exit()` calls from command files
 - **Better Testability**: Commands throw errors instead of forcing exits
 - **Centralized Error Handler**: Commander.js `exitOverride()` for consistent behavior
 
 ### What's in v2.6.1 and Earlier
+
 - **Interactive Tutorial**: 5-lesson guided walkthrough (<15 minutes)
 - **Safe-Fail Migration**: Automatic backups with one-click rollback
 - **Zero-Drift Governance**: Automated version sync with CI Guardian
@@ -290,6 +312,7 @@ cortex-tms review src/index.ts --model gpt-4      # Specify model
 This repo is a **"Machine-Legible Project Constitution."** To get the best results:
 
 ### 1. The Context Trigger
+
 ```bash
 cortex-tms prompt init-session
 # Copies: "Review NEXT-TASKS.md, docs/core/ARCHITECTURE.md, and CLAUDE.md.
@@ -297,6 +320,7 @@ cortex-tms prompt init-session
 ```
 
 ### 2. Pattern Enforcement
+
 ```bash
 cortex-tms prompt review
 # Copies: "Review the current changes against PATTERNS.md.
@@ -304,10 +328,13 @@ cortex-tms prompt review
 ```
 
 ### 3. Truth Anchoring
+
 If the AI hallucinates logic:
+
 > _"Your calculation is wrong. Refer to the rules in docs/core/DOMAIN-LOGIC.md."_
 
 ### 4. Check Current Sprint
+
 ```bash
 cortex-tms status  # Visual dashboard with current tasks
 ```
@@ -317,6 +344,7 @@ cortex-tms status  # Visual dashboard with current tasks
 ## 📋 Development Roadmap
 
 **Completed Phases** (All ✅):
+
 - [x] **Phase 1**: Dogfood the System - Applied TMS to Cortex itself
 - [x] **Phase 2**: Complete Template Library - All templates built and validated
 - [x] **Phase 3**: Build Example App - Gold Standard Next.js 15 Todo App
@@ -325,6 +353,7 @@ cortex-tms status  # Visual dashboard with current tasks
 - [x] **Phase 6**: Publish & Scale - npm package + GitHub releases
 
 **Current Version**: v2.6.1 "Guardian & Green Governance" ✅
+
 - ✅ Token Counter with real-time cost analysis
 - ✅ Guardian semantic validation (Pattern + Domain Logic enforcement)
 - ✅ 111 passing tests (96 unit + 15 integration)
@@ -332,6 +361,7 @@ cortex-tms status  # Visual dashboard with current tasks
 - ✅ Multi-model cost comparison (Claude, GPT-4)
 
 **Next Phase (v2.8)**: "Marketing Pivot & Community Launch"
+
 - Green Governance positioning and messaging
 - Cost calculator widget for token savings
 - Community launch (blog, Reddit, HN)
@@ -431,6 +461,7 @@ cortex-tms/
 ## 🎯 Why Cortex TMS? Three Pillars, Measurable Results
 
 ### 💰 Cost Efficiency (Pillar 1)
+
 **Before TMS**: Wasting **$0.19/session** reading 66,834 tokens of old docs
 **After TMS**: Paying **$0.01/session** with 94.5% context reduction
 **Impact**: **10x cost reduction** - Claude Sonnet 4.5 vs GPT-4 ($0.01 vs $0.11/session)
@@ -438,6 +469,7 @@ cortex-tms/
 **How**: HOT/WARM/COLD tiers ensure AI only reads what matters (3,647 vs 66,834 tokens)
 
 ### ✅ Quality (Pillar 2)
+
 **Before TMS**: **40% pattern violations** from AI reading outdated examples
 **After TMS**: **80% fewer violations** with Guardian semantic validation
 **Impact**: Guardian enforces `PATTERNS.md` and `DOMAIN-LOGIC.md` automatically
@@ -445,13 +477,15 @@ cortex-tms/
 **How**: LLM-powered review catches semantic drift that grep/regex can't find (**zero false negatives**)
 
 ### 🌱 Sustainability (Pillar 3)
+
 **Before TMS**: Burning unnecessary GPU cycles on 94.5% noise (archived changelogs, stale tasks)
-**After TMS**: **94.5% lower carbon footprint** through intelligent tiering
+**After TMS**: **94.5% lower compute requirements** through intelligent tiering
 **Impact**: Less compute = greener development + happier planet
 
 **How**: Stop reading COLD files unless explicitly needed
 
 ### 🚀 Developer Experience
+
 - **Instant AI Activation**: Essential 7 prompts in `PROMPTS.md` (no manual prompt writing)
 - **Signal over Noise**: HOT/WARM/COLD system keeps AI focused
 - **Production-Ready**: 111 passing tests, stable 2.6.1 release
