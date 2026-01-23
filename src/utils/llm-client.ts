@@ -113,7 +113,7 @@ async function callAnthropic(
   config: LLMConfig,
   messages: LLMMessage[]
 ): Promise<LLMResponse> {
-  const model = config.model || 'claude-3-5-sonnet-20241022';
+  const model = config.model || 'claude-sonnet-4-5-20250929';
 
   // Convert messages to Anthropic format (system message separate)
   const systemMessage = messages.find(m => m.role === 'system')?.content || '';

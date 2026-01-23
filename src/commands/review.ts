@@ -169,6 +169,22 @@ ${domainLogic}
   }
 
   prompt += `
+# Important Guidelines
+
+**ONLY flag actual violations in the code being reviewed. Do NOT flag:**
+- Educational examples showing anti-patterns (if clearly marked with ❌ or "Anti-Pattern" or "Bad")
+- Documentation that explains what NOT to do
+- Code snippets demonstrating violations for teaching purposes
+- Placeholder syntax like [e.g., ...] when used correctly
+- Comments that provide inline guidance
+- Canonical links to actual implementations
+
+**Context Matters:**
+- If code shows BOTH good and bad examples, only flag if the actual implementation is wrong
+- Templates with [Bracket Syntax] are CORRECT per Pattern 1
+- Inline comments explaining customization are GOOD per Pattern 4
+- References to actual files are GOOD per Pattern 3
+
 # Output Format
 Provide a structured report with:
 
