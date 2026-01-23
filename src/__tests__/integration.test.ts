@@ -14,7 +14,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { join } from 'path';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { createTempDir, cleanupTempDir } from './utils/temp-dir.js';
 import { runCommand } from './utils/cli-runner.js';
 
@@ -67,7 +67,7 @@ describe('Integration Tests - Command Workflows', () => {
       // Delete a required file to trigger validation failure
       const nextTasksPath = join(tempDir, 'NEXT-TASKS.md');
       if (existsSync(nextTasksPath)) {
-        require('fs').unlinkSync(nextTasksPath);
+        unlinkSync(nextTasksPath);
       }
 
       // Validate should fail
@@ -273,7 +273,7 @@ describe('Integration Tests - Command Workflows', () => {
       // Delete a required file
       const nextTasksPath = join(tempDir, 'NEXT-TASKS.md');
       if (existsSync(nextTasksPath)) {
-        require('fs').unlinkSync(nextTasksPath);
+        unlinkSync(nextTasksPath);
       }
 
       const result = await runCommand('validate', [], tempDir);

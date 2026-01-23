@@ -10,6 +10,14 @@
 import { describe, it, expect, beforeAll, vi } from 'vitest';
 import { callLLM, type LLMConfig, type LLMMessage } from '../utils/llm-client.js';
 
+// Test configuration constants
+const ACCURACY_THRESHOLDS = {
+  MINIMUM_ACCURACY: 70,
+  MAX_FALSE_POSITIVE_RATE: 30,
+  MAX_FALSE_NEGATIVE_RATE: 30,
+  API_TIMEOUT_MS: 600000, // 10 minutes
+} as const;
+
 // Test case structure
 interface TestCase {
   id: string;
@@ -494,7 +502,7 @@ describe('Guardian Accuracy Validation', () => {
         console.error(`Error testing ${testCase.id}:`, error);
       }
     }
-  }, 600000); // 10 minute timeout for all tests (API calls are slow)
+  }, ACCURACY_THRESHOLDS.API_TIMEOUT_MS);
 
   it('should achieve 70%+ accuracy on test dataset', () => {
     if (results.length === 0) {
@@ -548,8 +556,8 @@ describe('Guardian Accuracy Validation', () => {
 
     console.log('='.repeat(60) + '\n');
 
-    // Assert 70%+ accuracy
-    expect(accuracy).toBeGreaterThanOrEqual(70);
+    // Assert minimum accuracy threshold
+    expect(accuracy).toBeGreaterThanOrEqual(ACCURACY_THRESHOLDS.MINIMUM_ACCURACY);
   });
 
   it('should have low false positive rate (< 30%)', () => {
@@ -568,7 +576,7 @@ describe('Guardian Accuracy Validation', () => {
         : 0;
 
     console.log(`False Positive Rate: ${falsePositiveRate.toFixed(1)}%`);
-    expect(falsePositiveRate).toBeLessThan(30);
+    expect(falsePositiveRate).toBeLessThan(ACCURACY_THRESHOLDS.MAX_FALSE_POSITIVE_RATE);
   });
 
   it('should have low false negative rate (< 30%)', () => {
@@ -587,7 +595,7 @@ describe('Guardian Accuracy Validation', () => {
         : 0;
 
     console.log(`False Negative Rate: ${falseNegativeRate.toFixed(1)}%`);
-    expect(falseNegativeRate).toBeLessThan(30);
+    expect(falseNegativeRate).toBeLessThan(ACCURACY_THRESHOLDS.MAX_FALSE_NEGATIVE_RATE);
   });
 });
 

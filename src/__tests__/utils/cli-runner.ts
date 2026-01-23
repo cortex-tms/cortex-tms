@@ -62,10 +62,12 @@ export async function runCommand(
     });
 
     child.on('error', (error) => {
+      clearTimeout(timeoutId);
       reject(error);
     });
 
     child.on('close', (code) => {
+      clearTimeout(timeoutId);
       resolve({
         exitCode: code ?? 1,
         stdout,
@@ -74,7 +76,7 @@ export async function runCommand(
     });
 
     // Handle timeout
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       child.kill();
       reject(new Error(`Command timed out after ${timeout}ms`));
     }, timeout);

@@ -70,8 +70,14 @@ async function runReviewCommand(
     console.log(chalk.yellow('⚠️  Warning:'), 'DOMAIN-LOGIC.md not found (optional)');
   }
 
-  // Step 2: Validate file to review exists
+  // Step 2: Validate file to review exists and prevent path traversal
   const targetPath = resolve(cwd, filePath);
+
+  // Security: Ensure path stays within project directory
+  if (!targetPath.startsWith(cwd)) {
+    throw new Error(`Path traversal detected: ${filePath} resolves outside project directory`);
+  }
+
   if (!existsSync(targetPath)) {
     throw new Error(`File not found: ${filePath}`);
   }
