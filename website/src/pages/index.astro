@@ -73,7 +73,7 @@ import {
             >
               <Coins
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               Cost Efficiency
             </h3>
@@ -107,7 +107,7 @@ import {
             >
               <ShieldCheck
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               Quality
             </h3>
@@ -141,7 +141,7 @@ import {
             >
               <Leaf
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               Sustainability
             </h3>
@@ -258,7 +258,7 @@ import {
           >
             <Leaf
               size={48}
-              strokeWidth={1.5}
+              stroke-width='1.5'
               style='color: var(--sl-color-accent);'
             />
             <h2
@@ -431,7 +431,7 @@ import {
             >
               <Flame
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               HOT/WARM/COLD Tiering
             </h3>
@@ -455,7 +455,7 @@ import {
             >
               <Shield
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               Guardian Validation
             </h3>
@@ -478,7 +478,7 @@ import {
             >
               <BarChart3
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               Token Counter
             </h3>
@@ -500,7 +500,7 @@ import {
             >
               <FileText
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               Essential 7 Prompts
             </h3>
@@ -522,7 +522,7 @@ import {
             >
               <Key
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               BYOK (Bring Your Own Key)
             </h3>
@@ -544,7 +544,7 @@ import {
             >
               <Zap
                 size={32}
-                strokeWidth={1.5}
+                stroke-width='1.5'
               />
               &lt; 3 File Reads
             </h3>
@@ -875,8 +875,10 @@ import {
       const codeBlocks = document.querySelectorAll('.code-block')
 
       codeBlocks.forEach((block) => {
-        const copyBtn = block.querySelector('.copy-code-btn')
-        const code = block.querySelector('pre code')
+        const copyBtn = block.querySelector(
+          '.copy-code-btn',
+        ) as HTMLButtonElement | null
+        const code = block.querySelector('pre code') as HTMLElement | null
 
         if (copyBtn && code) {
           copyBtn.addEventListener('click', async () => {
