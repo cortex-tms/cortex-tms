@@ -23,7 +23,7 @@
 | :--- | :--- | :----- | :------- | :----- |
 | **Landing Page Redesign** - "Green Governance" hero | [HIGH-3a] | 4-6h | 🔴 HIGH | ✅ Done |
 | **Cost Calculator Widget** - Estimate token savings | [HIGH-3b] | 4-6h | 🟡 MED | ⬜ Todo |
-| **Sustainability Badge** - "Green AI Development" claims | [HIGH-3c] | 2-3h | 🟡 MED | ⬜ Todo |
+| **Sustainability Badge** - "Green AI Development" claims | [HIGH-3c] | 2-3h | 🟡 MED | ✅ Done |
 | **README.md Update** - New value propositions | [HIGH-3d] | 1-2h | 🔴 HIGH | ✅ Done |
 
 **Total Effort**: 11-17 hours
