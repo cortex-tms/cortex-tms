@@ -32,9 +32,9 @@ See [v2.7 Archive](docs/archive/sprint-v2.7-jan-2026.md) for completed tasks.
 | **Token Counter CLI** - `cortex status --tokens` | [HIGH-1] | 4-6h | 🔴 HIGH | ✅ Done |
 | **Guardian Accuracy Validation** - 70%+ on test set | [HIGH-2] | 6-8h | 🔴 HIGH | ⏸️ Deferred |
 | **Integration Test Suite** - Command interaction tests | [MED-1] | 8-12h | 🟡 MED | ⬜ Todo |
-| **Error Handling Refactor** - Remove process.exit() calls | [MED-3] | 3-4h | 🟡 MED | ⬜ Todo |
+| **Error Handling Refactor** - Remove process.exit() calls | [MED-3] | 3-4h | 🟡 MED | ✅ Done |
 
-**Total Effort**: 17-24 hours (12h completed, 1 deferred)
+**Total Effort**: 17-24 hours (15-16h completed, 1 deferred)
 
 ### HIGH-1: Token Counter Feature ✅ COMPLETE
 
@@ -73,6 +73,29 @@ See [v2.7 Archive](docs/archive/sprint-v2.7-jan-2026.md) for completed tasks.
 - Conservative behavior is acceptable for code review (better to over-flag than miss problems)
 - Works best on full files with context vs minimal test snippets
 - Test suite provides framework for future improvements
+
+### MED-3: Error Handling Refactor ✅ COMPLETE
+
+**Why**: Clean up error handling, improve testability, follow CLI best practices
+
+**Work**: Remove all `process.exit()` calls from commands, centralize error handling in CLI entry point
+
+**Files**: `src/cli.ts`, all command files in `src/commands/`
+
+**Results**:
+- ✅ Removed 17 `process.exit()` calls from 7 command files
+- ✅ Added global error handler in cli.ts with Commander.js `exitOverride()`
+- ✅ Commands now throw errors instead of calling process.exit() directly
+- ✅ Preserved exit codes (0 for success, 1 for errors)
+- ✅ All 96 tests passing
+- ✅ Validation passing
+- ✅ Cleaner separation of concerns
+
+**Benefits**:
+- Easier to test (no forced exits in unit tests)
+- Better error handling flow
+- Follows Node.js/CLI best practices
+- Sets foundation for integration tests (MED-1)
 
 ---
 
