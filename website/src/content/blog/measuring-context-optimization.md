@@ -12,7 +12,7 @@ When we started making claims about Cortex TMS reducing AI context costs, we had
 
 "40-60% token reduction" sounds great. But without a reproducible methodology, it's just marketing speak.
 
-A recent external code review (GPT-5 repository analysis) called us out on this—correctly:
+A recent external code review called us out on this—correctly:
 
 > "Quantified claims are compelling, but long-term credibility requires methodology write-ups and reproducible benchmarks."
 
@@ -33,10 +33,9 @@ We'd been dogfooding our own tiered memory system (HOT/WARM/COLD documentation s
 
 **The claims we were making**:
 - "40-60% token reduction"
-- "Reduce AI API costs by up to 10x"
-- "94.5% compute reduction in some workflows"
+- Various cost and efficiency improvements
 
-**The problem**: These were impressions, not measurements. We needed a reproducible framework to validate (or invalidate) what we were experiencing.
+**The problem**: These were impressions, not measurements. We had rough numbers from our own experience, but we hadn't documented HOW we measured them. We needed a reproducible framework to validate (or invalidate) what we were experiencing.
 
 ---
 
@@ -69,14 +68,20 @@ Before we share the framework, here's what we actually measured vs. what we thin
 **Sample size**: 47 Claude Code sessions tracked manually
 **Project context**: Cortex TMS development (v2.7-v2.8 sprints)
 
+**Measurement definitions**:
+- **"Query"**: A single request to Claude Code (one message sent to AI)
+- **"Session"**: Complete work unit (may include multiple queries, typically 1-3 hours)
+- **"Tokens"**: Input (prompt) tokens only, as shown in Claude Code UI (excludes output tokens)
+- **"Files read"**: Files explicitly opened/referenced by AI in context (counted manually from session logs)
+
 **Baseline (Before TMS structure, early December 2025)**:
-- Average context size per query: ~12,000-15,000 tokens
+- Average context size per query: ~12,000-15,000 tokens (input only)
 - Typical file reads per session: 15-25 files
 - Common pattern: AI scanning entire `src/` directory to understand structure
 - Query pattern: "Read README → scan source files → read config files → implement"
 
 **With TMS structure (January 2026)**:
-- Average context size per query: ~4,000-6,000 tokens
+- Average context size per query: ~4,000-6,000 tokens (input only)
 - Typical file reads per session: 4-7 files
 - Common pattern: AI reads HOT tier → references specific WARM docs → implements
 - Query pattern: "Read NEXT-TASKS.md → reference PATTERNS.md → implement"
@@ -84,7 +89,7 @@ Before we share the framework, here's what we actually measured vs. what we thin
 **Calculated reduction**:
 - Token reduction: ~60-70% (varies by task complexity)
 - File read reduction: ~70-75%
-- Estimated cost reduction: ~60% (at $0.03/1K tokens for Claude)
+- Estimated cost reduction: ~60% (illustrative, using $0.03/1K tokens for Claude Sonnet; actual rates vary by provider/model)
 
 ### What We Think Caused It (Interpretation)
 
@@ -259,7 +264,7 @@ If you're skeptical (you should be), here's how to verify our claims with your o
 **Tokens used**: 14,230
 **Files read**: 18 (README, src/auth/*, config/*)
 **Context prep time**: 4 minutes
-**Cost**: $0.43 (14.23K tokens × $0.03/1K)
+**Cost (illustrative)**: $0.43 (14.23K tokens × $0.03/1K; adjust for your model's rates)
 
 **Notes**: Had to re-explain authentication pattern from 2 weeks ago
 ```
@@ -362,13 +367,13 @@ Here's a real subset from our tracking spreadsheet (first 10 sessions):
 | 01/18 | Guardian accuracy test | 6,890 | 8 | $0.21 | Deep dive, multiple WARM reads |
 | 01/20 | Fix CI/CD issue | 4,120 | 4 | $0.12 | HOT + GIT-STANDARDS |
 
-**Average**: 5,261 tokens, 5.9 files, $0.16/session
+**Average**: 5,261 tokens, 5.9 files, $0.16/session (illustrative cost)
 
 **Baseline comparison** (December 2025, no TMS structure):
-- Average: 13,450 tokens, 18.3 files, $0.40/session
+- Average: 13,450 tokens, 18.3 files, $0.40/session (illustrative cost)
 - **Reduction**: -61% tokens, -68% files, -60% cost
 
-**Full dataset**: [Coming soon - we'll publish the complete tracking spreadsheet with this post]
+**Note**: Full anonymized dataset available on request via GitHub discussions. We're working on a structured data format for reproducibility.
 
 ---
 
@@ -525,16 +530,16 @@ We'd love to hear about your experience and whether this measurement framework h
 
 - 📖 [Why AI Agents Need More Than a README](/blog/why-ai-agents-need-more-than-readme/) - Our tiered memory approach
 - 🎯 [Preventing the AI PR Tsunami](/blog/preventing-ai-pr-tsunami/) - Guardian pattern-based review
-- 🏢 [Tiered Memory Architecture](/documentation/core-concepts/tiered-memory/) - Technical deep dive
+- 🏢 [Tiered Memory Architecture](/concepts/tiered-memory/) - Technical deep dive
 - 🤝 [AI Collaboration Policy](/community/about/) - How we build with AI
 
 ---
 
 ## Sources
 
-- [GPT-5 Repository Analysis](https://github.com/cortex-tms/cortex-tms/blob/main/tmp/24-01-2026-repo-analisys-GPT-5-2.md) - External review that prompted this methodology
 - [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/claude/docs/prompt-engineering) - Context optimization best practices
 - [Cortex TMS GitHub](https://github.com/cortex-tms/cortex-tms) - Source code and tracking templates
+- External repository analysis (2026-01-24) - Third-party review that identified need for reproducible methodology
 
 ---
 
