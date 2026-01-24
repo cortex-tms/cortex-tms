@@ -1,10 +1,10 @@
 ---
-title: "Building Cortex TMS with Cortex TMS: A Dogfooding Case Study"
-description: "How we used our own tiered memory system to build itself. Real metrics from 6 months of AI-assisted development: pattern violations, token usage, and what actually changed."
+title: 'Building Cortex TMS with Cortex TMS: A Dogfooding Case Study'
+description: 'How we used our own tiered memory system to build itself. Real metrics from 6 months of AI-assisted development: pattern violations, token usage, and what actually changed.'
 pubDate: 2026-01-25
-author: "Cortex TMS Team"
-tags: ["case-study", "dogfooding", "ai-development", "metrics", "real-world"]
-heroImage: "/images/blog/cortex-dogfooding-case-study.webp"
+author: 'Cortex TMS Team'
+tags: ['case-study', 'dogfooding', 'ai-development', 'metrics', 'real-world']
+heroImage: '/images/blog/cortex-dogfooding-case-study.webp'
 draft: false
 ---
 
@@ -13,6 +13,19 @@ We built a tool for AI-assisted development. Then we used it to build itself.
 This is what happened over 6 months and ~380 commits.
 
 **Spoiler**: We're not claiming this proves anything universal. This is one project, one developer, one AI tool. But the data is real, the experience was instructive, and we learned things worth sharing.
+
+## Key Results (TL;DR)
+
+Over 6 months of using TMS to build itself:
+
+- **Pattern violations**: 40% → 8% (-80%)
+- **Review cycles**: 3-4 rounds → 1-2 rounds (-50%)
+- **Token usage**: 12-15k → 4-6k per query (-60% to -70%)
+- **File reads**: 15-25 → 4-7 per session (-70% to -75%)
+
+**Sample**: 380 commits, 47 tracked sessions, solo developer + Claude Code
+
+**Caveats**: Solo dev only, TypeScript CLI only, Claude Code only. Your results will vary. See [limitations](#8-limits--trade-offs-when-dogfooding-doesnt-prove-much) for what we DON'T know.
 
 ---
 
@@ -37,22 +50,26 @@ Before we had the full TMS structure in place, development with Claude Code look
 ### The Problems We Actually Experienced
 
 **Pattern drift** (what we observed):
+
 - Commit from Dec 12: Claude Code suggested switching from `commander` to `yargs` for CLI parsing
 - Why it happened: We'd documented "use commander" in README 2 weeks earlier
 - Result: I had to correct it, re-explain the decision, rewrite the code
 - **Frequency**: ~40% of commits needed corrections for pattern violations
 
 **Repeated questions** (what we observed):
+
 - Same architectural questions asked across sessions: "Should I use TypeScript strict mode?" (yes, documented in README)
 - Same implementation suggestions previously rejected: "Let's add ESLint config" (already decided against, documented in ADR)
 - **Impact**: 3-4 back-and-forth cycles per feature on average
 
 **Context bloat** (what we observed):
+
 - Claude Code would scan entire `src/` directory to understand structure (15-25 files per session)
 - Large README (~300 lines) getting read but not retained across sessions
 - **Measurement**: ~12,000-15,000 tokens per query (we tracked manually)
 
 **Archive burden** (what we observed):
+
 - No clear trigger for when to move completed tasks out of active docs
 - `NEXT-TASKS.md` growing to 250+ lines before we'd manually clean it up
 - Old sprint notes mixed with current work, creating noise
@@ -76,6 +93,7 @@ Here's what we measured vs what we think it means.
 **Project**: Cortex TMS development (v2.1 → v2.8)
 
 **Before TMS structure (v2.1, ~50 commits, Dec 2025)**:
+
 - Pattern violation rate: ~40% of commits needed corrections
 - Back-and-forth cycles: 3-4 rounds per feature
 - Average tokens per query: ~12,000-15,000 (input only)
@@ -83,6 +101,7 @@ Here's what we measured vs what we think it means.
 - Repeated questions: AI asked same questions across sessions
 
 **After TMS structure (v2.2-v2.8, ~330 commits, Jan 2026)**:
+
 - Pattern violation rate: ~8% of commits needed corrections
 - Back-and-forth cycles: 1-2 rounds per feature
 - Average tokens per query: ~4,000-6,000 (input only)
@@ -90,6 +109,7 @@ Here's what we measured vs what we think it means.
 - Repeated questions: Rare (AI references NEXT-TASKS.md consistently)
 
 **Calculated improvements**:
+
 - Pattern violations: -80% (40% → 8%)
 - Review cycles: -50% (3-4 → 1-2 rounds)
 - Token usage: -60% to -70% (12-15k → 4-6k)
@@ -108,11 +128,12 @@ Our hypothesis:
 **4. Explicit references**: HOT tier links to WARM tier with direct paths. Instead of "follow our patterns," we say "see `docs/core/PATTERNS.md#pattern-5`."
 
 **What we DON'T know**:
+
 - Whether this scales to teams (we're solo developer)
 - Whether this works for other AI tools (only tested Claude Code)
 - Whether this works for different project types (only TypeScript monorepo)
 - Whether gains persist in larger codebases (we're ~15K LOC total)
-- Whether the Hawthorne effect is at play (are we just paying more attention?)
+- Whether measurement bias affected results (see [limitations](#8-limits--trade-offs-when-dogfooding-doesnt-prove-much) for discussion)
 
 ---
 
@@ -137,11 +158,13 @@ We didn't implement the full system at once. It evolved over 4 sprints:
 ### Sprint v2.1 (Dec 2025): Just NEXT-TASKS.md
 
 **What we added**:
+
 - Single file: `NEXT-TASKS.md` (~150 lines)
 - Content: Current sprint tasks, next priorities
 - Enforcement: Manual discipline (no validation yet)
 
 **What changed**:
+
 - AI stopped scanning entire codebase for "what to do next"
 - Questions about current priorities reduced
 - But pattern violations still high (no PATTERNS.md yet)
@@ -149,11 +172,13 @@ We didn't implement the full system at once. It evolved over 4 sprints:
 ### Sprint v2.2 (Jan 2026): Added PATTERNS.md
 
 **What we added**:
+
 - `docs/core/PATTERNS.md` (first WARM tier doc)
 - Content: Implementation patterns, anti-patterns, examples
 - References: HOT tier started linking to PATTERNS.md
 
 **What changed**:
+
 - Pattern adherence improved significantly (40% → ~15% violations)
 - AI could reference concrete examples when implementing
 - But still no clear archive triggers
@@ -161,11 +186,13 @@ We didn't implement the full system at once. It evolved over 4 sprints:
 ### Sprint v2.3 (Jan 2026): Added Archive System
 
 **What we added**:
+
 - `docs/archive/` directory (COLD tier)
 - Archive triggers: "Sprint complete → move to archive"
 - Sprint retrospectives captured historical context
 
 **What changed**:
+
 - HOT tier stayed focused (old tasks moved out)
 - Clearer separation between current and historical
 - But still manual enforcement (easy to let NEXT-TASKS bloat)
@@ -173,11 +200,13 @@ We didn't implement the full system at once. It evolved over 4 sprints:
 ### Sprint v2.4 (Jan 2026): Added Validation
 
 **What we added**:
+
 - `cortex validate --strict` command
 - Enforcement: NEXT-TASKS.md must be ≤ 200 lines
 - CI integration: Validation runs on every commit
 
 **What changed**:
+
 - Line limits became objective (validation fails if exceeded)
 - Team discipline replaced by mechanical enforcement
 - Pattern violations dropped to ~8% (with PATTERNS + validation)
@@ -207,36 +236,46 @@ Jan 2026 (v2.4): Added validation
 
 ### Metrics
 
-| Metric | Before TMS | With TMS | Change |
-|--------|------------|----------|--------|
-| **Pattern violation rate** | 40% | 8% | **-80%** |
-| **Review cycles/feature** | 3-4 rounds | 1-2 rounds | **-50%** |
-| **Avg tokens/query** | 12k-15k | 4k-6k | **-60% to -70%** |
-| **Files read/session** | 15-25 files | 4-7 files | **-70% to -75%** |
-| **Repeated questions** | Common | Rare | **Qualitative** |
+| Metric                     | Before TMS  | With TMS   | Change           |
+| -------------------------- | ----------- | ---------- | ---------------- |
+| **Pattern violation rate** | 40%         | 8%         | **-80%**         |
+| **Review cycles/feature**  | 3-4 rounds  | 1-2 rounds | **-50%**         |
+| **Avg tokens/query**       | 12k-15k     | 4k-6k      | **-60% to -70%** |
+| **Files read/session**     | 15-25 files | 4-7 files  | **-70% to -75%** |
+| **Repeated questions**     | Common      | Rare       | **Qualitative**  |
 
 (See [our measurement methodology](/blog/measuring-context-optimization/) for how we tracked these numbers.)
 
 ### What Improved
 
 ✅ **AI consistently references current sprint goals** from HOT tier
+
 ✅ **Pattern adherence significantly better** (AI reads PATTERNS.md when prompted)
+
 ✅ **Less "re-teaching"** of architectural decisions across sessions
+
 ✅ **Faster iteration** (fewer back-and-forth review cycles)
+
 ✅ **Lower API costs** (~60% token reduction)
 
 ### What Stayed the Same
 
 ⚠️ **AI still needs explicit prompts** to check WARM tier docs (doesn't auto-reference)
+
 ⚠️ **Domain logic violations still occur** (requires Guardian review)
+
 ⚠️ **Context management is still manual** (we move tasks to archive ourselves)
+
 ⚠️ **Documentation effort unchanged** (still need to write PATTERNS.md, ARCHITECTURE.md, etc.)
 
 ### What Still Hurts
 
 ❌ **Maintaining NEXT-TASKS.md requires discipline** (easy to let it bloat to 250+ lines)
+
 ❌ **No automatic pruning** (we manually enforce the 200-line limit via validation)
+
 ❌ **Validation catches violations but doesn't prevent them** (post-commit check)
+
 ❌ **Learning curve for new patterns** (takes 1-2 weeks to internalize tier system)
 
 ---
@@ -250,6 +289,7 @@ Here's a concrete example from our development:
 ### What Happened (with TMS structure, v2.6)
 
 **NEXT-TASKS.md**:
+
 ```markdown
 ## Active Sprint: v2.6 Integrity & Atomicity
 
@@ -261,6 +301,7 @@ Here's a concrete example from our development:
 ```
 
 **docs/core/PATTERNS.md** (WARM tier):
+
 ```markdown
 ## Pattern 8: Migration Checklist
 
@@ -273,6 +314,7 @@ Here's a concrete example from our development:
 ```
 
 **Result**:
+
 - All 7 migrations followed identical pattern
 - AI consistently referenced migration checklist from WARM tier
 - Learnings captured after each migration (improved process for next project)
@@ -285,6 +327,7 @@ Here's a concrete example from our development:
 If we'd done this migration during v2.1 (before TMS structure):
 
 **Likely scenario**:
+
 - Would have put all 7 migration tasks in README
 - AI would likely forget migration checklist between projects
 - High probability of inconsistent implementations
@@ -304,6 +347,7 @@ Our dogfooding experience has real limitations. Here's what this case study does
 **What we DON'T know**: How this works for teams of 2, 5, 10+ developers
 
 **Open questions**:
+
 - Does HOT tier become bottleneck with multiple contributors?
 - How do teams coordinate NEXT-TASKS.md updates?
 - What happens when two developers reference conflicting patterns?
@@ -317,6 +361,7 @@ Our dogfooding experience has real limitations. Here's what this case study does
 **What we DON'T know**: How this works with GitHub Copilot, Cursor, Windsurf, etc.
 
 **Open questions**:
+
 - Do other AI tools handle tiered docs differently?
 - Are optimal tier sizes tool-specific?
 - Does Copilot's inline completion benefit from HOT tier?
@@ -328,6 +373,7 @@ Our dogfooding experience has real limitations. Here's what this case study does
 
 **What we know**: Works for TypeScript CLI + website monorepo
 **What we DON'T know**: How this works for:
+
 - Backend APIs (Go, Rust, Python)
 - Mobile apps (React Native, Swift, Kotlin)
 - Data science projects (Jupyter notebooks, R)
@@ -342,6 +388,7 @@ Our dogfooding experience has real limitations. Here's what this case study does
 **What we DON'T know**: How this scales to 100K, 500K, 1M+ LOC
 
 **Open questions**:
+
 - Do benefits persist as codebase grows?
 - Does WARM tier become unmanageably large?
 - At what size do tier limits need adjustment?
@@ -351,6 +398,7 @@ Our dogfooding experience has real limitations. Here's what this case study does
 ### 5. Measurement Bias (Hawthorne Effect)
 
 **The risk**: We knew we were tracking metrics, so we may have:
+
 - Paid more attention to pattern adherence
 - Written clearer NEXT-TASKS.md entries
 - Been more disciplined about archiving
@@ -364,9 +412,13 @@ Our dogfooding experience has real limitations. Here's what this case study does
 Only expect similar benefits if:
 
 ✅ You're using AI coding assistants for 30%+ of development
+
 ✅ Your team already documents architectural decisions
+
 ✅ You have 50+ commits and growing complexity
+
 ✅ Someone can own HOT tier maintenance
+
 ✅ Your architecture is reasonably stable
 
 **The math**: Maintaining TMS costs ~30 min/week. If that doesn't save more time than it costs, don't use it.
@@ -382,6 +434,7 @@ After 6 months of dogfooding, here are questions we still don't have good answer
 We enforce 200 lines for `NEXT-TASKS.md`, but is that right?
 
 **What we've observed**:
+
 - At 150 lines: AI references everything consistently
 - At 200 lines: AI starts missing tasks toward the bottom
 - At 250+ lines: Back to the forgetting problem
@@ -414,6 +467,7 @@ We aggressively archive completed tasks to COLD tier. But should we keep recent 
 We tracked tokens and pattern violations manually (tedious, error-prone).
 
 **What we need**:
+
 - Automated token tracking (CLI integration)
 - Pattern violation detection (pre-commit)
 - File read heatmaps (which docs get used most)
@@ -428,11 +482,14 @@ We tracked tokens and pattern violations manually (tedious, error-prone).
 The TMS structure is built into Cortex TMS templates:
 
 ```bash
-npm install -g cortex-tms
+npm install -g cortex-tms@latest
 cortex init
 ```
 
+> **Version pinning**: For production use, pin to a specific version (e.g., `cortex-tms@2.6.1`). See our [installation guide](/guides/first-project/) for version management details.
+
 **What you get**:
+
 - Pre-configured NEXT-TASKS.md (HOT tier, 200-line limit)
 - Template for docs/core/ (WARM tier)
 - Archive structure (COLD tier)
@@ -462,6 +519,7 @@ Don't trust our numbers. Measure your own:
 ### Expect Different Results
 
 We're one project, one developer, one AI tool. Your results will vary based on:
+
 - Team size and dynamics
 - AI tool (Claude Code vs Copilot vs Cursor)
 - Project type (CLI vs web app vs mobile)
@@ -475,6 +533,7 @@ We're one project, one developer, one AI tool. Your results will vary based on:
 ## 11. If This Sounds Familiar...
 
 Have you noticed:
+
 - AI coding assistants forgetting architectural decisions?
 - Pattern violations in AI-generated code?
 - Same questions asked repeatedly across sessions?
@@ -483,6 +542,7 @@ Have you noticed:
 We'd love to hear about your experience and whether TMS structure helps (or doesn't).
 
 **Share your dogfooding results**:
+
 - 💬 [GitHub Discussions](https://github.com/cortex-tms/cortex-tms/discussions) - Share your metrics
 - 🐛 [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues) - Report problems
 - ⭐ [Star on GitHub](https://github.com/cortex-tms/cortex-tms) - Follow development
@@ -509,3 +569,10 @@ We'd love to hear about your experience and whether TMS structure helps (or does
 ---
 
 **Transparency note**: This case study was written using Claude Code while dogfooding our own TMS structure. The session that produced this post: 9,240 tokens, 7 files read (NEXT-TASKS.md, PATTERNS.md, CONTENT-STANDARDS.md, previous blog posts). We practice what we document. [See our AI collaboration policy →](/community/about/)
+
+<style>
+  #metrics + table td:last-child {
+    color: var(--sl-color-green);
+    font-weight: 600;
+  }
+</style>
