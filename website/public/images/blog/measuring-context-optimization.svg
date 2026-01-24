@@ -1,0 +1,113 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0891b2;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+
+  <!-- Grid pattern (subtle) -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Main content container -->
+  <g transform="translate(100, 80)">
+
+    <!-- Title -->
+    <text x="500" y="40" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" font-size="42" font-weight="600" fill="#ffffff" text-anchor="middle">
+      Measuring Context Optimization
+    </text>
+    <text x="500" y="85" font-family="'SF Mono', 'Monaco', monospace" font-size="18" font-weight="400" fill="#94a3b8" text-anchor="middle" letter-spacing="1">
+      A Reproducible Framework
+    </text>
+
+    <!-- Before/After Comparison -->
+    <g transform="translate(0, 150)">
+
+      <!-- Before Section (Left) -->
+      <g>
+        <rect x="0" y="0" width="450" height="280" rx="16" fill="rgba(220, 38, 38, 0.1)" stroke="rgba(220, 38, 38, 0.3)" stroke-width="2"/>
+
+        <text x="225" y="40" font-family="'SF Pro Display', sans-serif" font-size="20" font-weight="600" fill="#fca5a5" text-anchor="middle">
+          BEFORE TMS
+        </text>
+
+        <!-- Bar visualization -->
+        <rect x="30" y="80" width="390" height="40" rx="8" fill="rgba(220, 38, 38, 0.3)"/>
+        <text x="225" y="108" font-family="'SF Mono', monospace" font-size="24" font-weight="700" fill="#fca5a5" text-anchor="middle">
+          12,000 - 15,000 tokens
+        </text>
+
+        <text x="30" y="160" font-family="'SF Pro Display', sans-serif" font-size="16" fill="#cbd5e1">
+          • 15-25 files read per session
+        </text>
+        <text x="30" y="190" font-family="'SF Pro Display', sans-serif" font-size="16" fill="#cbd5e1">
+          • Full codebase scanning
+        </text>
+        <text x="30" y="220" font-family="'SF Pro Display', sans-serif" font-size="16" fill="#cbd5e1">
+          • High API costs
+        </text>
+      </g>
+
+      <!-- Arrow -->
+      <g transform="translate(475, 110)">
+        <path d="M 0 30 L 40 30" stroke="url(#accentGradient)" stroke-width="3" fill="none"/>
+        <polygon points="40,30 32,24 32,36" fill="#06b6d4"/>
+      </g>
+
+      <!-- After Section (Right) -->
+      <g transform="translate(550, 0)">
+        <rect x="0" y="0" width="450" height="280" rx="16" fill="rgba(16, 185, 129, 0.1)" stroke="rgba(16, 185, 129, 0.3)" stroke-width="2"/>
+
+        <text x="225" y="40" font-family="'SF Pro Display', sans-serif" font-size="20" font-weight="600" fill="#6ee7b7" text-anchor="middle">
+          AFTER TMS
+        </text>
+
+        <!-- Bar visualization (shorter) -->
+        <rect x="30" y="80" width="156" height="40" rx="8" fill="rgba(16, 185, 129, 0.3)"/>
+        <text x="225" y="108" font-family="'SF Mono', monospace" font-size="24" font-weight="700" fill="#6ee7b7" text-anchor="middle">
+          4,000 - 6,000 tokens
+        </text>
+
+        <text x="30" y="160" font-family="'SF Pro Display', sans-serif" font-size="16" fill="#cbd5e1">
+          • 4-7 files read per session
+        </text>
+        <text x="30" y="190" font-family="'SF Pro Display', sans-serif" font-size="16" fill="#cbd5e1">
+          • HOT/WARM tier focus
+        </text>
+        <text x="30" y="220" font-family="'SF Pro Display', sans-serif" font-size="16" fill="#cbd5e1">
+          • 60-70% cost reduction
+        </text>
+      </g>
+
+    </g>
+
+    <!-- Key Metric Badge -->
+    <g transform="translate(340, 480)">
+      <rect x="0" y="0" width="320" height="70" rx="35" fill="url(#accentGradient)"/>
+      <text x="160" y="48" font-family="'SF Pro Display', sans-serif" font-size="36" font-weight="700" fill="#ffffff" text-anchor="middle">
+        -60% to -70%
+      </text>
+    </g>
+
+  </g>
+
+  <!-- Footer badge -->
+  <g transform="translate(420, 580)">
+    <rect x="0" y="0" width="360" height="30" rx="15" fill="rgba(255,255,255,0.05)"/>
+    <text x="180" y="21" font-family="'SF Mono', monospace" font-size="13" font-weight="500" fill="#64748b" text-anchor="middle" letter-spacing="0.5">
+      47 SESSIONS • 24 DAYS • REAL DATA
+    </text>
+  </g>
+
+</svg>
