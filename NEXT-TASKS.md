@@ -52,8 +52,8 @@
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
 | **HN Launch** - "Why AI Agents Need More Than a README" | [TMS-295] | 1h | 🟡 MED | ✅ Done |
-| **Reddit Post** - r/ClaudeAI + r/programming (link to blog) | [TMS-286a] | 2h | 🔴 HIGH | ⬜ Todo (unblocked) |
-| **X (Twitter) Thread** - Build-in-public with metrics | [TMS-286b] | 1h | 🔴 HIGH | ⬜ Todo (unblocked) |
+| **Reddit Post** - r/ClaudeAI + r/programming (link to blog) | [TMS-286a] | 2h | 🔴 HIGH | ⏸️ Deferred (Monday Jan 27) |
+| **X (Twitter) Thread** - Build-in-public with metrics | [TMS-286b] | 1h | 🔴 HIGH | ⏸️ Deferred (Monday Jan 27) |
 | **Blog Post: Green AI Development** | [TMS-294] | 3-4h | 🟡 MED | ⏸️ Deferred |
 
 **Total Effort**: 7-8 hours
@@ -66,11 +66,19 @@
 - Decision: Build Cost Calculator AFTER Reddit/X feedback on metrics
 
 **Strategic Adjustment (Jan 24 - GPT-5 Report Analysis)**:
-- Reddit/X posts now blocked until proof artifacts published
+- Reddit/X posts now blocked until proof artifacts published ✅ COMPLETE
 - Rationale: Claims of "40-60% cost reduction" need defensible methodology
 - Risk: Without proof, community may dismiss as vaporware
 - Approach: Publish measurement methodology + Cortex dogfooding case study FIRST
 - Timeline: +1 day of work for 10x stronger credibility
+- **Result**: Proof artifacts published, posts ready to go
+
+**Deferral to Monday (Jan 25 Decision)**:
+- **Reason**: New Reddit account will be auto-moderated/rejected
+- **Strategy**: Post Monday Jan 27, 8-10am EST for maximum visibility
+- **Prep Work**: Comment on 2-3 relevant posts beforehand (build karma)
+- **Draft**: See `tmp/reddit-post-draft.md` for ready-to-post content
+- **Backup**: X (Twitter) thread can go first (no new account restrictions)
 
 **Success Metrics**:
 - 100+ GitHub stars (from 50 current)
