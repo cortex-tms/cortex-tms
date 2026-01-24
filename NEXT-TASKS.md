@@ -77,8 +77,13 @@
 - **Reason**: New Reddit account will be auto-moderated/rejected
 - **Strategy**: Post Monday Jan 27, 8-10am EST for maximum visibility
 - **Prep Work**: Comment on 2-3 relevant posts beforehand (build karma)
-- **Draft**: See `tmp/reddit-post-draft.md` for ready-to-post content
-- **Backup**: X (Twitter) thread can go first (no new account restrictions)
+- **Drafts Ready**:
+  - `tmp/reddit-post-draft.md` (ready for Monday)
+  - `tmp/twitter-thread-draft.md` (can post THIS WEEKEND)
+- **Recommended Flow**:
+  1. X thread Sunday 6-8pm EST (no account restrictions)
+  2. Reddit post Monday 8-10am EST (after karma building)
+  3. X thread validates messaging, Reddit drives GitHub conversions
 
 **Success Metrics**:
 - 100+ GitHub stars (from 50 current)
