@@ -59,6 +59,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Files**: `docs/archive/plans/agent-skills-integration.md`, `docs/core/ARCHITECTURE.md`, `tmp/guardian-skill/SKILL.md`
 - **Effort**: 2-3 hours
 
+#### Shared Guardian Prompt Utility (OPT-4)
+- **Feature**: Extracted Guardian prompt building logic to shared utility
+- **Why**: Eliminate code duplication, ensure consistency across production and test code, single source of truth for prompt updates
+- **Problem Solved**:
+  - Guardian system prompt duplicated in 3 locations (review.ts, review-runner.ts, guardian-accuracy.test.ts)
+  - ~100 lines of duplicated code
+  - Manual sync required for prompt updates (error-prone)
+  - Risk of prompt drift between production and tests
+- **Solution**:
+  - Created `src/utils/guardian-prompt.ts` with shared builders
+  - Exported `buildGuardianSystemPrompt(patterns, domainLogic)` and `buildGuardianUserPrompt(filePath, code)`
+  - Updated all 3 files to use shared utility
+  - Deleted ~200 lines of duplicate code
+- **Files Changed**:
+  - `src/utils/guardian-prompt.ts` (NEW - 110 lines, shared prompt builders)
+  - `src/commands/review.ts` (removed 95 lines of duplicate code, added import)
+  - `src/__tests__/utils/review-runner.ts` (removed 65 lines, added import)
+  - `src/__tests__/guardian-accuracy.test.ts` (removed 72 lines, added import)
+- **Impact**:
+  - Single source of truth for Guardian prompts
+  - Future prompt improvements only need updating in one place
+  - Guaranteed consistency between production and tests
+  - Cleaner, more maintainable codebase
+- **Tests**: All 134 tests passing (no functional changes, pure refactor)
+- **Total Lines Removed**: ~232 lines of duplication
+- **Effort**: 2-3 hours
+
 #### LLM Client Retry Logic with Exponential Backoff (OPT-3)
 - **Feature**: Automatic retry with exponential backoff for transient API failures
 - **Why**: Improve reliability when calling OpenAI/Anthropic APIs, handle rate limits and server errors gracefully

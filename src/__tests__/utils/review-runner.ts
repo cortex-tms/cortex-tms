@@ -7,6 +7,7 @@
 import { resolve, join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { callLLM, getApiKey, parseGuardianJSON, type LLMConfig, type LLMMessage } from '../../utils/llm-client.js';
+import { buildGuardianSystemPrompt, buildGuardianUserPrompt } from '../../utils/guardian-prompt.js';
 import { SAFE_MODE_THRESHOLD } from '../../types/guardian.js';
 
 interface ReviewOptions {
@@ -76,8 +77,8 @@ export async function runReviewForTest(
     }
 
     // Step 5: Build LLM prompt
-    const systemPrompt = buildSystemPrompt(patterns, domainLogic);
-    const userPrompt = buildUserPrompt(filePath, codeToReview);
+    const systemPrompt = buildGuardianSystemPrompt(patterns, domainLogic);
+    const userPrompt = buildGuardianUserPrompt(filePath, codeToReview);
 
     const messages: LLMMessage[] = [
       { role: 'system', content: systemPrompt },
@@ -139,85 +140,6 @@ export async function runReviewForTest(
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
-}
-
-/**
- * Build system prompt (duplicated from review.ts for testing)
- */
-function buildSystemPrompt(patterns: string, domainLogic: string | null): string {
-  let prompt = `You are Guardian, a code review assistant that analyzes code against project-specific patterns and architectural rules.
-
-# Your Task
-Analyze the provided code file and identify violations of the patterns defined in PATTERNS.md${domainLogic ? ' and domain logic rules in DOMAIN-LOGIC.md' : ''}.
-
-# PATTERNS.md
-${patterns}
-`;
-
-  if (domainLogic) {
-    prompt += `
-# DOMAIN-LOGIC.md
-${domainLogic}
-`;
-  }
-
-  prompt += `
-# Output Format
-You MUST respond with valid JSON matching this exact schema:
-
-\`\`\`json
-{
-  "summary": {
-    "status": "compliant" | "minor_issues" | "major_violations",
-    "message": "Brief overall assessment of the code"
-  },
-  "violations": [
-    {
-      "pattern": "Pattern name (e.g., 'Pattern 1: Placeholder Syntax')",
-      "line": 42,  // Optional line number where violation occurs
-      "issue": "What's wrong with the code",
-      "recommendation": "How to fix it",
-      "severity": "minor" | "major",
-      "confidence": 0.85  // 0-1 scale, how certain you are about this violation
-    }
-  ],
-  "positiveObservations": [
-    "Good practice 1",
-    "Good practice 2"
-  ]
-}
-\`\`\`
-
-**Field Definitions**:
-- \`status\`: "compliant" (no violations), "minor_issues" (style/minor issues), or "major_violations" (serious pattern breaks)
-- \`violations\`: Array of violations found (empty array if compliant)
-- \`severity\`: "minor" for style/preference issues, "major" for pattern violations
-- \`confidence\`: A number from 0 to 1 indicating certainty about the violation
-  - 0.9-1.0: Very high - Clear, unambiguous violation of stated patterns
-  - 0.7-0.9: High - Likely violation, context strongly supports it
-  - 0.5-0.7: Medium - Possible violation, some ambiguity in interpretation
-  - 0.0-0.5: Low - Uncertain, may be false positive or edge case
-- \`positiveObservations\`: Array of strings highlighting good practices
-
-If no violations found, set status to "compliant", violations to empty array [], and include positive observations.
-
-Be concise but specific. Reference exact line numbers in violations when possible.`;
-
-  return prompt;
-}
-
-/**
- * Build user prompt (duplicated from review.ts for testing)
- */
-function buildUserPrompt(filePath: string, code: string): string {
-  return `# File to Review
-**Path**: \`${filePath}\`
-
-\`\`\`
-${code}
-\`\`\`
-
-Please analyze this code against the project patterns and provide your assessment.`;
 }
 
 /**
