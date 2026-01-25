@@ -365,7 +365,7 @@ git commit -m "feat: add new feature"
 - Percentage of commits with human review (100%)
 - Test pass rate (100%)
 - Critical bugs in production (0 target)
-- Guardian accuracy rate (target 70%+)
+- Guardian accuracy rate (target 80%+)
 
 **Reporting**:
 - Metrics published in About page

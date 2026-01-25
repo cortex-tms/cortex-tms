@@ -216,24 +216,34 @@ cortex-tms review src/index.ts --model gpt-4      # Specify model
 
 **Why Guardian?**
 
-- **Zero False Negatives**: Never misses actual violations (65.5% baseline accuracy)
+- **Structured Output**: JSON-based violation detection (80%+ accuracy target, from 65.5% baseline)
 - **Semantic Understanding**: Catches violations grep/regex can't find
 - **Pattern Enforcement**: Stops drift from architectural decisions
 - **BYOK (Bring Your Own Key)**: Uses your OpenAI or Anthropic API key
+- **Reliable Parsing**: Deterministic JSON eliminates keyword collision false positives
 
 **Example Output**:
 
 ```
-🛡️  Guardian: Code Review
-✓ PATTERNS.md loaded (12 patterns)
-✓ DOMAIN-LOGIC.md loaded (8 rules)
-✓ Analyzing src/index.ts...
+🛡️  Guardian Code Review
 
-❌ Major Violations Found:
+✅ Analysis Complete
 
-  Pattern 1: Placeholder Syntax
-  - Use [brackets] not {braces} for placeholders
-  - Line 45: Replace {project-name} with [project-name]
+❌ **Major Violations**
+
+Code violates Pattern 1: Placeholder Syntax
+
+## Violations
+
+1. ❌ **Pattern 1: Placeholder Syntax**
+   📍 Line: 45
+   ❗ Issue: Using {braces} instead of [brackets] for placeholders
+   💡 Fix: Replace {project-name} with [project-name]
+
+## Positive Observations
+
+✅ Consistent indentation and formatting
+✅ Good use of TypeScript strict types
 ```
 
 ---

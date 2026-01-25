@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Prompt engineering for Anthropic (Claude models)
   - Graceful fallback to text mode if JSON parsing fails
   - Pretty-formatted display with emojis and severity indicators
+  - Markdown code block stripping for robust parsing
 - **Implementation**:
   - New types: `src/types/guardian.ts` (GuardianResult, Violation interfaces)
   - LLM client: Added `responseFormat: 'json'` config option
@@ -25,11 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Anthropic: Appends JSON format instruction to system prompt
   - Review command: JSON parsing + formatting with legacy fallback
   - Test suite: JSON-based violation detection with legacy fallback
+  - Parser: Strips ```json wrappers for LLMs that ignore instructions
 - **Accuracy Improvements**:
   - Target: 80%+ accuracy (from 65.5% baseline)
   - Deterministic parsing eliminates keyword collision false positives
   - Structured violations with pattern, line number, severity
 - **Files**: `src/types/guardian.ts`, `src/utils/llm-client.ts`, `src/commands/review.ts`, `src/__tests__/guardian-accuracy.test.ts`
+- **Commits**: 27bcce4 (initial), 4c1528c (robustness improvements)
 - **Effort**: 6-8 hours
 
 #### Token Counter Feature (HIGH-1)
