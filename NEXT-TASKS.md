@@ -1,8 +1,8 @@
 # NEXT: Upcoming Tasks
 
 **Current Sprint**: v2.8 Marketing Pivot & Community Launch (Jan 24 - Feb 7, 2026)
-**Next Sprint**: v2.9 Guardian Optimization (Feb 10-21, 2026)
-**Previous Sprint**: [v2.7 Guardian MVP](docs/archive/sprint-v2.7-jan-2026.md) ✅ Complete
+**Next Sprint**: v3.0 Planning (Feb 10+, 2026)
+**Previous Sprint**: [v2.9 Guardian Optimization](docs/archive/sprint-v2.9-jan-2026.md) ✅ Complete
 
 ---
 
@@ -93,36 +93,6 @@
 
 ---
 
-## 🎯 v2.9 Guardian Optimization (In Progress)
-
-**Context**: Improve Guardian accuracy from 65.5% baseline
-
-**Timeline**: 2-3 weeks (15-20 hours total)
-**Status**: 🚀 In Progress (Jan 25+)
-
-### Accuracy Improvements
-
-| Task | Ref | Effort | Priority | Status |
-| :--- | :--- | :----- | :------- | :----- |
-| **Structured JSON Output** - Replace string matching | [OPT-1] | 6-8h | 🔴 HIGH | ✅ Done |
-| **Guardian Safe Mode** - High-confidence violations only | [OPT-1b] | 3-4h | 🟡 MED | ✅ Done |
-| **Detection Logic Refactor** - Regex with word boundaries | [OPT-2] | 4-6h | 🟡 MED | ✅ Done |
-| **Retry Logic** - Exponential backoff for API failures | [OPT-3] | 3-4h | 🟡 MED | ✅ Done |
-| **Shared Guardian Prompt** - Extract to utility | [OPT-4] | 2-3h | 🟢 LOW | ✅ Done |
-
-**Goal**: Achieve 80%+ accuracy on test dataset
-**Note**: Safe Mode reduces false positive noise and builds trust in Guardian accuracy (GPT-5 recommendation)
-
-**Progress Update (Jan 25)**:
-- ✅ Structured JSON Output complete
-- Implementation: Native JSON mode (OpenAI), prompt engineering (Anthropic)
-- New types: `GuardianResult`, `Violation` interfaces
-- Graceful fallback to text parsing if JSON fails
-- Tests passing, validation clean
-- Next: Guardian Safe Mode for high-confidence filtering
-
----
-
 ## 📋 Deferred Items (v3.0+)
 
 **See**: [Future Enhancements](FUTURE-ENHANCEMENTS.md) for complete backlog
@@ -138,6 +108,7 @@
 
 ## 🗂️ Sprint Archive
 
+- **v2.9**: [Guardian Optimization](docs/archive/sprint-v2.9-jan-2026.md) ✅ Complete (Jan 25-26, 2026)
 - **v2.7**: [Guardian MVP](docs/archive/sprint-v2.7-jan-2026.md) ✅ Complete (Jan 19-23, 2026)
 - **v2.6.1**: [Emergency Patch](docs/archive/sprint-v2.6.1-emergency-patch.md) ✅
 - **v2.6**: [Integrity & Atomicity](docs/archive/sprint-v2.6-integrity-atomicity.md) ✅
