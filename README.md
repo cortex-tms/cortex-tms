@@ -373,12 +373,12 @@ cortex-tms status  # Visual dashboard with current tasks
 - ✅ Error handling refactor for better testability
 - ✅ Multi-model cost comparison (Claude, GPT-4)
 
-**Next Phase (v2.8)**: "Marketing Pivot & Community Launch"
+**Next Phase (v3.0)**: Development & Refinement
 
-- Green Governance positioning and messaging
-- Cost calculator widget for token savings
-- Community launch (blog, Reddit, HN)
-- Sustainability badge and metrics
+- Website performance optimization
+- Guardian enhancements and reliability improvements
+- Migration experience improvements
+- Advanced token analytics
 
 See `NEXT-TASKS.md` for current sprint details and `CHANGELOG.md` for full version history.
 

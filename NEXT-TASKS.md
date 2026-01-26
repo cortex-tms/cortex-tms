@@ -1,108 +1,70 @@
 # NEXT: Upcoming Tasks
 
-**Current Sprint**: v2.8 Marketing Pivot & Community Launch (Jan 24 - Feb 7, 2026)
-**Next Sprint**: v3.0 Planning (Feb 10+, 2026)
+**Current Sprint**: v3.0 Development (Jan 26 - Feb 14, 2026)
 **Previous Sprint**: [v2.9 Guardian Optimization](docs/archive/sprint-v2.9-jan-2026.md) ✅ Complete
 
 ---
 
-## 🎯 v2.8 Marketing Pivot & Community Launch
+## 🎯 v3.0 Development Focus
 
-**Context**: "Green Governance" positioning based on QCS Analysis + token counter proof
+**Timeline**: 3 weeks
+**Status**: 🚧 Planning
 
-**Timeline**: 2-3 weeks (18-25 hours total)
-**Release Target**: February 7, 2026
-**Status**: 🚀 In Progress (Jan 24+)
-
-### Marketing Positioning Update
-
-**OLD Positioning**: "Interactive documentation system and CLI tool"
-**NEW Positioning**: "AI Governance Platform - Stop wasting tokens. Stop burning GPU cycles on old docs."
+### Technical Improvements
 
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
-| **Landing Page Redesign** - "Green Governance" hero | [HIGH-3a] | 4-6h | 🔴 HIGH | ✅ Done |
-| **Cost Calculator Widget** - Estimate token savings | [HIGH-3b] | 4-6h | 🟡 MED | ⏸️ Deferred |
-| **Sustainability Badge** - "Green AI Development" claims | [HIGH-3c] | 2-3h | 🟡 MED | ✅ Done |
-| **README.md Update** - New value propositions | [HIGH-3d] | 1-2h | 🔴 HIGH | ✅ Done |
-| **Measurement Methodology Doc** - Defensible 40-60% claims | [HIGH-3e] | 2-3h | 🔴 HIGH | ✅ Done |
-| **Cortex Dogfooding Case Study** - "How Cortex Uses TMS" | [HIGH-3f] | 3-4h | 🔴 HIGH | ✅ Done |
+| **Website Performance Optimization** | [TECH-1] | 4-6h | 🟡 MED | ⏸️ Planned |
+| **Guardian Enhancements** | [TECH-2] | 3-4h | 🟡 MED | ⏸️ Planned |
+| **Migration Experience Improvements** | [TMS-277-282] | 4-5h | 🟡 MED | ⏸️ Planned |
+| **Version Release (v2.7.0)** | [REL-1] | 1-2h | 🟢 LOW | ⏸️ Deferred |
 
-**Note**: Cost Calculator deferred until after Reddit/X feedback - will inform which metrics to display (tokens, cost, compute % only - no carbon claims).
-**External Review**: GPT-5 analysis recommends proof artifacts before social launch to avoid "vaporware" perception.
+### Website Performance Optimization [TECH-1]
 
-**Total Effort**: 16-24 hours (updated to include proof tasks)
+**Goal**: Reduce CSS bundle size, improve Lighthouse scores
 
-### New Messaging Pillars
+**Tasks**:
+- Remove unused CSS components (~2.1KB savings)
+- Extract inline styles from homepage
+- Clean up dead code in components
+- Run performance benchmarks
 
-1. **Cost Efficiency** (strongest pillar per QCS)
-   - "Reduce AI API costs by up to 10x"
-   - "Pay less, get more from Claude/Copilot/Cursor"
+**Status**: Documented in `tmp/WEBSITE-OPTIMIZATION-TASKS.md`
 
-2. **Quality** (second pillar)
-   - "Prevent hallucinations from outdated docs"
-   - "Enforce patterns with semantic validation"
+### Guardian Enhancements [TECH-2]
 
-3. **Sustainability** (unique differentiator)
-   - "Green Governance for AI development"
-   - "Less compute = lower carbon footprint"
+**Goal**: Improve Guardian reliability and usability
 
-### Community Launch (In Progress)
+**Ideas**:
+- Add `--watch` mode for continuous validation
+- Improve confidence score accuracy
+- Add custom confidence threshold flag
+- Better error messages for common violations
 
-| Task | Ref | Effort | Priority | Status |
-| :--- | :--- | :----- | :------- | :----- |
-| **HN Launch** - "Why AI Agents Need More Than a README" | [TMS-295] | 1h | 🟡 MED | ✅ Done |
-| **Reddit Post** - r/ClaudeAI + r/programming (link to blog) | [TMS-286a] | 2h | 🔴 HIGH | ⏸️ Deferred (Monday Jan 27) |
-| **X (Twitter) Thread** - Build-in-public with metrics | [TMS-286b] | 1h | 🔴 HIGH | ⏸️ Deferred (Monday Jan 27) |
-| **Blog Post: Green AI Development** | [TMS-294] | 3-4h | 🟡 MED | ⏸️ Deferred |
+**Status**: To be planned
 
-**Total Effort**: 7-8 hours
+### Migration Experience [TMS-277-282]
 
-**Learnings from HN Launch (Jan 24)**:
-- Posted: "Why AI Agents Need More Than a README" (existing blog post)
-- Strategy: Data-first title, Sydney → US evening timing
-- Result: Limited initial traction (new account visibility issue)
-- Next: Focus Reddit/X, let HN post sit for organic discovery
-- Decision: Build Cost Calculator AFTER Reddit/X feedback on metrics
+**Goal**: Smoother migration process for new users
 
-**Strategic Adjustment (Jan 24 - GPT-5 Report Analysis)**:
-- Reddit/X posts now blocked until proof artifacts published ✅ COMPLETE
-- Rationale: Claims of "40-60% cost reduction" need defensible methodology
-- Risk: Without proof, community may dismiss as vaporware
-- Approach: Publish measurement methodology + Cortex dogfooding case study FIRST
-- Timeline: +1 day of work for 10x stronger credibility
-- **Result**: Proof artifacts published, posts ready to go
+**Tasks**:
+- Improve error messages in `cortex migrate`
+- Add dry-run mode
+- Better progress indicators
+- Migration validation checks
 
-**Deferral to Monday (Jan 25 Decision)**:
-- **Reason**: New Reddit account will be auto-moderated/rejected
-- **Strategy**: Post Monday Jan 27, 8-10am EST for maximum visibility
-- **Prep Work**: Comment on 2-3 relevant posts beforehand (build karma)
-- **Drafts Ready**:
-  - `tmp/reddit-post-draft.md` (ready for Monday)
-  - `tmp/twitter-thread-draft.md` (can post THIS WEEKEND)
-- **Recommended Flow**:
-  1. X thread Sunday 6-8pm EST (no account restrictions)
-  2. Reddit post Monday 8-10am EST (after karma building)
-  3. X thread validates messaging, Reddit drives GitHub conversions
-
-**Success Metrics**:
-- 100+ GitHub stars (from 50 current)
-- 5+ community beta testers
-- 1,000+ blog post views
-- 3+ external mentions (Reddit, X, HN)
+**Status**: To be planned
 
 ---
 
-## 📋 Deferred Items (v3.0+)
+## 📋 Deferred Items (v3.1+)
 
 **See**: [Future Enhancements](FUTURE-ENHANCEMENTS.md) for complete backlog
 
 - Guardian GitHub Action & PR Bot (TMS-287)
-- Migration Experience Improvements (TMS-277-282)
 - Custom Templates Architecture (TMS-241)
 - MCP Server Integration
-- Blog Category Pages (TMS-293)
-- Social Preview Image (TMS-285d)
+- Advanced token analytics
 
 ---
 

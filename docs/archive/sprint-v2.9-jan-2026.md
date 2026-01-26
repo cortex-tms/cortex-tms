@@ -1,95 +1,74 @@
-# Sprint v2.9: Guardian Optimization
+# Sprint v2.9 - Guardian Optimization (Jan 25-26, 2026)
 
-**Timeline**: January 25-26, 2026
+**Goal**: Optimize Guardian for production use
 **Status**: ✅ Complete
-**Goal**: Improve Guardian accuracy from 65.5% baseline to 80%+
+**Duration**: 2 days
 
 ---
 
-## 🎯 Objectives
+## 📋 **Completed Features**
 
-Enhance Guardian CLI reliability and accuracy through:
-- Structured JSON output for reliable parsing
-- Safe Mode for high-confidence violations only
-- Improved detection logic with word boundaries
-- Retry logic for API failures
-- Shared Guardian prompt utility
+### Guardian Safe Mode (OPT-1b)
+- `cortex review --safe` flag to filter low-confidence violations
+- Confidence scoring (0-1 scale) for each violation
+- Threshold filtering (>=0.7 for high-confidence)
+- Reduced false positive noise
+- Summary updates when violations filtered
 
----
+### Guardian JSON Output (OPT-1a)
+- `cortex review --output-json` for programmatic consumption
+- Machine-readable GuardianResult JSON to stdout
+- Suppressed console.log() progress in JSON mode
+- Works with --safe flag for filtered JSON output
+- Enables CI/CD and automation tool integration
 
-## ✅ Completed Tasks
-
-### Accuracy Improvements
-
-| Task | Ref | Effort | Status |
-| :--- | :--- | :----- | :----- |
-| **Structured JSON Output** - Replace string matching | [OPT-1] | 6-8h | ✅ Done |
-| **Guardian Safe Mode** - High-confidence violations only | [OPT-1b] | 3-4h | ✅ Done |
-| **Detection Logic Refactor** - Regex with word boundaries | [OPT-2] | 4-6h | ✅ Done |
-| **Retry Logic** - Exponential backoff for API failures | [OPT-3] | 3-4h | ✅ Done |
-| **Shared Guardian Prompt** - Extract to utility | [OPT-4] | 2-3h | ✅ Done |
-
-**Total Effort**: 18-27 hours estimated, ~20 hours actual
+### Integration Testing
+- 10 new tests added (4 JSON output, 6 Safe Mode)
+- Full coverage of both features
+- Backwards compatibility verified
 
 ---
 
-## 🎉 Key Achievements
+## 📊 **Impact**
 
-### 1. Structured JSON Output (OPT-1)
-- **Implementation**: Native JSON mode (OpenAI), prompt engineering (Anthropic)
-- **New Types**: `GuardianResult`, `Violation` interfaces
-- **Graceful Fallback**: Text parsing if JSON fails
-- **Result**: Eliminated string parsing fragility
-
-### 2. Guardian Safe Mode (OPT-1b)
-- **Purpose**: Filter to high-confidence violations only
-- **Default**: Safe mode enabled by default
-- **Override**: `--all-violations` flag for full output
-- **Impact**: Reduced false positive noise, builds user trust
-
-### 3. Detection Logic Refactor (OPT-2)
-- **Improvement**: Regex with word boundaries
-- **Result**: More accurate pattern detection
-- **Testing**: Validation tests passing
-
-### 4. Retry Logic (OPT-3)
-- **Implementation**: Exponential backoff for API failures
-- **Configuration**: Max retries with intelligent delays
-- **Resilience**: Handles transient API errors gracefully
-
-### 5. Shared Guardian Prompt (OPT-4)
-- **Extraction**: Moved to shared utility
-- **Reusability**: Used across CLI and validation
-- **Maintainability**: Single source of truth for prompt
+- **Signal-to-Noise**: Higher quality violation reports
+- **Automation**: CI/CD pipelines can consume Guardian results
+- **Trust**: Users see only confident violations by default
+- **Flexibility**: Full control over confidence thresholds
 
 ---
 
-## 📊 Success Metrics
+## 🔧 **Technical Details**
 
-- ✅ All tests passing
-- ✅ Validation clean (`cortex-tms validate --strict`)
-- ✅ Structured JSON output working
-- ✅ Safe Mode default behavior implemented
-- ✅ API retry resilience added
+**Files Modified**:
+- `src/commands/review.ts` - Added --safe and --output-json flags
+- `src/types/guardian.ts` - Added confidence field, SAFE_MODE_THRESHOLD
+- `src/utils/llm-client.ts` - Confidence validation in parseGuardianJSON()
+- `src/utils/guardian-prompt.ts` - System prompt includes confidence schema
 
----
-
-## 🔄 Next Steps
-
-Continue with v2.8 Marketing Pivot & Community Launch:
-- Social media posts (Reddit, X/Twitter)
-- Cost Calculator widget (deferred pending feedback)
-- Community beta testers recruitment
+**Tests Added**:
+- `src/__tests__/review.test.ts` - 10 new tests for both features
 
 ---
 
-## 📝 Notes
+## 🎓 **Learnings**
 
-**GPT-5 Recommendation**: Safe Mode reduces false positive noise and builds trust in Guardian accuracy - critical for community adoption.
+- Confidence scoring dramatically improves trust
+- JSON output enables automation use cases
+- Combining features (--safe + --output-json) increases value
+- Test coverage prevents regressions
 
-**Technical Debt Addressed**:
-- String parsing fragility → Structured JSON
-- API failure brittleness → Retry logic
-- Duplicate prompts → Shared utility
+---
+
+## 📈 **Next Steps**
+
+- Monitor adoption of Safe Mode and JSON output
+- Consider Guardian GitHub Action based on JSON output
+- Explore MCP Server integration
+
+---
+
+**Previous Sprint**: v2.7 - Guardian MVP
+**Next Sprint**: v3.0 - Development & Refinement
 
 <!-- @cortex-tms-version 2.6.1 -->
