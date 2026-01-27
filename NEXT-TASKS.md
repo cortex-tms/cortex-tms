@@ -18,9 +18,9 @@
 | **Website Performance Optimization** | [TECH-1] | 4-6h | 🔴 HIGH | ⏸️ Planned |
 | **Guardian Enhancements** | [TECH-2] | 3-4h | 🔴 HIGH | ⏸️ Planned |
 | **Migration Experience Improvements** | [TMS-277-282] | 4-5h | 🔴 HIGH | ⏸️ Planned |
-| **Bootstrap Blog Examples** | [BOOT-EXP] | 30m-1h | 🔴 HIGH | ⏸️ Planned |
 | **Reusable GitHub Action** | [GPT5-REC-3] | 3-4h | 🔴 HIGH | ⏸️ Planned |
 | **Prerelease Version Fix** | [TMS-272] | 2-3h | 🟡 MED | ⏸️ Planned |
+| **Bootstrap Blog Examples** | [BOOT-EXP] | 45m | 🔴 HIGH | ✅ Complete |
 | **AI-Assisted Bootstrap Onboarding** | [BOOT-1] | 14h | 🔴 HIGH | ✅ Complete |
 | **Version Release (v3.0.0)** | [REL-1] | 1-2h | 🟢 LOW | ⏸️ Deferred |
 
@@ -55,16 +55,15 @@
 
 **Goal**: Add real AI-generated content examples to bootstrap blog article
 
-**Why**: Makes "90% accurate first draft" claim concrete. Context is fresh from dogfooding.
+**Status**: ✅ Complete
 
-**Tasks**:
-- [ ] Extract AI-generated ARCHITECTURE.md from dogfooding simulation
-- [ ] Show before/after with refinements
-- [ ] Add to `website/src/content/blog/ai-powered-bootstrapping.md`
-- [ ] Demonstrate what "good enough to keep" means
+**What shipped**:
+- Added full AI-generated ARCHITECTURE.md example (Component Map, Data Flow, Quick Context)
+- Updated accuracy breakdown (90% correct, 10% needs refinement)
+- Added concrete "Before/After" refinement example
+- Demonstrated what "good enough to keep" means with real code snippets
 
-**Effort**: 30 min - 1h
-**Priority**: 🔴 HIGH (quick win)
+**Effort**: 45 min (actual)
 **Source**: Implementation feedback 4.3
 
 ### Reusable GitHub Action [GPT5-REC-3]
