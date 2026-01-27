@@ -2,7 +2,7 @@
 
 **Current Sprint**: v3.0 Development (Jan 26 - Feb 14, 2026)
 **Previous Sprint**: [v2.9 Guardian Optimization](docs/archive/sprint-v2.9-jan-2026.md) ✅ Complete
-**Last Updated**: 2026-01-27 (Post-GPT5-REC-3 completion)
+**Last Updated**: 2026-01-27 (Post-TMS-272 completion)
 
 ---
 
@@ -19,7 +19,7 @@
 | **Guardian Enhancements** | [TECH-2] | 3-4h | 🔴 HIGH | ⏸️ Planned |
 | **Migration Experience Improvements** | [TMS-277-282] | 4-5h | 🔴 HIGH | ⏸️ Planned |
 | **Reusable GitHub Action** | [GPT5-REC-3] | 3-4h | 🔴 HIGH | ✅ Complete |
-| **Prerelease Version Fix** | [TMS-272] | 2-3h | 🟡 MED | ⏸️ Planned |
+| **Prerelease Version Fix** | [TMS-272] | 2-3h | 🟡 MED | ✅ Complete |
 | **Bootstrap Blog Examples** | [BOOT-EXP] | 45m | 🔴 HIGH | ✅ Complete |
 | **AI-Assisted Bootstrap Onboarding** | [BOOT-1] | 14h | 🔴 HIGH | ✅ Complete |
 | **Version Release (v3.0.0)** | [REL-1] | 1-2h | 🟢 LOW | ⏸️ Deferred |
@@ -112,27 +112,35 @@ jobs:
 
 ### Prerelease Version Fix [TMS-272]
 
-**Goal**: Fix release script to handle prerelease versions (e.g., `2.6.0-beta.1` → `2.6.0`)
+**Status**: ✅ Complete (2026-01-27)
+**Merged**: Branch `fix/TMS-272-prerelease-version`
+**Effort**: 2h (actual)
 
-**Why**: Known bug with workaround. Clean up before v3.0 release.
+**What Shipped**:
+- Added `stable` bump type to promote prerelease → stable (e.g., `2.6.0-beta.1` → `2.6.0`)
+- Added `--version X.Y.Z` flag to explicitly set release version
+- Updated help documentation with new options
+- Added 11 new tests (28 total passing)
+- Note: `parseVersion()` method already handled prerelease parsing correctly
 
-**Root Cause**:
-```javascript
-// scripts/release.js line 234
-const [major, minor, patch] = currentVersion.split('.').map(Number);
-// "2.6.0-beta.1".split('.') = ['2', '6', '0-beta', '1']
-// Number('0-beta') = NaN ❌
+**Impact**:
+- Eliminates manual workaround for prerelease releases
+- Professional release workflow for all version types
+- Flexible version management with explicit version flag
+
+**Usage**:
+```bash
+# Promote prerelease to stable
+node scripts/release.js stable  # 2.6.0-beta.1 → 2.6.0
+
+# Explicitly set version
+node scripts/release.js --version 2.7.0
+
+# Preview changes
+node scripts/release.js stable --dry-run
 ```
 
-**Tasks**:
-- [ ] Add prerelease version parsing (strip `-beta.X`, `-alpha.X`, `-rc.X` suffixes)
-- [ ] Add `--version X.Y.Z` flag to explicitly set version
-- [ ] Support beta→stable promotion workflow
-- [ ] Update tests to cover prerelease scenarios
-
-**Effort**: 2-3h
-**Priority**: 🟡 MED (has workaround, but nice to fix)
-**Source**: FUTURE-ENHANCEMENTS.md line 24-45
+**See**: FUTURE-ENHANCEMENTS.md (marked as resolved)
 
 ### Guardian Enhancements [TECH-2]
 
