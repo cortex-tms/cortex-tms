@@ -20,6 +20,7 @@ import {
   Key,
   Zap,
 } from '@lucide/astro'
+import '../styles/homepage.css'
 ---
 
 <SimpleLayout
@@ -86,7 +87,7 @@ import {
     {/* Quick Installation */}
     <section class='content-section'>
       <h2 class='section-label'>Quick Installation</h2>
-      <p style='margin-bottom: 1rem; color: var(--sl-color-gray-2);'>
+      <p class='install-label'>
         Install globally:
       </p>
       <div class='code-block-wrapper'>
@@ -118,7 +119,7 @@ import {
           <pre><code>npm install -g cortex-tms@2.7.0</code></pre>
         </div>
       </div>
-      <p style='margin: 1.5rem 0 1rem; color: var(--sl-color-gray-2);'>
+      <p class='install-label-npx'>
         Or use with npx (no installation required):
       </p>
       <div class='code-block-wrapper'>
@@ -160,17 +161,15 @@ import {
           variant='bordered'
           tilt='full'
         >
-          <div style='padding: 2rem;'>
-            <h3
-              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
-            >
+          <div class='feature-card-content'>
+            <h3 class='feature-card-title'>
               <Flame
                 size={32}
                 stroke-width='1.5'
               />
               HOT/WARM/COLD Tiering
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='feature-card-description'>
               Intelligent context management ensures AI only reads what matters.
               <strong>HOT</strong> files (current sprint) are always read,
               <strong>WARM</strong> files (architecture) are on-demand, and
@@ -184,17 +183,15 @@ import {
           variant='bordered'
           tilt='full'
         >
-          <div style='padding: 2rem;'>
-            <h3
-              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
-            >
+          <div class='feature-card-content'>
+            <h3 class='feature-card-title'>
               <Shield
                 size={32}
                 stroke-width='1.5'
               />
               Guardian Validation
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='feature-card-description'>
               AI-powered semantic validation against PATTERNS.md and
               DOMAIN-LOGIC.md. Guardian catches pattern drift that grep and
               regex miss, achieving 80% fewer violations and zero false
@@ -207,17 +204,15 @@ import {
           variant='bordered'
           tilt='full'
         >
-          <div style='padding: 2rem;'>
-            <h3
-              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
-            >
+          <div class='feature-card-content'>
+            <h3 class='feature-card-title'>
               <BarChart3
                 size={32}
                 stroke-width='1.5'
               />
               Token Counter
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='feature-card-description'>
               Real-time token analysis shows your exact savings with multi-model
               cost comparison (Claude, GPT-4, and more). Track your
               sustainability impact and prove ROI to stakeholders.
@@ -229,17 +224,15 @@ import {
           variant='bordered'
           tilt='full'
         >
-          <div style='padding: 2rem;'>
-            <h3
-              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
-            >
+          <div class='feature-card-content'>
+            <h3 class='feature-card-title'>
               <FileText
                 size={32}
                 stroke-width='1.5'
               />
               Essential 7 Prompts
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='feature-card-description'>
               Project-aware AI prompts guide you through the entire development
               lifecycle—from init-session to feature implementation to code
               review. One command copies the right prompt to your clipboard.
@@ -251,17 +244,15 @@ import {
           variant='bordered'
           tilt='full'
         >
-          <div style='padding: 2rem;'>
-            <h3
-              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
-            >
+          <div class='feature-card-content'>
+            <h3 class='feature-card-title'>
               <Key
                 size={32}
                 stroke-width='1.5'
               />
               BYOK (Bring Your Own Key)
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='feature-card-description'>
               Guardian uses your OpenAI or Anthropic API key—full privacy and
               control. No data leaves your machine except API calls you
               authorize. Compatible with Claude and GPT-4 models.
@@ -273,17 +264,15 @@ import {
           variant='bordered'
           tilt='full'
         >
-          <div style='padding: 2rem;'>
-            <h3
-              style='margin-bottom: 1rem; color: var(--sl-color-accent); display: flex; align-items: center; gap: 0.75rem;'
-            >
+          <div class='feature-card-content'>
+            <h3 class='feature-card-title'>
               <Zap
                 size={32}
                 stroke-width='1.5'
               />
               &lt; 3 File Reads
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='feature-card-description'>
               Our validation test: "Can an AI agent find what it needs in under
               3 file reads?" The answer is yes—HOT files give instant context,
               WARM files provide architectural truth on-demand.
@@ -298,12 +287,12 @@ import {
       <h2 class='section-label'>Get Started in 3 Steps</h2>
       <div class='glass-grid'>
         <GlassPanel variant='bordered'>
-          <div style='padding: 2rem;'>
-            <h3 style='color: var(--sl-color-accent); margin-bottom: 1rem;'>
-              <span style='font-size: 1.5rem; margin-right: 0.5rem;'>1</span>
+          <div class='step-card-content'>
+            <h3 class='step-card-title'>
+              <span class='step-card-number'>1</span>
               Initialize
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='step-card-description'>
               Run <code>cortex-tms init</code> to scaffold the entire structure—task
               management, patterns, and AI-optimized documentation. Everything is
               preconfigured with best practices.
@@ -312,12 +301,12 @@ import {
         </GlassPanel>
 
         <GlassPanel variant='bordered'>
-          <div style='padding: 2rem;'>
-            <h3 style='color: var(--sl-color-accent); margin-bottom: 1rem;'>
-              <span style='font-size: 1.5rem; margin-right: 0.5rem;'>2</span>
+          <div class='step-card-content'>
+            <h3 class='step-card-title'>
+              <span class='step-card-number'>2</span>
               Work with AI
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='step-card-description'>
               AI agents automatically read your HOT files and follow established
               patterns. Save 94.5% on tokens while preventing hallucinations and
               pattern drift.
@@ -326,12 +315,12 @@ import {
         </GlassPanel>
 
         <GlassPanel variant='bordered'>
-          <div style='padding: 2rem;'>
-            <h3 style='color: var(--sl-color-accent); margin-bottom: 1rem;'>
-              <span style='font-size: 1.5rem; margin-right: 0.5rem;'>3</span>
+          <div class='step-card-content'>
+            <h3 class='step-card-title'>
+              <span class='step-card-number'>3</span>
               Track Savings
             </h3>
-            <p style='line-height: 1.6; color: var(--sl-color-gray-2);'>
+            <p class='step-card-description'>
               Run <code>cortex-tms status --tokens</code> to see your exact cost savings
               and sustainability impact. Prove ROI with real numbers.
             </p>

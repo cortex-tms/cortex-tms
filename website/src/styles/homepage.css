@@ -1,0 +1,54 @@
+/* homepage.css
+ *
+ * Homepage-specific styles.
+ * Extracted from inline styles for better maintainability.
+ */
+
+/* Installation Section */
+.install-label {
+  margin-bottom: 1rem;
+  color: var(--sl-color-gray-2);
+}
+
+.install-label-npx {
+  margin: 1.5rem 0 1rem;
+  color: var(--sl-color-gray-2);
+}
+
+/* Feature Cards */
+.feature-card-content {
+  padding: 2rem;
+}
+
+.feature-card-title {
+  margin-bottom: 1rem;
+  color: var(--sl-color-accent);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.feature-card-description {
+  line-height: 1.6;
+  color: var(--sl-color-gray-2);
+}
+
+/* Getting Started Steps */
+.step-card-content {
+  padding: 2rem;
+}
+
+.step-card-title {
+  color: var(--sl-color-accent);
+  margin-bottom: 1rem;
+}
+
+.step-card-number {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.step-card-description {
+  line-height: 1.6;
+  color: var(--sl-color-gray-2);
+}
