@@ -1,178 +1,217 @@
 # NEXT: Upcoming Tasks
 
-**Current Sprint**: v3.1 Planning (Jan 28 - TBD)
+**Current Sprint**: v3.1 Code Quality & Security (Jan 28 - TBD)
 **Previous Sprint**: [v3.0 AI-Powered Onboarding](docs/archive/sprint-v3.0-jan-2026.md) ✅ Complete
-**Last Updated**: 2026-01-27 (v3.0 Release Preparation)
+**Last Updated**: 2026-01-28 (Post-Opus Audit Task Extraction)
 
 ---
 
-## 🎯 v3.0 Development Focus
+## 🎯 v3.1 Development Focus
 
-**Timeline**: 3 weeks
+**Timeline**: 2-3 weeks
 **Status**: 🚧 Planning
+**Theme**: Code Quality & Security Hardening
 
-### Technical Improvements
+### Code Quality & Security (Audit-Driven)
 
 | Task | Ref | Effort | Priority | Status |
 | :--- | :--- | :----- | :------- | :----- |
-| **Website Performance Optimization** | [TECH-1] | 4-6h | 🔴 HIGH | ✅ Complete |
-| **Guardian Enhancements** | [TECH-2] | 3-4h | 🔴 HIGH | ⏸️ Planned |
-| **Migration Experience Improvements** | [TMS-277-282] | 4-5h | 🔴 HIGH | ⏸️ Planned |
-| **Reusable GitHub Action** | [GPT5-REC-3] | 3-4h | 🔴 HIGH | ✅ Complete |
-| **Prerelease Version Fix** | [TMS-272] | 2-3h | 🟡 MED | ✅ Complete |
-| **Bootstrap Blog Examples** | [BOOT-EXP] | 45m | 🔴 HIGH | ✅ Complete |
-| **AI-Assisted Bootstrap Onboarding** | [BOOT-1] | 14h | 🔴 HIGH | ✅ Complete |
-| **Version Release (v3.0.0)** | [REL-1] | 1-2h | 🟢 LOW | ⏸️ Deferred |
-
-### Website Performance Optimization [TECH-1]
-
-**Status**: ✅ Complete (2026-01-27)
-**Merged**: Branch `perf/TECH-1-website-optimization`
-**Effort**: 4h (actual)
-
-**What Shipped**:
-- Removed unused CSS components (profile-card, news-card → _future-components.css)
-- Extracted 20+ inline styles from homepage → homepage.css
-- Removed dead code (Font Awesome CDN, GlassQuote.astro)
-- All builds passing, no visual regressions
-
-**Impact**:
-- -2KB CSS bundle size (news/profile cards removed from main bundle)
-- -26 lines net reduction (234 deletions, 208 additions)
-- Better maintainability (semantic class names)
-- Cleaner HTML structure
-
-**See**: `tmp/WEBSITE-OPTIMIZATION-TASKS.md` for original plan
-
-### AI-Assisted Bootstrap Onboarding [BOOT-1]
-
-**Status**: ✅ Complete (13/13 tasks, 14h actual)
-**Merged**: 2026-01-27 (commit 10674f4)
-**Result**: ⭐⭐⭐⭐⭐ Zero-cost onboarding, 3-4x faster than manual
-
-**What shipped**:
-- 4 new bootstrap prompts (bootstrap, populate-architecture, discover-patterns, extract-rules)
-- Three-tier validation (Incomplete → Draft → Reviewed)
-- Enhanced templates with first-session awareness
-- Blog article: "From Zero Docs to AI-Ready in 10 Minutes"
-- Comprehensive tests (141/141 passing)
-
-**See**: `docs/archive/sprint-v3.0-boot-1.md` for full details
-
-### Bootstrap Blog Examples [BOOT-EXP]
-
-**Goal**: Add real AI-generated content examples to bootstrap blog article
-
-**Status**: ✅ Complete
-
-**What shipped**:
-- Added full AI-generated ARCHITECTURE.md example (Component Map, Data Flow, Quick Context)
-- Updated accuracy breakdown (90% correct, 10% needs refinement)
-- Added concrete "Before/After" refinement example
-- Demonstrated what "good enough to keep" means with real code snippets
-
-**Effort**: 45 min (actual)
-**Source**: Implementation feedback 4.3
-
-### Reusable GitHub Action [GPT5-REC-3]
-
-**Status**: ✅ Complete (2026-01-27)
-**Merged**: Branch `feat/GPT5-REC-3-reusable-action`
-**Effort**: 3h (actual)
-
-**What Shipped**:
-- Created `.github/workflows/validate-reusable.yml` with `workflow_call` trigger
-- 5 customizable inputs (strict, scope, ignore-files, cortex-version, node-version)
-- Automatic Cortex TMS installation (no local dependencies needed)
-- Validation summary in GitHub Actions UI
-- Comprehensive documentation in README and website
-
-**Impact**:
-- Zero-friction adoption (teams can validate without installing CLI)
-- Enables CI validation for external projects
-- High leverage feature (GPT5 recommendation)
-
-**Usage**:
-```yaml
-jobs:
-  validate:
-    uses: cortex-tms/cortex-tms/.github/workflows/validate-reusable.yml@main
-```
-
-**Implementation**:
-```yaml
-- uses: cortex-tms/validate-action@v1
-  with:
-    strict: true
-```
-
-**Effort**: 3-4h
-**Priority**: 🔴 HIGH (easy packaging, high value)
-**Source**: External GPT-5 repository analysis (Jan 24, 2026)
-
-### Prerelease Version Fix [TMS-272]
-
-**Status**: ✅ Complete (2026-01-27)
-**Merged**: Branch `fix/TMS-272-prerelease-version`
-**Effort**: 2h (actual)
-
-**What Shipped**:
-- Added `stable` bump type to promote prerelease → stable (e.g., `2.6.0-beta.1` → `2.6.0`)
-- Added `--version X.Y.Z` flag to explicitly set release version
-- Updated help documentation with new options
-- Added 11 new tests (28 total passing)
-- Note: `parseVersion()` method already handled prerelease parsing correctly
-
-**Impact**:
-- Eliminates manual workaround for prerelease releases
-- Professional release workflow for all version types
-- Flexible version management with explicit version flag
-
-**Usage**:
-```bash
-# Promote prerelease to stable
-node scripts/release.js stable  # 2.6.0-beta.1 → 2.6.0
-
-# Explicitly set version
-node scripts/release.js --version 2.7.0
-
-# Preview changes
-node scripts/release.js stable --dry-run
-```
-
-**See**: FUTURE-ENHANCEMENTS.md (marked as resolved)
-
-### Guardian Enhancements [TECH-2]
-
-**Goal**: Improve Guardian reliability and usability
-
-**Ideas**:
-- Add `--watch` mode for continuous validation
-- Improve confidence score accuracy
-- Add custom confidence threshold flag
-- Better error messages for common violations
-
-**Status**: To be planned
-
-### Migration Experience [TMS-277-282]
-
-**Goal**: Smoother migration process for new users
-
-**Tasks**:
-- Improve error messages in `cortex migrate`
-- Add dry-run mode
-- Better progress indicators
-- Migration validation checks
-
-**Status**: To be planned
+| **Centralize Error Handling** | [AUDIT-1] | 2-3h | 🔴 HIGH | ⏸️ Planned |
+| **Add Zod Input Validation** | [AUDIT-2] | 2-3h | 🔴 HIGH | ⏸️ Planned |
+| **Add Integration/E2E Tests** | [AUDIT-3] | 6-8h | 🔴 HIGH | ⏸️ Planned |
+| **Add npm audit to CI** | [AUDIT-4] | 30m | 🔴 HIGH | ⏸️ Planned |
+| **File Path Traversal Protection** | [AUDIT-5] | 1-2h | 🟡 MED | ⏸️ Planned |
+| **Guardian API Key Redaction** | [AUDIT-6] | 1-2h | 🟡 MED | ⏸️ Planned |
 
 ---
 
-## 📋 Deferred Items (v3.1+)
+## v3.1 Task Details
+
+### Centralize Error Handling [AUDIT-1]
+
+**Goal**: Replace direct `process.exit(1)` calls with proper error throwing
+
+**Why**:
+- Commands currently use `process.exit(1)` directly, preventing proper testing and cleanup
+- Makes CLI testing difficult (process termination can't be caught)
+- Prevents cleanup handlers from running
+
+**Implementation**:
+- Throw errors from command functions instead of exiting
+- Catch errors at CLI entry point (`bin/cortex-tms.js`)
+- Add proper error cleanup/logging at top level
+- Update tests to expect thrown errors
+
+**Files**:
+- `src/commands/*.ts` (all command files)
+- `bin/cortex-tms.js` (entry point error handling)
+
+**Impact**: Improved reliability + testability
+
+**Source**: Opus 4.5 Audit Section 3.4
+
+---
+
+### Add Zod Input Validation [AUDIT-2]
+
+**Goal**: Add runtime validation for CLI user inputs
+
+**Why**:
+- CLI currently trusts user input without validation
+- Security risk at system boundary
+- Prevents type errors and invalid configurations
+
+**Implementation**:
+- Install Zod as dependency
+- Create `src/utils/schemas.ts` with validation schemas
+- Add validation for init prompts (project name, scope, etc.)
+- Add validation for config file values
+- Return helpful error messages on validation failure
+
+**Files**:
+- `src/commands/init.ts` (init prompt validation)
+- `src/utils/schemas.ts` (new file for Zod schemas)
+- `src/types/cli.ts` (update types as needed)
+
+**Impact**: Security + robustness at system boundaries
+
+**Source**: Opus 4.5 Audit Section 3.5
+
+---
+
+### Add Integration/E2E Tests [AUDIT-3]
+
+**Goal**: Add end-to-end CLI workflow tests
+
+**Why**:
+- Current tests focus on individual functions
+- Missing tests for complete command workflows
+- Need to catch regressions at command boundaries
+- Improve confidence in releases
+
+**Implementation**:
+- Create new test suite `tests/e2e/` or `tests/integration/`
+- Test actual CLI commands (init, validate, status, migrate)
+- Use temporary test directories
+- Test command interactions and side effects
+- Test error scenarios and edge cases
+
+**Examples**:
+- Full init → validate → status workflow
+- Migration with real template files
+- Error handling across command chains
+
+**Files**:
+- New directory: `tests/e2e/` or `tests/integration/`
+- May need test utilities in `tests/helpers/`
+
+**Impact**: Higher confidence in releases, catch regressions
+
+**Source**: Opus 4.5 Audit Section 4.3
+
+---
+
+### Add npm audit to CI [AUDIT-4]
+
+**Goal**: Add dependency vulnerability scanning to CI pipeline
+
+**Why**:
+- No current dependency scanning in CI
+- Supply chain security risk
+- Industry best practice
+
+**Implementation**:
+- Add `npm audit --audit-level=high` step to CI workflow
+- Configure to fail on high/critical vulnerabilities
+- Add to `.github/workflows/*.yml` (main CI workflow)
+- Document in README
+
+**Files**:
+- `.github/workflows/ci.yml` (or main workflow file)
+
+**Impact**: Supply chain security
+
+**Source**: Opus 4.5 Audit Section 9
+
+---
+
+### File Path Traversal Protection [AUDIT-5]
+
+**Goal**: Validate template paths to prevent path traversal attacks
+
+**Why**:
+- Template paths not validated against project root
+- Potential security risk in template processing
+- Could allow reading/writing files outside project
+
+**Implementation**:
+- Add path validation in `src/utils/templates.ts`
+- Ensure all paths resolve within project root
+- Use `path.resolve()` and check against root
+- Add tests for malicious paths
+
+**Files**:
+- `src/utils/templates.ts`
+- New tests for path validation
+
+**Impact**: Security hardening
+
+**Source**: Opus 4.5 Audit Section 9
+
+---
+
+### Guardian API Key Redaction [AUDIT-6]
+
+**Goal**: Ensure Guardian never exposes API keys in logs or errors
+
+**Why**:
+- API keys stored in environment variables
+- Risk of accidental exposure in logs/error output
+- Security best practice for BYOK features
+
+**Implementation**:
+- Audit Guardian-related code for console.log/error output
+- Redact API keys from any log messages
+- Add tests to verify redaction
+- Document secure key handling
+
+**Files**:
+- Guardian-related files in `src/`
+- Guardian command files
+- Error handling for Guardian features
+
+**Impact**: Security for Guardian BYOK users
+
+**Source**: Opus 4.5 Audit Section 9
+
+---
+
+## v3.0 Completed Items Reference
+
+All v3.0 sprint details moved to archive. See `docs/archive/sprint-v3.0-jan-2026.md` for:
+- Website Performance Optimization [TECH-1]
+- AI-Assisted Bootstrap Onboarding [BOOT-1]
+- Reusable GitHub Action [GPT5-REC-3]
+- Prerelease Version Fix [TMS-272]
+- Bootstrap Blog Examples [BOOT-EXP]
+
+---
+
+## 📋 Deferred Items (v3.2+)
 
 **See**: [Future Enhancements](FUTURE-ENHANCEMENTS.md) for complete backlog
 
+### Lower Priority Technical Debt (Audit Findings)
+- Hardcoded Strings / Localization - Premature (no i18n demand)
+- Snapshot Tests for CLI Output - Brittle during active development
+- Monorepo Separation - Working fine at current scale
+- Core Package Extraction - Wait for second consumer
+- Cursor-Specific Optimizations - Low priority, IDE-agnostic by design
+
+### Feature Backlog
 - Guardian GitHub Action & PR Bot (TMS-287)
+- Guardian Enhancements (TECH-2) - watch mode, better errors
+- Migration Experience (TMS-277-282) - dry-run, better progress
 - Custom Templates Architecture (TMS-241)
 - MCP Server Integration
 - Advanced token analytics
@@ -181,6 +220,7 @@ node scripts/release.js stable --dry-run
 
 ## 🗂️ Sprint Archive
 
+- **v3.0**: [AI-Powered Onboarding](docs/archive/sprint-v3.0-jan-2026.md) ✅ Complete (Jan 26-27, 2026)
 - **v2.9**: [Guardian Optimization](docs/archive/sprint-v2.9-jan-2026.md) ✅ Complete (Jan 25-26, 2026)
 - **v2.7**: [Guardian MVP](docs/archive/sprint-v2.7-jan-2026.md) ✅ Complete (Jan 19-23, 2026)
 - **v2.6.1**: [Emergency Patch](docs/archive/sprint-v2.6.1-emergency-patch.md) ✅

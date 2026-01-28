@@ -2,8 +2,8 @@
 
 This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TASKS.md` when they become active.
 
-**Last Updated**: 2026-01-24 (Post-Sprint v2.7)
-**Source**: Sprint retrospectives + community feedback
+**Last Updated**: 2026-01-28 (Post-Opus Audit Analysis)
+**Source**: Sprint retrospectives + audit findings + community feedback
 
 ---
 
@@ -46,35 +46,38 @@ node scripts/release.js stable --dry-run
 
 ---
 
-## 🔴 High Priority (Audit-Driven - v2.9+)
+## 🔴 High Priority (Audit-Driven - v3.2+)
 
-### Benchmark Suite (Viability Report Recommendation)
+### Benchmark Suite (Top Priority - All Audits Agree)
 
 - **AI Agent Performance Benchmarks**: Prove "3-5x faster collaboration" claim
-  - **Why**: Current claim is "plausible but unverified" (all audits agree)
+  - **Why**: **#1 credibility gap** - Current claim is "plausible but unverified" (all audits agree, including Opus 4.5)
+  - **Status**: Remains the highest-priority missing piece after v3.0 release
   - **Approach**:
     1. Create standardized tasks (e.g., "add new API endpoint")
     2. Measure with TMS: token count, agent turns, time to completion
     3. Measure without TMS: same metrics
     4. Repeat across 10-20 tasks, report statistical results
-  - **Business Value**: Converts "plausible" to "proven" claims
+  - **Business Value**: Converts "plausible" to "proven" claims, essential for credibility
   - **Effort**: 16-20h (research-heavy)
-  - **Source**: Analysis Report + Viability Report
+  - **Source**: All audit reports (QCS, Viability, Analysis, Opus 4.5)
 
 ---
 
-### GitHub Action (High ROI Feature)
+### ~~GitHub Action (High ROI Feature)~~ ✅ COMPLETED
+
+**Status**: ✅ Shipped in v3.0 (2026-01-27)
 
 - **Zero-Friction Enforcement**: Teams validate TMS without local install
-  - **Why**: "Real opportunity" per Viability Report
   - **Implementation**:
     ```yaml
-    - uses: cortex-tms/validate@v1
-      with:
-        strict: true
+    jobs:
+      validate:
+        uses: cortex-tms/cortex-tms/.github/workflows/validate-reusable.yml@main
     ```
-  - **Effort**: 12-16h
-  - **Source**: Viability Report Section 7.1
+  - **Result**: Reusable workflow with 5 customizable inputs (strict, scope, ignore-files, cortex-version, node-version)
+  - **Impact**: Zero-friction adoption for teams, enables CI validation without local CLI installation
+  - **Source**: GPT5-REC-3, Viability Report Section 7.1
 
 ---
 
@@ -386,9 +389,46 @@ node scripts/release.js stable --dry-run
 
 ---
 
-## 📊 Audit Findings Summary (2026-01-21)
+## 📊 Audit Findings Summary
 
-Four comprehensive audits provided the following strategic insights:
+### Audit History
+
+Five comprehensive audits conducted during v2.6-v3.0 development:
+
+1. **QCS Analysis** (Jan 21, 2026): Quality, Cost, Sustainability framework
+2. **Viability Report** (Jan 21, 2026): Evidence-based code audit (found critical bugs)
+3. **Analysis Report** (Jan 21, 2026): Architecture and market assessment
+4. **Comparison Report** (Jan 21, 2026): Synthesis of all findings
+5. **GPT-5 Repository Analysis** (Jan 24, 2026): External review
+6. **Opus 4.5 Deep Analysis** (Jan 21, 2026): Comprehensive technical audit (analyzed v2.6.0)
+
+### Progress Since Initial Audits (v2.6.0 → v3.0.0)
+
+**What's Been Addressed**:
+- ✅ Critical Bugs: All 3 BLOCKER bugs fixed in v2.6.1
+- ✅ GitHub Action: Reusable workflow shipped in v3.0 (GPT5-REC-3)
+- ✅ Prerelease Version Support: Fixed in v3.0 (TMS-272)
+- ✅ 15-minute Onboarding: Improved to 10 minutes with Bootstrap feature (v3.0)
+- ✅ Zero-drift Governance: `cortex-tms validate` exists and working
+- ✅ Website Optimization: Performance improvements in v3.0 (TECH-1)
+
+**Status**: ~50% of audit high-priority items completed. v3.0 release represents major maturity milestone.
+
+### Remaining High-Value Opportunities
+
+#### Category A: Technical Debt (Moved to NEXT-TASKS.md v3.1)
+- **Error Handling**: Centralize error handling, remove `process.exit()` [AUDIT-1]
+- **Input Validation**: Add Zod validation for CLI inputs [AUDIT-2]
+- **Integration Tests**: E2E CLI workflow tests [AUDIT-3]
+- **Dependency Scanning**: Add `npm audit` to CI [AUDIT-4]
+- **Path Traversal Protection**: Validate template paths [AUDIT-5]
+- **Guardian Key Redaction**: Ensure API keys never exposed [AUDIT-6]
+
+#### Category B: Strategic Features (High Priority Backlog)
+- **Benchmark Suite**: **#1 credibility gap** - prove "3-5x faster" claim (all audits agree)
+- **Pattern Library Marketplace**: Community templates for frameworks
+- **Migration Assistant**: Automate brownfield project migration
+- **Compliance Packages**: Pre-built validation rule sets (SOC2, GDPR)
 
 ### Consensus Findings (All Audits Agree)
 
@@ -396,39 +436,34 @@ Four comprehensive audits provided the following strategic insights:
 ✅ **Token/Cost Savings**: 40-60% context reduction is achievable and valuable
 ✅ **Sustainability Angle**: "Green Governance" positioning is unique and defensible
 ✅ **Continue Development**: All audits recommend continuing with strategic focus
-✅ **Marketing Needs Refinement**: Shift from "boilerplate" to "AI governance platform"
+✅ **Architecture is Strong**: Clean separation, good TypeScript practices
+⚠️ **Benchmark Suite**: Remains #1 missing piece for credibility (unchanged since v2.6.0)
 
-### Critical Gaps Identified
+### Rejected/Deprioritized Audit Recommendations
 
-❌ **Trust-Breaking Bugs**: 3 critical bugs undermine reliability (moved to v2.6.1)
-❌ **Unverified Claims**: "3-5x faster" needs benchmarks to prove
-❌ **Missing Proof**: Token counter feature needed to show ROI
-⚠️ **Testing Gap**: Need integration tests for command interactions
-⚠️ **Error Handling**: process.exit() calls prevent proper cleanup
+**Low-value or premature items**:
+- ❌ Hardcoded Strings / Localization: No i18n demand (Audit Section 3.6)
+- ❌ Snapshot Tests: Brittle during active development (Audit Section 4.4)
+- ❌ Monorepo Separation: Working fine at current scale (Audit Section 2.4)
+- ❌ Core Package Extraction: Wait for second consumer (Audit Section 8)
+- ❌ Cursor-Specific Optimizations: Low priority, IDE-agnostic by design (Audit Section 5)
 
-### Strategic Opportunities
-
-🎯 **"Green Governance" Positioning**: Market as cost + quality + sustainability platform
-🎯 **Token Counter**: Makes value visible and measurable (QCS strongest recommendation)
-🎯 **Guardian Semantic Validation**: Move from structural to semantic quality checks
-🎯 **GitHub Action**: Zero-friction adoption for teams
-🎯 **Benchmark Suite**: Convert "plausible" claims to "proven" claims
+**Rationale**: Focus on high-impact security/quality improvements first. These can be revisited if demand emerges.
 
 ### Revised Viability Score
 
-**Before Audits**: 8.2/10 (internal assessment)
-**After Audits**: 7.2/10 (accounting for critical bugs)
-**After v2.6.1 Fix**: Expected 8.5/10 (bugs fixed + strategic features)
+**Before Audits** (Jan 21, 2026): 8.2/10 (internal assessment)
+**After Initial Audits**: 7.2/10 (accounting for critical bugs)
+**After v2.6.1 Fix**: 8.0/10 (bugs fixed)
+**After v3.0 Release** (Jan 28, 2026): 8.5/10 (major features shipped, bootstrap onboarding, GitHub Action)
+**Target After v3.1** (security hardening): 9.0/10
+**Target After Benchmark Suite**: 9.5/10 (claims proven)
 
 ### Source Documents
 
-- **QCS Analysis**: Quality, Cost, Sustainability framework
-- **Viability Report**: Evidence-based code audit (found critical bugs)
-- **Analysis Report**: Architecture and market assessment
-- **Comparison Report**: Synthesis of all findings
-- **GPT-5 Repository Analysis** (Jan 24, 2026): External review of concept, implementation, plans, and viability
-
-All audit documents available in `/tmp/` directory.
+All audit documents available in `/tmp/` directory:
+- `tmp/cortex-tms-analysis-report-opus-28-01-2026.md` (Opus 4.5 Deep Analysis)
+- Earlier audit reports from Jan 21-24, 2026
 
 ---
 
