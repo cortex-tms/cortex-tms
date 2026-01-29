@@ -29,6 +29,58 @@ Over 6 months of using TMS to build itself:
 
 ---
 
+## Important: Understanding the 60-70% vs 94.5% Numbers
+
+**Update (January 29, 2026)**: After launching this case study on Reddit ([183K views, 369 upvotes](https://www.reddit.com/r/ClaudeAI/)), the community rightfully called out an important distinction we should have made clearer upfront.
+
+### Two Different Measurements
+
+This case study reports **two different reduction numbers**, and it's critical to understand both:
+
+#### 94.5% Reduction (Theoretical Maximum)
+- **Baseline**: 66,834 tokens (entire repository including COLD archives)
+- **After TMS**: 3,647 tokens (HOT tier only)
+- **Calculation**: (66,834 - 3,647) / 66,834 = 94.5%
+
+**Why this is theoretical**: The baseline includes COLD tier archives (completed sprint notes, old ADRs, historical changelogs) that Claude wouldn't read anyway in normal usage. As one Reddit user put it: "This is like ordering six desserts, eating one, and claiming I dropped my calorie intake by 94.5%." Fair criticism.
+
+#### 60-70% Reduction (Measured in Practice)
+- **Baseline**: ~12,000-15,000 tokens per query (before TMS structure)
+- **After TMS**: ~4,000-6,000 tokens per query
+- **Calculation**: (12-15k - 4-6k) / 12-15k = 60-70%
+
+**Why this is more accurate**: This measures actual token usage in day-to-day development sessions, comparing real "before" behavior (Claude reading many files per session) to real "after" behavior (Claude reading only HOT tier by default).
+
+### Which Number Should You Expect?
+
+Your results will depend on your repository structure:
+
+- **If you have lots of archives in your repo**: Closer to 94% (HOT vs everything including archives)
+- **If you already keep your repo clean**: Closer to 60-70% (the efficiency gain from HOT/WARM/COLD organization)
+- **If you're just starting with TMS**: 60-70% is the realistic expectation
+
+### Reddit Feedback & Transparency
+
+The 94.5% claim in our original marketing materials was technically correct but **misleading** because it compared against an inflated baseline. The community was right to push back.
+
+**Thank you to**:
+- u/unwitty for the "six desserts" analogy (perfect framing)
+- u/Western_Objective209, u/kallekro, u/BootyMcStuffins for questioning the baseline
+- The entire r/ClaudeAI community for keeping us honest
+
+**Lesson learned**: Lead with measured, conservative claims (60-70%). Mention theoretical maximums (94%) only with full context. Big numbers get attention, but trust requires accuracy.
+
+### What We've Updated
+
+Based on this feedback, we've corrected:
+- ✅ README.md homepage: Now leads with "60-70% typical reduction"
+- ✅ Website metrics: Updated to show "60-70% (up to 94% with archives)"
+- ✅ This blog post: Added this clarification section
+
+The rest of this case study remains unchanged—the 60-70% reduction is what we actually measured and experienced.
+
+---
+
 ## 1. Context: Building a CLI with Claude Code
 
 **Project**: Cortex TMS (TypeScript CLI + Astro website monorepo)
