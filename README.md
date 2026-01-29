@@ -6,9 +6,9 @@ Cortex TMS is an **AI Governance Platform** built on three pillars:
 
 1. **💰 Cost Efficiency** - Reduce AI API costs by **40-60%** through intelligent context management
 2. **✅ Quality** - Prevent hallucinations from outdated docs with semantic validation
-3. **🌱 Sustainability** - Cut compute requirements by **94.5%** with Green Governance
+3. **🌱 Sustainability** - Cut compute requirements by **60-70%** with Green Governance (up to 94% with archives)
 
-Stop feeding Claude/Copilot/Cursor thousands of outdated lines. **94.5% context reduction** means **10x lower costs**, **zero hallucinations**, and **less compute waste** from reading archived docs.
+Stop feeding Claude/Copilot/Cursor thousands of outdated lines. **60-70% typical context reduction** (up to 94% with archives) means **10x lower costs**, **zero hallucinations**, and **less compute waste** from reading archived docs.
 
 [![npm version](https://img.shields.io/npm/v/cortex-tms.svg?style=flat-square)](https://www.npmjs.com/package/cortex-tms)
 [![npm downloads](https://img.shields.io/npm/dm/cortex-tms.svg?style=flat-square)](https://www.npmjs.com/package/cortex-tms)
@@ -61,10 +61,10 @@ cortex status --tokens -m claude-sonnet-4-5
 
 | Metric                  | Value                | Impact                                          |
 | :---------------------- | :------------------- | :---------------------------------------------- |
-| **Context Reduction**   | 94.5%                | Read 3,647 tokens instead of 66,834             |
+| **Context Reduction**   | 60-70% typical (94% max) | Read 3,647 tokens instead of 66,834 (with archives) |
 | **Cost per Session**    | $0.01                | vs $0.20 without tiering (Claude Sonnet 4.5)    |
 | **Cost Comparison**     | 10x cheaper          | Claude Sonnet vs GPT-4 ($0.01 vs $0.11/session) |
-| **Carbon Footprint**    | 94.5% lower          | Less compute = greener development              |
+| **Carbon Footprint**    | 60-70% lower         | Less compute = greener development              |
 | **Quality Improvement** | 80% fewer violations | Guardian catches pattern drift                  |
 
 **How?** The HOT/WARM/COLD tier system ensures AI agents only read what matters:
