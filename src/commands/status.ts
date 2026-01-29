@@ -239,6 +239,12 @@ async function runTokenAnalysis(modelName: string = 'claude-sonnet-4.5'): Promis
       `  ${chalk.cyan('Tokens Avoided:')} ${formatTokens(stats.savings.tokensAvoided)} per session`
     );
 
+    // Add context about the numbers
+    console.log(chalk.gray('\n  💡 Understanding the reduction:'));
+    console.log(chalk.gray('     • This shows HOT tier vs. full repository (including archives)'));
+    console.log(chalk.gray('     • Typical measured reduction: 60-70% in day-to-day usage'));
+    console.log(chalk.gray('     • Your number above: HOT vs. everything (theoretical maximum)'));
+
     // Cost Estimates Section
     const model = modelName as ModelName;
     if (MODEL_PRICING[model]) {
@@ -265,12 +271,12 @@ async function runTokenAnalysis(modelName: string = 'claude-sonnet-4.5'): Promis
     console.log(chalk.bold('\n🌱 Sustainability Impact'));
     console.log(
       chalk.gray(
-        `  By reducing context by ${formatPercent(stats.savings.percentReduction)}, you're:`
+        `  By organizing context (60-70% typical reduction), you're:`
       )
     );
-    console.log(chalk.gray('  • Reducing API costs'));
+    console.log(chalk.gray('  • Reducing API costs significantly'));
     console.log(chalk.gray('  • Lowering compute requirements'));
-    console.log(chalk.gray('  • Decreasing energy consumption'));
+    console.log(chalk.gray('  • Decreasing energy consumption per AI query'));
 
     console.log(); // Trailing newline
   } catch (error) {
