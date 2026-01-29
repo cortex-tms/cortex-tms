@@ -518,12 +518,20 @@ cortex-tms/
 
 ## 🤝 Contributing
 
-1. Read `NEXT-TASKS.md` to see what's being worked on
-2. Check `FUTURE-ENHANCEMENTS.md` for backlog items
-3. Use `cortex-tms prompt` to get project-aware guidance
+We welcome contributions! Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** for detailed guidelines on:
+- How to submit bug reports and feature requests
+- Development setup and workflow
+- Pull request process and quality standards
+- Code style and testing requirements
+- Areas where we need help
+
+**Quick Start for Contributors**:
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md) - **Required for all contributions**
+2. Check [open issues](https://github.com/cortex-tms/cortex-tms/issues) for `good-first-issue` labels
+3. For significant changes, open an issue for discussion **before** coding
 4. Follow patterns in `docs/core/PATTERNS.md`
-5. Verify changes against `docs/core/DOMAIN-LOGIC.md`
-6. Test templates with AI agents before submitting
+5. Ensure tests pass: `npm test`
+6. Submit PR with clear description and linked issue
 
 ---
 
