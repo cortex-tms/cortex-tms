@@ -358,6 +358,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.1.0] - 2026-01-30
+
+### Added
+
+- **Git-Based Auto-Tiering** (`cortex-tms auto-tier`) - Community-requested feature
+  - Automatically assign HOT/WARM/COLD tiers based on git commit history
+  - Uses file recency as objective signal for relevance
+  - Default thresholds: HOT ≤ 7 days, WARM ≤ 30 days, COLD > 30 days
+  - Supports `--dry-run`, `--force`, `--verbose`, and custom thresholds
+  - Adds `<!-- @cortex-tms-tier TIER -->` tags to markdown files
+  - Integrates with token counter to respect tier tags
+  - Performance: ~300ms for 111 files
+  - Built in response to Reddit community feedback
+  - Aligns with "Lost in the Middle" research
+
+### Changed
+
+- Updated case study timeline to reflect accurate development period (3 weeks)
+- Homepage installation commands now use `@latest` instead of hardcoded versions
+- Enhanced token counter to read tier tags in addition to path patterns
+
+### Fixed
+
+- Auto-tier `--cold` option now properly used in tier assignment logic
+- Added numeric validation for threshold options (prevents NaN, negative, misordered values)
+
+### Documentation
+
+- Added comprehensive auto-tier documentation to CLI-USAGE.md
+- Created website reference page for auto-tier
+- Updated tiered memory concept page with auto-tier section
+- Corrected case study timeline
+- Credited Reddit community members in README
+
+---
+
 ## [3.0.0] - 2026-01-27
 
 ### 🚀 Major Release - AI-Powered Onboarding & Infrastructure
@@ -1022,4 +1058,4 @@ See `FUTURE-ENHANCEMENTS.md` for planned features in upcoming versions.
 [2.1.1]: https://github.com/cortex-tms/cortex-tms/releases/tag/v2.1.1
 [2.1.0]: https://github.com/cortex-tms/cortex-tms/releases/tag/v2.1.0
 
-<!-- @cortex-tms-version 3.0.0 -->
+<!-- @cortex-tms-version 3.1.0 -->

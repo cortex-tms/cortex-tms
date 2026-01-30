@@ -623,9 +623,9 @@ MIT
 
 ## Status
 
-**Version**: 3.0.0 (Stable / Production Ready)
+**Version**: 3.1.0 (Stable / Production Ready)
 **Last Updated**: 2026-01-23
 **Current Sprint**: v2.8 - "Marketing Pivot & Community Launch"
 **Completed Sprints**: v2.1, v2.2, v2.3, v2.4, v2.5, v2.6, v2.7 (see `docs/archive/`)
 
-<!-- @cortex-tms-version 3.0.0 -->
+<!-- @cortex-tms-version 3.1.0 -->

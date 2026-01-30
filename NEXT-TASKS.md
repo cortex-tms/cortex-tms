@@ -192,4 +192,4 @@ All v3.0 sprint details moved to archive. See `docs/archive/sprint-v3.0-jan-2026
 - **v2.2**: [Automation & Precision](docs/archive/sprint-2026-01.md) ✅
 - **v2.1**: [Foundation](docs/archive/sprint-2026-01-dogfooding.md) ✅
 
-<!-- @cortex-tms-version 3.0.0 -->
+<!-- @cortex-tms-version 3.1.0 -->
