@@ -38,18 +38,6 @@ This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TAS
 
 ---
 
-## 🚨 CRITICAL BUGS (Moved to NEXT-TASKS.md v2.6.1)
-
-The following critical issues have been **moved to active development** in `NEXT-TASKS.md`:
-
-✅ **CRITICAL-1**: Nano scope validation mismatch (BLOCKER)
-✅ **CRITICAL-2**: Migration path handling breaks nested files (BLOCKER)
-✅ **CRITICAL-3**: Prerelease version parsing errors (BLOCKER)
-
-**Status**: These are being addressed in v2.6.1 emergency patch (Jan 21-24, 2026)
-
----
-
 ## 🔴 v3.2: Code Quality & Security (Deferred from Audit)
 
 **Theme**: Security Hardening + Code Quality Improvements
@@ -84,30 +72,11 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
 
 ---
 
-## 🔥 Known Issues (Lower Priority)
+## 🔥 Completed Items (Condensed)
 
-### ~~Release Script: Prerelease Version Support (TMS-272)~~ ✅ RESOLVED
-**Status**: ✅ Fixed in v3.0 (2026-01-27)
-
-**What Was Fixed**:
-- ✅ Prerelease version parsing (`parseVersion()` method already implemented)
-- ✅ Added `--version X.Y.Z` flag to explicitly set version
-- ✅ Added `stable` bump type for beta→stable promotion (e.g., `2.6.0-beta.1` → `2.6.0`)
-- ✅ Updated help documentation with new options
-
-**Usage Examples**:
-```bash
-# Promote prerelease to stable
-node scripts/release.js stable  # 2.6.0-beta.1 → 2.6.0
-
-# Explicitly set version
-node scripts/release.js --version 2.7.0
-
-# Preview changes
-node scripts/release.js stable --dry-run
-```
-
-**Resolution**: TMS-272 complete (2026-01-27)
+- ✅ **TMS-272**: Release script prerelease support (v3.0, 2026-01-27)
+- ✅ **CRITICAL-1/2/3**: Emergency patch bugs (v2.6.1)
+- ✅ **GPT5-REC-3**: GitHub Action reusable workflow (v3.0)
 
 ---
 
@@ -126,23 +95,6 @@ node scripts/release.js stable --dry-run
   - **Business Value**: Converts "plausible" to "proven" claims, essential for credibility
   - **Effort**: 16-20h (research-heavy)
   - **Source**: All audit reports (QCS, Viability, Analysis, Opus 4.5)
-
----
-
-### ~~GitHub Action (High ROI Feature)~~ ✅ COMPLETED
-
-**Status**: ✅ Shipped in v3.0 (2026-01-27)
-
-- **Zero-Friction Enforcement**: Teams validate TMS without local install
-  - **Implementation**:
-    ```yaml
-    jobs:
-      validate:
-        uses: cortex-tms/cortex-tms/.github/workflows/validate-reusable.yml@main
-    ```
-  - **Result**: Reusable workflow with 5 customizable inputs (strict, scope, ignore-files, cortex-version, node-version)
-  - **Impact**: Zero-friction adoption for teams, enables CI validation without local CLI installation
-  - **Source**: GPT5-REC-3, Viability Report Section 7.1
 
 ---
 
