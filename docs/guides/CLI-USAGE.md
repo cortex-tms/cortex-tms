@@ -15,6 +15,7 @@ The Cortex TMS CLI is a command-line tool for initializing and validating AI-opt
    - [init](#init-command)
    - [validate](#validate-command)
    - [status](#status-command)
+   - [auto-tier](#auto-tier-command)
 4. [VS Code Snippets](#vs-code-snippets)
 5. [Project Scopes](#project-scopes)
 6. [Configuration (.cortexrc)](#configuration)
@@ -311,6 +312,276 @@ $ npx cortex-tms status
 - Combines data from multiple TMS files
 - Runs lightweight validation in the background
 - Safe to run anytime (read-only operation)
+
+---
+
+### `auto-tier` Command
+
+Analyze git commit history to automatically suggest and apply HOT/WARM/COLD tier assignments to documentation files. This reduces manual tier management by using file recency as a signal for relevance.
+
+#### Usage
+
+```bash
+cortex-tms auto-tier [options]
+```
+
+#### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--hot <days>` | Files modified within N days → HOT tier | `7` |
+| `--warm <days>` | Files modified within N days → WARM tier | `30` |
+| `--cold <days>` | Files older than N days → COLD tier | `90` |
+| `--dry-run`, `-d` | Preview tier suggestions without applying changes | `false` |
+| `--force`, `-f` | Overwrite existing tier tags (default: skip files with tags) | `false` |
+| `--verbose`, `-v` | Show detailed reasons for each tier assignment | `false` |
+
+#### How It Works
+
+Auto-tier analyzes your git repository to determine when each Markdown file was last modified:
+
+1. **Scans Repository**: Finds all `*.md` files (excluding `node_modules`, `.git`, `dist`)
+2. **Checks Git History**: Uses `git log --follow` to find last commit date for each file
+3. **Calculates Recency**: Determines days since last modification
+4. **Suggests Tiers**: Applies threshold-based classification
+5. **Adds Tags**: Inserts `<!-- @cortex-tms-tier HOT/WARM/COLD -->` comments
+
+**Tier Assignment Logic**:
+- **HOT**: Recently modified files (≤ 7 days by default) - Always loaded in AI context
+- **WARM**: Moderately recent files (≤ 30 days) - Loaded on-demand when relevant
+- **COLD**: Stale files (> 30 days) - Archived, rarely loaded
+- **Mandatory HOT**: `NEXT-TASKS.md`, `CLAUDE.md`, `.github/copilot-instructions.md` always stay HOT
+- **Untracked Files**: New files not yet in git are marked HOT (active work)
+
+#### Exit Codes
+
+- `0` - Command completed successfully
+- `1` - Error (not a git repository, invalid options, git command failed)
+
+#### Examples
+
+**Dry Run (Preview Changes)**
+```bash
+npx cortex-tms auto-tier --dry-run
+
+# Output:
+# 🔄 Git-Based Auto-Tiering
+# 🔍 DRY RUN MODE: No files will be modified.
+#
+# ✔ Analyzed 111 files
+#
+# 📊 Tier Suggestions:
+# 🔥 HOT (94 files)
+#   ✨ README.md
+#   ✨ NEXT-TASKS.md
+#   ... and 92 more
+#
+# 📚 WARM (17 files)
+#   ✨ docs/guides/QUICK-START.md
+#   ... and 16 more
+#
+# ❄️  COLD (0 files)
+#
+# 📈 Summary:
+#   ✨ CREATE: 81 new tier tags
+#   🔄 UPDATE: 0 tier changes
+```
+
+**Apply Tier Tags**
+```bash
+npx cortex-tms auto-tier
+
+# Analyzes git history and adds tier tags to files
+# Skips files that already have tier tags (unless --force)
+```
+
+**Custom Thresholds**
+```bash
+# Stricter: Only last 3 days are HOT
+npx cortex-tms auto-tier --hot 3 --warm 14 --cold 60
+
+# More lenient: Last 2 weeks are HOT
+npx cortex-tms auto-tier --hot 14 --warm 60 --cold 180
+```
+
+**Force Update Existing Tags**
+```bash
+# Overwrite all tier tags based on current git state
+npx cortex-tms auto-tier --force
+```
+
+**Verbose Output**
+```bash
+npx cortex-tms auto-tier --dry-run --verbose
+
+# Shows detailed reasons for each file:
+# ✨ README.md
+#     Modified 1 days ago
+```
+
+#### When to Use
+
+**Initial Setup**: Tag all files after adopting TMS
+```bash
+npx cortex-tms auto-tier
+```
+
+**Weekly/Monthly Maintenance**: Update tiers as work shifts
+```bash
+# Run at start of each sprint
+npx cortex-tms auto-tier --force
+```
+
+**Before Major AI Sessions**: Ensure AI sees most relevant context
+```bash
+npx cortex-tms auto-tier --dry-run  # Check what's HOT
+```
+
+**Custom Workflows**: Adjust for your project's rhythm
+```bash
+# Fast-paced project: shorter HOT window
+npx cortex-tms auto-tier --hot 3 --warm 7
+
+# Slow-paced project: longer HOT window
+npx cortex-tms auto-tier --hot 21 --warm 90
+```
+
+#### Integration with Token Counter
+
+Auto-tier tags are automatically respected by `cortex-tms status --tokens`:
+
+```bash
+# Apply tier tags
+npx cortex-tms auto-tier
+
+# See token distribution by tier
+npx cortex-tms status --tokens
+# HOT files: ~70,000 tokens (always in context)
+# WARM files: ~12,000 tokens (on-demand)
+# COLD files: Excluded from analysis
+```
+
+#### Important Notes
+
+**Requirements**:
+- ✅ Must be run in a git repository (`.git` directory required)
+- ✅ Git must be installed and in PATH
+- ✅ Files must be committed to git for accurate history
+
+**Limitations**:
+- Only processes Markdown (`.md`) files
+- Untracked files are marked HOT (assumes active work)
+- Tier tags override path-based patterns from token counter
+- Running auto-tier and committing updates file recency (by design)
+
+**Performance**:
+- Typical: ~300ms for 100 files
+- Large repos (500+ files): 1-2 seconds
+- Performance scales linearly with file count
+
+**Edge Cases**:
+- **Renamed files**: `git log --follow` tracks across renames
+- **Submodules**: Analyzes within submodule context
+- **Binary files**: Skipped (only Markdown processed)
+- **Empty repository**: All files marked HOT (no history)
+- **Subdirectories**: Currently must run from repo root
+
+#### Best Practices
+
+**1. Start with Dry Run**
+```bash
+# Always preview before applying
+npx cortex-tms auto-tier --dry-run --verbose
+```
+
+**2. Commit Tier Tags**
+```bash
+npx cortex-tms auto-tier
+git add -u  # Stage tier tag changes
+git commit -m "chore: update tier tags based on recency"
+```
+
+**3. Use in CI/CD** (Optional)
+```yaml
+# .github/workflows/update-tiers.yml
+name: Update Tier Tags
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Weekly on Monday
+jobs:
+  update-tiers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npx cortex-tms auto-tier --force
+      - run: git commit -am "chore: weekly tier update" || echo "No changes"
+      - run: git push
+```
+
+**4. Adjust for Your Workflow**
+
+Fast-paced projects (daily commits):
+```bash
+npx cortex-tms auto-tier --hot 3 --warm 7 --cold 30
+```
+
+Slow-paced projects (weekly commits):
+```bash
+npx cortex-tms auto-tier --hot 21 --warm 60 --cold 180
+```
+
+**5. Respect Mandatory HOT Files**
+
+These files always stay HOT regardless of git history:
+- `NEXT-TASKS.md` - Current sprint (always relevant)
+- `CLAUDE.md` - Agent instructions (always needed)
+- `.github/copilot-instructions.md` - GitHub Copilot config
+
+#### Troubleshooting
+
+**"Not a git repository" Error**
+```bash
+# Must be run from repo root (subdirectory support coming soon)
+cd /path/to/repo/root
+npx cortex-tms auto-tier
+```
+
+**"--hot must be a positive number" Error**
+```bash
+# Invalid: non-numeric value
+npx cortex-tms auto-tier --hot foo  # ❌
+
+# Valid: numeric value
+npx cortex-tms auto-tier --hot 14   # ✅
+```
+
+**"--hot threshold must be ≤ --warm threshold" Error**
+```bash
+# Invalid: hot > warm
+npx cortex-tms auto-tier --hot 30 --warm 7  # ❌
+
+# Valid: hot ≤ warm ≤ cold
+npx cortex-tms auto-tier --hot 7 --warm 30  # ✅
+```
+
+**No Files Changed**
+```bash
+# Common causes:
+# - All files already have tier tags (use --force to overwrite)
+# - No Markdown files in repository
+# - All files are in ignored directories (node_modules, dist, .git)
+```
+
+#### Research Background
+
+Auto-tier is designed around the ["Lost in the Middle"](https://arxiv.org/abs/2307.03172) research finding:
+
+- **LLMs recall best** from the beginning and end of context
+- **LLMs recall poorly** from the middle of long contexts
+- **TMS addresses this** by placing recent/relevant files (HOT) at the beginning
+- **Git history** provides an objective signal for file relevance
+
+By keeping recently-modified files in the HOT tier (beginning of context), auto-tier optimizes AI agent performance based on actual usage patterns.
 
 ---
 

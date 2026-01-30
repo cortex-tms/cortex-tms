@@ -91,7 +91,7 @@ Traditional repos drown AI agents in thousands of lines of historical tasks and 
 
 ## 🛠️ CLI Commands
 
-Cortex TMS provides 7 production-ready commands (v2.6.1):
+Cortex TMS provides 8 production-ready commands:
 
 ### `cortex-tms tutorial`
 
@@ -150,6 +150,31 @@ cortex-tms status --tokens -m gpt-4  # Cost comparison across models
 - Cost estimates per session/day/month
 - Model comparison (Claude Sonnet 4.5, Opus 4.5, GPT-4, etc.)
 - Sustainability impact tracking
+
+### `cortex-tms auto-tier`
+
+Git-based automatic tier assignment - reduce manual tier management using file recency as a relevance signal.
+
+```bash
+cortex-tms auto-tier                    # Apply tier tags based on git history
+cortex-tms auto-tier --dry-run          # Preview tier suggestions
+cortex-tms auto-tier --hot 14 --warm 60 # Custom thresholds
+cortex-tms auto-tier --force            # Overwrite existing tags
+```
+
+**How It Works**:
+
+- Analyzes git commit history to determine file modification recency
+- Assigns HOT/WARM/COLD tiers based on days since last change
+- Adds `<!-- @cortex-tms-tier HOT -->` tags to markdown files
+- Default thresholds: HOT ≤ 7 days, WARM ≤ 30 days, COLD > 30 days
+
+**Why Auto-Tier?**
+
+- **Automates tier management**: No more manual tier decisions
+- **Objective signal**: Git history provides measurable recency data
+- **Aligns with "Lost in the Middle" research**: Recent files (likely relevant) placed at context beginning
+- **Adapts to workflow**: Tiers stay current as project evolves
 
 ### `cortex-tms migrate`
 
