@@ -8,6 +8,8 @@
 import { readFile } from 'fs/promises';
 import { relative } from 'path';
 import { glob } from 'glob';
+import { minimatch } from 'minimatch';
+import { readTierTag } from './tier-tags.js';
 
 /**
  * Token estimation heuristic
@@ -136,15 +138,34 @@ const WARM_PATTERNS = [
 const COLD_PATTERNS = ['docs/archive/**/*.md'];
 
 /**
- * Count characters in a file
+ * Count characters in a file and return both content and character count
  */
-async function countFileCharacters(filePath: string): Promise<number> {
+async function readFileWithCharCount(filePath: string): Promise<{ content: string; characters: number }> {
   try {
     const content = await readFile(filePath, 'utf-8');
-    return content.length;
+    return { content, characters: content.length };
   } catch {
-    return 0;
+    return { content: '', characters: 0 };
   }
+}
+
+/**
+ * Determine file tier based on tier tag or path patterns
+ */
+function getFileTier(content: string, path: string): 'HOT' | 'WARM' | 'COLD' {
+  // First check for explicit tier tag
+  const tierTag = readTierTag(content);
+  if (tierTag) {
+    return tierTag;
+  }
+
+  // Fall back to path-based patterns (existing behavior)
+  if (HOT_PATTERNS.some(p => minimatch(path, p))) return 'HOT';
+  if (WARM_PATTERNS.some(p => minimatch(path, p))) return 'WARM';
+  if (COLD_PATTERNS.some(p => minimatch(path, p))) return 'COLD';
+
+  // Default to WARM for unclassified files
+  return 'WARM';
 }
 
 /**
@@ -178,42 +199,47 @@ async function findTierFiles(
 }
 
 /**
- * Count tokens for files in a specific tier
+ * Analyze token usage across all tiers
+ * Now supports both tier tags and path-based patterns
  */
-async function countTierTokens(
-  cwd: string,
-  tier: 'HOT' | 'WARM' | 'COLD',
-  patterns: string[]
-): Promise<FileTokenCount[]> {
-  const files = await findTierFiles(cwd, patterns);
-  const counts: FileTokenCount[] = [];
+export async function analyzeTokenUsage(cwd: string): Promise<TokenStats> {
+  // Find all markdown files (from all tier patterns)
+  const allPatterns = [...HOT_PATTERNS, ...WARM_PATTERNS, ...COLD_PATTERNS];
+  const allFiles = await findTierFiles(cwd, allPatterns);
 
-  for (const filePath of files) {
-    const characters = await countFileCharacters(filePath);
+  // Classify each file and count tokens
+  const hotFiles: FileTokenCount[] = [];
+  const warmFiles: FileTokenCount[] = [];
+  const coldFiles: FileTokenCount[] = [];
+
+  for (const filePath of allFiles) {
+    const { content, characters } = await readFileWithCharCount(filePath);
     const tokens = estimateTokens(characters);
-
-    // Make path relative to cwd for display
     const relativePath = relative(cwd, filePath);
 
-    counts.push({
+    // Determine tier (respects tier tags)
+    const tier = getFileTier(content, relativePath);
+
+    const fileCount: FileTokenCount = {
       path: relativePath,
       tier,
       characters,
       tokens,
-    });
+    };
+
+    if (tier === 'HOT') {
+      hotFiles.push(fileCount);
+    } else if (tier === 'WARM') {
+      warmFiles.push(fileCount);
+    } else {
+      coldFiles.push(fileCount);
+    }
   }
 
-  return counts.sort((a, b) => b.tokens - a.tokens); // Sort by tokens desc
-}
-
-/**
- * Analyze token usage across all tiers
- */
-export async function analyzeTokenUsage(cwd: string): Promise<TokenStats> {
-  // Count tokens for each tier
-  const hotFiles = await countTierTokens(cwd, 'HOT', HOT_PATTERNS);
-  const warmFiles = await countTierTokens(cwd, 'WARM', WARM_PATTERNS);
-  const coldFiles = await countTierTokens(cwd, 'COLD', COLD_PATTERNS);
+  // Sort files by token count (descending)
+  hotFiles.sort((a, b) => b.tokens - a.tokens);
+  warmFiles.sort((a, b) => b.tokens - a.tokens);
+  coldFiles.sort((a, b) => b.tokens - a.tokens);
 
   // Calculate totals
   const hotTotal = hotFiles.reduce((sum, f) => sum + f.tokens, 0);

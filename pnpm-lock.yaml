@@ -26,6 +26,9 @@ importers:
       inquirer:
         specifier: ^10.2.2
         version: 10.2.2
+      minimatch:
+        specifier: ^10.1.1
+        version: 10.1.1
       ora:
         specifier: ^8.1.0
         version: 8.2.0

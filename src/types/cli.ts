@@ -188,3 +188,15 @@ export interface ScopePreset {
   optionalFiles: string[];
   lineLimits: Partial<LineLimits>;
 }
+
+/**
+ * Options for the auto-tier command
+ */
+export interface AutoTierOptions {
+  hot: string;
+  warm: string;
+  cold: string;
+  dryRun?: boolean;
+  force?: boolean;
+  verbose?: boolean;
+}

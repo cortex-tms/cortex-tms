@@ -78,6 +78,7 @@
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",
     "inquirer": "^10.2.2",
+    "minimatch": "^10.1.1",
     "ora": "^8.1.0"
   },
   "devDependencies": {
