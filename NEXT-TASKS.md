@@ -35,7 +35,7 @@
 | **[AUDIT-3] E2E Test Suite** | Test full CLI workflows (init, validate, migrate, review) | 6-8h | 🔴 P0 | ⏸️ Pending |
 | **[AUDIT-4] npm audit CI** | Automated dependency vulnerability scanning | 30m | 🟡 P1 | ⏸️ Pending |
 | **[AUDIT-5] Path Traversal Protection** | Validate template paths prevent `../../etc/passwd` attacks | 1-2h | 🔴 P0 | ✅ Complete |
-| **[AUDIT-6] API Key Redaction** | Ensure Guardian API keys never logged or exposed | 1-2h | 🔴 P0 | ⏸️ Pending |
+| **[AUDIT-6] API Key Redaction** | Ensure Guardian API keys never logged or exposed | 1-2h | 🔴 P0 | ✅ Complete |
 
 **Total Core Effort**: 13-17h
 
@@ -49,10 +49,10 @@
 - [ ] E2E test coverage ≥ 80% for core workflows
 - [ ] CI pipeline includes `npm audit` check
 - [x] Template path validation prevents directory traversal
-- [ ] Guardian sanitizes API keys in all output paths
+- [x] Guardian sanitizes API keys in all output paths
 
 ### Testing & Validation
-- [ ] All 174+ tests continue to pass
+- [x] All 269 tests continue to pass (was 174, now 269 with new tests)
 - [ ] New E2E tests cover: `init`, `validate`, `migrate`, `review` commands
 - [ ] `cortex-tms validate --strict` passes
 - [ ] Build successful with no warnings
