@@ -475,7 +475,7 @@ npx cortex-tms status --tokens
 - Running auto-tier and committing updates file recency (by design)
 
 **Performance**:
-- Typical: ~300ms for 100 files
+- Typical: ~300ms for 111 files (cortex-tms repo)
 - Large repos (500+ files): 1-2 seconds
 - Performance scales linearly with file count
 
