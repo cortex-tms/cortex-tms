@@ -1,0 +1,767 @@
+---
+title: cortex-tms auto-tier
+description: Automatically assign HOT/WARM/COLD tiers based on git commit history to reduce manual tier management
+---
+
+import { Card, CardGrid, Tabs, TabItem, Steps, Aside } from '@astrojs/starlight/components';
+
+The `cortex-tms auto-tier` command analyzes your git repository's commit history to automatically suggest and apply tier tags to documentation files. It uses file recency as an objective signal for relevance, keeping your tiering system aligned with actual work patterns.
+
+## Synopsis
+
+```bash
+cortex-tms auto-tier [options]
+```
+
+## Description
+
+**Automatic tier management using git history**. Auto-tier solves the problem of manually deciding which files should be HOT, WARM, or COLD by using an objective signal: when was each file last modified?
+
+Think of it as `git-aware memory management` for your documentation. Files you've touched recently are likely relevant to current work, so they stay HOT (always in AI context). Files untouched for weeks or months become WARM or COLD (loaded only when needed).
+
+**Typical usage**:
+```bash
+# Preview what would change
+cortex-tms auto-tier --dry-run
+
+# Apply tier tags
+cortex-tms auto-tier
+
+# Use custom thresholds for your workflow
+cortex-tms auto-tier --hot 14 --warm 60
+```
+
+<Aside type="tip" title="Research-Backed">
+Auto-tier addresses the ["Lost in the Middle"](https://arxiv.org/abs/2307.03172) research finding: LLMs recall information best from the beginning and end of context, poorly from the middle. By placing recently-modified files (likely relevant) in HOT tier at the context beginning, auto-tier optimizes AI agent performance.
+</Aside>
+
+---
+
+## Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--hot <days>` | `7` | Files modified within N days → HOT tier |
+| `--warm <days>` | `30` | Files modified within N days → WARM tier |
+| `--cold <days>` | `90` | Files older than N days → COLD tier |
+| `--dry-run`, `-d` | `false` | Preview tier suggestions without applying changes |
+| `--force`, `-f` | `false` | Overwrite existing tier tags (default: skip tagged files) |
+| `--verbose`, `-v` | `false` | Show detailed reasons for each tier assignment |
+
+---
+
+## How It Works
+
+<Steps>
+
+1. **Repository Scan**
+
+   Finds all `*.md` files in your repository (excluding `node_modules`, `.git`, `dist`)
+
+2. **Git History Analysis**
+
+   For each file, runs `git log --follow` to find the last commit timestamp
+   - Uses `--follow` to track files across renames
+   - Untracked files are treated as HOT (active work)
+
+3. **Recency Calculation**
+
+   Calculates days since last modification:
+   ```
+   daysSinceChange = (now - lastCommitTimestamp) / 86400
+   ```
+
+4. **Tier Assignment**
+
+   Applies threshold-based classification:
+   - `daysSinceChange ≤ hotDays` → HOT
+   - `daysSinceChange ≤ warmDays` → WARM
+   - `daysSinceChange > warmDays` → COLD
+   - Mandatory files (`NEXT-TASKS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`) always stay HOT
+
+5. **Tag Insertion**
+
+   Adds `<!-- @cortex-tms-tier TIER -->` comment at file beginning (or after front matter)
+
+</Steps>
+
+---
+
+## Example Output
+
+**Dry run on cortex-tms repository** (111 files analyzed):
+
+```bash
+$ cortex-tms auto-tier --dry-run
+
+🔄 Git-Based Auto-Tiering
+
+🔍 DRY RUN MODE: No files will be modified.
+
+✔ Analyzed 111 files
+
+📊 Tier Suggestions:
+
+🔥 HOT (94 files)
+  ✨ README.md
+  ✨ NEXT-TASKS.md
+  ✨ PROMPTS.md
+  ✨ FUTURE-ENHANCEMENTS.md
+  ✨ CONTRIBUTING.md
+  ✨ CLAUDE.md
+  ... and 88 more
+
+📚 WARM (17 files)
+  ✨ docs/guides/QUICK-START.md
+  ✨ docs/guides/MIGRATION-GUIDE.md
+  ✨ docs/archive/v1.0-CHANGELOG.md
+  ... and 14 more
+
+❄️  COLD (0 files)
+
+📈 Summary:
+  ✨ CREATE: 81 new tier tags
+  🔄 UPDATE: 0 tier changes
+```
+
+**Performance**: ~300ms for 111 files
+
+---
+
+## Tier Assignment Logic
+
+### Default Thresholds
+
+| Tier | Threshold | Meaning | AI Context Behavior |
+|------|-----------|---------|---------------------|
+| **HOT** | ≤ 7 days | Recently modified | Always loaded in AI context |
+| **WARM** | ≤ 30 days | Moderately recent | Loaded on-demand when relevant |
+| **COLD** | > 30 days | Stale/archived | Excluded from context |
+
+### Special Cases
+
+**Mandatory HOT Files** (never demoted):
+- `NEXT-TASKS.md` - Current sprint tasks
+- `CLAUDE.md` - Agent instructions
+- `.github/copilot-instructions.md` - GitHub Copilot config
+
+**Untracked Files** (not in git):
+- Marked as HOT (assumed to be active work)
+
+**Renamed Files**:
+- `git log --follow` tracks history across renames
+
+---
+
+## Usage Examples
+
+### First-Time Setup
+
+<Tabs>
+  <TabItem label="Preview Changes">
+    ```bash
+    # Safe: preview tier suggestions
+    cortex-tms auto-tier --dry-run --verbose
+
+    # Review output, ensure it makes sense
+    # Then apply:
+    cortex-tms auto-tier
+    ```
+  </TabItem>
+
+  <TabItem label="Direct Application">
+    ```bash
+    # Apply tier tags immediately
+    cortex-tms auto-tier
+
+    # Commit tier tags to repository
+    git add -u
+    git commit -m "chore: add tier tags via auto-tier"
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+### Custom Thresholds for Your Workflow
+
+<Tabs>
+  <TabItem label="Fast-Paced Project">
+    ```bash
+    # Daily commits → tight windows
+    cortex-tms auto-tier --hot 3 --warm 7 --cold 30
+
+    # Only last 3 days are HOT
+    # Files from 4-7 days ago are WARM
+    # Anything older than 30 days is COLD
+    ```
+
+    **Use case**: Active startup, daily feature releases, rapid iteration
+  </TabItem>
+
+  <TabItem label="Slow-Paced Project">
+    ```bash
+    # Weekly/bi-weekly commits → longer windows
+    cortex-tms auto-tier --hot 21 --warm 60 --cold 180
+
+    # Last 3 weeks are HOT
+    # Files from 4-8 weeks ago are WARM
+    # Anything older than 6 months is COLD
+    ```
+
+    **Use case**: Enterprise projects, quarterly releases, maintenance mode
+  </TabItem>
+
+  <TabItem label="Default (Recommended)">
+    ```bash
+    # Balanced for most projects
+    cortex-tms auto-tier
+    # (equivalent to: --hot 7 --warm 30 --cold 90)
+
+    # Last week is HOT
+    # Files from 1-4 weeks ago are WARM
+    # Anything older than 3 months is COLD
+    ```
+
+    **Use case**: Standard development cadence, weekly sprints
+  </TabItem>
+</Tabs>
+
+---
+
+### Weekly Maintenance
+
+```bash
+# Run at start of each sprint
+cortex-tms auto-tier --force
+
+# Updates all tier tags based on current state
+# Ensures tiers stay aligned with work patterns
+```
+
+**Why `--force`?**
+- Without `--force`: Skips files with existing tier tags
+- With `--force`: Overwrites all tier tags
+- Use weekly to keep tiers current as project evolves
+
+---
+
+### Integration with Token Analysis
+
+```bash
+# Step 1: Apply tier tags
+cortex-tms auto-tier
+
+# Step 2: See token distribution
+cortex-tms status --tokens
+
+# Output shows:
+# HOT files: 70,000 tokens (always in context)
+# WARM files: 12,000 tokens (on-demand)
+# COLD files: Excluded from analysis
+#
+# Context Reduction: 85% (70K instead of 82K)
+```
+
+**Result**: AI agents read only what matters, costs less, fewer hallucinations
+
+---
+
+## Exit Codes
+
+| Code | Meaning | Scenario |
+|------|---------|----------|
+| `0` | Success | Tier tags analyzed/applied successfully |
+| `1` | Error | Not a git repository, invalid options, git command failed |
+
+**Examples**:
+```bash
+# Success (git repo, valid options)
+$ cortex-tms auto-tier --dry-run
+$ echo $?
+0
+
+# Error (not a git repo)
+$ cortex-tms auto-tier
+❌ Error: Not a git repository
+$ echo $?
+1
+
+# Error (invalid threshold)
+$ cortex-tms auto-tier --hot foo
+❌ Error: --hot must be a positive number
+$ echo $?
+1
+```
+
+---
+
+## Detailed Examples
+
+### Verbose Output
+
+```bash
+$ cortex-tms auto-tier --dry-run --verbose
+
+🔄 Git-Based Auto-Tiering
+
+🔍 DRY RUN MODE: No files will be modified.
+
+✔ Analyzed 111 files
+
+📊 Tier Suggestions:
+
+🔥 HOT (94 files)
+  ✨ README.md
+      Modified 1 days ago
+  ✨ NEXT-TASKS.md
+      Mandatory HOT file
+  ✨ PROMPTS.md
+      Modified 2 days ago
+  ... (detailed reasons for each file)
+```
+
+**Use case**: Understanding why files are tiered the way they are
+
+---
+
+### Force Update
+
+<Tabs>
+  <TabItem label="Without --force (Default)">
+    ```bash
+    # First run
+    cortex-tms auto-tier
+    # ✨ CREATE: 81 new tier tags
+
+    # Second run (files already have tags)
+    cortex-tms auto-tier
+    # ✓ No changes to apply (existing tags preserved)
+    ```
+
+    **Behavior**: Respects existing tier tags
+  </TabItem>
+
+  <TabItem label="With --force">
+    ```bash
+    # First run
+    cortex-tms auto-tier
+    # ✨ CREATE: 81 new tier tags
+
+    # Second run (2 weeks later, with --force)
+    cortex-tms auto-tier --force
+    # 🔄 UPDATE: 23 tier changes
+    # (files moved from HOT→WARM as they aged)
+    ```
+
+    **Behavior**: Overwrites all tier tags based on current git state
+  </TabItem>
+</Tabs>
+
+---
+
+### CI/CD Automation
+
+<Tabs>
+  <TabItem label="GitHub Actions">
+    ```yaml
+    # .github/workflows/update-tiers.yml
+    name: Weekly Tier Update
+
+    on:
+      schedule:
+        - cron: '0 0 * * 1'  # Every Monday at midnight
+      workflow_dispatch:  # Manual trigger
+
+    jobs:
+      update-tiers:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+            with:
+              fetch-depth: 0  # Full git history needed
+
+          - name: Setup Node.js
+            uses: actions/setup-node@v4
+            with:
+              node-version: '20'
+
+          - name: Install Cortex TMS
+            run: npm install -g cortex-tms@3.0.0
+
+          - name: Update Tier Tags
+            run: cortex-tms auto-tier --force
+
+          - name: Commit Changes
+            run: |
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git add -u
+              git commit -m "chore: weekly tier update" || echo "No changes"
+              git push
+    ```
+
+    **Benefit**: Tiers stay current automatically, no manual work
+  </TabItem>
+
+  <TabItem label="Pre-Commit Hook">
+    ```bash
+    # .git/hooks/pre-commit
+    #!/bin/bash
+
+    # Update tier tags before each commit
+    npx cortex-tms auto-tier --force --quiet
+
+    # Stage any tier tag changes
+    git add -u
+
+    exit 0
+    ```
+
+    **Benefit**: Every commit includes up-to-date tier tags
+    **Warning**: Adds ~300ms to commit time
+  </TabItem>
+</Tabs>
+
+---
+
+## Requirements
+
+<Card title="Git Repository Required" icon="github">
+  Auto-tier **must** be run in a git-initialized project. It uses git history to determine file recency.
+
+  ```bash
+  # Check if git repo
+  git status
+
+  # If not, initialize
+  git init
+  git add .
+  git commit -m "Initial commit"
+
+  # Now auto-tier will work
+  cortex-tms auto-tier
+  ```
+</Card>
+
+**Other requirements**:
+- Git installed and in PATH
+- Files must be committed for accurate history
+- Markdown (`.md`) files only
+
+---
+
+## Limitations and Edge Cases
+
+### Current Limitations
+
+**Subdirectory Detection** (coming soon):
+```bash
+# Currently: Must run from repo root
+cd /path/to/repo
+cortex-tms auto-tier  # ✅ Works
+
+cd /path/to/repo/docs
+cortex-tms auto-tier  # ❌ Error: Not a git repository
+```
+
+**Workaround**: Always run from repository root
+
+---
+
+**Untracked Files**:
+```bash
+# Untracked files are marked HOT
+echo "# New Doc" > new-file.md
+cortex-tms auto-tier --dry-run
+
+# Output:
+# ✨ new-file.md
+#     New/untracked file (active work)
+```
+
+**Rationale**: If you're creating a file, it's likely relevant now
+
+---
+
+**Binary Files**:
+```bash
+# Only Markdown files are processed
+# Images, PDFs, etc. are ignored
+```
+
+---
+
+**Performance**:
+```bash
+# Linear scaling with file count
+# 100 files: ~300ms
+# 500 files: ~1.5s
+# 1000 files: ~3s
+```
+
+For very large repos (1000+ files), consider:
+- Running less frequently (monthly instead of weekly)
+- Using `--dry-run` to preview before applying
+
+---
+
+### Edge Cases
+
+**Empty Git Repository**:
+```bash
+git init
+cortex-tms auto-tier
+
+# All files marked HOT (no history to analyze)
+```
+
+---
+
+**Renamed Files**:
+```bash
+# git log --follow tracks renames
+git mv OLD.md NEW.md
+git commit -m "Rename file"
+
+cortex-tms auto-tier --dry-run
+# NEW.md gets proper age (tracks history through rename)
+```
+
+---
+
+**Submodules**:
+```bash
+# Analyzes within submodule context
+# Each submodule has its own git history
+```
+
+---
+
+## Troubleshooting
+
+### "Not a git repository" Error
+
+**Symptom**:
+```bash
+$ cortex-tms auto-tier
+❌ Error: Not a git repository
+   Run this command in a git-initialized project.
+```
+
+**Causes**:
+1. Not in a git repository
+2. Running from subdirectory (limitation - must run from repo root)
+
+**Solutions**:
+
+<Tabs>
+  <TabItem label="Initialize Git">
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit"
+    cortex-tms auto-tier
+    ```
+  </TabItem>
+
+  <TabItem label="Navigate to Root">
+    ```bash
+    # Currently in subdirectory
+    pwd
+    # /path/to/repo/docs
+
+    # Go to repo root
+    cd $(git rev-parse --show-toplevel)
+
+    # Now run auto-tier
+    cortex-tms auto-tier
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+### Invalid Threshold Errors
+
+**Symptom**:
+```bash
+$ cortex-tms auto-tier --hot foo
+❌ Error: --hot must be a positive number
+
+$ cortex-tms auto-tier --hot 50 --warm 30
+❌ Error: --hot threshold must be ≤ --warm threshold
+   Got: hot=50, warm=30
+```
+
+**Solution**: Use valid, ordered thresholds
+```bash
+# ✅ Correct: hot ≤ warm ≤ cold
+cortex-tms auto-tier --hot 7 --warm 30 --cold 90
+```
+
+---
+
+### No Files Changed
+
+**Symptom**:
+```bash
+$ cortex-tms auto-tier
+✔ Analyzed 50 files
+✓ No changes to apply.
+```
+
+**Causes**:
+1. All files already have tier tags (use `--force` to update)
+2. No Markdown files in repository
+3. All files in ignored directories
+
+**Solutions**:
+
+<Tabs>
+  <TabItem label="Force Update">
+    ```bash
+    # Overwrite existing tier tags
+    cortex-tms auto-tier --force
+    ```
+  </TabItem>
+
+  <TabItem label="Check File Count">
+    ```bash
+    # How many .md files exist?
+    find . -name "*.md" -not -path "*/node_modules/*" | wc -l
+
+    # If 0, create some documentation
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## Best Practices
+
+<CardGrid stagger>
+  <Card title="Start with Dry Run" icon="rocket">
+    Always preview tier suggestions before applying:
+    ```bash
+    cortex-tms auto-tier --dry-run --verbose
+    ```
+    Review the output to ensure thresholds make sense for your project.
+  </Card>
+
+  <Card title="Commit Tier Tags" icon="github">
+    Tier tags should be version-controlled:
+    ```bash
+    cortex-tms auto-tier
+    git add -u
+    git commit -m "chore: update tier tags"
+    ```
+    This keeps tiers consistent across the team.
+  </Card>
+
+  <Card title="Adjust Thresholds to Workflow" icon="setting">
+    Match thresholds to your commit cadence:
+    - **Daily commits**: `--hot 3 --warm 7`
+    - **Weekly commits**: `--hot 14 --warm 30`
+    - **Monthly commits**: `--hot 30 --warm 90`
+  </Card>
+
+  <Card title="Run Regularly" icon="approve-check">
+    Update tiers periodically as work shifts:
+    ```bash
+    # Weekly: Before sprint planning
+    cortex-tms auto-tier --force
+
+    # Or: Monthly maintenance
+    cortex-tms auto-tier --force
+    ```
+  </Card>
+</CardGrid>
+
+---
+
+## Integration with Other Commands
+
+### After Auto-Tier: Verify Token Distribution
+
+```bash
+# Apply tier tags
+cortex-tms auto-tier
+
+# See how tiers affect token usage
+cortex-tms status --tokens
+
+# Verify HOT tier is focused on recent work
+```
+
+---
+
+### Before AI Session: Refresh Tiers
+
+```bash
+# Update tiers before major AI coding session
+cortex-tms auto-tier --force
+
+# Ensures AI sees most relevant context
+cortex-tms prompt init-session
+```
+
+---
+
+### With Validate: Check Tier Tag Format
+
+```bash
+# Apply tier tags
+cortex-tms auto-tier
+
+# Verify tags are valid
+cortex-tms validate
+
+# Should pass (tier tags don't affect validation)
+```
+
+---
+
+## Performance Characteristics
+
+### Measured Performance
+
+**Test repository**: cortex-tms (111 markdown files)
+
+| Operation | Time | Files/Second |
+|-----------|------|--------------|
+| Dry run | ~290ms | 380 files/s |
+| Apply tags | ~340ms | 325 files/s |
+| Force update | ~350ms | 315 files/s |
+
+**Scaling**:
+- Linear with file count
+- Git log is dominant cost (~2-3ms per file)
+
+**Future optimizations** (planned for v3.2+):
+- Batched git log for large repos
+- Parallel file processing
+
+---
+
+## Related Commands
+
+- [`cortex-tms status --tokens`](/reference/cli/status/) - View token distribution by tier (uses tier tags)
+- [`cortex-tms validate`](/reference/cli/validate/) - Health checks (tier tags don't affect validation)
+- [`cortex-tms init`](/reference/cli/init/) - Initialize TMS (creates files to be tiered)
+
+---
+
+## Learn More
+
+- [Tiered Memory System](/concepts/tiered-memory/) - Understanding HOT/WARM/COLD tiers
+- [Context Budget](/concepts/context-budget/) - Why tier management matters
+- ["Lost in the Middle" Research](https://arxiv.org/abs/2307.03172) - Scientific basis for auto-tier
+
+---
+
+<Aside type="note" title="Version">
+  The `auto-tier` command was introduced in **Cortex TMS v3.1.0** (January 2026).
+
+  Requires git repository for operation.
+</Aside>

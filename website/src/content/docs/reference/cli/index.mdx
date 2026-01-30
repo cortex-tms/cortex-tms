@@ -77,6 +77,22 @@ cortex-tms --version       # Show current version
 
     [View tutorial documentation](/reference/cli/tutorial/)
   </Card>
+
+  <Card title="auto-tier" icon="puzzle">
+    **Automatic tier assignment**
+
+    Uses git history to assign HOT/WARM/COLD tiers based on file recency.
+
+    [View auto-tier documentation](/reference/cli/auto-tier/)
+  </Card>
+
+  <Card title="review" icon="seti:lock">
+    **Guardian: Pattern validation**
+
+    AI-powered code review against project patterns and domain logic.
+
+    [View review documentation](/reference/cli/review/)
+  </Card>
 </CardGrid>
 
 ---
@@ -99,8 +115,10 @@ All commands support these global options:
 | `init` | Initialize TMS in project | `cortex-tms init` |
 | `validate` | Check project health | `cortex-tms validate --strict` |
 | `status` | View project dashboard | `cortex-tms status` |
+| `auto-tier` | Auto-assign tiers via git history | `cortex-tms auto-tier --dry-run` |
 | `migrate` | Upgrade templates | `cortex-tms migrate --apply` |
 | `prompt` | Get AI prompts | `cortex-tms prompt init-session` |
+| `review` | Validate code against patterns | `cortex-tms review src/file.ts` |
 | `tutorial` | Learn Cortex TMS | `cortex-tms tutorial` |
 
 ---
@@ -210,8 +228,10 @@ Explore individual command documentation:
 - [cortex-tms init](/reference/cli/init/) - Detailed initialization options
 - [cortex-tms validate](/reference/cli/validate/) - Validation checks explained
 - [cortex-tms status](/reference/cli/status/) - Dashboard components
+- [cortex-tms auto-tier](/reference/cli/auto-tier/) - Git-based tier assignment
 - [cortex-tms migrate](/reference/cli/migrate/) - Safe migration process
 - [cortex-tms prompt](/reference/cli/prompt/) - Prompt library usage
+- [cortex-tms review](/reference/cli/review/) - Guardian pattern validation
 - [cortex-tms tutorial](/reference/cli/tutorial/) - Interactive learning
 
 <Aside type="tip" title="Quick Help">
