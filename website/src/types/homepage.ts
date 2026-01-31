@@ -80,3 +80,23 @@ export type CTAEntry = CollectionEntry<'homepage'> & {
     }
   }
 }
+
+export type DemoTerminalEntry = CollectionEntry<'homepage'> & {
+  data: {
+    type: 'demo-terminal'
+    title: string
+    command: string
+    model: string
+  }
+  body: string
+}
+
+export type GuardianShowcaseEntry = CollectionEntry<'homepage'> & {
+  data: {
+    type: 'guardian-showcase'
+    title: string
+    subtitle: string
+    docsLink: string
+    features: string[]
+  }
+}

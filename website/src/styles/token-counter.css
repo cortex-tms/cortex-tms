@@ -1,0 +1,159 @@
+/**
+ * Token Counter Component Styles
+ */
+
+.token-counter {
+  margin: 2rem 0;
+}
+
+.counter-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  color: var(--sl-color-accent);
+}
+
+.counter-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--sl-color-text);
+}
+
+.counter-metrics {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metric-value {
+  font-size: 3rem;
+  font-weight: 700;
+  font-family: var(--sl-font-mono);
+  line-height: 1;
+}
+
+.metric-value.before {
+  color: #ff5f57;
+}
+
+.metric-value.after {
+  color: #10b981;
+}
+
+.metric-unit {
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-3);
+}
+
+.arrow {
+  font-size: 2rem;
+  color: var(--sl-color-gray-4);
+}
+
+.counter-result {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reduction-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  margin: 0 auto;
+}
+
+.reduction-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #10b981;
+  font-family: var(--sl-font-mono);
+}
+
+.reduction-label {
+  font-size: 1rem;
+  color: var(--sl-color-gray-2);
+}
+
+.cost-savings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: var(--sl-font-mono);
+}
+
+.cost-before {
+  font-size: 1.25rem;
+  color: #ff5f57;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.cost-arrow {
+  color: var(--sl-color-gray-4);
+}
+
+.cost-after {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #10b981;
+}
+
+.cost-label {
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-3);
+}
+
+/* Light theme */
+:root[data-theme='light'] .counter-result {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .counter-metrics {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .arrow {
+    transform: rotate(90deg);
+  }
+
+  .metric-value {
+    font-size: 2rem;
+  }
+
+  .reduction-value {
+    font-size: 1.5rem;
+  }
+
+  .cost-savings {
+    flex-wrap: wrap;
+  }
+}

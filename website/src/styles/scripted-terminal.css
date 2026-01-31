@@ -1,0 +1,123 @@
+/**
+ * Scripted Terminal Component Styles
+ */
+
+.scripted-terminal {
+  font-family: var(--sl-font-mono);
+  font-size: 0.9em;
+  margin: 2rem 0;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: 16px 16px 0 0;
+  position: relative;
+}
+
+.terminal-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #28c840; }
+
+.terminal-title {
+  flex: 1;
+  text-align: center;
+  font-size: 0.85em;
+  color: var(--sl-color-gray-3);
+}
+
+.copy-terminal-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  padding: 0.4rem;
+  cursor: pointer;
+  color: var(--sl-color-text);
+  transition: all 0.2s ease;
+}
+
+.copy-terminal-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--sl-color-accent);
+}
+
+.terminal-content {
+  padding: 1.5rem;
+}
+
+.terminal-line {
+  margin-bottom: 1rem;
+}
+
+.terminal-prompt {
+  color: var(--sl-color-accent);
+  margin-right: 0.5rem;
+  user-select: none;
+}
+
+.terminal-command {
+  color: #fbbf24;
+}
+
+.terminal-output {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.output-line {
+  display: flex;
+  gap: 0.75rem;
+  color: var(--sl-color-gray-2);
+}
+
+.output-header {
+  font-weight: 600;
+  color: var(--sl-color-text);
+}
+
+.tier-label {
+  min-width: 120px;
+  color: var(--sl-color-gray-3);
+}
+
+.tier-value {
+  font-weight: 600;
+  min-width: 100px;
+}
+
+.tier-hot .tier-value { color: #ff5f57; }
+.tier-warm .tier-value { color: #ffbd2e; }
+.tier-cold .tier-value { color: var(--sl-color-gray-4); }
+
+.cost-line {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cost-value {
+  font-weight: 700;
+  color: #10b981;
+}
+
+@media (max-width: 640px) {
+  .scripted-terminal { font-size: 0.8em; }
+  .terminal-content { padding: 1rem; }
+}

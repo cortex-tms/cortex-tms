@@ -1,0 +1,128 @@
+/**
+ * Installation Terminals Component Styles
+ */
+
+.installation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.installation-terminal {
+  font-family: var(--sl-font-mono);
+  font-size: 0.9em;
+}
+
+.installation-terminal .terminal-header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: 16px 16px 0 0;
+  position: relative;
+}
+
+.installation-terminal .terminal-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.installation-terminal .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.installation-terminal .dot-red { background: #ff5f57; }
+.installation-terminal .dot-yellow { background: #ffbd2e; }
+.installation-terminal .dot-green { background: #28c840; }
+
+.installation-terminal .terminal-title {
+  flex: 1;
+  text-align: center;
+  font-size: 0.85em;
+  color: var(--sl-color-gray-3);
+  font-weight: 500;
+}
+
+.installation-terminal .copy-install-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  padding: 0.4rem;
+  cursor: pointer;
+  color: var(--sl-color-text);
+  transition: all 0.2s ease;
+}
+
+.installation-terminal .copy-install-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--sl-color-accent);
+}
+
+.installation-terminal .copy-install-btn.copied {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.installation-terminal .terminal-content {
+  padding: 1.5rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.installation-terminal .terminal-line {
+  display: flex;
+  align-items: center;
+}
+
+.installation-terminal .terminal-prompt {
+  color: var(--sl-color-accent);
+  margin-right: 0.5rem;
+}
+
+.installation-terminal .terminal-command {
+  color: var(--sl-color-text);
+  word-break: break-all;
+}
+
+.installation-terminal .recommended-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #10b981;
+  width: fit-content;
+}
+
+.installation-terminal .recommended-badge svg {
+  fill: currentColor;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .installation-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .installation-terminal {
+    font-size: 0.85em;
+  }
+
+  .installation-terminal .terminal-content {
+    padding: 1rem;
+  }
+}

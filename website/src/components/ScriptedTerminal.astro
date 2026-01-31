@@ -1,0 +1,80 @@
+---
+/**
+ * ScriptedTerminal - Renders demo terminal from content
+ */
+import GlassPanel from './GlassPanel.astro';
+import { Copy } from '@lucide/astro';
+import { getCollection } from 'astro:content';
+import type { DemoTerminalEntry } from '../types/homepage';
+import '../styles/scripted-terminal.css';
+
+const allContent = await getCollection('homepage');
+const entry = allContent.find(
+  (e): e is DemoTerminalEntry => e.data.type === 'demo-terminal'
+);
+
+if (!entry) throw new Error('Demo terminal content not found');
+---
+
+<GlassPanel variant="bordered" class="scripted-terminal">
+  <div class="terminal-header">
+    <div class="terminal-dots">
+      <span class="dot dot-red"></span>
+      <span class="dot dot-yellow"></span>
+      <span class="dot dot-green"></span>
+    </div>
+    <div class="terminal-title">Terminal</div>
+    <button class="copy-terminal-btn" title="Copy command">
+      <Copy size={16} />
+    </button>
+  </div>
+
+  <div class="terminal-content">
+    <div class="terminal-line">
+      <span class="terminal-prompt">$</span>
+      <span class="terminal-command">{entry.data.command}</span>
+    </div>
+
+    <div class="terminal-output">
+      <div class="output-line">📊 <span class="output-header">Token Analysis</span></div>
+      <div class="output-line tier-hot">
+        <span class="tier-label">HOT (Active):</span>
+        <span class="tier-value">3,647 tokens</span>
+        <span class="tier-note">← AI reads this</span>
+      </div>
+      <div class="output-line tier-warm">
+        <span class="tier-label">WARM (Truth):</span>
+        <span class="tier-value">20,109 tokens</span>
+        <span class="tier-note">← On-demand</span>
+      </div>
+      <div class="output-line tier-cold">
+        <span class="tier-label">COLD (Archive):</span>
+        <span class="tier-value">43,078 tokens</span>
+        <span class="tier-note">← Ignored</span>
+      </div>
+      <div class="output-line cost-line">
+        💰 <span class="cost-label">Cost:</span>
+        <span class="cost-value">$0.01/session</span>
+        <span class="cost-comparison">(vs $0.20 without tiering)</span>
+      </div>
+    </div>
+  </div>
+</GlassPanel>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const terminals = document.querySelectorAll('.scripted-terminal');
+    terminals.forEach((terminal) => {
+      const copyBtn = terminal.querySelector('.copy-terminal-btn') as HTMLButtonElement;
+      const command = terminal.querySelector('.terminal-command') as HTMLElement;
+
+      if (copyBtn && command) {
+        copyBtn.addEventListener('click', async () => {
+          await navigator.clipboard.writeText(command.textContent || '');
+          copyBtn.classList.add('copied');
+          setTimeout(() => copyBtn.classList.remove('copied'), 2000);
+        });
+      }
+    });
+  });
+</script>

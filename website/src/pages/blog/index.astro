@@ -54,6 +54,8 @@ const posts = allPosts.sort((a, b) => {
                 category={category}
                 pubDate={post.data.pubDate}
                 slug={post.slug}
+                tags={post.data.tags}
+                body={post.body}
               />
             )
           })
@@ -82,6 +84,16 @@ const posts = allPosts.sort((a, b) => {
 
     .posts-grid {
       gap: 2.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      max-width: 100%;
+      align-items: stretch;
+    }
+
+    /* Limit to 2 columns max */
+    @media (min-width: 769px) {
+      .posts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .no-posts {

@@ -11,8 +11,7 @@
 /* === CODE BLOCK GLASS STYLING === */
 
 /* Target Expressive Code frames */
-.expressive-code,
-.expressive-code .frame {
+.expressive-code {
   position: relative;
   background: var(--glass-surface);
   backdrop-filter: blur(var(--glass-blur));
@@ -24,8 +23,16 @@
   margin: 1.5rem 0;
 }
 
+/* Remove default frame styling to prevent double borders */
+.expressive-code .frame {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  margin: 0;
+}
+
 /* Noise texture overlay for depth */
-.expressive-code .frame::before {
+.expressive-code::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -84,15 +91,15 @@
 }
 
 /* Terminal/Shell styling variant */
-.expressive-code[data-language="bash"] .frame,
-.expressive-code[data-language="sh"] .frame,
-.expressive-code[data-language="shell"] .frame {
+.expressive-code[data-language="bash"],
+.expressive-code[data-language="sh"],
+.expressive-code[data-language="shell"] {
   background: rgba(0, 0, 0, 0.4);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Light theme adjustments */
-:root[data-theme='light'] .expressive-code .frame {
+:root[data-theme='light'] .expressive-code {
   background: rgba(255, 255, 255, 0.6);
   border-color: rgba(0, 0, 0, 0.1);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
@@ -121,7 +128,7 @@
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .expressive-code .frame {
+  .expressive-code {
     border-width: 2px;
     border-color: var(--sl-color-white);
     background: rgba(0, 0, 0, 0.9);

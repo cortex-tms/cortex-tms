@@ -1,0 +1,81 @@
+---
+/**
+ * ComparisonMatrix - Feature comparison table
+ * Shows Cortex TMS vs alternatives
+ */
+import GlassPanel from './GlassPanel.astro';
+import { X, Check } from '@lucide/astro';
+import '../styles/comparison-matrix.css';
+
+const comparisons = [
+  {
+    feature: 'Context Management',
+    without: 'Manual',
+    with: 'Tiered (HOT/WARM/COLD)',
+  },
+  {
+    feature: 'Token Reduction',
+    without: '0%',
+    with: '60-94%',
+    hasDisclaimer: true,
+  },
+  {
+    feature: 'Cost per Session',
+    without: '$0.20',
+    with: '$0.01',
+    hasDisclaimer: true,
+  },
+  {
+    feature: 'Pattern Enforcement',
+    without: false,
+    with: 'Guardian CLI',
+  },
+  {
+    feature: 'Version Migration',
+    without: false,
+    with: 'Auto-migrate',
+  },
+  {
+    feature: 'Semantic Validation',
+    without: false,
+    with: 'Zod schemas',
+  },
+];
+---
+
+<GlassPanel variant="bordered" class="comparison-matrix">
+  <div class="panel-content">
+
+    <div class="comparison-table">
+      <div class="table-header">
+        <div class="header-cell feature-col">Feature</div>
+        <div class="header-cell">Without Cortex</div>
+        <div class="header-cell highlight">With Cortex TMS</div>
+      </div>
+
+      {comparisons.map((row) => (
+        <div class="table-row">
+          <div class="table-cell feature-col">{row.feature}</div>
+          <div class="table-cell without">
+            {typeof row.without === 'boolean' ? (
+              row.without ? <Check size={20} /> : <X size={20} />
+            ) : (
+              <span>{row.without}{row.hasDisclaimer && <sup>*</sup>}</span>
+            )}
+          </div>
+          <div class="table-cell with">
+            {typeof row.with === 'boolean' ? (
+              row.with ? <Check size={20} /> : <X size={20} />
+            ) : (
+              <span>{row.with}{row.hasDisclaimer && <sup>*</sup>}</span>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <p class="disclaimer">
+      <sup>*</sup> Example based on our own usage; actual savings depend on your codebase and usage.
+    </p>
+  </div>
+</GlassPanel>

@@ -1,0 +1,73 @@
+---
+/**
+ * InstallationTerminals - Two-column installation commands
+ * Shows npm and npx options side-by-side
+ */
+import GlassPanel from './GlassPanel.astro';
+import { Copy, Star } from '@lucide/astro';
+import { getCollection } from 'astro:content';
+import type { InstallationEntry } from '../types/homepage';
+import '../styles/installation-terminals.css';
+
+const allContent = await getCollection('homepage');
+const entry = allContent.find(
+  (e): e is InstallationEntry => e.data.type === 'installation'
+);
+
+if (!entry) throw new Error('Installation content not found');
+---
+
+<div class="installation-grid">
+  {entry.data.commands.map((cmd) => (
+    <GlassPanel variant="bordered" class="installation-terminal">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </div>
+        <div class="terminal-title">{cmd.label}</div>
+        <button class="copy-install-btn" data-command={cmd.code} title="Copy command">
+          <Copy size={16} />
+        </button>
+      </div>
+
+      <div class="terminal-content">
+        <div class="terminal-line">
+          <span class="terminal-prompt">$</span>
+          <span class="terminal-command">{cmd.code}</span>
+        </div>
+        {cmd.recommended && (
+          <div class="recommended-badge">
+            <Star size={16} />
+            Recommended
+          </div>
+        )}
+      </div>
+    </GlassPanel>
+  ))}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyBtns = document.querySelectorAll('.copy-install-btn');
+
+    copyBtns.forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const command = btn.getAttribute('data-command');
+        if (!command) return;
+
+        try {
+          await navigator.clipboard.writeText(command);
+          btn.classList.add('copied');
+
+          setTimeout(() => {
+            btn.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+    });
+  });
+</script>

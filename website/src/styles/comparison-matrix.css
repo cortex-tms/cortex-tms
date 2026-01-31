@@ -1,0 +1,142 @@
+/**
+ * Comparison Matrix Component Styles
+ */
+
+.comparison-matrix {
+  margin: 2rem 0;
+}
+
+.matrix-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--sl-color-text);
+  margin: 0 0 2rem 0;
+  text-align: center;
+}
+
+.comparison-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid var(--glass-border);
+}
+
+.header-cell {
+  padding: 1rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sl-color-gray-2);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-cell.feature-col {
+  text-align: left;
+}
+
+.header-cell.highlight {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--sl-color-accent);
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table-cell {
+  padding: 1rem;
+  color: var(--sl-color-gray-2);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-cell.feature-col {
+  font-weight: 500;
+  color: var(--sl-color-text);
+  justify-content: flex-start;
+}
+
+.table-cell.without svg {
+  color: #ff5f57;
+}
+
+.table-cell.with svg {
+  color: #10b981;
+}
+
+.table-cell.with span {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.disclaimer {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-4);
+  text-align: center;
+  font-style: italic;
+}
+
+sup {
+  color: var(--sl-color-accent);
+  font-weight: 600;
+}
+
+/* Light theme */
+:root[data-theme='light'] .table-header {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme='light'] .table-row {
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme='light'] .table-row:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .matrix-title {
+    font-size: 1.5rem;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .header-cell,
+  .table-cell {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .table-cell svg {
+    width: 16px;
+    height: 16px;
+  }
+}

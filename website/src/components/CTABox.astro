@@ -5,6 +5,7 @@
  * Call-to-action box with gradient background
  * Extracted from branding/designs/library
  */
+import GlassButton from './GlassButton.astro';
 import '../styles/glass-library.css';
 import '../styles/cta-box.css';
 
@@ -30,23 +31,17 @@ const {
 <div class='glass-liquid-panel cta-box'>
   <div class='bloom'></div>
   <div class='panel-content'>
-    <h2>{title}</h2>
+    <h3>{title}</h3>
     <p>{description}</p>
     <div class='btn-group'>
-      <a
-        href={primaryButtonHref}
-        class='btn btn-primary'
-      >
+      <GlassButton variant='neon' href={primaryButtonHref}>
         {primaryButtonText}
-      </a>
+      </GlassButton>
       {
         secondaryButtonText && secondaryButtonHref && (
-          <a
-            href={secondaryButtonHref}
-            class='btn btn-outline'
-          >
+          <GlassButton variant='prism' href={secondaryButtonHref}>
             {secondaryButtonText}
-          </a>
+          </GlassButton>
         )
       }
     </div>

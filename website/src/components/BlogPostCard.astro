@@ -1,39 +1,21 @@
 ---
 /**
- * BlogPostCard - Editorial glass card for blog posts
- *
- * A visually striking blog post preview card with:
- * - Featured image with gradient overlay
- * - Category tag
- * - Title and excerpt
- * - Read more link
- * - Hover effects (lift + image scale)
- *
- * Usage:
- * <BlogPostCard
- *   title="Post Title"
- *   excerpt="Post excerpt..."
- *   heroImage="/images/post.jpg"
- *   category="Tutorial"
- *   slug="post-slug"
- * />
+ * BlogPostCard - Matches FeaturedBlogPost styling for consistency
  */
+import GlassPanel from './GlassPanel.astro'
+import GlassButton from './GlassButton.astro'
+import { Calendar, Clock } from '@lucide/astro'
+import '../styles/featured-blog.css'
 
 interface Props {
-  /** Post title */
   title: string
-  /** Post excerpt/description */
   excerpt: string
-  /** Featured image URL */
   heroImage?: string
-  /** Primary category/tag */
   category?: string
-  /** Publication date */
   pubDate?: Date
-  /** Post slug for link */
   slug: string
-  /** Additional CSS classes */
-  class?: string
+  tags?: string[]
+  body?: string
 }
 
 const {
@@ -43,52 +25,70 @@ const {
   category,
   pubDate,
   slug,
-  class: className = '',
+  tags = [],
+  body = '',
 } = Astro.props
 
-// Default image if none provided
-const imageSrc = heroImage || '/images/blog/default-hero.webp'
+// Calculate reading time (rough estimate: 200 words per minute)
+const wordsPerMinute = 200
+const wordCount = body ? body.split(/\s+/).length : excerpt.split(/\s+/).length
+const readingTime = Math.ceil(wordCount / wordsPerMinute)
 
 // Format date
 const formattedDate = pubDate
-  ? new Intl.DateTimeFormat('en-US', {
+  ? pubDate.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-    }).format(pubDate)
+    })
   : undefined
 ---
 
-<a
-  href={`/blog/${slug}/`}
-  class='post-card-link'
->
-  <article
-    class={`glass-panel post-card ${className}`}
-    data-tilt
-  >
-    <div class='sheen'></div>
-
-    {/* Featured image */}
-    <div class='post-image-wrapper'>
+<GlassPanel variant="bordered" liquidBlob class="featured-blog-post blog-card">
+  {heroImage && (
+    <div class="post-image-wrapper">
       <img
-        src={imageSrc}
+        src={heroImage}
         alt={title}
-        loading='lazy'
+        loading="lazy"
       />
     </div>
-
-    {/* Content */}
-    <div class='post-content'>
-      {category && <span class='category-tag'>{category}</span>}
-      
-      {formattedDate && <time class='post-date'>{formattedDate}</time>}
-
-      <h2 class='post-title'>{title}</h2>
-
-      <p class='post-excerpt'>{excerpt}</p>
-
-      <span class='read-more'> Read Article → </span>
+  )}
+  <div class="panel-content">
+    <div class="post-header">
+      {tags && tags.length > 0 && (
+        <div class="post-tags-top">
+          {tags.slice(0, 3).map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+      <h3 class="post-title">{title}</h3>
+      <p class="post-description">{excerpt}</p>
     </div>
-  </article>
-</a>
+
+    <div class="post-footer">
+      <div class="post-meta">
+        {formattedDate && (
+          <div class="meta-item">
+            <Calendar size={16} />
+            <span>{formattedDate}</span>
+          </div>
+        )}
+        <div class="meta-item">
+          <Clock size={16} />
+          <span>{readingTime} min read</span>
+        </div>
+      </div>
+
+      <div class="post-actions">
+        <GlassButton
+          variant="neon"
+          href={`/blog/${slug}/`}
+        >
+          Read Article →
+        </GlassButton>
+      </div>
+    </div>
+  </div>
+</GlassPanel>
