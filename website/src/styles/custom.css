@@ -32,6 +32,24 @@
 :root[data-theme='light'] {
   --sl-color-accent: #d95d00; /* Darker orange - 4.52:1 contrast ratio ✅ */
   --sl-color-accent-high: #f97316; /* Original vibrant orange for hover states */
+
+  /* Fix: Light mode background should be light, not dark */
+  --sl-color-bg: #faf8f5; /* Warm beige/cream background */
+
+  /* Fix: Swap white/black for light mode */
+  --sl-color-white: #111111; /* Dark text in light mode */
+  --sl-color-black: #ffffff; /* Light backgrounds in light mode */
+}
+
+/* Right sidebar links in light mode - normal state */
+:root[data-theme='light'] .right-sidebar-panel a {
+  color: #6b7280 !important;
+}
+
+/* Right sidebar selected link in light mode */
+:root[data-theme='light'] .right-sidebar-panel a[aria-current='true'] {
+  color: var(--sl-color-accent) !important;
+  font-weight: 600;
 }
 
 /* Typography improvements for readability in technical documentation */
@@ -125,3 +143,4 @@ a:hover {
   padding-bottom: 1rem;
   margin-bottom: 3rem;
 }
+
