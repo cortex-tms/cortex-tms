@@ -1,0 +1,102 @@
+---
+/**
+ * GuardianShowcase - Two liquid glass cards side by side
+ */
+import GlassPanel from './GlassPanel.astro';
+import { Shield, CheckCircle } from '@lucide/astro';
+import { getCollection } from 'astro:content';
+import type { GuardianShowcaseEntry } from '../types/homepage';
+import '../styles/guardian-showcase.css';
+
+const allContent = await getCollection('homepage');
+const entry = allContent.find(
+  (e): e is GuardianShowcaseEntry => e.data.type === 'guardian-showcase'
+);
+
+if (!entry) throw new Error('Guardian showcase content not found');
+---
+
+<div class="guardian-showcase">
+  {/* Card 1: Description */}
+  <GlassPanel variant="bordered" liquidBlob>
+    <div class="panel-content">
+      <div class="guardian-icon">
+        <Shield size={48} stroke-width="1.5" />
+      </div>
+      <h3 class="guardian-title">{entry.data.title}</h3>
+      <p class="guardian-subtitle">{entry.data.subtitle}</p>
+
+      <div class="guardian-features">
+        {entry.data.features?.map((feature) => (
+          <div class="feature-item">
+            <CheckCircle size={20} />
+            <span>{feature}</span>
+          </div>
+        )) || (
+          <>
+            <div class="feature-item">
+              <CheckCircle size={20} />
+              <span>Zod validation for semantic checking</span>
+            </div>
+            <div class="feature-item">
+              <CheckCircle size={20} />
+              <span>Safe Mode: Read-only analysis (≥80% confidence)</span>
+            </div>
+            <div class="feature-item">
+              <CheckCircle size={20} />
+              <span>Minimizes false positives and false negatives</span>
+            </div>
+            <div class="feature-item">
+              <CheckCircle size={20} />
+              <span>Catches pattern drift grep can't detect</span>
+            </div>
+          </>
+        )}
+      </div>
+
+      <a href={entry.data.docsLink} class="guardian-link">
+        Learn more about Guardian →
+      </a>
+    </div>
+  </GlassPanel>
+
+  {/* Card 2: Terminal Demo */}
+  <GlassPanel variant="bordered" liquidBlob>
+    <div class="terminal-demo">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </div>
+        <div class="terminal-title">Guardian Safe Mode</div>
+      </div>
+
+      <div class="terminal-content">
+        <div class="terminal-line">
+          <span class="terminal-prompt">$</span>
+          <span class="terminal-command">npx cortex-tms review src/commands/init.ts --safe</span>
+        </div>
+
+        <div class="terminal-output">
+          <div class="output-line guardian-header">
+            <Shield size={16} />
+            <span>Guardian: Semantic Validation</span>
+          </div>
+          <div class="output-line success">
+            <CheckCircle size={16} />
+            <span>Pattern compliance verified</span>
+          </div>
+          <div class="output-line success">
+            <CheckCircle size={16} />
+            <span>Safe Mode: No file operations executed</span>
+          </div>
+          <div class="output-line success">
+            <CheckCircle size={16} />
+            <span>0 violations found</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </GlassPanel>
+</div>

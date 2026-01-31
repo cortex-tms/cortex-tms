@@ -1,0 +1,86 @@
+---
+/**
+ * FeaturedBlogPost - Shows latest blog post on homepage
+ */
+import GlassPanel from './GlassPanel.astro';
+import GlassButton from './GlassButton.astro';
+import { getCollection } from 'astro:content';
+import { Calendar, Clock } from '@lucide/astro';
+import '../styles/featured-blog.css';
+
+// Get latest blog post
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const latestPost = sortedPosts[0];
+
+if (!latestPost) {
+  return null;
+}
+
+// Calculate reading time (rough estimate: 200 words per minute)
+const wordsPerMinute = 200;
+const wordCount = latestPost.body.split(/\s+/).length;
+const readingTime = Math.ceil(wordCount / wordsPerMinute);
+
+// Format date
+const formattedDate = latestPost.data.pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<GlassPanel variant="bordered" liquidBlob class="featured-blog-post">
+  {latestPost.data.heroImage && (
+    <div class="post-image-wrapper">
+      <img
+        src={latestPost.data.heroImage}
+        alt={latestPost.data.heroAlt || latestPost.data.title}
+        loading="lazy"
+      />
+    </div>
+  )}
+  <div class="panel-content">
+    <div class="post-header">
+      <span class="featured-badge">Latest Post</span>
+      <h3 class="post-title">{latestPost.data.title}</h3>
+      <p class="post-description">{latestPost.data.description}</p>
+    </div>
+
+    <div class="post-meta">
+      <div class="meta-item">
+        <Calendar size={16} />
+        <span>{formattedDate}</span>
+      </div>
+      <div class="meta-item">
+        <Clock size={16} />
+        <span>{readingTime} min read</span>
+      </div>
+      {latestPost.data.tags && latestPost.data.tags.length > 0 && (
+        <div class="post-tags">
+          {latestPost.data.tags.slice(0, 3).map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div class="post-actions">
+      <GlassButton
+        variant="neon"
+        href={`/blog/${latestPost.slug}/`}
+      >
+        Read Article →
+      </GlassButton>
+      <GlassButton
+        variant="prism"
+        href="/blog/"
+      >
+        View All Posts
+      </GlassButton>
+    </div>
+  </div>
+</GlassPanel>

@@ -100,6 +100,21 @@ export const collections = {
           href: z.string(),
         }).optional(),
       }),
+      // Demo Terminal
+      z.object({
+        type: z.literal('demo-terminal'),
+        title: z.string(),
+        command: z.string(),
+        model: z.string(),
+      }),
+      // Guardian Showcase
+      z.object({
+        type: z.literal('guardian-showcase'),
+        title: z.string(),
+        subtitle: z.string(),
+        docsLink: z.string(),
+        features: z.array(z.string()),
+      }),
     ]),
   }),
 }

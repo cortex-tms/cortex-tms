@@ -12,6 +12,12 @@ import MetricsShowcase from '../components/MetricsShowcase.astro'
 import PillarsSection from '../components/PillarsSection.astro'
 import SustainabilityBadge from '../components/SustainabilityBadge.astro'
 import CTABox from '../components/CTABox.astro'
+import ScriptedTerminal from '../components/ScriptedTerminal.astro'
+import GuardianShowcase from '../components/GuardianShowcase.astro'
+import TokenCounter from '../components/TokenCounter.astro'
+import ComparisonMatrix from '../components/ComparisonMatrix.astro'
+import FeaturedBlogPost from '../components/FeaturedBlogPost.astro'
+import InstallationTerminals from '../components/InstallationTerminals.astro'
 import {
   Flame,
   Shield,
@@ -19,7 +25,7 @@ import {
   FileText,
   Key,
   Zap,
-  Copy,
+  ArrowRight,
 } from '@lucide/astro'
 import { getCollection } from 'astro:content'
 import type {
@@ -29,6 +35,8 @@ import type {
   InstallationEntry,
   BlockquoteEntry,
   CTAEntry,
+  DemoTerminalEntry,
+  GuardianShowcaseEntry,
   IconType,
 } from '../types/homepage'
 import '../styles/homepage.css'
@@ -52,12 +60,6 @@ const steps = allHomepageContent
   .filter((entry): entry is StepEntry => entry.data.type === 'step')
   .sort((a, b) => a.data.number - b.data.number)
 
-// Get installation
-const installationEntry = allHomepageContent.find(
-  (entry): entry is InstallationEntry => entry.data.type === 'installation'
-)
-const installation = installationEntry?.data
-
 // Get blockquote
 const blockquoteEntry = allHomepageContent.find(
   (entry): entry is BlockquoteEntry => entry.data.type === 'blockquote'
@@ -68,6 +70,16 @@ const ctaEntry = allHomepageContent.find(
   (entry): entry is CTAEntry => entry.data.type === 'cta'
 )
 const cta = ctaEntry?.data
+
+// Get demo terminal
+const demoTerminalEntry = allHomepageContent.find(
+  (entry): entry is DemoTerminalEntry => entry.data.type === 'demo-terminal'
+)
+
+// Get guardian showcase
+const guardianShowcaseEntry = allHomepageContent.find(
+  (entry): entry is GuardianShowcaseEntry => entry.data.type === 'guardian-showcase'
+)
 
 // Icon mapping
 const iconMap: Record<IconType, typeof Flame> = {
@@ -116,6 +128,18 @@ const iconMap: Record<IconType, typeof Flame> = {
       </div>
     )}
 
+    {/* CLI Demo */}
+    <section class='content-section'>
+      <h2 class='section-label'>See It In Action</h2>
+      <ScriptedTerminal />
+    </section>
+
+    {/* Featured Blog Post */}
+    <section class='content-section'>
+      <h2 class='section-label'>From the Blog</h2>
+      <FeaturedBlogPost />
+    </section>
+
     {/* Three Pillars */}
     <section class='content-section'>
       <h2 class='section-label'>Three Pillars, Measurable Results</h2>
@@ -128,38 +152,36 @@ const iconMap: Record<IconType, typeof Flame> = {
       )}
     </section>
 
+    {/* Guardian Showcase */}
+    <section class='content-section'>
+      <h2 class='section-label'>Guardian CLI: Semantic Validation</h2>
+      <GuardianShowcase />
+    </section>
+
     {/* Token Savings Proof */}
     <section class='content-section'>
       <h2 class='section-label'>Real Numbers, Real Savings</h2>
+      <TokenCounter />
       <MetricsShowcase />
+    </section>
+
+    {/* Comparison Matrix */}
+    <section class='content-section'>
+      <h2 class='section-label'>Compare Your Options</h2>
+      <ComparisonMatrix />
     </section>
 
     {/* Green AI Development Badge */}
     <section class='content-section'>
+      <h2 class='section-label'>Green AI Development</h2>
       <SustainabilityBadge />
     </section>
 
     {/* Quick Installation */}
-    {installation && (
-      <section class='content-section'>
-        <h2 class='section-label'>Quick Installation</h2>
-        {installation.commands.map((cmd) => (
-          <>
-            <p class={cmd.recommended ? 'install-label' : 'install-label-npx'}>
-              {cmd.label}
-            </p>
-            <div class='code-block-wrapper'>
-              <div class='code-block'>
-                <button class='copy-code-btn' title='Copy to clipboard'>
-                  <Copy size={16} />
-                </button>
-                <pre><code>{cmd.code}</code></pre>
-              </div>
-            </div>
-          </>
-        ))}
-      </section>
-    )}
+    <section class='content-section'>
+      <h2 class='section-label'>Quick Installation</h2>
+      <InstallationTerminals />
+    </section>
 
     {/* Key Features */}
     <section class='content-section'>
@@ -169,10 +191,12 @@ const iconMap: Record<IconType, typeof Flame> = {
           features.map((feature) => {
             const Icon = iconMap[feature.data.icon]
             return (
-              <GlassPanel variant='bordered' tilt='full'>
+              <GlassPanel variant='bordered' tilt='full' liquidBlob>
                 <div class='feature-card-content'>
+                  <div class='feature-icon-wrapper'>
+                    <Icon size={40} stroke-width='1.5' />
+                  </div>
                   <h3 class='feature-card-title'>
-                    <Icon size={32} stroke-width='1.5' />
                     {feature.data.title}
                   </h3>
                   <p
@@ -190,18 +214,27 @@ const iconMap: Record<IconType, typeof Flame> = {
     {/* Getting Started Steps */}
     <section class='content-section'>
       <h2 class='section-label'>Get Started in 3 Steps</h2>
-      <div class='glass-grid'>
+      <div class='roadmap-container'>
         {
-          steps.map((step) => (
-            <GlassPanel variant='bordered'>
-              <div class='step-card-content'>
-                <h3 class='step-card-title'>
-                  <span class='step-card-number'>{step.data.number}</span>
-                  {step.data.title}
-                </h3>
-                <p class='step-card-description' set:html={step.body} />
+          steps.map((step, index) => (
+            <>
+              <div class='roadmap-step' data-step={step.data.number}>
+                <GlassPanel variant='bordered' liquidBlob>
+                  <div class='step-card-content'>
+                    <div class='step-badge'>
+                      <span class='step-number'>{step.data.number}</span>
+                    </div>
+                    <h3 class='step-card-title'>{step.data.title}</h3>
+                    <p class='step-card-description' set:html={step.body} />
+                  </div>
+                </GlassPanel>
               </div>
-            </GlassPanel>
+              {index < steps.length - 1 && (
+                <div class='roadmap-connector'>
+                  <ArrowRight size={32} stroke-width={2} class='connector-arrow' />
+                </div>
+              )}
+            </>
           ))
         }
       </div>
@@ -210,6 +243,7 @@ const iconMap: Record<IconType, typeof Flame> = {
     {/* Ready to Get Started */}
     {cta && (
       <section class='content-section'>
+        <h2 class='section-label'>Ready to Get Started?</h2>
         <CTABox
           title={cta.title}
           description={cta.description}
@@ -325,77 +359,6 @@ const iconMap: Record<IconType, typeof Flame> = {
       background-clip: text;
     }
 
-    /* Code block with glass styling */
-    .code-block-wrapper {
-      margin: 2rem 0;
-    }
-
-    .code-block {
-      position: relative;
-      background: var(--glass-surface);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-    }
-
-    .code-block pre {
-      background: transparent;
-      border: none;
-      border-radius: 0;
-      padding: 1.5rem;
-      overflow-x: auto;
-      margin: 0;
-      color: var(--sl-color-text);
-    }
-
-    .code-block code {
-      font-family: var(--sl-font-mono);
-      font-size: 0.9em;
-      color: var(--sl-color-accent-high);
-    }
-
-    .copy-code-btn {
-      position: absolute;
-      top: 0.75rem;
-      right: 0.75rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
-      border-radius: 8px;
-      padding: 0.5rem;
-      cursor: pointer;
-      color: var(--sl-color-text);
-      transition: all 0.2s var(--ease-smooth);
-      z-index: 10;
-    }
-
-    .copy-code-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--sl-color-accent);
-    }
-
-    .copy-code-btn.copied {
-      background: rgba(16, 185, 129, 0.2);
-      border-color: #10b981;
-      color: #10b981;
-    }
-
-    :root[data-theme='light'] .code-block {
-      background: rgba(255, 255, 255, 0.6);
-      border-color: rgba(0, 0, 0, 0.1);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    }
-
-    :root[data-theme='light'] .copy-code-btn {
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    :root[data-theme='light'] .copy-code-btn:hover {
-      background: rgba(0, 0, 0, 0.1);
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
       .hero-section {
@@ -431,38 +394,4 @@ const iconMap: Record<IconType, typeof Flame> = {
       }
     }
   </style>
-
-  <script>
-    // Copy to clipboard functionality for all code blocks
-    document.addEventListener('DOMContentLoaded', () => {
-      const codeBlocks = document.querySelectorAll('.code-block')
-
-      codeBlocks.forEach((block) => {
-        const copyBtn = block.querySelector(
-          '.copy-code-btn',
-        ) as HTMLButtonElement | null
-        const code = block.querySelector('pre code') as HTMLElement | null
-
-        if (copyBtn && code) {
-          copyBtn.addEventListener('click', async () => {
-            try {
-              await navigator.clipboard.writeText(code.textContent || '')
-
-              // Visual feedback
-              copyBtn.classList.add('copied')
-              copyBtn.title = 'Copied!'
-
-              // Reset after 2 seconds
-              setTimeout(() => {
-                copyBtn.classList.remove('copied')
-                copyBtn.title = 'Copy to clipboard'
-              }, 2000)
-            } catch (err) {
-              console.error('Failed to copy:', err)
-            }
-          })
-        }
-      })
-    })
-  </script>
 </SimpleLayout>

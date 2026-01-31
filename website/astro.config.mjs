@@ -17,9 +17,13 @@ export default defineConfig({
         dark: './src/assets/logo-dark.svg',
         alt: 'Cortex TMS Logo',
       },
-      social: {
-        github: 'https://github.com/cortex-tms/cortex-tms',
-      },
+      social: [
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/cortex-tms/cortex-tms',
+        },
+      ],
       editLink: {
         baseUrl: 'https://github.com/cortex-tms/cortex-tms/edit/main/website/',
       },

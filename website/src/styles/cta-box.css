@@ -8,7 +8,7 @@
   padding: 4rem 2rem;
 }
 
-.cta-box h2 {
+.cta-box h3 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
   color: var(--sl-color-white);
@@ -33,7 +33,7 @@
 }
 
 /* Light theme adjustments */
-:root[data-theme='light'] .cta-box h2 {
+:root[data-theme='light'] .cta-box h3 {
   color: var(--sl-color-gray-1);
 }
 
@@ -47,7 +47,7 @@
     padding: 3rem 1.5rem;
   }
 
-  .cta-box h2 {
+  .cta-box h3 {
     font-size: 2rem;
   }
 
