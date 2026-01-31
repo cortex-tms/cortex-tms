@@ -54,6 +54,30 @@ AI agents MUST follow this order before proposing code:
 - Never create templates with hardcoded tech stacks
 - Never implement features not listed in `NEXT-TASKS.md` without asking
 - Never skip the "dogfooding" validation step
+- **Never over-engineer beyond explicit user request** (see Scope Discipline below)
+
+## 🎯 Scope Discipline
+
+**Philosophy**: Preserve comprehensive thinking, add clarification checkpoints.
+
+**BEFORE starting work, match output to request scale:**
+- "improve a bit" / "check X" = 1-3 focused changes
+- "enhance X and Y" = 5-10 improvements for X and Y only
+- "redesign" / "comprehensive" = Multi-phase planning allowed
+
+**If scope unclear, ASK FIRST:**
+- "Just [specific request] or also [related areas]?"
+- "Simple version or detailed strategy?"
+
+**Propose, don't assume:**
+- Start with minimal solution
+- Mention expansion opportunities: "I also see X, Y - want those?"
+- Let user pull more, don't push everything
+
+**Anti-pattern examples:**
+- ❌ User asks for homepage improvements → You create full site redesign + marketing strategy
+- ❌ User says "simple plan" → You write 4 versions totaling 80KB
+- ✅ User asks for homepage improvements → You list 5 specific changes, ask if they want details
 
 ## ✔️ Pre-Submission Checklist
 
