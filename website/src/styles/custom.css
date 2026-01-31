@@ -52,6 +52,83 @@
   font-weight: 600;
 }
 
+/* Sidebar navigation links should not use accent color in dark mode */
+.sidebar a,
+nav[aria-label='Main'] a {
+  color: var(--sl-color-gray-2) !important;
+}
+
+.sidebar a:hover,
+nav[aria-label='Main'] a:hover {
+  color: var(--sl-color-white) !important;
+}
+
+.sidebar a[aria-current='page'],
+nav[aria-label='Main'] a[aria-current='page'] {
+  color: var(--sl-color-white) !important;
+  background-color: var(--sl-color-accent);
+}
+
+/* Sidebar active link - use real white text in light mode */
+:root[data-theme='light'] .sidebar a[aria-current='page'],
+:root[data-theme='light'] nav[aria-label='Main'] a[aria-current='page'] {
+  color: #ffffff !important;
+}
+
+/* Right sidebar (TOC) links in dark mode */
+.right-sidebar-panel a {
+  color: var(--sl-color-gray-2) !important;
+}
+
+.right-sidebar-panel a:hover {
+  color: var(--sl-color-white) !important;
+}
+
+.right-sidebar-panel a[aria-current='true'] {
+  color: var(--sl-color-accent) !important;
+  font-weight: 600;
+}
+
+/* GitHub icon in header should be orange */
+.social-icons a,
+header .social-icons a {
+  color: var(--sl-color-accent) !important;
+}
+
+.social-icons a:hover,
+header .social-icons a:hover {
+  color: var(--sl-color-accent-high) !important;
+}
+
+/* Header navigation links in light mode */
+:root[data-theme='light'] header nav a {
+  color: #4b5563 !important;
+}
+
+:root[data-theme='light'] header nav a:hover {
+  color: var(--sl-color-accent) !important;
+}
+
+/* Post footer border in light mode */
+:root[data-theme='light'] .post-footer {
+  border-top-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Section label border in light mode */
+:root[data-theme='light'] .section-label {
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Output line text color in light mode */
+:root[data-theme='light'] .output-line {
+  color: #6b7280 !important;
+}
+
+/* Sustainability badge footer border in light mode */
+:root[data-theme='light'] .sustainability-badge .badge-footer {
+  border-top-color: rgba(0, 0, 0, 0.06) !important;
+}
+
 /* Typography improvements for readability in technical documentation */
 article {
   font-weight: 400;

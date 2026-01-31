@@ -84,15 +84,17 @@ const posts = allPosts.sort((a, b) => {
 
     .posts-grid {
       gap: 2.5rem;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: 1fr;
       max-width: 100%;
       align-items: stretch;
     }
 
-    /* Limit to 2 columns max */
+    /* 2 columns on medium and larger screens */
     @media (min-width: 769px) {
       .posts-grid {
         grid-template-columns: repeat(2, 1fr);
+        max-width: 1000px;
+        margin: 0 auto;
       }
     }
 

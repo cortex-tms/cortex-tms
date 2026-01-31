@@ -121,3 +121,20 @@
   .scripted-terminal { font-size: 0.8em; }
   .terminal-content { padding: 1rem; }
 }
+
+/* Light mode adjustments */
+:root[data-theme='light'] .output-line {
+  color: #6b7280;
+}
+
+:root[data-theme='light'] .terminal-title {
+  color: #6b7280;
+}
+
+:root[data-theme='light'] .tier-label {
+  color: #6b7280;
+}
+
+:root[data-theme='light'] .cost-line {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
