@@ -15,13 +15,17 @@ heroImage: '/images/blog/measuring-context-optimization.webp'
 draft: false
 ---
 
+import { Terminal, Callout } from '../../components/blog'
+
 When we started making claims about Cortex TMS reducing AI context costs, we had a problem: we could cite our own numbers, but we hadn't shown our work.
 
 "40-60% token reduction" sounds great. But without a reproducible methodology, it's just marketing speak.
 
 A recent external code review called us out on this—correctly:
 
-> "Quantified claims are compelling, but long-term credibility requires methodology write-ups and reproducible benchmarks."
+<Callout type="warning" title="External Review Feedback">
+"Quantified claims are compelling, but long-term credibility requires methodology write-ups and reproducible benchmarks."
+</Callout>
 
 Fair criticism. We were making bold claims without documentation anyone could verify.
 
@@ -107,6 +111,7 @@ Before we share the framework, here's what we actually measured vs. what we thin
 
 ### What We Think Caused It (Interpretation)
 
+<Callout type="warning" title="Important Disclaimer">
 **Our hypothesis**:
 
 1. **HOT tier focusing**: `NEXT-TASKS.md` (200 lines max) provides immediate context without scanning entire codebase
@@ -121,6 +126,7 @@ Before we share the framework, here's what we actually measured vs. what we thin
 - Whether gains persist in larger codebases (we're ~15K LOC total)
 
 **Important**: This is correlation, not proven causation. We changed documentation structure and observed token reduction. Other variables (familiarity with codebase, sprint complexity) weren't controlled.
+</Callout>
 
 ---
 
@@ -220,11 +226,13 @@ This measurement approach has real costs and constraints. Here's when it doesn't
 
 ### When This Measurement Framework Doesn't Work
 
+<Callout type="danger" title="Small Projects">
 **1. Very small projects (< 1,000 LOC)**
 
 - **Why it fails**: Overhead of tracking outweighs benefits
 - **Measurement noise**: Context sizes already small, % reductions meaningless
 - **Recommendation**: Skip measurement, just use TMS structure if it helps
+</Callout>
 
 **2. Projects without AI tool usage**
 
@@ -246,6 +254,7 @@ This measurement approach has real costs and constraints. Here's when it doesn't
 
 ### Prerequisites for Successful Measurement
 
+<Callout type="tip" title="Prerequisites Checklist">
 Only attempt this framework if:
 
 ✅ You're using AI coding assistants for 30%+ of development
@@ -259,9 +268,11 @@ Only attempt this framework if:
 ✅ You're willing to manually track sessions (no automation yet)
 
 **The math**: Tracking costs ~5 minutes per session. At 10 sessions/week, that's ~50 min/week. If that doesn't provide value, skip it.
+</Callout>
 
 ### Caveats & Limitations
 
+<Callout type="warning" title="Important Caveats">
 **Sample size**: 47 sessions is small. Variance is high. Don't trust individual measurements—only trends.
 
 **Confirmation bias**: We built TMS, so we're motivated to see benefits. Independent verification needed.
@@ -275,6 +286,7 @@ Only attempt this framework if:
 **Correlation, not causation**: We changed documentation structure and observed token reduction. Other factors (developer experience, task complexity) weren't controlled.
 
 **Cost of measurement**: ~50 min/week tracking overhead. Manual entry is tedious and error-prone.
+</Callout>
 
 ---
 
@@ -293,28 +305,32 @@ If you're skeptical (you should be), here's how to verify our claims with your o
 
 **How to track**:
 
-```markdown
-# measurement-log.md
+<Terminal
+  title="measurement-log.md"
+  language="markdown"
+  content={`# measurement-log.md
 
 ## Session: 2026-01-24 Morning
 
 **Task**: Implement user authentication
 **AI Tool**: Claude Code
 **Tokens used**: 14,230
-**Files read**: 18 (README, src/auth/_, config/_)
+**Files read**: 18 (README, src/auth/*, config/*)
 **Context prep time**: 4 minutes
 **Cost (illustrative)**: $0.43 (14.23K tokens × $0.03/1K; adjust for your model's rates)
 
-**Notes**: Had to re-explain authentication pattern from 2 weeks ago
-```
+**Notes**: Had to re-explain authentication pattern from 2 weeks ago`}
+/>
 
 **Automation helper** (if your AI tool provides JSON logs):
 
-```bash
-# Example for Claude Code (hypothetical - adapt to your tool)
-grep "tokens_used" ~/.claude/session-logs/*.json | \
-  awk '{sum+=$2; count++} END {print "Avg:", sum/count}'
-```
+<Terminal
+  title="analyze-logs.sh"
+  language="bash"
+  content={`# Example for Claude Code (hypothetical - adapt to your tool)
+grep "tokens_used" ~/.claude/session-logs/*.json | \\
+  awk '{sum+=$2; count++} END {print "Avg:", sum/count}'`}
+/>
 
 ### Step 2: Implement TMS Structure (or equivalent)
 
@@ -339,18 +355,22 @@ You don't need Cortex TMS specifically. The principles are:
 
 **Cortex TMS shortcut**:
 
-```bash
-npx cortex-tms init
-# Generates HOT/WARM/COLD structure automatically
-```
+<Terminal
+  title="install.sh"
+  language="bash"
+  content={`npx cortex-tms init
+# Generates HOT/WARM/COLD structure automatically`}
+/>
 
 **Manual approach**:
 
-```bash
-mkdir -p docs/core docs/archive
+<Terminal
+  title="manual-setup.sh"
+  language="bash"
+  content={`mkdir -p docs/core docs/archive
 echo "# Current Sprint Tasks" > NEXT-TASKS.md
-echo "# Implementation Patterns" > docs/core/PATTERNS.md
-```
+echo "# Implementation Patterns" > docs/core/PATTERNS.md`}
+/>
 
 ### Step 3: Measure Impact (2-3 weeks)
 
@@ -375,8 +395,10 @@ Track the same metrics as baseline:
 
 **GitHub discussion template**:
 
-```markdown
-## Context Optimization Measurement Results
+<Terminal
+  title="results-template.md"
+  language="markdown"
+  content={`## Context Optimization Measurement Results
 
 **Project**: [Type, size, tech stack]
 **Timeline**: [Start date - end date, # days]
@@ -397,8 +419,8 @@ Track the same metrics as baseline:
 
 ### Notes
 
-[What worked, what didn't, surprises]
-```
+[What worked, what didn't, surprises]`}
+/>
 
 ---
 
@@ -436,15 +458,17 @@ Based on this manual tracking experience, we're working on automation:
 
 ### 1. `cortex measure` CLI Command (Planned v2.9)
 
-```bash
-# Track context automatically
+<Terminal
+  title="cortex-measure.sh"
+  language="bash"
+  content={`# Track context automatically
 cortex measure start "Implement feature X"
 # ... do your AI-assisted coding ...
 cortex measure stop
 
 # View report
-cortex measure report --last-week
-```
+cortex measure report --last-week`}
+/>
 
 **What it would track**:
 
@@ -485,6 +509,7 @@ Web-based visualization of:
 
 Before you start tracking, ask yourself:
 
+<Callout type="warning" title="Is Measurement Worth It?">
 **Does measurement provide value?**
 
 - ❌ If you're optimizing for speed over cost, skip measurement
@@ -506,6 +531,7 @@ Before you start tracking, ask yourself:
 - ❌ If you won't change workflows based on findings, skip it
 - ✅ If data informs architecture decisions, measurement is valuable
 - ✅ If you plan to publish results or share learnings, do it
+</Callout>
 
 **Our recommendation**: Start with 1 week of informal tracking. If you find it useful, commit to 3 weeks for statistical validity.
 
@@ -513,6 +539,7 @@ Before you start tracking, ask yourself:
 
 ## What We're Learning
 
+<Callout type="tip" title="Ongoing Research">
 This measurement framework is our best attempt at transparency. We're not claiming scientific rigor—just honest accounting of what we observed.
 
 **We still don't know**:
@@ -530,6 +557,7 @@ This measurement framework is our best attempt at transparency. We're not claimi
 - Tools/automation to reduce tracking overhead
 
 **Our commitment**: We'll publish disconfirming evidence if our approach stops working or if others can't replicate our results.
+</Callout>
 
 ---
 
@@ -539,21 +567,25 @@ If this measurement approach sounds useful, here's how to start:
 
 ### Option 1: Use Cortex TMS (Structured)
 
-```bash
-# Install CLI
+<Terminal
+  title="install.sh"
+  language="bash"
+  content={`# Install CLI
 npm install -g cortex-tms
 
 # Initialize in your project
 cortex init
 
 # Start tracking manually (for now)
-# Use template above for measurement-log.md
-```
+# Use template above for measurement-log.md`}
+/>
 
 ### Option 2: Manual Approach (Flexible)
 
-```bash
-# Create basic structure
+<Terminal
+  title="manual-setup.sh"
+  language="bash"
+  content={`# Create basic structure
 mkdir -p docs/core docs/archive
 touch NEXT-TASKS.md measurement-log.md
 
@@ -561,8 +593,8 @@ touch NEXT-TASKS.md measurement-log.md
 # Log every AI session for 1 week
 # Then implement tiered docs
 # Track another 2-3 weeks
-# Compare results
-```
+# Compare results`}
+/>
 
 ### Option 3: Wait for Automation (Easy)
 
@@ -608,14 +640,3 @@ We'd love to hear about your experience and whether this measurement framework h
 ---
 
 **Transparency commitment**: This post was written using Claude Code while dogfooding our own measurement methodology. The session that produced this post: 8,420 tokens, 6 files read, $0.25 cost. We practice what we document. [See our AI collaboration policy →](/community/about/)
-
-<style>
-  #metrics + table td:last-child {
-    color: var(--sl-color-green);
-    font-weight: 600;
-  }
-#example-our-actual-data + p + table td:nth-child(5) {
-  color: var(--sl-color-green);
-  font-weight: 600;
-}
-</style>
