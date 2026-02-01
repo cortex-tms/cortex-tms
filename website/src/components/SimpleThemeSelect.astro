@@ -376,7 +376,7 @@ import { Sun, Moon, Monitor } from '@lucide/astro'
 
   // Mobile dropdown toggle
   const mobileTrigger = document.querySelector('.mobile-theme-trigger')
-  const mobileMenu = document.querySelector('.mobile-theme-menu')
+  const mobileMenu = document.querySelector('.mobile-theme-menu') as HTMLElement | null
 
   if (mobileTrigger && mobileMenu) {
     mobileTrigger.addEventListener('click', (e) => {
