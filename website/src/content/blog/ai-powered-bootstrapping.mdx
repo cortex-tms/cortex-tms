@@ -8,6 +8,8 @@ heroImage: '/images/blog/ai-powered-bootstrapping.webp'
 draft: false
 ---
 
+import { Terminal, Callout } from '../../components/blog'
+
 When users install Cortex TMS and run `cortex-tms init`, they get a perfect documentation structure. Empty, but perfect.
 
 And then they stare at it, wondering what to write.
@@ -22,15 +24,17 @@ This is the story of how we fixed that by making AI agents bootstrap themselves.
 
 **The friction**:
 
-```
-$ cortex-tms init
+<Terminal
+  title="init-output.sh"
+  language="bash"
+  content={`$ cortex-tms init
 ✨ Success! Cortex TMS initialized.
 
 Next Steps:
   1. Review NEXT-TASKS.md for active sprint tasks
   2. Update docs/core/ with your project details  ← User stops here
-  3. Customize .github/copilot-instructions.md
-```
+  3. Customize .github/copilot-instructions.md`}
+/>
 
 **What actually happened** (based on support requests + analytics):
 
@@ -39,7 +43,9 @@ Next Steps:
 - Most common question: "What should I write in ARCHITECTURE.md?"
 - Drop-off rate: ~40% of users abandoned after seeing empty templates
 
-**The insight**: Users installed Cortex TMS specifically to work with AI agents. Why were we making them manually fill templates when they had Claude Code, Copilot, or Cursor already running?
+<Callout type="warning" title="Key Insight">
+Users installed Cortex TMS specifically to work with AI agents. Why were we making them manually fill templates when they had Claude Code, Copilot, or Cursor already running?
+</Callout>
 
 ---
 
@@ -64,20 +70,22 @@ A user (let's call them Alex) installed Cortex TMS:
 
 **Before (v2.6)**:
 
-```
-cortex-tms init
+<Terminal
+  title="flow-before.txt"
+  content={`cortex-tms init
   ↓
 Empty templates with placeholders
   ↓
 User stares at [Project Name], [System Description]
   ↓
-User manually researches what to write OR gives up
-```
+User manually researches what to write OR gives up`}
+/>
 
 **After (v3.0)**:
 
-```
-cortex-tms init
+<Terminal
+  title="flow-after.txt"
+  content={`cortex-tms init
   ↓
 cortex-tms prompt bootstrap  (auto-copies to clipboard)
   ↓
@@ -87,8 +95,8 @@ AI analyzes codebase + populates docs as drafts
   ↓
 User reviews + refines AI-generated content
   ↓
-Project is AI-ready
-```
+Project is AI-ready`}
+/>
 
 ---
 
@@ -100,8 +108,10 @@ We built a three-layer system. Layer 1 shipped first because it required zero in
 
 A specialized prompt that guides any AI agent through the bootstrapping process:
 
-```markdown
-## bootstrap
+<Terminal
+  title="bootstrap-prompt.md"
+  language="markdown"
+  content={`## bootstrap
 
 You have just been added to a project that uses Cortex TMS for AI governance.
 The documentation files exist but contain placeholder content.
@@ -119,8 +129,8 @@ as DRAFTS for human review.
 - Fill "Component Map" with real components from the codebase
 - Mark sections with: <!-- AI-DRAFT: Review before treating as canonical -->
 
-[... steps 3-5 omitted for brevity ...]
-```
+[... steps 3-5 omitted for brevity ...]`}
+/>
 
 **What makes it work**:
 
@@ -133,8 +143,10 @@ as DRAFTS for human review.
 
 We modified templates to include first-session awareness:
 
-```markdown
-# CLAUDE.md
+<Terminal
+  title="CLAUDE.md"
+  language="markdown"
+  content={`# CLAUDE.md
 
 ## 🚀 First Session Setup
 <!-- Remove this section after completing setup -->
@@ -142,8 +154,8 @@ We modified templates to include first-session awareness:
 If this is your first session with this project, run:
   cortex-tms prompt bootstrap
 
-[... instructions ...]
-```
+[... instructions ...]`}
+/>
 
 **Result**: When an AI agent reads `CLAUDE.md` for the first time, it sees the setup instructions and can proactively suggest running bootstrap.
 
@@ -151,8 +163,10 @@ If this is your first session with this project, run:
 
 We enhanced `cortex-tms validate` to distinguish three completion states:
 
-```typescript
-// Before: Binary (placeholder exists = fail)
+<Terminal
+  title="validator.ts"
+  language="typescript"
+  content={`// Before: Binary (placeholder exists = fail)
 if (hasPlaceholder(file)) {
   return { status: 'error', message: 'Contains placeholders' };
 }
@@ -175,21 +189,23 @@ if (hasPlaceholder(file)) {
     status: 'success',
     message: 'Complete and reviewed'
   };
-}
-```
+}`}
+/>
 
 **Validation output after bootstrap**:
 
-```
-$ cortex-tms validate --verbose
+<Terminal
+  title="validate-output.sh"
+  language="bash"
+  content={`$ cortex-tms validate --verbose
 
 📋 Documentation Status:
   ⚠️  ARCHITECTURE.md: AI-DRAFT (3 sections need human review)
   ⚠️  PATTERNS.md: AI-DRAFT (5 sections need human review)
   ✅ CLAUDE.md: Reviewed
 
-💡 ARCHITECTURE.md: Review drafts and remove <!-- AI-DRAFT --> markers once accepted.
-```
+💡 ARCHITECTURE.md: Review drafts and remove <!-- AI-DRAFT --> markers once accepted.`}
+/>
 
 ---
 
@@ -214,43 +230,47 @@ We dogfooded this on our own codebase. Here's what happened:
    - Time: ~2 minutes
 
 4. Claude Code populates `ARCHITECTURE.md`:
-   ```markdown
-   ## 🎯 Quick Context
-   <!-- AI-DRAFT: Review before treating as canonical -->
-   - **What it does**: A CLI tool for scaffolding and managing AI-optimized documentation structures in software projects
-   - **Who it's for**: Developers using AI coding assistants (Claude Code, Copilot, Cursor) who need structured project memory systems
-   - **Key constraint**: Must run offline as a CLI tool with zero external dependencies for core operations
 
-   ## 🏗️ System Overview
-   <!-- AI-DRAFT -->
-   Cortex TMS is a command-line interface built with TypeScript and Commander.js that initializes, validates, and maintains documentation structures optimized for AI agent consumption. It provides templates, validation rules, migration tools, and AI prompt libraries to help teams maintain consistent, token-efficient documentation across sprints.
+<Terminal
+  title="ARCHITECTURE.md (AI-generated)"
+  language="markdown"
+  content={`## 🎯 Quick Context
+<!-- AI-DRAFT: Review before treating as canonical -->
+- **What it does**: A CLI tool for scaffolding and managing AI-optimized documentation structures in software projects
+- **Who it's for**: Developers using AI coding assistants (Claude Code, Copilot, Cursor) who need structured project memory systems
+- **Key constraint**: Must run offline as a CLI tool with zero external dependencies for core operations
 
-   ## 📂 Component Map
-   <!-- AI-DRAFT -->
-   | Component | Responsibility | Tech Stack |
-   |:----------|:---------------|:-----------|
-   | `src/commands/init.ts` | Project initialization & template copying | Commander.js, fs-extra, inquirer |
-   | `src/commands/validate.ts` | Documentation health checks | TypeScript, fs/promises |
-   | `src/commands/migrate.ts` | Template version migration | fs-extra, inquirer |
-   | `src/commands/status.ts` | Dashboard display | chalk, ora |
-   | `src/commands/prompt.ts` | AI prompt library access | clipboardy, inquirer |
-   | `src/commands/review.ts` | Guardian AI code review | Anthropic API, LLM client |
-   | `src/commands/tutorial.ts` | Interactive onboarding | inquirer, chalk |
-   | `src/utils/validator.ts` | Core validation engine | TypeScript, RegExp |
-   | `src/utils/templates.ts` | Template processing & copying | fs-extra |
-   | `src/utils/config.ts` | .cortexrc configuration management | JSON |
-   | `src/utils/backup.ts` | Backup/rollback system | fs-extra, timestamps |
-   | `src/utils/llm-client.ts` | LLM API abstraction | Anthropic SDK, retry logic |
-   | `templates/` | Documentation template library | Markdown files |
+## 🏗️ System Overview
+<!-- AI-DRAFT -->
+Cortex TMS is a command-line interface built with TypeScript and Commander.js that initializes, validates, and maintains documentation structures optimized for AI agent consumption. It provides templates, validation rules, migration tools, and AI prompt libraries to help teams maintain consistent, token-efficient documentation across sprints.
 
-   ## 🔄 Core Data Flow
-   <!-- AI-DRAFT -->
-   1. **User runs `cortex-tms init`**: CLI detects project context → Prompts for scope (nano/standard/enterprise) → Copies templates from `templates/` directory → Applies placeholder replacements → Creates .cortexrc config → Displays quick start instructions
-   2. **User runs `cortex-tms validate`**: Validator reads .cortexrc → Checks mandatory files exist → Scans for placeholders → Checks file size limits → Verifies AI-DRAFT markers → Returns health report with actionable hints
-   3. **User runs `cortex-tms prompt <name>`**: Prompt parser reads PROMPTS.md → Extracts requested prompt → Auto-copies to clipboard → Displays in terminal → User pastes into AI agent
-   4. **User runs `cortex-tms migrate`**: Migration engine checks template versions → Creates timestamped backup → Compares template hashes → Upgrades outdated files → Skips customized files unless --force → Displays migration report
-   5. **User runs `cortex-tms review`**: Guardian reads DOMAIN-LOGIC.md + PATTERNS.md → Analyzes staged changes via git diff → Calls LLM with specialized prompt → Returns violations with severity + confidence → Optionally auto-commits if passing
-   ```
+## 📂 Component Map
+<!-- AI-DRAFT -->
+| Component | Responsibility | Tech Stack |
+|:----------|:---------------|:-----------|
+| \`src/commands/init.ts\` | Project initialization & template copying | Commander.js, fs-extra, inquirer |
+| \`src/commands/validate.ts\` | Documentation health checks | TypeScript, fs/promises |
+| \`src/commands/migrate.ts\` | Template version migration | fs-extra, inquirer |
+| \`src/commands/status.ts\` | Dashboard display | chalk, ora |
+| \`src/commands/prompt.ts\` | AI prompt library access | clipboardy, inquirer |
+| \`src/commands/review.ts\` | Guardian AI code review | Anthropic API, LLM client |
+| \`src/commands/tutorial.ts\` | Interactive onboarding | inquirer, chalk |
+| \`src/utils/validator.ts\` | Core validation engine | TypeScript, RegExp |
+| \`src/utils/templates.ts\` | Template processing & copying | fs-extra |
+| \`src/utils/config.ts\` | .cortexrc configuration management | JSON |
+| \`src/utils/backup.ts\` | Backup/rollback system | fs-extra, timestamps |
+| \`src/utils/llm-client.ts\` | LLM API abstraction | Anthropic SDK, retry logic |
+| \`templates/\` | Documentation template library | Markdown files |
+
+## 🔄 Core Data Flow
+<!-- AI-DRAFT -->
+1. **User runs \`cortex-tms init\`**: CLI detects project context → Prompts for scope (nano/standard/enterprise) → Copies templates from \`templates/\` directory → Applies placeholder replacements → Creates .cortexrc config → Displays quick start instructions
+2. **User runs \`cortex-tms validate\`**: Validator reads .cortexrc → Checks mandatory files exist → Scans for placeholders → Checks file size limits → Verifies AI-DRAFT markers → Returns health report with actionable hints
+3. **User runs \`cortex-tms prompt <name>\`**: Prompt parser reads PROMPTS.md → Extracts requested prompt → Auto-copies to clipboard → Displays in terminal → User pastes into AI agent
+4. **User runs \`cortex-tms migrate\`**: Migration engine checks template versions → Creates timestamped backup → Compares template hashes → Upgrades outdated files → Skips customized files unless --force → Displays migration report
+5. **User runs \`cortex-tms review\`**: Guardian reads DOMAIN-LOGIC.md + PATTERNS.md → Analyzes staged changes via git diff → Calls LLM with specialized prompt → Returns violations with severity + confidence → Optionally auto-commits if passing`}
+/>
+
    - Time: ~3 minutes
 
 5. Claude Code customizes `CLAUDE.md`:
@@ -277,23 +297,31 @@ We dogfooded this on our own codebase. Here's what happened:
 - ✅ Tech stack is specific, not generic ("Commander.js", not "CLI framework")
 - ⚠️ Minor details could be more precise (package names, validation rule numbers)
 
-**Key point**: 90% accuracy means you spend 5-10 minutes refining, not 30-45 minutes writing from scratch. **Still a 3-4x time savings**.
+<Callout type="tip" title="3-4x Time Savings">
+90% accuracy means you spend 5-10 minutes refining, not 30-45 minutes writing from scratch. **Still a 3-4x time savings**.
+</Callout>
 
 ### What "Refinement" Actually Looks Like
 
 Here's a concrete example of the 10% that needs improvement:
 
 **AI-Generated (Draft)**:
-```markdown
-| `src/commands/review.ts` | Guardian AI code review | Anthropic API, LLM client |
-| `src/utils/llm-client.ts` | LLM API abstraction | Anthropic SDK, retry logic |
-```
+
+<Terminal
+  title="AI-Generated Example"
+  language="markdown"
+  content={`| \`src/commands/review.ts\` | Guardian AI code review | Anthropic API, LLM client |
+| \`src/utils/llm-client.ts\` | LLM API abstraction | Anthropic SDK, retry logic |`}
+/>
 
 **Human-Refined (Final)**:
-```markdown
-| `src/commands/review.ts` | Guardian AI code review | @anthropic-ai/sdk, streaming responses |
-| `src/utils/llm-client.ts` | LLM API abstraction | @anthropic-ai/sdk v0.29+, exponential backoff |
-```
+
+<Terminal
+  title="Human-Refined Example"
+  language="markdown"
+  content={`| \`src/commands/review.ts\` | Guardian AI code review | @anthropic-ai/sdk, streaming responses |
+| \`src/utils/llm-client.ts\` | LLM API abstraction | @anthropic-ai/sdk v0.29+, exponential backoff |`}
+/>
 
 **What changed**:
 - "Anthropic SDK" → "@anthropic-ai/sdk" (more precise package name)
@@ -325,7 +353,9 @@ We tested the bootstrap prompt across different AI environments:
 - ⚠️ Claude.ai (web)
 - ⚠️ ChatGPT (web)
 
-**Why it works across agents**: The bootstrap prompt uses only standard capabilities (read files, analyze code, write markdown). No API-specific features required.
+<Callout type="tip" title="Universal Compatibility">
+The bootstrap prompt uses only standard capabilities (read files, analyze code, write markdown). No API-specific features required.
+</Callout>
 
 ---
 
@@ -345,7 +375,9 @@ We originally had AI-generated content without markers. Users didn't know what w
 - Validator detects draft status
 - Users know what to review
 
-**Lesson**: AI-generated content should be clearly labeled until a human approves it.
+<Callout type="tip" title="Key Lesson">
+AI-generated content should be clearly labeled until a human approves it.
+</Callout>
 
 ### 2. Zero-Cost Beats Automated
 
@@ -363,14 +395,17 @@ We initially planned to build `cortex-tms bootstrap` as a CLI command that would
 - Works offline (if agent runs locally)
 - Universal compatibility
 
-**Lesson**: When users already have the tool (AI agent), give them a workflow, not a new service.
+<Callout type="tip" title="Design Principle">
+When users already have the tool (AI agent), give them a workflow, not a new service.
+</Callout>
 
 ### 3. Placeholders → Drafts → Reviewed (State Machine)
 
 We used to treat documentation as binary (complete or incomplete). The AI-DRAFT state creates a helpful middle ground:
 
-```
-[Placeholder Text] → Error (file is incomplete)
+<Terminal
+  title="state-machine.txt"
+  content={`[Placeholder Text] → Error (file is incomplete)
     ↓
   Bootstrap runs
     ↓
@@ -378,8 +413,8 @@ We used to treat documentation as binary (complete or incomplete). The AI-DRAFT 
     ↓
   Human reviews & removes markers
     ↓
-No markers → Success (file is canonical)
-```
+No markers → Success (file is canonical)`}
+/>
 
 This state machine maps to the natural workflow:
 1. AI generates → draft state
@@ -407,7 +442,9 @@ We're measuring success across three metrics:
 - **Target**: 40%+ of users who run `cortex-tms init`
 - **Tracking method**: Post-init message includes bootstrap quick start, analytics will track prompt command usage
 
-**Note**: These are early metrics. Will update this article with real data after 30-60 days in production.
+<Callout type="warning" title="Early Metrics">
+These are early metrics. Will update this article with real data after 30-60 days in production.
+</Callout>
 
 ---
 
@@ -424,43 +461,52 @@ Added 4 new prompts:
 - `extract-rules` - Extract domain logic rules
 
 **How it works**:
-```bash
-$ cortex-tms prompt bootstrap
+
+<Terminal
+  title="prompt-usage.sh"
+  language="bash"
+  content={`$ cortex-tms prompt bootstrap
 # Displays prompt + auto-copies to clipboard
-# User pastes into AI agent
-```
+# User pastes into AI agent`}
+/>
 
 ### 2. Template Modifications
 
 Added first-session awareness to `CLAUDE.md`:
 
-```markdown
-## 🚀 First Session Setup
+<Terminal
+  title="CLAUDE.md"
+  language="markdown"
+  content={`## 🚀 First Session Setup
 <!-- Remove this section after completing setup -->
 
 If this is your first session with this project, run:
-  cortex-tms prompt bootstrap
-```
+  cortex-tms prompt bootstrap`}
+/>
 
 Added setup detection to `copilot-instructions.md`:
 
-```markdown
-<!-- SETUP NOTE: If you see [placeholder] text above,
-     run: cortex-tms prompt bootstrap -->
-```
+<Terminal
+  title="copilot-instructions.md"
+  language="markdown"
+  content={`<!-- SETUP NOTE: If you see [placeholder] text above,
+     run: cortex-tms prompt bootstrap -->`}
+/>
 
 ### 3. Validator Enhancement (`src/utils/validator.ts`)
 
 New function `scanForAIDrafts()`:
 
-```typescript
-async function scanForAIDrafts(filePath: string):
+<Terminal
+  title="validator.ts"
+  language="typescript"
+  content={`async function scanForAIDrafts(filePath: string):
   Promise<{ found: boolean; count: number }> {
   const content = await readFile(filePath, 'utf-8');
-  const matches = content.match(/<!--\s*AI-DRAFT.*?-->/gi);
+  const matches = content.match(/<!--\\s*AI-DRAFT.*?-->/gi);
   return { found: !!matches, count: matches?.length ?? 0 };
-}
-```
+}`}
+/>
 
 Modified `validatePlaceholders()` to check both placeholders and AI-DRAFT markers with priority:
 1. Placeholders → Error (incomplete)
@@ -470,15 +516,19 @@ Modified `validatePlaceholders()` to check both placeholders and AI-DRAFT marker
 ### 4. Post-Init Message
 
 Changed from:
-```
-Next Steps:
+
+<Terminal
+  title="before.txt"
+  content={`Next Steps:
   1. Review NEXT-TASKS.md
-  2. Update docs/core/ with your project details
-```
+  2. Update docs/core/ with your project details`}
+/>
 
 To:
-```
-🚀 Quick Start (choose one):
+
+<Terminal
+  title="after.txt"
+  content={`🚀 Quick Start (choose one):
 
   Option A - With your AI agent (recommended):
     1. Open your AI tool (Claude Code, Copilot, Cursor, etc.)
@@ -487,8 +537,8 @@ To:
 
   Option B - Manual setup:
     1. Review NEXT-TASKS.md
-    2. Update docs/core/ with your project details
-```
+    2. Update docs/core/ with your project details`}
+/>
 
 ### 5. Tutorial Addition
 
@@ -504,8 +554,10 @@ The prompt-first approach ships in v3.0. Once we validate it with real users, we
 
 **Potential v3.1 feature**: `cortex-tms bootstrap --auto`
 
-```bash
-$ cortex-tms bootstrap --auto
+<Terminal
+  title="bootstrap-auto.sh"
+  language="bash"
+  content={`$ cortex-tms bootstrap --auto
 🔍 Analyzing codebase...
 📝 Populating ARCHITECTURE.md... ✓
 📝 Customizing CLAUDE.md... ✓
@@ -516,15 +568,17 @@ $ cortex-tms bootstrap --auto
 💡 AI-generated content marked with <!-- AI-DRAFT -->
    Review and remove markers once accepted.
 
-Cost: $0.18 (using Anthropic API)
-```
+Cost: $0.18 (using Anthropic API)`}
+/>
 
 **Why we're waiting**:
 - Want to validate prompt-first approach works first
 - Need user feedback on quality/accuracy
 - Will only build if there's demand for automation
 
-**Decision point**: If 60%+ of users successfully use the prompt, we may not need the CLI version at all.
+<Callout type="warning" title="Decision Point">
+If 60%+ of users successfully use the prompt, we may not need the CLI version at all.
+</Callout>
 
 ---
 
@@ -532,8 +586,10 @@ Cost: $0.18 (using Anthropic API)
 
 **If you have Cortex TMS installed**:
 
-```bash
-# 1. Initialize a project (or use an existing one)
+<Terminal
+  title="try-it.sh"
+  language="bash"
+  content={`# 1. Initialize a project (or use an existing one)
 cortex-tms init --scope standard
 
 # 2. Get the bootstrap prompt
@@ -545,16 +601,18 @@ cortex-tms prompt bootstrap
 # 4. Review the generated content
 cortex-tms validate --verbose
 
-# 5. Remove <!-- AI-DRAFT --> markers once you've reviewed
-```
+# 5. Remove <!-- AI-DRAFT --> markers once you've reviewed`}
+/>
 
 **If you don't have Cortex TMS yet**:
 
-```bash
-npm install -g cortex-tms
+<Terminal
+  title="install.sh"
+  language="bash"
+  content={`npm install -g cortex-tms
 # or
-pnpm add -g cortex-tms
-```
+pnpm add -g cortex-tms`}
+/>
 
 ---
 
