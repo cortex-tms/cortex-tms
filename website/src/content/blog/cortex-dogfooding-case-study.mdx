@@ -9,11 +9,15 @@ heroImage: '/images/blog/cortex-dogfooding-case-study.webp'
 draft: false
 ---
 
+import { Terminal, Callout } from '../../components/blog'
+
 We built a tool for AI-assisted development. Then we used it to build itself.
 
 This is what happened over 3 weeks and ~380 commits.
 
-**Spoiler**: We're not claiming this proves anything universal. This is one project, one developer, one AI tool. But the data is real, the experience was instructive, and we learned things worth sharing.
+<Callout type="tip" title="Key Caveat">
+We're not claiming this proves anything universal. This is one project, one developer, one AI tool. But the data is real, the experience was instructive, and we learned things worth sharing.
+</Callout>
 
 ## Key Results (TL;DR)
 
@@ -26,15 +30,19 @@ Over 3 weeks of intensive development using TMS to build itself:
 
 **Sample**: 380 commits, 47 tracked sessions, solo developer + Claude Code
 
-**Caveats**: Solo dev only, TypeScript CLI only, Claude Code only. Your results will vary. See [limitations](#8-limits--trade-offs-when-dogfooding-doesnt-prove-much) for what we DON'T know.
+<Callout type="warning" title="Key Limitations">
+Solo dev only, TypeScript CLI only, Claude Code only. Your results will vary. See [limitations](#8-limits--trade-offs-when-dogfooding-doesnt-prove-much) for what we DON'T know.
+</Callout>
 
 ---
 
 ## Important: Understanding the 60-70% vs 94.5% Numbers
 
+<Callout type="warning" title="Critical Clarification">
 **Update (January 30, 2026 - v3.1 Auto-Tier Release)**: This case study covers mid to late January 2026 (3 weeks) using **manual tier management**. The `cortex-tms auto-tier` command (v3.1, released Jan 30 2026) was not available during this period. The 60-70% savings reported below were achieved the harder way—with manual discipline and validation. Auto-tier now makes these savings easier to sustain. See [Section 6](#6-outcome-real-results-from-dogfooding) for how auto-tier addresses the pain points we identified.
 
 **Update (January 29, 2026)**: After launching this case study on Reddit ([183K views, 369 upvotes](https://www.reddit.com/r/ClaudeAI/)), the community rightfully called out an important distinction we should have made clearer upfront.
+</Callout>
 
 ### Two Different Measurements
 
@@ -131,9 +139,11 @@ Before we had the full TMS structure in place, development with Claude Code look
 
 ### Our Interpretation
 
+<Callout type="warning" title="Hypothesis Only">
 We think Claude Code was treating all documentation equally—recent chat context competing with long-term architectural decisions for the same limited context window. When limits were hit, important patterns got pruned.
 
 **Important**: This is our hypothesis based on observed behavior. We don't have access to how Claude processes context internally. This could be wrong.
+</Callout>
 
 ---
 
@@ -174,8 +184,7 @@ _*Achieved with manual tier management. Auto-tier (v3.1+) makes these savings ea
 
 ### What We Think Caused It (Interpretation)
 
-Our hypothesis:
-
+<Callout type="warning" title="Our Hypothesis">
 **1. HOT tier focusing**: `NEXT-TASKS.md` (200 lines max) provides immediate context without scanning entire codebase. AI knows exactly what to work on next.
 
 **2. Selective WARM reads**: AI reads only relevant patterns/docs instead of everything. Example: When implementing validation, it reads `PATTERNS.md#validation-pattern` instead of entire README.
@@ -191,6 +200,7 @@ Our hypothesis:
 - Whether this works for different project types (only TypeScript monorepo)
 - Whether gains persist in larger codebases (we're ~15K LOC total)
 - Whether measurement bias affected results (see [limitations](#8-limits--trade-offs-when-dogfooding-doesnt-prove-much) for discussion)
+</Callout>
 
 ---
 
@@ -270,16 +280,17 @@ We didn't implement the full system at once. It evolved over 4 sprints:
 
 ### Evolution Timeline
 
-```
-Week 1 (v2.1): HOT tier only
+<Terminal
+  title="evolution.txt"
+  content={`Week 1 (v2.1): HOT tier only
     ↓ Pattern violations still high
 Week 2 (v2.2): Added WARM tier (PATTERNS.md)
     ↓ Pattern adherence improved
 Week 2 (v2.3): Added COLD tier (archive)
     ↓ HOT tier stayed focused
 Week 3 (v2.4): Added validation
-    ↓ Mechanical enforcement
-```
+    ↓ Mechanical enforcement`}
+/>
 
 **Key insight**: Incremental adoption worked better than big-bang implementation. Each sprint added one piece, let us validate benefits before adding next.
 
@@ -363,28 +374,32 @@ Here's a concrete example from our development:
 
 **NEXT-TASKS.md**:
 
-```markdown
-## Active Sprint: v2.6 Integrity & Atomicity
+<Terminal
+  title="NEXT-TASKS.md"
+  language="markdown"
+  content={`## Active Sprint: v2.6 Integrity & Atomicity
 
 **Remaining Work**:
 
 - [ ] Migration 7/7: cortex-orchestrator
   - Follow migration checklist in docs/core/PATTERNS.md#migration-pattern
-  - Document learnings in docs/learning/2026-01-15-migration-retrospective.md
-```
+  - Document learnings in docs/learning/2026-01-15-migration-retrospective.md`}
+/>
 
 **docs/core/PATTERNS.md** (WARM tier):
 
-```markdown
-## Pattern 8: Migration Checklist
+<Terminal
+  title="docs/core/PATTERNS.md"
+  language="markdown"
+  content={`## Pattern 8: Migration Checklist
 
 1. Run cortex init in target project
 2. Copy docs/ structure
 3. Update README with TMS references
 4. Validate with cortex validate --strict
 5. Archive old docs to docs/archive/
-6. Document surprises in retrospective
-```
+6. Document surprises in retrospective`}
+/>
 
 **Result**:
 
@@ -416,6 +431,7 @@ Our dogfooding experience has real limitations. Here's what this case study does
 
 ### 1. Team Scalability (Unknown)
 
+<Callout type="danger" title="Team Adoption Unknown">
 **What we know**: Works for solo developer (me)
 **What we DON'T know**: How this works for teams of 2, 5, 10+ developers
 
@@ -427,6 +443,7 @@ Our dogfooding experience has real limitations. Here's what this case study does
 - Who owns HOT tier maintenance in a team context?
 
 **We can't answer these yet.** We need team adoption data.
+</Callout>
 
 ### 2. AI Tool Portability (Untested)
 
@@ -470,6 +487,7 @@ Our dogfooding experience has real limitations. Here's what this case study does
 
 ### 5. Measurement Bias (Hawthorne Effect)
 
+<Callout type="warning" title="Measurement Bias Risk">
 **The risk**: We knew we were tracking metrics, so we may have:
 
 - Paid more attention to pattern adherence
@@ -479,9 +497,11 @@ Our dogfooding experience has real limitations. Here's what this case study does
 **Impact**: Reported improvements might be partly due to increased attention, not just TMS structure.
 
 **We can't control for this.** Independent validation needed.
+</Callout>
 
 ### Prerequisites for Replicating Our Results
 
+<Callout type="tip" title="Prerequisites">
 Only expect similar benefits if:
 
 ✅ You're using AI coding assistants for 30%+ of development
@@ -495,6 +515,7 @@ Only expect similar benefits if:
 ✅ Your architecture is reasonably stable
 
 **The math**: Maintaining TMS costs ~30 min/week. If that doesn't save more time than it costs, don't use it.
+</Callout>
 
 ---
 
@@ -539,6 +560,7 @@ We aggressively archive completed tasks to COLD tier. But should we keep recent 
 
 ### Measurement Automation
 
+<Callout type="tip" title="Future Plans">
 We tracked tokens and pattern violations manually (tedious, error-prone).
 
 **What we need**:
@@ -549,6 +571,7 @@ We tracked tokens and pattern violations manually (tedious, error-prone).
 - Cost tracking dashboard
 
 **Status**: Planned for v2.9, not built yet.
+</Callout>
 
 ---
 
@@ -556,13 +579,15 @@ We tracked tokens and pattern violations manually (tedious, error-prone).
 
 The TMS structure is built into Cortex TMS templates:
 
-```bash
-# Recommended (no installation)
+<Terminal
+  title="install.sh"
+  language="bash"
+  content={`# Recommended (no installation)
 npx cortex-tms@latest init
 
 # Or install globally for frequent use
-npm install -g cortex-tms@latest
-```
+npm install -g cortex-tms@latest`}
+/>
 
 > **Version pinning**: For production use, pin to a specific version (e.g., `cortex-tms@2.6.1`). See our [installation guide](/guides/first-project/) for version management details.
 
@@ -658,10 +683,3 @@ We'd love to hear about your experience and whether TMS structure helps (or does
 ---
 
 **Transparency note**: This case study was written using Claude Code while dogfooding our own TMS structure. The session that produced this post: 9,240 tokens, 7 files read (NEXT-TASKS.md, PATTERNS.md, CONTENT-STANDARDS.md, previous blog posts). We practice what we document. [See our AI collaboration policy →](/community/about/)
-
-<style>
-  #metrics + table td:last-child {
-    color: var(--sl-color-green);
-    font-weight: 600;
-  }
-</style>
