@@ -151,6 +151,11 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
     href={canonicalURL}
   />
 
+  {/* Reading progress bar */}
+  <div class='progress-bar-container'>
+    <div class='progress-bar' id='reading-progress'></div>
+  </div>
+
   {/* Ambient background gradients */}
   <div class='liquid-ambient-bg'></div>
 
@@ -233,6 +238,23 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
   </article>
 
   <style>
+    .progress-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+      z-index: 9999;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--sl-color-accent);
+      width: 0%;
+      transition: width 0.1s ease-out;
+    }
+
     .blog-post {
       max-width: 900px;
       margin: 2rem auto;
@@ -483,4 +505,35 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       }
     }
   </style>
+
+  <script>
+    // Reading progress bar
+    function updateProgressBar() {
+      const progressBar = document.getElementById('reading-progress')
+      if (!progressBar) return
+
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+      const scrollTop = window.scrollY || document.documentElement.scrollTop
+
+      // Calculate scroll percentage
+      const scrollableHeight = documentHeight - windowHeight
+      const scrollPercentage = (scrollTop / scrollableHeight) * 100
+
+      // Update progress bar width
+      progressBar.style.width = `${Math.min(scrollPercentage, 100)}%`
+    }
+
+    // Update on scroll
+    window.addEventListener('scroll', updateProgressBar, { passive: true })
+
+    // Update on load
+    window.addEventListener('load', updateProgressBar)
+
+    // Update on resize
+    window.addEventListener('resize', updateProgressBar, { passive: true })
+
+    // Initial update
+    updateProgressBar()
+  </script>
 </SimpleLayout>
