@@ -333,7 +333,7 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
     .blog-container {
       max-width: 1400px;
       margin: 2rem auto;
-      padding: 0 2rem;
+      padding: 0 1rem;
       display: grid;
       grid-template-columns: 1fr 300px;
       gap: 3rem;
@@ -343,7 +343,7 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
 
     .blog-post {
       max-width: 900px;
-      padding: 2rem 3rem;
+      padding: 0;
       position: relative;
       z-index: 1;
     }
@@ -569,7 +569,7 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       }
 
       .blog-post {
-        padding: 2rem 1.5rem;
+        padding: 0;
       }
 
       .post-header h1 {
