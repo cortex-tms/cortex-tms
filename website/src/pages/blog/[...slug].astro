@@ -29,7 +29,7 @@ const allPosts = await getCollection('blog', ({ data }) => {
 
 // Sort posts by date (newest first)
 const sortedPosts = allPosts.sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 )
 
 // Find current post index
@@ -189,7 +189,11 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
 
   {/* Reading progress bar */}
   <div class='progress-bar-container'>
-    <div class='progress-bar' id='reading-progress'></div>
+    <div
+      class='progress-bar'
+      id='reading-progress'
+    >
+    </div>
   </div>
 
   {/* Ambient background gradients */}
@@ -197,87 +201,87 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
 
   <div class='blog-container'>
     <article class='blog-post'>
-    <header class='post-header'>
-      {
-        entry.data.tags && entry.data.tags.length > 0 && (
-          <div class='post-tags'>
-            {entry.data.tags.map((tag) => (
-              <span class='tag'>{tag}</span>
-            ))}
+      <header class='post-header'>
+        {
+          entry.data.tags && entry.data.tags.length > 0 && (
+            <div class='post-tags'>
+              {entry.data.tags.map((tag) => (
+                <span class='tag'>{tag}</span>
+              ))}
+            </div>
+          )
+        }
+        <h1>{entry.data.title}</h1>
+        {
+          entry.data.heroImage && (
+            <figure class='hero-image'>
+              <img
+                src={entry.data.heroImage}
+                alt={entry.data.heroAlt ?? entry.data.title}
+                loading='lazy'
+                decoding='async'
+              />
+            </figure>
+          )
+        }
+        <div class='post-meta'>
+          <img
+            src='/logo.svg'
+            alt='Cortex TMS'
+            class='author-avatar'
+          />
+          <div class='meta-content'>
+            <span class='author-text'>
+              Words by <strong>{entry.data.author || 'Cortex TMS Team'}</strong>
+            </span>
+            <span class='meta-separator'>·</span>
+            {
+              entry.data.updatedDate && (
+                <>
+                  <span class='meta-date'>
+                    Updated on {formatDate(entry.data.updatedDate)}
+                  </span>
+                  <span class='meta-separator'>·</span>
+                </>
+              )
+            }
+            <span class='meta-date'>
+              Published on {formatDate(entry.data.pubDate)}
+            </span>
+            <span class='meta-separator'>·</span>
+            <span class='reading-time'>{readingTime}</span>
           </div>
-        )
-      }
-      <h1>{entry.data.title}</h1>
-      {
-        entry.data.heroImage && (
-          <figure class='hero-image'>
-            <img
-              src={entry.data.heroImage}
-              alt={entry.data.heroAlt ?? entry.data.title}
-              loading='lazy'
-              decoding='async'
-            />
-          </figure>
-        )
-      }
-      <div class='post-meta'>
-        <img
-          src='/logo.svg'
-          alt='Cortex TMS'
-          class='author-avatar'
-        />
-        <div class='meta-content'>
-          <span class='author-text'>
-            Words by <strong>{entry.data.author || 'Cortex TMS Team'}</strong>
-          </span>
-          <span class='meta-separator'>·</span>
-          {
-            entry.data.updatedDate && (
-              <>
-                <span class='meta-date'>
-                  Updated on {formatDate(entry.data.updatedDate)}
-                </span>
-                <span class='meta-separator'>·</span>
-              </>
-            )
-          }
-          <span class='meta-date'>
-            Published on {formatDate(entry.data.pubDate)}
-          </span>
-          <span class='meta-separator'>·</span>
-          <span class='reading-time'>{readingTime}</span>
         </div>
+
+        <SocialShare
+          url={canonicalURL}
+          title={entry.data.title}
+          description={entry.data.description}
+        />
+      </header>
+
+      <div class='post-content'>
+        <Content />
       </div>
 
-      <SocialShare
-        url={canonicalURL}
-        title={entry.data.title}
-        description={entry.data.description}
-      />
-    </header>
+      <footer class='post-footer'>
+        <SocialShare
+          url={canonicalURL}
+          title={entry.data.title}
+          description={entry.data.description}
+        />
+        <a
+          href='/blog/'
+          class='back-link'
+          >← Back to Blog</a
+        >
+      </footer>
+    </article>
 
-    <div class='post-content'>
-      <Content />
-    </div>
-
-    <footer class='post-footer'>
-      <SocialShare
-        url={canonicalURL}
-        title={entry.data.title}
-        description={entry.data.description}
-      />
-      <a
-        href='/blog/'
-        class='back-link'
-        >← Back to Blog</a
-      >
-    </footer>
-  </article>
-
-  <aside class='toc-sidebar'>
-    <TableOfContents headings={headings} />
-  </aside>
-</div>
+    <aside class='toc-sidebar'>
+      <TableOfContents headings={headings} />
+    </aside>
+  </div>
 
   {relatedPosts.length > 0 && <RelatedPosts posts={relatedPosts} />}
 
@@ -286,7 +290,10 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       <nav class='post-navigation'>
         <div class='nav-container'>
           {prevPost ? (
-            <a href={`/blog/${prevPost.slug}/`} class='nav-link prev-link'>
+            <a
+              href={`/blog/${prevPost.slug}/`}
+              class='nav-link prev-link'
+            >
               <span class='nav-label'>← Previous Post</span>
               <span class='nav-title'>{prevPost.data.title}</span>
             </a>
@@ -294,7 +301,10 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
             <div />
           )}
           {nextPost ? (
-            <a href={`/blog/${nextPost.slug}/`} class='nav-link next-link'>
+            <a
+              href={`/blog/${nextPost.slug}/`}
+              class='nav-link next-link'
+            >
               <span class='nav-label'>Next Post →</span>
               <span class='nav-title'>{nextPost.data.title}</span>
             </a>
@@ -331,25 +341,30 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
     }
 
     .blog-container {
-      max-width: 1400px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 3rem;
+      width: 100%;
+      max-width: 1200px;
+      margin: clamp(1.5rem, 4vw, 3rem) auto;
+      padding: 0 clamp(1rem, 3vw, 2rem);
       position: relative;
       z-index: 1;
+      overflow: visible;
     }
 
     .blog-post {
-      max-width: 900px;
+      width: 100%;
+      max-width: none;
       padding: 0;
       position: relative;
       z-index: 1;
     }
 
     .toc-sidebar {
-      position: relative;
+      position: sticky;
+      top: 6rem;
+      display: none;
+      height: fit-content;
+      max-height: calc(100vh - 8rem);
+      overflow-y: auto;
     }
 
     .post-header {
@@ -487,9 +502,10 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
     }
 
     .post-navigation {
-      max-width: 900px;
+      width: 100%;
+      max-width: 1200px;
       margin: 2rem auto;
-      padding: 0 3rem;
+      padding: 0 clamp(1rem, 3vw, 2rem);
       position: relative;
       z-index: 1;
     }
@@ -498,6 +514,18 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
+    }
+
+    /* Stretch shared sections (related posts, footer wrappers) to match the main container width */
+    :global(.related-posts) {
+      width: 100%;
+      max-width: 1200px;
+      margin: clamp(2.5rem, 5vw, 4rem) auto;
+      padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem);
+    }
+
+    :global(.related-grid) {
+      gap: clamp(1.5rem, 3vw, 2rem);
     }
 
     .nav-link {
@@ -545,27 +573,24 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       background: rgba(0, 0, 0, 0.04);
     }
 
-    /* Hide TOC on tablet and below */
-    @media (max-width: 1024px) {
+    /* Show TOC and two-column layout on wide screens */
+    @media (min-width: 1100px) {
       .blog-container {
-        grid-template-columns: 1fr;
-        gap: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1.7fr) minmax(240px, 0.9fr);
+        gap: clamp(2rem, 4vw, 3rem);
       }
 
       .toc-sidebar {
-        display: none;
-      }
-
-      .blog-post {
-        max-width: 900px;
-        margin: 0 auto;
+        display: block;
       }
     }
 
     @media (max-width: 768px) {
       .blog-container {
-        padding: 0 1rem;
+        padding: 0 clamp(0.75rem, 3vw, 1.25rem);
         margin: 1rem auto;
+        gap: 1.5rem;
       }
 
       .blog-post {
@@ -581,7 +606,7 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       }
 
       .post-content {
-        font-size: 1rem;
+        font-size: 1.08rem;
       }
 
       .post-meta {
@@ -598,8 +623,8 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       }
 
       .post-navigation {
-        padding: 0 1.5rem;
-        margin: 1rem;
+        padding: 0 1rem;
+        margin: 1.5rem auto;
       }
 
       .nav-container {
