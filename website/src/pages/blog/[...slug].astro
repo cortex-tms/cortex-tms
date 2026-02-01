@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
 import SimpleLayout from '../../layouts/SimpleLayout.astro'
+import { Calendar, Clock, RefreshCw } from '@lucide/astro'
 
 export const getStaticPaths = (async () => {
   const blogEntries = await getCollection('blog', ({ data }) => {
@@ -24,6 +25,15 @@ const formatDate = (date: Date) => {
     day: 'numeric',
   }).format(date)
 }
+
+const calculateReadingTime = (text: string) => {
+  const wordsPerMinute = 200
+  const words = text.trim().split(/\s+/).length
+  const minutes = Math.ceil(words / wordsPerMinute)
+  return `${minutes} min read`
+}
+
+const readingTime = calculateReadingTime(entry.body)
 
 // Construct Open Graph image URL
 const ogImageUrl =
@@ -144,39 +154,7 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
   <div class='liquid-ambient-bg'></div>
 
   <article class='blog-post'>
-    {
-      entry.data.heroImage && (
-        <figure class='hero-image'>
-          <img
-            src={entry.data.heroImage}
-            alt={entry.data.heroAlt ?? entry.data.title}
-            loading='lazy'
-            decoding='async'
-          />
-        </figure>
-      )
-    }
-
     <header class='post-header'>
-      <h1>{entry.data.title}</h1>
-      <div class='post-meta'>
-        <time datetime={entry.data.pubDate.toISOString()}>
-          {formatDate(entry.data.pubDate)}
-        </time>
-        {
-          entry.data.author && (
-            <span class='author'> by {entry.data.author}</span>
-          )
-        }
-        {
-          entry.data.updatedDate && (
-            <span class='updated'>
-              {' '}
-              · Updated {formatDate(entry.data.updatedDate)}
-            </span>
-          )
-        }
-      </div>
       {
         entry.data.tags && entry.data.tags.length > 0 && (
           <div class='post-tags'>
@@ -186,6 +164,47 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
           </div>
         )
       }
+      <h1>{entry.data.title}</h1>
+      {
+        entry.data.heroImage && (
+          <figure class='hero-image'>
+            <img
+              src={entry.data.heroImage}
+              alt={entry.data.heroAlt ?? entry.data.title}
+              loading='lazy'
+              decoding='async'
+            />
+          </figure>
+        )
+      }
+      <div class='post-meta'>
+        <img
+          src='/logo.svg'
+          alt='Cortex TMS'
+          class='author-avatar'
+        />
+        <div class='meta-content'>
+          <span class='author-text'>
+            Words by <strong>{entry.data.author || 'Cortex TMS Team'}</strong>
+          </span>
+          <span class='meta-separator'>·</span>
+          {
+            entry.data.updatedDate && (
+              <>
+                <span class='meta-date'>
+                  Updated on {formatDate(entry.data.updatedDate)}
+                </span>
+                <span class='meta-separator'>·</span>
+              </>
+            )
+          }
+          <span class='meta-date'>
+            Published on {formatDate(entry.data.pubDate)}
+          </span>
+          <span class='meta-separator'>·</span>
+          <span class='reading-time'>{readingTime}</span>
+        </div>
+      </div>
     </header>
 
     <div class='post-content'>
@@ -210,8 +229,21 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       z-index: 1;
     }
 
-    .hero-image {
+    .post-header {
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 3;
+    }
+
+    .post-header h1 {
+      font-size: 2.5rem;
+      line-height: 1.2;
       margin: 0 0 2rem 0;
+      color: var(--sl-color-text);
+    }
+
+    .hero-image {
+      margin: 2rem 0;
       border-radius: 1rem;
       overflow: hidden;
     }
@@ -223,60 +255,87 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       object-fit: cover;
     }
 
-    .post-header {
-      margin-bottom: 2rem;
-      padding-bottom: 2rem;
-      border-bottom: 1px solid var(--sl-color-gray-5);
-      position: relative;
-      z-index: 3;
-    }
-
-    .post-header h1 {
-      font-size: 2.5rem;
-      line-height: 1.2;
-      margin: 0 0 1rem 0;
-      color: var(--sl-color-text);
-    }
-
     .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-top: 1px solid var(--sl-color-gray-5);
+      border-bottom: 1px solid var(--sl-color-gray-5);
       font-size: 0.9375rem;
+      line-height: 1.5;
       color: var(--sl-color-gray-3);
-      margin-bottom: 1rem;
     }
 
-    .author {
-      font-weight: 500;
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--sl-color-accent);
+      background: #ffffff;
+      padding: 2px;
+      flex-shrink: 0;
     }
 
-    .updated {
-      font-style: italic;
+    .meta-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      line-height: 1.5;
+    }
+
+    .author-text {
+      color: var(--sl-color-text);
+      line-height: 1.5;
+    }
+
+    .author-text strong {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .meta-separator {
+      color: var(--sl-color-gray-4);
+      font-size: 1.5rem;
+      line-height: 1;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .meta-date {
+      color: var(--sl-color-gray-3);
+      line-height: 1.5;
+    }
+
+    .reading-time {
+      color: var(--sl-color-gray-3);
+      line-height: 1.5;
     }
 
     .post-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin-top: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .tag {
-      font-family: var(--sl-font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--sl-color-accent);
-      background: rgba(249, 115, 22, 0.12);
-      border: 1px solid var(--sl-color-accent);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      padding: 0.5rem 0.85rem;
-      border-radius: 20px;
-      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--sl-color-gray-3);
     }
 
     :root[data-theme='light'] .tag {
-      background: rgba(249, 115, 22, 0.08);
-      border: 1.5px solid var(--sl-color-accent);
+      background: rgba(0, 0, 0, 0.05);
     }
 
     .post-content {
@@ -383,16 +442,29 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
         margin: 1rem;
       }
 
-      .hero-image {
-        margin: -2rem -1.5rem 2rem -1.5rem;
-      }
-
       .post-header h1 {
         font-size: 2rem;
       }
 
+      .hero-image {
+        margin: 1rem 0;
+      }
+
       .post-content {
         font-size: 1rem;
+      }
+
+      .post-meta {
+        font-size: 0.875rem;
+      }
+
+      .author-avatar {
+        width: 40px;
+        height: 40px;
+      }
+
+      .meta-content {
+        font-size: 0.8125rem;
       }
     }
   </style>
