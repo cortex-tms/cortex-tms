@@ -1,0 +1,77 @@
+title: "[Show & Tell] "
+labels: ["🌌 show and tell"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Show the community what you've built with Cortex TMS!
+
+        We love seeing how developers use Cortex TMS in their projects.
+
+  - type: input
+    id: project-name
+    attributes:
+      label: "Project Name"
+      description: "What's your project called?"
+      placeholder: "My Awesome Project"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "What does your project do? How does Cortex TMS help?"
+      placeholder: "I built a SaaS app using Cortex TMS for documentation. It helps me..."
+    validations:
+      required: true
+
+  - type: input
+    id: link
+    attributes:
+      label: "Link (Optional)"
+      description: "GitHub repo, website, demo, etc."
+      placeholder: "https://github.com/username/project"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: project-type
+    attributes:
+      label: "Project Type"
+      options:
+        - Open Source Project
+        - Commercial Product
+        - Internal Tool
+        - Learning Project
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: stack
+    attributes:
+      label: "Tech Stack"
+      description: "What technologies are you using with Cortex TMS?"
+      placeholder: "Next.js, TypeScript, Tailwind, Claude API..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: highlights
+    attributes:
+      label: "Highlights & Learnings"
+      description: "What worked well? Any tips for others?"
+      placeholder: "The auto-tier feature saved me hours by..."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **Community Benefits:**
+        - Inspire other developers
+        - Get feedback and suggestions
+        - Showcase your work
+        - Help improve Cortex TMS with real-world use cases

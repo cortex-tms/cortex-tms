@@ -1,0 +1,75 @@
+title: "[Question] "
+labels: ["🙏 Q&A"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask the Cortex TMS community!
+
+        **Before asking:**
+        - Check the [Documentation](https://cortex-tms.org)
+        - Search existing [Q&A discussions](https://github.com/cortex-tms/cortex-tms/discussions/categories/q-a)
+        - For bugs, use [Issues](https://github.com/cortex-tms/cortex-tms/issues) instead
+
+  - type: textarea
+    id: question
+    attributes:
+      label: "Question"
+      description: "What would you like to know?"
+      placeholder: "How do I...?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Context"
+      description: "What are you trying to accomplish?"
+      placeholder: "I'm trying to set up Cortex TMS for a monorepo with multiple packages..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: "What I've Tried"
+      description: "What have you already attempted?"
+      placeholder: "I've tried running `cortex-tms init` but..."
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: "Cortex TMS Version"
+      description: "Run `cortex-tms --version` to find out"
+      placeholder: "3.2.0"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: "Topic Area"
+      options:
+        - Getting Started
+        - CLI Usage
+        - Templates & Scaffolding
+        - Guardian (Code Review)
+        - Auto-Tier (File Tagging)
+        - Integration with AI Tools
+        - Configuration
+        - Best Practices
+        - Other
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **Community Guidelines:**
+        - Be specific and provide details
+        - Include error messages if applicable
+        - Mark helpful answers with ✅ (if your question is answered)
+        - Upvote 👍 helpful responses

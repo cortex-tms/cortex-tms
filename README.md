@@ -653,11 +653,26 @@ Cortex TMS implements enterprise-grade security practices:
 
 ---
 
-## Contact
+## 💬 Community & Support
 
-- **Bug Reports**: [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues/new) - Report bugs or technical issues
-- **Feature Requests**: [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues/new) - Suggest new features or improvements
-- **Questions & Support**: [GitHub Issues](https://github.com/cortex-tms/cortex-tms/issues/new) - Get help and ask questions
+We have an active and growing community! ⭐ **146 stars** and counting.
+
+### Get Help & Connect
+- **[GitHub Discussions](https://github.com/cortex-tms/cortex-tms/discussions)** - Ask questions, share ideas, showcase projects
+  - [Q&A](https://github.com/cortex-tms/cortex-tms/discussions/categories/q-a) - Get help from the community
+  - [Ideas](https://github.com/cortex-tms/cortex-tms/discussions/categories/ideas) - Suggest features (vote with 👍)
+  - [Show and Tell](https://github.com/cortex-tms/cortex-tms/discussions/categories/show-and-tell) - Share what you've built
+  - [Announcements](https://github.com/cortex-tms/cortex-tms/discussions/categories/announcements) - Release notes and updates
+
+### Report Issues
+- **[Bug Reports](https://github.com/cortex-tms/cortex-tms/issues/new)** - Found a bug? Let us know!
+- **[Security Issues](https://github.com/cortex-tms/cortex-tms/security/advisories/new)** - Responsible disclosure for security vulnerabilities
+
+### Contributing
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute code, docs, or ideas
+- **[Community Guide](docs/COMMUNITY.md)** - Community guidelines and best practices
+
+**Star us on GitHub** ⭐ if you find Cortex TMS useful!
 
 ---
 

@@ -1,0 +1,73 @@
+title: "[Idea] "
+labels: ["💡 ideas"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing an idea to Cortex TMS! We love hearing from our community.
+
+        **Before submitting:**
+        - Search existing [Ideas](https://github.com/cortex-tms/cortex-tms/discussions/categories/ideas) to avoid duplicates
+        - Check the [Roadmap](https://github.com/cortex-tms/cortex-tms/discussions/categories/announcements) for planned features
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem or Use Case"
+      description: "What problem would this solve? What workflow would it improve?"
+      placeholder: "As a developer using Cortex TMS, I find it difficult to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Proposed Solution"
+      description: "How would you like to see this implemented?"
+      placeholder: "It would be great if Cortex TMS could..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives Considered"
+      description: "What alternatives have you considered?"
+      placeholder: "I've tried... but it doesn't..."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: "Feature Scope"
+      description: "Which area does this idea relate to?"
+      options:
+        - CLI Commands
+        - Templates & Scaffolding
+        - Documentation
+        - Guardian (Code Review)
+        - Auto-Tier (File Tagging)
+        - Website / UX
+        - Developer Experience
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: "Contribution"
+      description: "Would you be interested in contributing this feature?"
+      options:
+        - label: "I'd be willing to submit a PR for this idea"
+          required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **What happens next?**
+        - Maintainers will review and discuss your idea
+        - Popular ideas may be added to the roadmap
+        - Community votes (👍 reactions) help prioritize features
