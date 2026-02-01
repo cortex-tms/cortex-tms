@@ -65,10 +65,6 @@ const formattedDate = pubDate
         </div>
       )}
       <h3 class="post-title">{title}</h3>
-      <p class="post-description">{excerpt}</p>
-    </div>
-
-    <div class="post-footer">
       <div class="post-meta">
         {formattedDate && (
           <div class="meta-item">
@@ -81,7 +77,10 @@ const formattedDate = pubDate
           <span>{readingTime} min read</span>
         </div>
       </div>
+      <p class="post-description">{excerpt}</p>
+    </div>
 
+    <div class="post-footer">
       <div class="post-actions">
         <GlassButton
           variant="neon"
