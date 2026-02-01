@@ -69,6 +69,7 @@
 }
 .featured-blog-post:hover .btn-neon {
   box-shadow: 0 0 8px var(--sl-color-accent);
+  translate: 0 -2px;
 }
 
 .featured-blog-post .panel-content {
