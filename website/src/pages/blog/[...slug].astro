@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
 import SimpleLayout from '../../layouts/SimpleLayout.astro'
 import { Calendar, Clock, RefreshCw } from '@lucide/astro'
+import SocialShare from '../../components/SocialShare.astro'
 
 export const getStaticPaths = (async () => {
   const blogEntries = await getCollection('blog', ({ data }) => {
@@ -205,6 +206,12 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
           <span class='reading-time'>{readingTime}</span>
         </div>
       </div>
+
+      <SocialShare
+        url={canonicalURL}
+        title={entry.data.title}
+        description={entry.data.description}
+      />
     </header>
 
     <div class='post-content'>
@@ -212,6 +219,11 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
     </div>
 
     <footer class='post-footer'>
+      <SocialShare
+        url={canonicalURL}
+        title={entry.data.title}
+        description={entry.data.description}
+      />
       <a
         href='/blog/'
         class='back-link'
@@ -421,6 +433,9 @@ const canonicalURL = new URL(`/blog/${entry.slug}/`, Astro.site).toString()
       border-top: 1px solid var(--sl-color-gray-5);
       position: relative;
       z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
     }
 
     .back-link {
