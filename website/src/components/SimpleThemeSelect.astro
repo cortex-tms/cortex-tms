@@ -4,10 +4,11 @@
  *
  * Uses icon buttons instead of dropdown for better UX
  */
-import { Sun, Moon, Monitor } from '@lucide/astro';
+import { Sun, Moon, Monitor } from '@lucide/astro'
 ---
 
 <div class='theme-selector glass-shell'>
+  <!-- Desktop Buttons -->
   <button
     class='theme-button'
     data-theme='light'
@@ -34,6 +35,62 @@ import { Sun, Moon, Monitor } from '@lucide/astro';
   >
     <Monitor size={20} />
   </button>
+
+  <!-- Mobile Custom Dropdown -->
+  <div class='mobile-theme-dropdown'>
+    <button
+      class='mobile-theme-trigger'
+      aria-label='Toggle theme menu'
+      type='button'
+    >
+      <span
+        class='current-theme-icon'
+        data-theme='auto'
+      >
+        <Monitor size={16} />
+      </span>
+      <svg
+        class='chevron-icon'
+        width='10'
+        height='10'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+      >
+        <polyline points='6 9 12 15 18 9'></polyline>
+      </svg>
+    </button>
+    <div
+      class='mobile-theme-menu'
+      hidden
+    >
+      <button
+        class='mobile-theme-option'
+        data-theme='light'
+        type='button'
+      >
+        <Sun size={16} />
+        <span>Light</span>
+      </button>
+      <button
+        class='mobile-theme-option'
+        data-theme='dark'
+        type='button'
+      >
+        <Moon size={16} />
+        <span>Dark</span>
+      </button>
+      <button
+        class='mobile-theme-option'
+        data-theme='auto'
+        type='button'
+      >
+        <Monitor size={16} />
+        <span>Auto</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -44,8 +101,8 @@ import { Sun, Moon, Monitor } from '@lucide/astro';
     --theme-button-surface: rgba(255, 255, 255, 0.06);
     --theme-button-surface-active: rgba(249, 115, 22, 0.16);
     --theme-button-icon: var(--sl-color-gray-3);
-    background: var(--glass-surface, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+    background: var(--glass-surface, rgba(255, 255, 255, 0.14));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.18));
     backdrop-filter: blur(var(--glass-blur, 12px));
     -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
     border-radius: 12px;
@@ -117,14 +174,124 @@ import { Sun, Moon, Monitor } from '@lucide/astro';
     outline-offset: 2px;
   }
 
+  /* Mobile Custom Dropdown */
+  .mobile-theme-dropdown {
+    display: none;
+    position: relative;
+  }
+
+  .mobile-theme-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
+    min-width: 3.5rem;
+    padding: 0.25rem 0.375rem;
+    border: none;
+    background: 
+    color: var(--theme-button-icon);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .mobile-theme-trigger::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--theme-button-surface);
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .mobile-theme-trigger:hover::before,
+  .mobile-theme-trigger[aria-expanded='true']::before {
+    opacity: 1;
+  }
+
+  .current-theme-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .chevron-icon {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-theme-trigger[aria-expanded='true'] .chevron-icon {
+    transform: rotate(180deg);
+  }
+
+  .mobile-theme-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: rgba(17, 17, 17, 0.9);
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
+    padding: 0.5rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    min-width: 8rem;
+  }
+
+  :root[data-theme='light'] .mobile-theme-menu {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .mobile-theme-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border: none;
+    background: transparent;
+    color: var(--theme-button-icon);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+
+  .mobile-theme-option:hover {
+    background: var(--theme-button-surface);
+    color: var(--sl-color-text);
+  }
+
+  .mobile-theme-option.active {
+    background: var(--theme-button-surface-active);
+    color: var(--sl-color-accent-high);
+  }
+
+  .mobile-theme-option svg {
+    flex-shrink: 0;
+  }
+
+  /* Responsive Logic */
   @media (max-width: 640px) {
     .theme-button {
-      width: 2rem;
-      height: 2rem;
+      display: none;
+    }
+
+    .mobile-theme-dropdown {
+      display: block;
     }
 
     .theme-selector {
-      gap: 0.25rem;
+      padding: 0.25rem;
     }
   }
 </style>
@@ -154,7 +321,8 @@ import { Sun, Moon, Monitor } from '@lucide/astro';
   const getPreferredColorScheme = (): Theme =>
     matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
 
-  function updateButtons(theme: Theme) {
+  function updateUI(theme: Theme) {
+    // Update desktop buttons
     document.querySelectorAll('.theme-button').forEach((button) => {
       const buttonTheme = button.getAttribute('data-theme')
       if (buttonTheme === theme) {
@@ -163,10 +331,33 @@ import { Sun, Moon, Monitor } from '@lucide/astro';
         button.classList.remove('active')
       }
     })
+
+    // Update mobile dropdown options
+    document.querySelectorAll('.mobile-theme-option').forEach((option) => {
+      const optionTheme = option.getAttribute('data-theme')
+      if (optionTheme === theme) {
+        option.classList.add('active')
+      } else {
+        option.classList.remove('active')
+      }
+    })
+
+    // Update mobile trigger icon by copying from active option
+    const currentIcon = document.querySelector('.current-theme-icon')
+    const activeOption = document.querySelector(
+      `.mobile-theme-option[data-theme="${theme}"]`,
+    )
+    if (currentIcon && activeOption) {
+      const iconClone = activeOption.querySelector('svg')?.cloneNode(true)
+      if (iconClone) {
+        currentIcon.innerHTML = ''
+        currentIcon.appendChild(iconClone)
+      }
+    }
   }
 
   function onThemeChange(theme: Theme): void {
-    updateButtons(theme)
+    updateUI(theme)
     document.documentElement.dataset.theme =
       theme === 'auto' ? getPreferredColorScheme() : theme
     storeTheme(theme)
@@ -175,11 +366,48 @@ import { Sun, Moon, Monitor } from '@lucide/astro';
   // Initialize on load
   onThemeChange(loadTheme())
 
-  // React to button clicks
+  // Desktop button clicks
   document.querySelectorAll('.theme-button').forEach((button) => {
     button.addEventListener('click', () => {
       const theme = parseTheme(button.getAttribute('data-theme'))
       onThemeChange(theme)
+    })
+  })
+
+  // Mobile dropdown toggle
+  const mobileTrigger = document.querySelector('.mobile-theme-trigger')
+  const mobileMenu = document.querySelector('.mobile-theme-menu')
+
+  if (mobileTrigger && mobileMenu) {
+    mobileTrigger.addEventListener('click', (e) => {
+      e.stopPropagation()
+      const isExpanded = mobileTrigger.getAttribute('aria-expanded') === 'true'
+      mobileTrigger.setAttribute('aria-expanded', String(!isExpanded))
+      mobileMenu.hidden = isExpanded
+    })
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (
+        !mobileMenu.contains(e.target as Node) &&
+        e.target !== mobileTrigger
+      ) {
+        mobileTrigger.setAttribute('aria-expanded', 'false')
+        mobileMenu.hidden = true
+      }
+    })
+  }
+
+  // Mobile option clicks
+  document.querySelectorAll('.mobile-theme-option').forEach((option) => {
+    option.addEventListener('click', () => {
+      const theme = parseTheme(option.getAttribute('data-theme'))
+      onThemeChange(theme)
+      // Close dropdown
+      if (mobileTrigger && mobileMenu) {
+        mobileTrigger.setAttribute('aria-expanded', 'false')
+        mobileMenu.hidden = true
+      }
     })
   })
 
