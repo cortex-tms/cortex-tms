@@ -266,50 +266,27 @@ async function runInit(options: InitCommandOptions): Promise<void> {
         chalk.gray('Run without --dry-run to apply changes.\n')
       );
     } else {
-      console.log(chalk.green.bold('\n✨ Success!'), chalk.gray('Cortex TMS initialized.\n'));
+      console.log(chalk.green('\n✅ Cortex TMS Initialized!\n'));
     }
 
     // Show next steps (skip in dry-run mode)
     if (!validated.dryRun) {
-      console.log(chalk.bold('🚀 Quick Start'), chalk.gray('(choose one):'));
-      console.log();
-      console.log(chalk.cyan('  Option A - With your AI agent'), chalk.gray('(recommended):'));
-      console.log(chalk.gray('    1. Open your AI tool (Claude Code, Copilot, Cursor, etc.)'));
-      console.log(chalk.gray('    2. Run:'), chalk.cyan('cortex-tms prompt bootstrap'));
-      console.log(chalk.gray('    3. Paste the prompt - your AI will analyze the codebase and'));
-      console.log(chalk.gray('       populate your documentation files as drafts for you to review'));
-      console.log();
-      console.log(chalk.cyan('  Option B - Manual setup:'));
-      console.log(chalk.gray('    1. Review'), chalk.cyan('NEXT-TASKS.md'), chalk.gray('for active sprint tasks'));
-      console.log(chalk.gray('    2. Update'), chalk.cyan('docs/core/'), chalk.gray('with your project details'));
-      console.log(chalk.gray('    3. Customize'), chalk.cyan('.github/copilot-instructions.md'));
+      console.log(chalk.cyan('🚀 Quick Start (One Golden Path):\n'));
+      console.log(chalk.gray('  1. Validate your setup:'));
+      console.log(`     ${chalk.bold('cortex-tms validate')}\n`);
 
-      if (answers.installSnippets) {
-        console.log();
-        console.log(
-          chalk.gray('  💡 Tip: Use'),
-          chalk.cyan('tms-adr'),
-          chalk.gray('or'),
-          chalk.cyan('tms-pattern'),
-          chalk.gray('snippets in VS Code for rapid documentation')
-        );
-      }
+      console.log(chalk.gray('  2. Start your AI session:'));
+      console.log(`     ${chalk.bold('cortex-tms prompt init-session')}`);
+      console.log(chalk.gray('     (Copy output, paste into Claude Code/Cursor/Copilot)\n'));
 
-      if (!context.isGitRepo) {
-        console.log();
-        console.log(
-          chalk.gray('  💡 Tip: Initialize git with'),
-          chalk.cyan('git init'),
-          chalk.gray('to track changes')
-        );
-      }
+      console.log(chalk.gray('  3. See your context savings:'));
+      console.log(`     ${chalk.bold('cortex-tms status')}\n`);
 
-      console.log();
-      console.log(
-        chalk.gray('📚 Learn more:'),
-        chalk.underline('https://cortex-tms.org')
-      );
-      console.log();
+      console.log(chalk.cyan('💡 New to TMS?'));
+      console.log(`   Read: ${chalk.underline('docs/guides/START-HERE.md')}\n`);
+
+      console.log(chalk.cyan('📚 Full docs:'));
+      console.log(`   ${chalk.underline('https://cortex-tms.org')}\n`);
     }
   } catch (error) {
     copySpinner.fail('Failed to copy templates');

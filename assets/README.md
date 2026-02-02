@@ -20,7 +20,6 @@ go install github.com/charmbracelet/vhs@latest
 **Generate demo.gif**:
 ```bash
 # From project root
-cd /home/jma/repos-ubuntu/github/cortex-tms
 vhs assets/demo.tape
 ```
 

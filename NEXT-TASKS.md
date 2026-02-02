@@ -4,40 +4,38 @@
 
 ---
 
-## 🎯 v3.3.0: Phase 1 - Onboarding Improvements
+## ✅ v3.3.0: Phase 1 - Onboarding Improvements (Complete)
 
-**Timeline**: Feb 2026 (6h estimated)
-**Status**: ⏸️ Planned
+**Timeline**: Feb 2026 (6h)
+**Status**: ✅ Complete (on develop branch)
 **Target**: Guide new users to success in <5 minutes
 **Details**: See [docs/tasks/v3.3-phase1-implementation.md](docs/tasks/v3.3-phase1-implementation.md)
 
-### Tasks
+### Completed Tasks
 
-#### Task 1.1: Next Steps After Init (2h)
-- Show actionable next steps after `cortex-tms init`
-- Guide users to first value (validate → prompt → status)
-
-#### Task 1.2: START-HERE.md Guide (2h)
-- 5-minute onboarding guide
-- Quick win: token counter (status command)
-- Advanced paths: auto-tier, Guardian
-
-#### Task 1.5: Token Savings Visible by Default (2h)
-- Show context reduction estimates in `cortex-tms status` (no flags)
-- Make potential savings visible immediately (based on project)
+- ✅ Task 1.1: Next steps after init (src/commands/init.ts)
+- ✅ Task 1.2: START-HERE.md guide (docs/guides/START-HERE.md)
+- ✅ Task 1.5: Token savings visible (src/commands/status.ts)
 
 ---
 
-## 📋 Future Sprints
+## 🎯 v3.3.1: Phase 2 - Migration Support
 
-### v3.3.1: Phase 2 - Migration Support (12h estimated)
+**Timeline**: Feb 2026 (12h estimated)
+**Status**: 🔄 In Progress
+**Target**: Support existing projects with messy docs
 
-**Status**: ⏸️ Backlog
-**Tasks**:
+### Tasks
 
-- Task 2.1: Project analyzer (6h)
-- Task 2.4: Savings projection (3h)
-- Task 2.6: Migration guide (3h)
+#### Task 2.1: Project Analyzer (6h) 🔄
+**Status**: In Progress
+**Goal**: Analyze existing project structure and suggest TMS setup
+
+#### Task 2.4: Savings Projection (3h)
+**Goal**: Show "You'll save $X/month" estimate
+
+#### Task 2.6: Migration Guide (3h)
+**Goal**: Manual migration guide for existing projects
 
 ---
 

@@ -46,6 +46,7 @@ import { promptCommand } from './commands/prompt.js';
 import { tutorialCommand } from './commands/tutorial.js';
 import { reviewCommand } from './commands/review.js';
 import { autoTierCommand } from './commands/auto-tier.js';
+import { analyzeCommand } from './commands/analyze.js';
 
 program.addCommand(initCommand);
 program.addCommand(validateCommand);
@@ -55,6 +56,7 @@ program.addCommand(promptCommand);
 program.addCommand(tutorialCommand);
 program.addCommand(reviewCommand);
 program.addCommand(autoTierCommand);
+program.addCommand(analyzeCommand);
 
 // Handle unknown commands
 program.on('command:*', () => {

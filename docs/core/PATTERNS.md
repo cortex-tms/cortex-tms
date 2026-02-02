@@ -1071,6 +1071,5 @@ When converting existing `.md` files to `.mdx`:
 **References**:
 - **Components**: `website/src/components/blog/`
 - **Guide**: `tmp/mdx-components-guide.md` (temporary reference)
-- **Design**: `/home/jma/repos-ubuntu/github/cortex-tms-internal/branding/designs/blog-styles.html`
 
 <!-- @cortex-tms-version 3.1.0 -->

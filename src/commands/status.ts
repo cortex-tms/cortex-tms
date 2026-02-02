@@ -50,6 +50,38 @@ export function createStatusCommand(): Command {
 }
 
 /**
+ * Cache for quick token estimates (5 min TTL)
+ */
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+let cachedStats: { data: { hot: number; total: number; reduction: number }; timestamp: number } | null = null;
+
+/**
+ * Run quick token estimate with caching
+ */
+async function runQuickTokenEstimate(cwd: string): Promise<{ hot: number; total: number; reduction: number }> {
+  // Check cache
+  if (cachedStats && Date.now() - cachedStats.timestamp < CACHE_TTL) {
+    return cachedStats.data;
+  }
+
+  // Run analysis
+  const stats = await analyzeTokenUsage(cwd);
+  const result = {
+    hot: stats.hot.totalTokens,
+    total: stats.total.tokens,
+    reduction: stats.savings.percentReduction,
+  };
+
+  // Update cache
+  cachedStats = {
+    data: result,
+    timestamp: Date.now(),
+  };
+
+  return result;
+}
+
+/**
  * Main status command logic
  */
 async function runStatus(): Promise<void> {
@@ -130,6 +162,20 @@ async function runStatus(): Promise<void> {
         chalk.cyan('cortex-tms validate --fix'),
         chalk.gray('to auto-fix issues')
       );
+    }
+
+    // Context Savings (Estimate)
+    try {
+      const tokenStats = await runQuickTokenEstimate(cwd);
+
+      console.log(chalk.bold('\n💰 Context Savings (Estimate)'));
+      console.log(`  ${chalk.cyan('HOT tier (active):')} ${formatTokens(tokenStats.hot)} tokens`);
+      console.log(`  ${chalk.cyan('Full repository:')} ${formatTokens(tokenStats.total)} tokens`);
+      console.log(`  ${chalk.green('Reduction:')} ${chalk.bold(formatPercent(tokenStats.reduction))}`);
+      console.log(chalk.gray('  (HOT tier vs full repository, including archived files)'));
+      console.log(chalk.gray('  💡 Run'), chalk.cyan('cortex-tms status --tokens'), chalk.gray('for detailed breakdown'));
+    } catch (error) {
+      // Silently skip if token analysis fails - don't break status command
     }
 
     console.log(); // Add trailing newline
