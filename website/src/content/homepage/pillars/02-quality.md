@@ -2,15 +2,15 @@
 type: pillar
 icon: shield
 title: Quality
-description: 80% fewer pattern violations with Guardian semantic validation. Safe Mode ensures zero false positives.
+description: Guardian semantic validation catches pattern drift that grep misses. Safe Mode prioritizes high-confidence violations.
 order: 2
 beforeMetric:
-  label: 'Before: 40% violations'
-  value: '40'
+  label: 'Pattern drift undetected'
+  value: '100'
   barWidth: '100%'
 afterMetric:
-  label: 'After: 8% violations'
-  value: '8'
-  barWidth: '20%'
-impactText: Zero false negatives, zero false positives (Safe Mode)
+  label: 'Guardian catches violations'
+  value: '30'
+  barWidth: '30%'
+impactText: Semantic validation beyond grep
 ---

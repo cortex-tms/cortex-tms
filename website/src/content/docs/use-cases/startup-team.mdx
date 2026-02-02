@@ -35,7 +35,7 @@ Fast-moving teams face unique pressures that enterprise organizations do not.
   </Card>
 
   <Card title="AI Velocity Paradox" icon="rocket">
-    AI makes everyone 2-3x faster. But when five developers move 3x faster in inconsistent directions, you create 15x the technical debt. Speed without alignment is chaos.
+    AI makes everyone faster. But when multiple developers move faster in inconsistent directions, technical debt accumulates rapidly. Speed without alignment is chaos.
   </Card>
 
   <Card title="No Time for Process" icon="seti:clock">
@@ -184,7 +184,7 @@ Result: Authentication is a mess. Security audit finds vulnerabilities. Refactor
 Now all five developers' AI assistants read this file and generate consistent code.
 
 <Aside type="note">
-  This is not just about consistency. It is about security. When AI generates authentication code, you need to ensure it follows your security requirements, not random internet examples.
+  This is not just about consistency. It is about security. When AI generates authentication code, documented patterns help guide it toward your security requirements rather than random internet examples.
 </Aside>
 
 ### 3. Scaling Code Review
@@ -212,7 +212,7 @@ Now all five developers' AI assistants read this file and generate consistent co
 4. AI reads PATTERNS.md, flags violations before human review
 5. Senior engineer reviews only business logic and edge cases
 
-**Time Spent**: 3 hours per week (62 percent reduction)
+**Time Spent**: Significantly reduced (in this scenario)
 
 <Aside type="tip" title="Pro Tip">
   Add `cortex-tms validate` to your CI pipeline. Catch pattern violations automatically before they reach human review.
@@ -266,9 +266,13 @@ Now when a developer asks AI: "Should I use Prisma or Drizzle?" AI reads ADR-003
 
 ---
 
-## Real-World Example: Series A Startup (10 Developers)
+## Hypothetical Scenario: Series A Startup (10 Developers)
 
-Let's walk through how a real startup uses Cortex TMS.
+Let's walk through how a startup might use Cortex TMS.
+
+<Aside type="note">
+  **Note**: The following scenario is a **hypothetical example** designed to illustrate TMS adoption. "TaskFlow" is not a real company, and the metrics shown represent potential outcomes, not guarantees. Your results will vary based on team size, codebase complexity, and adoption patterns.
+</Aside>
 
 **Company**: TaskFlow (project management SaaS)
 **Team Size**: 10 engineers, 2 designers, 1 PM
@@ -305,19 +309,19 @@ The CTO notices problems:
 
 ### Month 2-3: Productivity Gains
 
-**Metrics**:
+**Metrics** (hypothetical scenario):
 
 | Metric | Before TMS | After TMS | Improvement |
 |--------|-----------|-----------|-------------|
-| Onboarding Time | 2 weeks | 3 days | 78% faster |
-| PR Review Time | 2.5 days avg | 0.5 days avg | 80% faster |
-| Pattern Violations | 40% of PRs | 5% of PRs | 87% reduction |
-| Senior Engineer Review Time | 10h/week | 3h/week | 70% reduction |
+| Onboarding Time | 2 weeks | 3 days | Significantly faster |
+| PR Review Time | 2.5 days avg | 0.5 days avg | Much faster |
+| Pattern Violations | Common | Rare | Major reduction |
+| Senior Engineer Review Time | 10h/week | 3h/week | Meaningful reduction |
 
 **Qualitative Wins**:
-- New developers feel confident contributing on day 3
+- New developers feel confident contributing quickly
 - Senior engineers focus on architecture, not repetitive reviews
-- Codebase consistency improves (90+ percent pattern compliance)
+- Codebase consistency improves significantly
 
 ### Month 4: Scaling to 15 Engineers
 
@@ -398,9 +402,9 @@ Startups cannot afford two-week onboarding. Here is how TMS accelerates new deve
 - Ship 2-3 more features
 - Contribute to documentation when discovering undocumented patterns
 
-**Total Time to Productivity**: 3-4 days
+**Total Time to Productivity**: 3-4 days (in this hypothetical scenario)
 
-**Time Saved**: 11 days per new hire (72 percent faster onboarding)
+**Potential Benefit**: Significantly faster onboarding compared to traditional approaches
 
 <Aside type="tip" title="Pro Tip">
   Create a `docs/onboarding.md` file that references TMS documentation:
@@ -431,7 +435,7 @@ When 10 developers use AI assistants, you multiply both productivity and risk. T
 
 ### The Challenge: 10 Developers, 10 AI Agents
 
-**Scenario**: Your team ships 50 PRs per week. Each PR contains 20-40 percent AI-generated code.
+**Scenario**: Your team ships many PRs per week. Each PR contains significant AI-generated code.
 
 **Risk Without Guardrails**:
 - AI hallucinates deprecated APIs
@@ -678,19 +682,20 @@ Is TMS worth the investment? Let's calculate.
 
 ### Returns (Monthly)
 
-**For a 10-Developer Team**:
+**For a 10-Developer Team** (hypothetical example):
 
-| Benefit | Time Saved | Value |
+<Aside type="note">
+  **Note**: The ROI calculations below are **illustrative estimates** based on industry-standard developer hourly rates and hypothetical time savings. Your actual ROI will vary significantly based on team composition, salaries, existing processes, and adoption success.
+</Aside>
+
+| Benefit | Potential Time Saved | Estimated Value |
 |---------|-----------|-------|
-| Faster onboarding (3 days vs 2 weeks) | 11 days per new hire | 8,800 USD per hire |
-| Reduced PR review time (70% reduction) | 7 hours/week senior time | 4,200 USD/month |
-| Fewer pattern violations (87% reduction) | 10 hours/week junior debugging | 3,000 USD/month |
-| Faster context switching | 2 hours/week per developer | 6,000 USD/month |
-| **Total Monthly Savings** | | **13,200 USD/month** |
+| Faster onboarding | Days per new hire | Significant per hire |
+| Reduced PR review time | Senior engineer hours/week | Substantial monthly |
+| Fewer pattern violations | Junior debugging hours/week | Meaningful monthly |
+| Faster context switching | Hours/week per developer | Notable monthly |
 
-**Annual ROI**: 158,000 USD (assuming 1 new hire per quarter)
-
-**ROI Ratio**: 130:1 (13,200 USD monthly return / 100 USD monthly cost)
+Potential monthly value: Substantial for teams with frequent onboarding, code review bottlenecks, or pattern inconsistency issues.
 
 <Aside type="tip" title="Pro Tip">
   The real ROI is not just time saved. It is also:
@@ -703,7 +708,11 @@ Is TMS worth the investment? Let's calculate.
 
 ## Success Stories and Metrics
 
-Real startups using Cortex TMS report measurable improvements.
+<Aside type="note">
+  **Note**: The following case studies are **hypothetical examples** that illustrate potential TMS benefits. The company names and metrics are not from real customers. Your actual results will depend on team dynamics, codebase maturity, and implementation approach.
+</Aside>
+
+Startups adopting TMS patterns typically see measurable improvements.
 
 ### Case Study 1: FinTech Startup (8 Engineers)
 
@@ -718,8 +727,8 @@ Real startups using Cortex TMS report measurable improvements.
 **After TMS** (3 months):
 - `docs/core/PATTERNS.md#error-handling` defines standard approach
 - AI assistants generate consistent error handling
-- Production incidents: 2 per month (83 percent reduction)
-- Debugging time: 3 hours/month (80 percent reduction)
+- Production incidents: Significantly reduced
+- Debugging time: Meaningfully reduced
 
 **Testimonial**:
 
@@ -733,12 +742,12 @@ Real startups using Cortex TMS report measurable improvements.
 **Before TMS**:
 - Average PR review time: 2.5 days
 - Senior engineers spending 12 hours/week on reviews
-- 40 percent of review comments about style/patterns
+- Many review comments about style/patterns
 
 **After TMS** (2 months):
-- Average PR review time: 0.5 days (80 percent faster)
-- Senior engineer review time: 4 hours/week (66 percent reduction)
-- Pattern-related comments: 5 percent (87 percent reduction)
+- Average PR review time: Much faster
+- Senior engineer review time: Significantly reduced
+- Pattern-related comments: Rare
 
 **Testimonial**:
 
@@ -756,8 +765,8 @@ Real startups using Cortex TMS report measurable improvements.
 
 **After TMS** (6 months):
 - Onboarding time: 4 days
-- First merged PR: Day 3 (80 percent faster)
-- Senior engineer onboarding time: 1 hour per new hire (87 percent reduction)
+- First merged PR: Day 3 (much faster)
+- Senior engineer onboarding time: 1 hour per new hire (significant reduction)
 
 **Testimonial**:
 
@@ -825,8 +834,8 @@ Ready to bring TMS to your startup team?
    - Add prohibitions for common AI mistakes
 
 3. **Measure improvements**:
-   - PR review time (should decrease 50-70 percent)
-   - Pattern violations (should decrease 80+ percent)
+   - PR review time (track for meaningful decrease)
+   - Pattern violations (track for significant reduction)
    - Developer satisfaction (survey team)
 
 ### Month 2+: Maintain Momentum
@@ -883,10 +892,10 @@ Startups move fast. AI makes you move faster. But speed without structure create
 
 Cortex TMS gives you structure without bureaucracy:
 
-- **Onboard developers in days, not weeks**
-- **Reduce PR review time by 70+ percent**
-- **Eliminate repetitive pattern violations**
-- **Scale from 3 to 50 engineers without losing velocity**
+- **Onboard developers faster**
+- **Reduce PR review time significantly**
+- **Minimize repetitive pattern violations**
+- **Scale from 3 to 50 engineers with maintained velocity**
 
 The best time to adopt TMS is before your team doubles. The second-best time is now.
 
