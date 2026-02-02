@@ -26,6 +26,10 @@ export interface TMSStats {
   };
 }
 
+export interface CollectStatsOptions {
+  silent?: boolean;
+}
+
 /**
  * Extract tier from file content (@cortex-tier HOT/WARM/COLD)
  * Performance optimization: Only reads first 4KB since tier tags appear at file top
@@ -90,8 +94,14 @@ function inferTierFromPath(filePath: string): 'HOT' | 'WARM' | 'COLD' {
 
 /**
  * Collect TMS statistics from current directory
+ * @param cwd - Directory to collect stats from (defaults to process.cwd())
+ * @param options - Optional configuration
+ * @param options.silent - Suppress console warnings (useful for programmatic use)
  */
-export async function collectTMSStats(cwd: string = process.cwd()): Promise<TMSStats> {
+export async function collectTMSStats(
+  cwd: string = process.cwd(),
+  options?: CollectStatsOptions
+): Promise<TMSStats> {
   const stats: TMSStats = {
     files: { hot: 0, warm: 0, cold: 0, total: 0 },
     hotFiles: [],
@@ -140,8 +150,8 @@ export async function collectTMSStats(cwd: string = process.cwd()): Promise<TMSS
     absolute: true,
   });
 
-  // Performance check: warn about very large projects
-  if (markdownFiles.length > 1000) {
+  // Performance check: warn about very large projects (unless silent)
+  if (markdownFiles.length > 1000 && !options?.silent) {
     console.warn(
       `⚠️  Large project detected (${markdownFiles.length} markdown files). This may take a moment...`
     );

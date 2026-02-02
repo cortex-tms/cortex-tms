@@ -13,14 +13,14 @@ const fixturesPath = path.join(__dirname, '..', 'fixtures', 'tms-project');
 describe('stats-collector', () => {
   describe('collectTMSStats', () => {
     it('should detect TMS project', async () => {
-      const stats = await collectTMSStats(fixturesPath);
+      const stats = await collectTMSStats(fixturesPath, { silent: true });
 
       expect(stats.project.hasTMS).toBe(true);
       expect(stats.project.name).toBe('tms-project');
     });
 
     it('should correctly classify files by tier', async () => {
-      const stats = await collectTMSStats(fixturesPath);
+      const stats = await collectTMSStats(fixturesPath, { silent: true });
 
       // HOT files: CLAUDE.md (explicit tag), NEXT-TASKS.md (path inference)
       expect(stats.files.hot).toBe(2);
@@ -36,7 +36,7 @@ describe('stats-collector', () => {
     });
 
     it('should list HOT files', async () => {
-      const stats = await collectTMSStats(fixturesPath);
+      const stats = await collectTMSStats(fixturesPath, { silent: true });
 
       expect(stats.hotFiles).toHaveLength(2);
       expect(stats.hotFiles).toContain('CLAUDE.md');
@@ -54,7 +54,7 @@ describe('stats-collector', () => {
         violations: 3,
       });
 
-      const stats = await collectTMSStats(fixturesPath);
+      const stats = await collectTMSStats(fixturesPath, { silent: true });
 
       expect(stats.validation.status).toBe('warnings');
       expect(stats.validation.violations).toBe(3);
@@ -75,7 +75,7 @@ describe('stats-collector', () => {
         violations: 0,
       });
 
-      const stats = await collectTMSStats(fixturesPath);
+      const stats = await collectTMSStats(fixturesPath, { silent: true });
 
       expect(stats.validation.status).toBe('healthy');
       expect(stats.validation.violations).toBe(0);
@@ -95,7 +95,7 @@ describe('stats-collector', () => {
         violations: 15,
       });
 
-      const stats = await collectTMSStats(fixturesPath);
+      const stats = await collectTMSStats(fixturesPath, { silent: true });
 
       expect(stats.validation.status).toBe('errors');
       expect(stats.validation.violations).toBe(15);
@@ -105,7 +105,7 @@ describe('stats-collector', () => {
     });
 
     it('should default to unknown status when no cache exists', async () => {
-      const stats = await collectTMSStats(fixturesPath);
+      const stats = await collectTMSStats(fixturesPath, { silent: true });
 
       expect(stats.validation.status).toBe('unknown');
       expect(stats.validation.violations).toBe(0);
@@ -118,7 +118,7 @@ describe('stats-collector', () => {
       await fs.ensureDir(tempDir);
       await fs.writeFile(path.join(tempDir, 'README.md'), '# Non-TMS Project');
 
-      const stats = await collectTMSStats(tempDir);
+      const stats = await collectTMSStats(tempDir, { silent: true });
 
       expect(stats.project.hasTMS).toBe(false);
       expect(stats.files.total).toBe(0);
@@ -130,7 +130,7 @@ describe('stats-collector', () => {
     it('should respect file exclusions', async () => {
       // The fixtures don't have node_modules, templates, etc.
       // This test just verifies the behavior is correct
-      const stats = await collectTMSStats(fixturesPath);
+      const stats = await collectTMSStats(fixturesPath, { silent: true });
 
       // Should not include any files from excluded directories
       const allFiles = [...stats.hotFiles];
