@@ -28,10 +28,17 @@ export interface TMSStats {
 
 /**
  * Extract tier from file content (@cortex-tier HOT/WARM/COLD)
+ * Performance optimization: Only reads first 4KB since tier tags appear at file top
  */
 function extractTierFromFile(filePath: string): 'HOT' | 'WARM' | 'COLD' | null {
   try {
-    const content = fs.readFileSync(filePath, 'utf-8');
+    // Only read first 4KB - tier tags are typically in the file header
+    const fd = fs.openSync(filePath, 'r');
+    const buffer = Buffer.alloc(4096);
+    const bytesRead = fs.readSync(fd, buffer, 0, 4096, 0);
+    fs.closeSync(fd);
+
+    const content = buffer.toString('utf-8', 0, bytesRead);
     const tierMatch = content.match(/@cortex-tier\s+(HOT|WARM|COLD)/i);
     return tierMatch && tierMatch[1] ? (tierMatch[1].toUpperCase() as 'HOT' | 'WARM' | 'COLD') : null;
   } catch {
@@ -133,6 +140,13 @@ export async function collectTMSStats(cwd: string = process.cwd()): Promise<TMSS
     absolute: true,
   });
 
+  // Performance check: warn about very large projects
+  if (markdownFiles.length > 1000) {
+    console.warn(
+      `⚠️  Large project detected (${markdownFiles.length} markdown files). This may take a moment...`
+    );
+  }
+
   // Classify files by tier
   for (const file of markdownFiles) {
     const tier = extractTierFromFile(file) || inferTierFromPath(file);
@@ -157,7 +171,16 @@ export async function collectTMSStats(cwd: string = process.cwd()): Promise<TMSS
       const cache = fs.readJSONSync(validationCache);
       stats.validation.lastChecked = new Date(cache.timestamp);
       stats.validation.violations = cache.violations || 0;
-      stats.validation.status = cache.violations === 0 ? 'healthy' : 'warnings';
+
+      // Determine status based on severity
+      // Future: cache.severity could distinguish 'errors' vs 'warnings'
+      if (cache.violations === 0) {
+        stats.validation.status = 'healthy';
+      } else if (cache.severity === 'error' || cache.violations > 10) {
+        stats.validation.status = 'errors';
+      } else {
+        stats.validation.status = 'warnings';
+      }
     } catch {
       // Ignore cache read errors
     }
