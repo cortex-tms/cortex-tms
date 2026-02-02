@@ -4,6 +4,7 @@
 
 import { Command } from 'commander';
 import { renderDashboard } from '../ui/index.js';
+import { CLIError } from '../utils/errors.js';
 
 export const dashboardCommand = new Command('dashboard')
   .description('🎨 Interactive terminal dashboard for TMS project stats')
@@ -16,7 +17,8 @@ export const dashboardCommand = new Command('dashboard')
     try {
       await renderDashboard({ cwd, live });
     } catch (error) {
-      console.error('Failed to render dashboard:', error);
-      process.exit(1);
+      throw new CLIError('Failed to render dashboard', 1, {
+        cause: error instanceof Error ? error.message : String(error),
+      });
     }
   });
