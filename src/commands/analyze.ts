@@ -86,9 +86,10 @@ async function runAnalysis(): Promise<void> {
     // Next Steps
     console.log(chalk.bold('\n🚀 Next Steps'));
     console.log(chalk.gray('  1. Review the migration strategy above'));
-    console.log(chalk.gray('  2. Run:'), chalk.cyan('cortex-tms init'), chalk.gray('to create TMS structure'));
-    console.log(chalk.gray('  3. Manually migrate content from existing docs'));
-    console.log(chalk.gray('  4. Run:'), chalk.cyan('cortex-tms validate'), chalk.gray('to check setup'));
+    console.log(chalk.gray('  2. Read full migration guide:'), chalk.cyan('docs/guides/MIGRATION-GUIDE.md'));
+    console.log(chalk.gray('  3. Run:'), chalk.cyan('cortex-tms init'), chalk.gray('to create TMS structure'));
+    console.log(chalk.gray('  4. Migrate content following the guide'));
+    console.log(chalk.gray('  5. Run:'), chalk.cyan('cortex-tms validate'), chalk.gray('to check setup'));
 
     console.log(); // Trailing newline
   } catch (error) {
