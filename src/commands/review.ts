@@ -7,7 +7,7 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import inquirer from 'inquirer';
 import {
@@ -219,6 +219,32 @@ async function runReviewCommand(
       if (originalCount > 0 && parsedResult.violations.length === 0) {
         parsedResult.summary.status = 'compliant';
         parsedResult.summary.message = `No high-confidence violations found (Safe Mode filtered ${originalCount} low-confidence issue${originalCount === 1 ? '' : 's'})`;
+      }
+    }
+
+    // Step 8: Write to Guardian cache for dashboard (v3.3.0)
+    if (parsedResult) {
+      try {
+        const cortexDir = join(cwd, '.cortex');
+        if (!existsSync(cortexDir)) {
+          mkdirSync(cortexDir, { recursive: true });
+        }
+
+        const cacheData = {
+          timestamp: new Date().toISOString(),
+          status: parsedResult.summary.status,
+          violationCount: parsedResult.violations.length,
+          violations: parsedResult.violations,
+          filesReviewed: 1,
+        };
+
+        writeFileSync(
+          join(cortexDir, 'guardian-cache.json'),
+          JSON.stringify(cacheData, null, 2),
+          'utf-8'
+        );
+      } catch {
+        // Ignore cache write errors - don't fail the command
       }
     }
 

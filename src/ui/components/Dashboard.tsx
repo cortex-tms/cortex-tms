@@ -1,15 +1,10 @@
-import React from 'react';
-import { Box, Text, Newline } from 'ink';
+import React, { useState } from 'react';
+import { Box, Text, Newline, useInput } from 'ink';
 import Spinner from 'ink-spinner';
 import { TMSStats } from '../../utils/stats-collector.js';
-import {
-  Header,
-  ContextReductionCard,
-  HotFilesCard,
-  FileDistributionCard,
-  ValidationCard,
-  Footer,
-} from './dashboard/index.js';
+import { Header, Footer } from './dashboard/index.js';
+import { TabBar, type ViewType } from './dashboard/TabBar.js';
+import { ViewContainer } from './dashboard/ViewContainer.js';
 
 interface DashboardProps {
   stats: TMSStats;
@@ -19,9 +14,29 @@ interface DashboardProps {
 }
 
 /**
- * Main Dashboard Component - Orchestrates all dashboard cards
+ * Main Dashboard Component - Orchestrates all dashboard cards with tab navigation
  */
 export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, error, hotFiles = [] }) => {
+  const [activeView, setActiveView] = useState<ViewType>('overview');
+
+  // Keyboard navigation
+  useInput((input, key) => {
+    if (input === '1') {
+      setActiveView('overview');
+    } else if (input === '2') {
+      setActiveView('files');
+    } else if (input === '3') {
+      setActiveView('health');
+    } else if (input === 'q') {
+      process.exit(0);
+    } else if (key.tab) {
+      // Cycle forward through views
+      if (activeView === 'overview') setActiveView('files');
+      else if (activeView === 'files') setActiveView('health');
+      else setActiveView('overview');
+    }
+  });
+
   // Error state
   if (error) {
     return (
@@ -63,29 +78,28 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, error, hot
   }
 
   // Calculate metrics
-  const { files, validation, project } = stats;
+  const { files } = stats;
   const total = files.total || 1;
   const contextReduction = 100 - Math.round(((files.hot + Math.round(files.warm * 0.3)) / total) * 100);
   const typicalReads = files.hot + Math.round(files.warm * 0.3);
 
   return (
     <Box flexDirection="column" padding={1} borderStyle="double" borderColor="cyan">
-      <Header projectName={project.name} />
+      <Header projectName={stats.project.name} />
 
-      <ContextReductionCard
+      <TabBar activeView={activeView} />
+
+      <Box paddingTop={1}>
+        <Text dimColor>{'─'.repeat(60)}</Text>
+      </Box>
+
+      <ViewContainer
+        view={activeView}
+        stats={stats}
         contextReduction={contextReduction}
         typicalReads={typicalReads}
         total={total}
-      />
-
-      <HotFilesCard hotFiles={hotFiles} count={files.hot} />
-
-      <FileDistributionCard hot={files.hot} warm={files.warm} cold={files.cold} total={total} />
-
-      <ValidationCard
-        status={validation.status}
-        violations={validation.violations}
-        lastChecked={validation.lastChecked}
+        hotFiles={hotFiles}
       />
 
       <Footer />
