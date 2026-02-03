@@ -2,7 +2,7 @@
 
 This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TASKS.md` when they become active.
 
-**Last Updated**: 2026-01-30 (Post v3.1 Release Prep)
+**Last Updated**: 2026-02-03 (Post v3.3.0 Sprint)
 **Source**: Sprint retrospectives + audit findings + community feedback + code reviews
 
 ---
@@ -55,8 +55,8 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
 | Task | Description | Effort | Priority | Status |
 | :--- | :---------- | :----- | :------- | :----- |
 | **Centralize Error Handling** [AUDIT-1] | Remove `process.exit()` calls, use consistent error patterns | 2-3h | 🔴 P0 | ⏸️ Deferred |
-| **Add Zod Input Validation** [AUDIT-2] | Validate CLI inputs at command entry points | 2-3h | 🔴 P0 | ⏸️ Deferred |
-| **Add Integration/E2E Tests** [AUDIT-3] | Test full CLI workflows (init, validate, migrate) | 6-8h | 🔴 P0 | ⏸️ Deferred |
+| **Add Zod Input Validation** [AUDIT-2] | Validate CLI inputs at command entry points | 2-3h | 🔴 P0 | 🟡 Partial (review command done) |
+| **Add Integration/E2E Tests** [AUDIT-3] | Test full CLI workflows (init, validate, migrate) | 6-8h | 🔴 P0 | 🟡 Partial (E2E tests exist) |
 | **Add npm audit to CI** [AUDIT-4] | Automated dependency vulnerability scanning | 30m | 🟡 P1 | ⏸️ Deferred |
 | **File Path Traversal Protection** [AUDIT-5] | Validate template paths prevent directory traversal | 1-2h | 🔴 P0 | ⏸️ Deferred |
 | **Guardian API Key Redaction** [AUDIT-6] | Ensure API keys never logged or exposed | 1-2h | 🔴 P0 | ⏸️ Deferred |
@@ -80,7 +80,17 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
 
 ## 🔥 Completed Items
 
-✅ TMS-272, CRITICAL bugs (v2.6.1), GitHub Action (v3.0) - See git history for details
+✅ **v3.3.0 Sprint** (Feb 2-3, 2026):
+- START-HERE.md guide (Phase 1)
+- MIGRATION-GUIDE.md (Phase 2)
+- Dashboard enhancements (Phase 3)
+- See [docs/archive/v3.3.0-sprint-summary.md](docs/archive/v3.3.0-sprint-summary.md)
+
+✅ **Earlier releases**:
+- TMS-272, CRITICAL bugs (v2.6.1)
+- GitHub Action (v3.0)
+- TMS validation CLI (Pre-v3.0)
+- See git history for details
 
 ---
 
@@ -157,14 +167,6 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
 ---
 
 ### Documentation Guides
-
-- **QUICK-START.md**: 5-minute setup guide
-  - **Why**: New users need fast onboarding
-  - **Effort**: 2h
-
-- **MIGRATION-GUIDE.md**: How to add TMS to existing projects
-  - **Why**: Most users have brownfield projects
-  - **Effort**: 3h
 
 - **BEST-PRACTICES.md**: How to write effective DOMAIN-LOGIC, PATTERNS, etc.
   - **Why**: Quality of docs determines AI agent success
@@ -313,15 +315,6 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
 ---
 
 ### Automation & Validation
-
-- **TMS Validation CLI Command**: `cortex-tms validate`
-  - Checks file sizes (HOT files under limits)
-  - Detects placeholders that weren't replaced
-  - Verifies file structure
-  - **Effort**: 6h
-
-- **GitHub Action for TMS Validation**: Auto-check PRs
-  - **Effort**: 3h
 
 - **Pre-commit Hook**: Warn if `NEXT-TASKS.md` exceeds 200 lines
   - **Effort**: 2h
