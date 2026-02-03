@@ -2,7 +2,7 @@
 type: pillar
 icon: leaf
 title: Sustainability
-description: 60-70% lower compute requirements (up to 94% with archives).
+description: Lower compute requirements through context reduction. Less processing per AI session.
 order: 3
 beforeMetric:
   label: 'Before: 100% compute'

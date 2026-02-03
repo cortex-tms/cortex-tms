@@ -794,20 +794,24 @@ How do you know if TMS is working? Track these metrics.
 - Feature request: "Add export to CSV"
 - Time spent: 45 minutes (AI follows PATTERNS.md, generates correct code first try)
 
-**Target**: 50-70 percent reduction in implementation time for standard features.
+**Target**: Meaningful reduction in implementation time for standard features (your results will vary).
+
+<Aside type="note">
+  **Note**: The percentages in the "Success Metrics" section are **illustrative examples** based on typical solo developer scenarios. They represent potential outcomes, not guarantees. Your actual metrics will depend on project complexity, AI tool choice, and how thoroughly you document patterns.
+</Aside>
 
 ### AI Code Acceptance Rate
 
 **Before TMS**:
 - AI generates code
-- You manually rewrite 60 percent of it (wrong patterns, security issues, hallucinations)
+- You manually rewrite much of it (wrong patterns, security issues, hallucinations)
 
 **After TMS**:
 - AI generates code
-- You accept 80 percent as-is (follows documented patterns)
-- You refine 20 percent (edge cases, optimization)
+- You accept most as-is (follows documented patterns)
+- You refine edge cases and optimizations
 
-**Target**: 70+ percent acceptance rate for AI-generated code.
+**Target**: Significantly higher acceptance rate for AI-generated code (your results will vary).
 
 ### Context Switching Penalty
 
@@ -833,9 +837,9 @@ How do you know if TMS is working? Track these metrics.
 **After TMS**:
 - Validate documentation weekly: `cortex-tms validate`
 - Fix drift before it compounds
-- Pattern consistency: 90+ percent
+- High pattern consistency
 
-**Target**: Zero critical drift (security, architecture), minimal non-critical drift (naming, formatting).
+**Target**: Minimize critical drift (security, architecture), reduce non-critical drift (naming, formatting).
 
 <Aside type="tip" title="Pro Tip">
   Track these metrics in a simple spreadsheet. Review monthly. Small improvements compound over time.
@@ -997,9 +1001,9 @@ Add to your workflow:
 
 As a solo developer, you do not need to choose between speed and quality. Cortex TMS gives you both:
 
-- **Speed**: AI implements features 2-3x faster when it understands your patterns
+- **Speed**: AI implements features faster when it understands your patterns
 - **Quality**: Documented standards prevent technical debt accumulation
-- **Sustainability**: Your future self can regain context in minutes, not hours
+- **Sustainability**: Your future self can regain context quickly
 
 You are building something ambitious. You deserve documentation that keeps pace with your velocity.
 
