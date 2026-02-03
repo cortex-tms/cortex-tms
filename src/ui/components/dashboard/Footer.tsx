@@ -3,11 +3,17 @@ import { Box, Text } from 'ink';
 
 export const Footer: React.FC = () => {
   return (
-    <Box justifyContent="center">
-      <Text dimColor>
-        Press <Text bold>Ctrl+C</Text> to exit • Use <Text color="cyan">--live</Text> for
-        auto-refresh
-      </Text>
+    <Box flexDirection="column" paddingTop={1}>
+      <Box justifyContent="center">
+        <Text dimColor>
+          Tab: Switch view • 1/2/3: Jump to view • q: Quit
+        </Text>
+      </Box>
+      <Box justifyContent="center">
+        <Text dimColor>
+          Use <Text color="cyan">--live</Text> for auto-refresh (5s interval)
+        </Text>
+      </Box>
     </Box>
   );
 };
