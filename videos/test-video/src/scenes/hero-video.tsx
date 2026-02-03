@@ -509,191 +509,221 @@ export default makeScene2D(function* (view) {
       ref={term}
       width={1750}
       height={850}
-      fill={'rgba(15, 15, 15, 0.95)'}
-      radius={24}
-      shadowColor={'rgba(249, 115, 22, 0.25)'}
-      shadowBlur={60}
+      fill={'rgba(40, 35, 32, 0.65)'}
+      radius={20}
+      shadowColor={'rgba(0, 0, 0, 0.5)'}
+      shadowBlur={50}
       shadowOffsetY={20}
-      padding={50}
+      padding={0}
       opacity={0}
-      stroke={'rgba(249, 115, 22, 0.3)'}
-      lineWidth={2}
+      stroke={'rgba(80, 70, 65, 0.3)'}
+      lineWidth={1}
     >
       <Layout
         layout
         direction={'column'}
-        gap={20}
-        width={1650}
-        alignItems={'start'}
+        gap={0}
+        width={1750}
+        height={850}
+        justifyContent={'start'}
+        alignItems={'center'}
       >
-        {/* Terminal header - macOS style */}
-        <Layout
-          layout
-          direction={'row'}
-          gap={10}
-          marginBottom={25}
-          width={1650}
-          justifyContent={'space-between'}
+        {/* Terminal header - darker bar anchored to top */}
+        <Rect
+          width={1750}
+          height={70}
+          fill={'rgba(30, 28, 26, 0.9)'}
+          radius={[20, 20, 0, 0]}
         >
           <Layout
             layout
             direction={'row'}
-            gap={10}
+            width={1750}
+            height={70}
+            alignItems={'center'}
+            paddingLeft={18}
+            paddingRight={18}
           >
-            <Circle
-              size={14}
-              fill={'#ff5f57'}
-            />
-            <Circle
-              size={14}
-              fill={'#febc2e'}
-            />
-            <Circle
-              size={14}
-              fill={'#28c840'}
+            {/* macOS buttons on the left with inset */}
+            <Layout
+              layout
+              direction={'row'}
+              gap={8}
+              alignItems={'center'}
+            >
+              <Circle size={10} fill={'#ff5f57'} />
+              <Circle size={10} fill={'#febc2e'} />
+              <Circle size={10} fill={'#28c840'} />
+            </Layout>
+
+            {/* Centered title */}
+            <Layout
+              layout
+              direction={'row'}
+              grow={1}
+              alignItems={'center'}
+              justifyContent={'center'}
+            >
+              <Txt
+                fontSize={16}
+                fill={'rgba(255, 255, 255, 0.4)'}
+                fontFamily={
+                  '"Inter", "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif'
+                }
+                fontWeight={400}
+              >
+                Terminal
+              </Txt>
+            </Layout>
+
+            {/* Right spacer to keep center alignment balanced */}
+            <Layout width={60} />
+          </Layout>
+        </Rect>
+
+        {/* Content area */}
+        <Layout
+          layout
+          direction={'column'}
+          gap={20}
+          width={1650}
+          paddingLeft={50}
+          paddingRight={50}
+          paddingTop={30}
+          alignItems={'start'}
+        >
+          {/* First command: init */}
+          <Layout
+            layout
+            direction={'row'}
+            gap={15}
+          >
+            <Txt
+              fontSize={44}
+              fill={'rgba(249, 115, 22, 0.8)'}
+              fontFamily={'"Noto Sans Mono", monospace'}
+            >
+              $
+            </Txt>
+            <Txt
+              ref={cmd1}
+              fontSize={44}
+              fill={'#ffffff'}
+              fontFamily={'"Noto Sans Mono", monospace'}
+              fontWeight={500}
             />
           </Layout>
           <Txt
-            fontSize={26}
-            fill={'rgba(255, 255, 255, 0.4)'}
-            fontFamily={'"Noto Sans Mono", "SF Mono", Monaco, monospace'}
+            ref={out1}
+            fontSize={38}
+            fill={'rgba(40, 200, 64, 0.95)'}
+            fontFamily={'"Noto Sans Mono", monospace'}
+            opacity={0}
             fontWeight={500}
+            x={60}
           >
-            terminal
+            ✓ Created 9 documentation files
+          </Txt>
+
+          <Layout height={20} />
+
+          {/* Second command: status with flags */}
+          <Layout
+            ref={cmd2Prompt}
+            layout
+            direction={'row'}
+            gap={15}
+            opacity={0}
+          >
+            <Txt
+              fontSize={44}
+              fill={'rgba(249, 115, 22, 0.8)'}
+              fontFamily={'"Noto Sans Mono", monospace'}
+            >
+              $
+            </Txt>
+            <Txt
+              ref={cmd2}
+              fontSize={44}
+              fill={'#ffffff'}
+              fontFamily={'"Noto Sans Mono", monospace'}
+              fontWeight={500}
+            />
+          </Layout>
+
+          <Layout height={10} />
+
+          {/* Status output header */}
+          <Txt
+            ref={outHeader}
+            fontSize={40}
+            fill={'rgba(255, 255, 255, 0.95)'}
+            fontFamily={'"Noto Sans Mono", monospace'}
+            fontWeight={600}
+            opacity={0}
+          >
+            📊 Token Analysis
+          </Txt>
+
+          {/* Tier breakdown */}
+          <Txt
+            ref={hotLine}
+            fontSize={36}
+            fill={'rgba(249, 115, 22, 0.95)'}
+            fontFamily={'"Noto Sans Mono", monospace'}
+            opacity={0}
+            x={40}
+          >
+            HOT (Active): 32,450 tokens
+          </Txt>
+          <Txt
+            ref={warmLine}
+            fontSize={36}
+            fill={'rgba(250, 204, 21, 0.95)'}
+            fontFamily={'"Noto Sans Mono", monospace'}
+            opacity={0}
+            x={40}
+          >
+            WARM (Truth): 18,230 tokens
+          </Txt>
+          <Txt
+            ref={coldLine}
+            fontSize={36}
+            fill={'rgba(14, 165, 164, 0.95)'}
+            fontFamily={'"Noto Sans Mono", monospace'}
+            opacity={0}
+            x={40}
+          >
+            COLD (Archive): 50,554 tokens
+          </Txt>
+          <Txt
+            ref={totalLine}
+            fontSize={36}
+            fill={'rgba(255, 255, 255, 0.6)'}
+            fontFamily={'"Noto Sans Mono", monospace'}
+            opacity={0}
+            x={40}
+          >
+            Full repository: 101,234 tokens
+          </Txt>
+
+          <Layout height={5} />
+
+          {/* Cost savings */}
+          <Txt
+            ref={costLine}
+            fontSize={42}
+            fill={'rgba(40, 200, 64, 0.95)'}
+            fontFamily={'"Noto Sans Mono", monospace'}
+            fontWeight={700}
+            opacity={0}
+            shadowColor={'rgba(40, 200, 64, 0.4)'}
+            shadowBlur={15}
+            x={0}
+          >
+            💰 68% reduction
           </Txt>
         </Layout>
-
-        {/* First command: init */}
-        <Layout
-          layout
-          direction={'row'}
-          gap={15}
-        >
-          <Txt
-            fontSize={44}
-            fill={'rgba(249, 115, 22, 0.8)'}
-            fontFamily={'"Noto Sans Mono", monospace'}
-          >
-            $
-          </Txt>
-          <Txt
-            ref={cmd1}
-            fontSize={44}
-            fill={'#ffffff'}
-            fontFamily={'"Noto Sans Mono", monospace'}
-            fontWeight={500}
-          />
-        </Layout>
-        <Txt
-          ref={out1}
-          fontSize={38}
-          fill={'rgba(40, 200, 64, 0.95)'}
-          fontFamily={'"Noto Sans Mono", monospace'}
-          opacity={0}
-          fontWeight={500}
-          x={60}
-        >
-          ✓ Created 9 documentation files
-        </Txt>
-
-        <Layout height={20} />
-
-        {/* Second command: status with flags */}
-        <Layout
-          ref={cmd2Prompt}
-          layout
-          direction={'row'}
-          gap={15}
-          opacity={0}
-        >
-          <Txt
-            fontSize={44}
-            fill={'rgba(249, 115, 22, 0.8)'}
-            fontFamily={'"Noto Sans Mono", monospace'}
-          >
-            $
-          </Txt>
-          <Txt
-            ref={cmd2}
-            fontSize={44}
-            fill={'#ffffff'}
-            fontFamily={'"Noto Sans Mono", monospace'}
-            fontWeight={500}
-          />
-        </Layout>
-
-        <Layout height={10} />
-
-        {/* Status output header */}
-        <Txt
-          ref={outHeader}
-          fontSize={40}
-          fill={'rgba(255, 255, 255, 0.95)'}
-          fontFamily={'"Noto Sans Mono", monospace'}
-          fontWeight={600}
-          opacity={0}
-        >
-          📊 Token Analysis
-        </Txt>
-
-        {/* Tier breakdown */}
-        <Txt
-          ref={hotLine}
-          fontSize={36}
-          fill={'rgba(249, 115, 22, 0.95)'}
-          fontFamily={'"Noto Sans Mono", monospace'}
-          opacity={0}
-          x={40}
-        >
-          HOT (Active): 32,450 tokens
-        </Txt>
-        <Txt
-          ref={warmLine}
-          fontSize={36}
-          fill={'rgba(250, 204, 21, 0.95)'}
-          fontFamily={'"Noto Sans Mono", monospace'}
-          opacity={0}
-          x={40}
-        >
-          WARM (Truth): 18,230 tokens
-        </Txt>
-        <Txt
-          ref={coldLine}
-          fontSize={36}
-          fill={'rgba(14, 165, 164, 0.95)'}
-          fontFamily={'"Noto Sans Mono", monospace'}
-          opacity={0}
-          x={40}
-        >
-          COLD (Archive): 50,554 tokens
-        </Txt>
-        <Txt
-          ref={totalLine}
-          fontSize={36}
-          fill={'rgba(255, 255, 255, 0.6)'}
-          fontFamily={'"Noto Sans Mono", monospace'}
-          opacity={0}
-          x={40}
-        >
-          Full repository: 101,234 tokens
-        </Txt>
-
-        <Layout height={5} />
-
-        {/* Cost savings */}
-        <Txt
-          ref={costLine}
-          fontSize={42}
-          fill={'rgba(40, 200, 64, 0.95)'}
-          fontFamily={'"Noto Sans Mono", monospace'}
-          fontWeight={700}
-          opacity={0}
-          shadowColor={'rgba(40, 200, 64, 0.4)'}
-          shadowBlur={15}
-          x={0}
-        >
-          💰 68% reduction
-        </Txt>
       </Layout>
     </Rect>,
   )
