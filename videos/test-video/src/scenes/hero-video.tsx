@@ -443,8 +443,8 @@ export default makeScene2D(function* (view) {
         layout
         direction={'column'}
         gap={20}
+        width={1650}
         alignItems={'start'}
-        width={'100%'}
       >
         {/* Terminal header - macOS style */}
         <Layout
@@ -452,7 +452,7 @@ export default makeScene2D(function* (view) {
           direction={'row'}
           gap={10}
           marginBottom={25}
-          width={'100%'}
+          width={1650}
           justifyContent={'space-between'}
         >
           <Layout
@@ -510,8 +510,8 @@ export default makeScene2D(function* (view) {
           fill={'rgba(40, 200, 64, 0.95)'}
           fontFamily={'"Noto Sans Mono", monospace'}
           opacity={0}
-          marginLeft={60}
           fontWeight={500}
+          x={60}
         >
           ✓ Created 9 documentation files
         </Txt>
@@ -561,7 +561,7 @@ export default makeScene2D(function* (view) {
           fill={'rgba(249, 115, 22, 0.95)'}
           fontFamily={'"Noto Sans Mono", monospace'}
           opacity={0}
-          marginLeft={40}
+          x={40}
         >
           HOT (Active): 32,450 tokens
         </Txt>
@@ -571,7 +571,7 @@ export default makeScene2D(function* (view) {
           fill={'rgba(250, 204, 21, 0.95)'}
           fontFamily={'"Noto Sans Mono", monospace'}
           opacity={0}
-          marginLeft={40}
+          x={40}
         >
           WARM (Truth): 18,230 tokens
         </Txt>
@@ -581,7 +581,7 @@ export default makeScene2D(function* (view) {
           fill={'rgba(14, 165, 164, 0.95)'}
           fontFamily={'"Noto Sans Mono", monospace'}
           opacity={0}
-          marginLeft={40}
+          x={40}
         >
           COLD (Archive): 50,554 tokens
         </Txt>
@@ -591,7 +591,7 @@ export default makeScene2D(function* (view) {
           fill={'rgba(255, 255, 255, 0.6)'}
           fontFamily={'"Noto Sans Mono", monospace'}
           opacity={0}
-          marginLeft={40}
+          x={40}
         >
           Full repository: 101,234 tokens
         </Txt>
@@ -608,6 +608,7 @@ export default makeScene2D(function* (view) {
           opacity={0}
           shadowColor={'rgba(40, 200, 64, 0.4)'}
           shadowBlur={15}
+          x={0}
         >
           💰 68% reduction
         </Txt>
