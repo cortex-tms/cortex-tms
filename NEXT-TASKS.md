@@ -1,6 +1,6 @@
 # NEXT: Upcoming Tasks
 
-**Last Updated**: 2026-02-02
+**Last Updated**: 2026-02-03
 
 ---
 
@@ -49,6 +49,28 @@
 **Files**:
 - docs/guides/MIGRATION-GUIDE.md (comprehensive guide)
 - src/commands/analyze.ts (reference guide in output)
+
+---
+
+## ✅ v3.3.0: Phase 3 - Dashboard Enhancements (Complete)
+
+**Timeline**: Feb 2026 (8h)
+**Status**: ✅ Complete (on feat/terminal-dashboard branch)
+**Target**: Transform dashboard into active project management tool
+**Details**: See [docs/tasks/dashboard-v3.3.0-sprint.md](docs/tasks/dashboard-v3.3.0-sprint.md)
+
+### Completed Tasks
+
+- ✅ Extended TMSStats interface with sprint, savings, fileSizeHealth, guardian fields
+- ✅ Implemented data collection for new dashboard metrics
+- ✅ Created SprintProgressCard component (shows current sprint status)
+- ✅ Created CostSavingsCard component (displays monthly savings)
+- ✅ Created FileSizeHealthCard component (files approaching size limits)
+- ✅ Created GuardianStatusCard component (last code review status)
+- ✅ Implemented TabBar and ViewContainer components
+- ✅ Added keyboard navigation (Tab/1/2/3/q)
+- ✅ Updated review command to write guardian-cache.json
+- ✅ Three views: Overview, Files, Health
 
 ---
 

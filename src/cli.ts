@@ -47,6 +47,7 @@ import { tutorialCommand } from './commands/tutorial.js';
 import { reviewCommand } from './commands/review.js';
 import { autoTierCommand } from './commands/auto-tier.js';
 import { analyzeCommand } from './commands/analyze.js';
+import { dashboardCommand } from './commands/dashboard.js';
 
 program.addCommand(initCommand);
 program.addCommand(validateCommand);
@@ -57,6 +58,7 @@ program.addCommand(tutorialCommand);
 program.addCommand(reviewCommand);
 program.addCommand(autoTierCommand);
 program.addCommand(analyzeCommand);
+program.addCommand(dashboardCommand);
 
 // Handle unknown commands
 program.on('command:*', () => {
