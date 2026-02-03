@@ -1,10 +1,89 @@
-import { makeScene2D, Txt, Rect, Layout, Circle, Img } from '@motion-canvas/2d'
-import { all, createRef, waitFor } from '@motion-canvas/core'
+import {
+  makeScene2D,
+  Txt,
+  Rect,
+  Layout,
+  Circle,
+  Img,
+  blur,
+} from '@motion-canvas/2d'
+import {
+  all,
+  createRef,
+  waitFor,
+  loop,
+  easeInOutSine,
+} from '@motion-canvas/core'
 import logo from '../assets/logo.svg'
 
 export default makeScene2D(function* (view) {
-  // Dark background
-  view.fill('#0a0a0a')
+  // Website-style liquid-ambient-bg
+  view.fill('#111111')
+
+  const bgGlow1 = createRef<Circle>()
+  const bgGlow2 = createRef<Circle>()
+  const bgGlow3 = createRef<Circle>()
+
+  view.add(
+    <>
+      {/* Pumpkin Spice glow at 15% 50% */}
+      <Circle
+        ref={bgGlow1}
+        size={2000}
+        x={-640}
+        y={0}
+        opacity={0.15}
+        fill={'#f97316'}
+        shadowColor={'#f97316'}
+        shadowBlur={400}
+        filters={[blur(10)]}
+      />
+      {/* Amber glow at 85% 30% */}
+      <Circle
+        ref={bgGlow2}
+        size={1800}
+        x={640}
+        y={-200}
+        opacity={0.1}
+        fill={'#ffa500'}
+        shadowColor={'#ffa500'}
+        shadowBlur={350}
+        filters={[blur(10)]}
+      />
+      {/* White glow at 50% 90% */}
+      <Circle
+        ref={bgGlow3}
+        size={1600}
+        x={0}
+        y={400}
+        opacity={0.03}
+        fill={'#ffffff'}
+        shadowColor={'#ffffff'}
+        shadowBlur={300}
+        filters={[blur(10)]}
+      />
+    </>,
+  )
+
+  // Animate ambient background with smooth movements
+  yield loop(Infinity, function* () {
+    yield* all(
+      bgGlow1().position.x(-640 + 100, 8, easeInOutSine),
+      bgGlow1().position.y(0 + 50, 8, easeInOutSine),
+      bgGlow2().position.x(640 - 80, 10, easeInOutSine),
+      bgGlow2().position.y(-200 + 60, 10, easeInOutSine),
+      bgGlow3().position.x(0 + 40, 12, easeInOutSine),
+      bgGlow3().position.y(400 - 30, 12, easeInOutSine),
+    )
+    yield* all(
+      bgGlow1().position.x(-640 - 100, 8, easeInOutSine),
+      bgGlow1().position.y(0 - 50, 8, easeInOutSine),
+      bgGlow2().position.x(640 + 80, 10, easeInOutSine),
+      bgGlow2().position.y(-200 - 60, 10, easeInOutSine),
+      bgGlow3().position.x(0 - 40, 12, easeInOutSine),
+      bgGlow3().position.y(400 + 30, 12, easeInOutSine),
+    )
+  })
 
   // ========== SCENE 1: PROBLEM (10s) ==========
   const logo1 = createRef<Img>()
@@ -416,6 +495,7 @@ export default makeScene2D(function* (view) {
   const term = createRef<Rect>()
   const cmd1 = createRef<Txt>()
   const out1 = createRef<Txt>()
+  const cmd2Prompt = createRef<Layout>()
   const cmd2 = createRef<Txt>()
   const outHeader = createRef<Txt>()
   const hotLine = createRef<Txt>()
@@ -520,9 +600,11 @@ export default makeScene2D(function* (view) {
 
         {/* Second command: status with flags */}
         <Layout
+          ref={cmd2Prompt}
           layout
           direction={'row'}
           gap={15}
+          opacity={0}
         >
           <Txt
             fontSize={44}
@@ -628,6 +710,7 @@ export default makeScene2D(function* (view) {
   yield* waitFor(1.2)
 
   // Second command - status with flags
+  yield* cmd2Prompt().opacity(1, 0.2)
   yield* cmd2().text('npx cortex-tms status --tokens', 1.5)
   yield* waitFor(0.7)
 
