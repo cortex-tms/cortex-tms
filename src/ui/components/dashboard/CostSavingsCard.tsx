@@ -44,22 +44,22 @@ export const CostSavingsCard: React.FC<CostSavingsCardProps> = ({
     <Box flexDirection="column" paddingY={1} borderStyle="round" borderColor="green">
       <Box paddingX={2}>
         <Text bold color="green">
-          💰 MONTHLY SAVINGS
+          💰 MONTHLY SAVINGS (ESTIMATED)
         </Text>
       </Box>
 
       <Box paddingX={2} paddingTop={1} justifyContent="center">
         <Text color="green" bold>
-          {formatCost(monthlyCost)}
+          ~{formatCost(monthlyCost)}
         </Text>
       </Box>
 
       <Box paddingX={2} justifyContent="center">
-        <Text dimColor>saved this month</Text>
+        <Text dimColor>estimated savings per month</Text>
       </Box>
 
       <Box paddingX={2} paddingTop={1}>
-        <Text dimColor>Based on: {modelDisplay} @ 10 sessions/day</Text>
+        <Text dimColor>Assumes: {modelDisplay} @ 10 sessions/day</Text>
       </Box>
 
       <Box paddingX={2}>

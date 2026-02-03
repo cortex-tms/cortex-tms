@@ -9,6 +9,7 @@ import { FileDistributionCard } from './FileDistributionCard.js';
 import { FileSizeHealthCard } from './FileSizeHealthCard.js';
 import { ValidationCard } from './ValidationCard.js';
 import { GuardianStatusCard } from './GuardianStatusCard.js';
+import { NotConfiguredCard } from './NotConfiguredCard.js';
 import type { ViewType } from './TabBar.js';
 
 interface ViewContainerProps {
@@ -42,7 +43,7 @@ export const ViewContainer: React.FC<ViewContainerProps> = ({
           total={total}
         />
 
-        {sprint && (
+        {sprint ? (
           <SprintProgressCard
             sprintName={sprint.name}
             progress={sprint.progress}
@@ -50,14 +51,28 @@ export const ViewContainer: React.FC<ViewContainerProps> = ({
             inProgress={sprint.tasks.inProgress}
             todo={sprint.tasks.todo}
           />
+        ) : (
+          <NotConfiguredCard
+            title="SPRINT PROGRESS"
+            message="No sprint configured in NEXT-TASKS.md"
+            icon="🎯"
+            color="gray"
+          />
         )}
 
-        {savings && (
+        {savings ? (
           <CostSavingsCard
             monthlyCost={savings.monthlyCost}
             tokensAvoided={savings.tokensAvoided}
             percentReduction={savings.percentReduction}
             model={savings.model}
+          />
+        ) : (
+          <NotConfiguredCard
+            title="MONTHLY SAVINGS"
+            message="Token analysis not available (may take time on large projects)"
+            icon="💰"
+            color="gray"
           />
         )}
       </Box>
