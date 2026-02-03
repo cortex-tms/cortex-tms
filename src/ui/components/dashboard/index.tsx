@@ -11,3 +11,4 @@ export { FileSizeHealthCard } from './FileSizeHealthCard.js';
 export { GuardianStatusCard } from './GuardianStatusCard.js';
 export { TabBar } from './TabBar.js';
 export { ViewContainer } from './ViewContainer.js';
+export { NotConfiguredCard } from './NotConfiguredCard.js';
