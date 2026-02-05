@@ -19,4 +19,4 @@
 - [ ] Documentation updated in `docs/core/`
 - [ ] Code follows `docs/core/PATTERNS.md`
 
-<!-- @cortex-tms-version 3.1.0 -->
+<!-- @cortex-tms-version 3.2.0 -->

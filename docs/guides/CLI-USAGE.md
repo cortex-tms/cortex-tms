@@ -1,6 +1,6 @@
 # CLI Usage Guide
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Last Updated**: January 2026
 
 The Cortex TMS CLI is a command-line tool for initializing and validating AI-optimized project documentation. This guide covers installation, commands, and configuration.

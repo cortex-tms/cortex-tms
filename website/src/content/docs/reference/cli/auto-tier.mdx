@@ -94,7 +94,7 @@ Auto-tier addresses the ["Lost in the Middle"](https://arxiv.org/abs/2307.03172)
 
 ## Example Output
 
-**Dry run on cortex-tms repository** (131 files analyzed):
+**Dry run on cortex-tms repository** (145 files analyzed):
 
 ```bash
 $ cortex-tms auto-tier --dry-run
@@ -103,39 +103,45 @@ $ cortex-tms auto-tier --dry-run
 
 🔍 DRY RUN MODE: No files will be modified.
 
-✔ Analyzed 131 files
+✔ Analyzed 145 files
 
 📊 Tier Suggestions:
 
 🔥 HOT (10 files)
-  ✨ docs/core/PATTERNS.md
   ✨ docs/core/GLOSSARY.md
-  ✨ NEXT-TASKS.md
+  ✨ docs/core/PATTERNS.md
+  ✨ .github/copilot-instructions.md
   ✨ CLAUDE.md
-  ✨ docs/core/TROUBLESHOOTING.md
-  ✨ docs/core/SECURITY.md
-  ✨ docs/core/SCHEMA.md
-  ✨ docs/core/INFRASTRUCTURE.md
-  ✨ docs/core/GIT-STANDARDS.md
+  ✨ NEXT-TASKS.md
+  ✨ docs/core/AI-COLLABORATION-POLICY.md
+  ✨ docs/core/ARCHITECTURE.md
+  ✨ docs/core/CONTENT-STANDARDS.md
+  ✨ docs/core/DECISIONS.md
   ✨ docs/core/DOMAIN-LOGIC.md
 
-📚 WARM (57 files)
-  ✨ docs/core/DECISIONS.md
-  ✨ docs/core/ARCHITECTURE.md
+📚 WARM (69 files)
+  ✨ docs/core/GIT-STANDARDS.md
+  ✨ docs/core/INFRASTRUCTURE.md
+  ✨ docs/core/SCHEMA.md
+  ✨ docs/core/SECURITY.md
+  ✨ docs/core/TROUBLESHOOTING.md
+  ✨ docs/COMMUNITY.md
   ✨ docs/guides/CLI-USAGE.md
-  ... and 54 more
+  ✨ docs/guides/MIGRATION-GUIDE.md
+  ... and 61 more
 
-❄️  COLD (35 files)
-  ✨ examples/todo-app/README.md
-  ✨ docs/archive/sprint-v3.1-jan-2026.md
-  ... and 33 more
+❄️  COLD (22 files)
+  ✨ docs/archive/bootstrap-v3.0-strategy-plan.md
+  ✨ docs/archive/sprint-v2.5-guidance-growth.md
+  ✨ docs/archive/sprint-v2.6-integrity-atomicity.md
+  ... and 19 more
 
 📈 Summary:
-  ✨ CREATE: 102 new tier tags
+  ✨ CREATE: 101 new tier tags
   🔄 UPDATE: 0 tier changes
 ```
 
-**Performance**: ~300ms for 131 files
+**Performance**: ~300ms for 145 files
 
 ---
 
@@ -771,7 +777,7 @@ cortex-tms validate
 
 ### Measured Performance
 
-**Test repository**: cortex-tms (111 markdown files)
+**Test repository**: cortex-tms (145 markdown files)
 
 | Operation | Time | Files/Second |
 |-----------|------|--------------|

@@ -1,10 +1,11 @@
-# Todo App - Cortex TMS v3.0 Reference Implementation 🧠
+<!-- @cortex-tms-tier WARM -->
+# Todo App - Cortex TMS v3.2 Reference Implementation 🧠
 
 > **A living demonstration of how Cortex TMS transforms AI-powered development**
 
 This isn't just a todo app. It's a **case study** showing how the Tiered Memory System (TMS) enables AI agents to build production-quality applications with **94.5% less context**, **10x lower costs**, and **zero hallucinations** from stale docs.
 
-[![Cortex TMS](https://img.shields.io/badge/Cortex%20TMS-v3.0.0-blue?style=flat-square)](https://github.com/cortex-tms/cortex-tms)
+[![Cortex TMS](https://img.shields.io/badge/Cortex%20TMS-v3.2.0-blue?style=flat-square)](https://github.com/cortex-tms/cortex-tms)
 [![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=flat-square)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19.2-blue?style=flat-square)](https://react.dev)
 
@@ -141,7 +142,7 @@ app/page.tsx (State Management)
 Every file includes:
 - **Quick Context** for AI agents (30-second summary)
 - **Mental Model** (the "why" before the "how")
-- **Version Tags** (`<!-- @cortex-tms-version 3.0.0 -->`)
+- **Version Tags** (`<!-- @cortex-tms-version 3.2.0 -->`)
 
 **Why?** AI agents understand context faster = fewer hallucinations.
 
@@ -392,4 +393,4 @@ Built with:
 npx cortex-tms init
 ```
 
-<!-- @cortex-tms-version 3.0.0 -->
+<!-- @cortex-tms-version 3.2.0 -->

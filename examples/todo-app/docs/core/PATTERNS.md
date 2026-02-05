@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier HOT -->
 # Implementation Patterns
 
 ## [State Management] Centralized State with Atomic Sync

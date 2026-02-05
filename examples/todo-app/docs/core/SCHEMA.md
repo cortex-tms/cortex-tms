@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier WARM -->
 # Schema: Data Models & TypeScript Types
 
 <!-- This todo app uses TypeScript types + localStorage (no database). -->

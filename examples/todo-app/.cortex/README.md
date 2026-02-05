@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier WARM -->
 # .cortex Directory
 
 This directory contains Cortex TMS metadata and project-specific AI governance files.

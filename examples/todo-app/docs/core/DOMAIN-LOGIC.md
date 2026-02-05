@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier WARM -->
 # Domain Logic: Todo App
 
 ## Core Rules

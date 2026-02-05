@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier HOT -->
 # NEXT: Upcoming Tasks
 
 ## Active Sprint: MVP - Build Todo CRUD Operations
@@ -40,4 +41,4 @@
 
 **MVP COMPLETE!** All tasks done. Todo app is fully functional with polished UX and validated documentation. Ready for Phase 3 closure and archival.
 
-<!-- @cortex-tms-version 3.1.0 -->
+<!-- @cortex-tms-version 3.2.0 -->

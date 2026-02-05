@@ -488,4 +488,4 @@ All audit documents available in `/tmp/` directory:
 - `tmp/cortex-tms-analysis-report-opus-28-01-2026.md` (Opus 4.5 Deep Analysis)
 - Earlier audit reports from Jan 21-24, 2026
 
-<!-- @cortex-tms-version 3.1.0 -->
+<!-- @cortex-tms-version 3.2.0 -->

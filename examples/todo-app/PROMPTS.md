@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier WARM -->
 # Cortex TMS: AI Prompt Library
 
 This file contains project-aware prompt templates for streamlined AI collaboration. Use `cortex-tms prompt <name>` to quickly access these prompts.
@@ -58,4 +59,4 @@ Task complete. Execute the Maintenance Protocol:
 - Customize these prompts to match your team's vocabulary and workflow
 - Run `cortex-tms prompt --list` to see all available prompts
 
-<!-- @cortex-tms-version 3.1.0 -->
+<!-- @cortex-tms-version 3.2.0 -->

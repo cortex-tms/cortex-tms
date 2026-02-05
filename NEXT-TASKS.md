@@ -43,4 +43,4 @@
 
 **See**: [docs/archive/](docs/archive/) for completed sprints | [FUTURE-ENHANCEMENTS.md](FUTURE-ENHANCEMENTS.md) for full backlog
 
-<!-- @cortex-tms-version 3.1.0 -->
+<!-- @cortex-tms-version 3.2.0 -->

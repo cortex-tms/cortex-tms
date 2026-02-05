@@ -41,6 +41,8 @@ Solo dev only, TypeScript CLI only, Claude Code only. Your results will vary. Se
 <Callout type="warning" title="Critical Clarification">
 **Update (January 30, 2026 - v3.1 Auto-Tier Release)**: This case study covers mid to late January 2026 (3 weeks) using **manual tier management**. The `cortex-tms auto-tier` command (v3.1, released Jan 30 2026) was not available during this period. The 60-70% savings reported below were achieved the harder way—with manual discipline and validation. Auto-tier now makes these savings easier to sustain. See [Section 6](#6-outcome-real-results-from-dogfooding) for how auto-tier addresses the pain points we identified.
 
+**Update (February 5, 2026 - v3.2 Auto-Tier Fix)**: The initial v3.1 `auto-tier` implementation had a bug where it could suggest 500+ HOT files due to missing cap enforcement. **v3.2.0 fixes this** with strict `--max-hot` cap (default: 10 files), proper scoring system (canonical files = 100 points), and project-size guidance (use `--max-hot 5` for small projects, 10 for medium, 15 for large). All auto-tier references in this article have been updated to reflect v3.2 behavior.
+
 **Update (January 29, 2026)**: After launching this case study on Reddit ([183K views, 369 upvotes](https://www.reddit.com/r/ClaudeAI/)), the community rightfully called out an important distinction we should have made clearer upfront.
 </Callout>
 
@@ -535,7 +537,7 @@ We enforce 200 lines for `NEXT-TASKS.md`, but is that right?
 
 **Our guess**: Somewhere between 150-200 lines is optimal for Claude Code, but this likely varies by AI model and task complexity.
 
-**Update (v3.1)**: With `cortex-tms auto-tier`, HOT tier size is now based on file recency (default: files modified in last 7 days) rather than manual curation. Early testing on cortex-tms repo shows this keeps HOT tier naturally constrained to ~94 files (~3,600 tokens), well within optimal range.
+**Update (v3.2)**: With `cortex-tms auto-tier`, HOT tier size is now capped with `--max-hot` (default: 10 files) to prevent context bloat. The scoring system (canonical files = 100 points, docs/core/ = 50 points, etc.) ensures the most valuable documentation stays HOT. Testing on cortex-tms repo shows 10 HOT files keeps the tier naturally constrained to ~3,600 tokens (3 canonical files) or ~12,000 tokens (10 scored files), well within optimal range. Adjust `--max-hot` based on project size (5 for small, 10 for medium, 15 for large).
 
 **New question**: Is recency-based sizing better than manual curation? We're tracking this in v3.1+ usage.
 

@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier WARM -->
 # Architecture Decisions (ADR)
 
 ## 🎯 Purpose

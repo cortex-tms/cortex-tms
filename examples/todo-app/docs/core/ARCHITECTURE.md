@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier WARM -->
 # Architecture: Todo App
 
 ## 🎯 Quick Context (For AI Agents)

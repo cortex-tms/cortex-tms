@@ -600,4 +600,4 @@ Breaking change for users expecting permissive validation...
 
 ---
 
-<!-- @cortex-tms-version 3.1.0 -->
+<!-- @cortex-tms-version 3.2.0 -->

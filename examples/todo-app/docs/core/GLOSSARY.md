@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier HOT -->
 # Glossary: [Project Name]
 
 ## 🎯 Purpose

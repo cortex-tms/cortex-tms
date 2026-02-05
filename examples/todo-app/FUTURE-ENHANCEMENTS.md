@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier WARM -->
 # FUTURE: Planned Enhancements
 
 This is the **living backlog** for [Project Name]. Tasks move from here to `NEXT-TASKS.md` when they become active in the current sprint.
@@ -78,4 +79,4 @@ A task moves from FUTURE → NEXT when:
 **Why Rejected**: [Reason - e.g., "User research showed low demand", "Technical complexity too high"]
 **Alternative**: [What we did instead - e.g., "Built simplified version in Sprint 3"]
 
-<!-- @cortex-tms-version 3.1.0 -->
+<!-- @cortex-tms-version 3.2.0 -->

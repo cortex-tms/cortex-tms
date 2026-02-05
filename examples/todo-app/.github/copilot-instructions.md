@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier HOT -->
 # AI Pair Programmer: Collaboration Protocol (TMS v3.0)
 
 ## ⚡ Critical Rules (Always Apply)

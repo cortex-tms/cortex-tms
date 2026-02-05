@@ -1,3 +1,4 @@
+<!-- @cortex-tms-tier WARM -->
 # Troubleshooting: Known Issues & Solutions
 
 <!-- This file documents framework gotchas, common errors, and workarounds. -->
