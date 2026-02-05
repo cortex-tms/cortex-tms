@@ -126,7 +126,7 @@ Traditional repos drown AI agents in thousands of lines of historical tasks and 
 
 ---
 
-## 🆕 What's New in v3.2 (Upcoming)
+## 🆕 What's New in v3.2 (Released Feb 5, 2026)
 
 **Security & Production Readiness** - Making Cortex TMS enterprise-grade:
 
@@ -720,8 +720,8 @@ MIT
 
 ## Status
 
-**Version**: 3.2.0 (Upcoming - Phase 1 Complete)
-**Last Updated**: 2026-01-31
+**Version**: 3.2.0 (Released Feb 5, 2026)
+**Last Updated**: 2026-02-05
 **Current Sprint**: v3.2 - "Security Hardening + Production Readiness"
 **Recent Sprints**: v3.1 (Git-Based Auto-Tiering), v3.0 (AI-Powered Onboarding) — see [docs/archive/](docs/archive/)
 
