@@ -81,7 +81,7 @@
     "glob": "^11.0.0",
     "inquirer": "^10.2.2",
     "minimatch": "^10.1.1",
-    "ora": "^8.1.0",
+    "ora": "^9.3.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
