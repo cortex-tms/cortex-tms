@@ -1,7 +1,7 @@
 # NEXT: v4.0.0 - Strategic Repositioning
 
-**Last Updated**: 2026-02-21
-**Status**: 🚧 In Progress
+**Last Updated**: 2026-02-21 (Website alignment completed, archived to docs/archive/v4.0-phase1-website-alignment.md)
+**Status**: 🚧 In Progress - Phase 1 (60% complete)
 **Timeline**: Week of Feb 21-28, 2026 (Estimated 25-30h)
 
 ---
@@ -74,42 +74,19 @@ Catch stale docs, maintain structure—in CI or locally.
 
 ---
 
-### Task 1.2: Update Website Content ⏸️ PENDING
+### Task 1.2: Update Website Content ✅ COMPLETED
 
-**Owner**: TBD
-**Effort**: 4-5h
-**Depends On**: Task 1.1
-**Files to Update**:
+**Completed**: 2026-02-21
+**Effort**: 8h
+**Owner**: Claude + User
 
-- [ ] `website/src/content/blog/measuring-context-optimization.mdx` - **MAJOR REWRITE or REMOVE**
-  - This entire post is about token measurement methodology
-  - Option A: Rewrite as "Why We Stopped Claiming Token Savings"
-  - Option B: Remove and redirect to benchmark post
-- [ ] `website/src/content/blog/cortex-dogfooding-case-study.mdx` - Update with benchmark reality
-  - Add section: "What We Learned: Quality > Token Count"
-  - Remove token savings claims, add quality improvements data
-- [ ] `website/src/content/docs/concepts/context-budget.mdx` - Reframe or remove
-  - Reframe as "Task-Based Context Control" (not optimization)
-  - Remove token counting examples
-- [ ] `website/src/content/docs/concepts/tiered-memory.mdx` - Reframe as organizational structure
-  - HOT/WARM/COLD is about organization, not token optimization
-  - Update examples to focus on "AI reads what matters" not "AI reads less"
-- [ ] `website/src/pages/index.astro` - Update hero section and value props
-  - Remove token savings claims
-  - Add new three-pillar value prop
+**Summary**: Comprehensive website alignment with v4.0.0 quality governance focus.
+- ✅ 22 files updated (+103, -227 lines)
+- ✅ Pillars rewritten: Consistency, Freshness, Safety
+- ✅ All token/cost claims removed from active content
+- ✅ Website builds successfully, all tests pass
 
-**New Blog Post** (Task 1.3):
-
-- [ ] Create `website/src/content/blog/dogfooding-results.mdx`
-  - Title: "Cortex TMS Dogfooding Results: Quality Over Token Count"
-  - Content: Internal testing results, what actually works, new positioning
-  - This becomes the credibility anchor for the repositioning (methodology + limitations clearly stated)
-
-**Acceptance Criteria**:
-
-- [ ] All website pages remove token % claims
-- [ ] New benchmark blog post published
-- [ ] Website value props focus on quality governance
+**Details**: See `docs/archive/v4.0-phase1-website-alignment.md`
 
 ---
 
@@ -507,17 +484,20 @@ v4.0.0 establishes Cortex TMS as **a governance validation layer for AI agents**
 
 | Phase                 | Status         | Progress |
 | :-------------------- | :------------- | :------- |
-| Phase 1: Strip Claims | 🚧 In Progress | 10%      |
+| Phase 1: Strip Claims | 🚧 In Progress | 60%      |
 | Phase 2: Simplify CLI | ⏸️ Pending     | 0%       |
 | Phase 3: Staleness    | ⏸️ Pending     | 0%       |
 | Phase 4: Messaging    | ⏸️ Pending     | 0%       |
 | Phase 5: Testing      | ⏸️ Pending     | 0%       |
 
+**Phase 1 Progress**:
+- ✅ Task 1.2: Website content aligned (DONE - 2026-02-21)
+- ⏳ Task 1.1: Core docs cleanup (README, package.json, CLAUDE.md) - IN PROGRESS
+
 **Next Actions**:
 
-1. Complete Task 1.1 (README.md updates)
-2. Complete Task 1.2 (website content)
-3. Move to Phase 2 (CLI simplification)
+1. Complete Task 1.1 (README.md, package.json, CLAUDE.md updates)
+2. Move to Phase 2 (CLI simplification)
 
 ---
 
