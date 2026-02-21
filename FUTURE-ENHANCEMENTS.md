@@ -2,103 +2,116 @@
 
 This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TASKS.md` when they become active.
 
-**Last Updated**: 2026-01-30 (Post v3.1 Release Prep)
-**Source**: Sprint retrospectives + audit findings + community feedback + code reviews
+**Last Updated**: 2026-02-21 (During v4.0.0 Strategic Repositioning)
+**Source**: Benchmark findings + audit recommendations + community feedback
 
 ---
 
-## 📣 v3.1 Post-Release Polish
+## 🎯 Post-v4.0 Immediate Priorities
 
-**Homepage Auto-Tier Card** (P2, 30min): Add feature card to `website/src/pages/index.astro`
+### Phase 5: Organic Sync (v4.1 - High Priority)
 
----
+**Timeline**: March 2026 (12-16h estimated)
+**Status**: ⏸️ Planned
+**Theme**: Automate documentation maintenance to prevent context rot
 
-## 🎨 v3.2+: Auto-Tier Polish & Performance
+| Task                              | Description                                                                                          | Effort | Priority |
+| :-------------------------------- | :--------------------------------------------------------------------------------------------------- | :----- | :------- |
+| **Git Hook Integration**          | `cortex-tms hooks install` - pre-commit validates doc health                                         | 3-4h   | 🔴 P0    |
+| **Staleness Detection v2**        | Robust git-history staleness checks (shallow clone handling, better messages, fewer false positives) | 4-5h   | 🟡 P1    |
+| **Incremental Updates**           | AI updates only affected doc sections, not full regeneration                                         | 5-6h   | 🟡 P1    |
+| **CI Templates (More Providers)** | Ready-to-copy CI snippets for GitHub/GitLab/Bitbucket; strict enforcement by default                 | 2h     | 🟡 P1    |
 
-**Theme**: Performance optimization and edge case handling for auto-tier
-**Timeline**: TBD (after v3.1 complete + hardening tasks)
-**Source**: GPT-5.1 code review feedback
+**Business Value**:
 
-| Task | Description | Effort | Priority | Status |
-| :--- | :---------- | :----- | :------- | :----- |
-| **Batched Git Log** [PERF-1] | Replace per-file `git log` with batched approach for large repos | 3-4h | 🟡 P1 | ⏸️ Future |
-| **Parallel File Processing** [PERF-2] | Process file changes in parallel batches in `applyChanges()` | 2h | 🟢 P2 | ⏸️ Future |
-| **Respect .gitignore** [FEAT-1] | Honor `.gitignore` to avoid tagging ignored files | 2-3h | 🟡 P1 | ⏸️ Future |
-| **Error Differentiation** [DX-1] | Distinguish "file not in history" vs "git command failed" errors | 1-2h | 🟡 P1 | ⏸️ Future |
-| **Recency Edge Semantics** [DOC-1] | Document that auto-tier commits update recency (by design) | 30m | 🟢 P2 | ⏸️ Future |
-
-**Total Effort**: ~9-12h
-
-**Context**:
-- **PERF-1**: Current implementation runs `git log` once per file; batched approach would improve large repo performance
-- **PERF-2**: Sequential file writes can be slow; parallel batches would speed up application
-- **FEAT-1**: Currently processes all `.md` files; should respect `.gitignore` for cleaner behavior
-- **DX-1**: All git errors treated as "untracked" → HOT; better error messages would help debugging
-- **DOC-1**: Running auto-tier and committing updates file recency; this is acceptable but worth documenting
-
-**Performance Targets**:
-- Current: ~300ms for 110 files (cortex-tms repo)
-- Target: <1s for 1000-file repositories (with batched git log)
-
-**Not Blocking v3.1 Release**: These are polish improvements, not critical bugs
-
----
-
-## 🔴 v3.2: Code Quality & Security (Deferred from Audit)
-
-**Theme**: Security Hardening + Code Quality Improvements
-**Timeline**: TBD (after v3.1 Auto-Tiering complete)
-**Source**: Opus 4.5 Audit findings + earlier audit reports
-
-These tasks were originally considered for v3.1 but deferred to focus on git-based auto-tiering feature.
-
-| Task | Description | Effort | Priority | Status |
-| :--- | :---------- | :----- | :------- | :----- |
-| **Centralize Error Handling** [AUDIT-1] | Remove `process.exit()` calls, use consistent error patterns | 2-3h | 🔴 P0 | ⏸️ Deferred |
-| **Add Zod Input Validation** [AUDIT-2] | Validate CLI inputs at command entry points | 2-3h | 🔴 P0 | ⏸️ Deferred |
-| **Add Integration/E2E Tests** [AUDIT-3] | Test full CLI workflows (init, validate, migrate) | 6-8h | 🔴 P0 | ⏸️ Deferred |
-| **Add npm audit to CI** [AUDIT-4] | Automated dependency vulnerability scanning | 30m | 🟡 P1 | ⏸️ Deferred |
-| **File Path Traversal Protection** [AUDIT-5] | Validate template paths prevent directory traversal | 1-2h | 🔴 P0 | ⏸️ Deferred |
-| **Guardian API Key Redaction** [AUDIT-6] | Ensure API keys never logged or exposed | 1-2h | 🔴 P0 | ⏸️ Deferred |
-
-**Total Effort**: ~13-17h
+- Prevents context rot automatically (core differentiator)
+- Reduces manual doc maintenance overhead
+- Ensures governance docs stay current with code
 
 **Acceptance Criteria**:
-- [ ] All CLI commands use centralized error handling (no process.exit)
-- [ ] Zod schemas validate all user inputs before processing
-- [ ] E2E test coverage for init, validate, migrate, review commands
-- [ ] CI pipeline fails on high/critical npm audit findings
-- [ ] Template path validation prevents `../../etc/passwd` attacks
-- [ ] Guardian logs sanitize API keys before output
 
-**Rationale for v3.2 Placement**:
-- v3.1 prioritizes user-facing auto-tiering feature
-- Security issues are important but not blocking current usage
-- Provides dedicated sprint for quality improvements
+- [ ] Pre-commit hook catches outdated pattern docs
+- [ ] Staleness checker identifies docs >30 days older than related code
+- [ ] Incremental update workflow only modifies changed sections
+- [ ] CI validation prevents PRs with stale docs
 
 ---
 
-## 🔥 Completed Items
+### Phase 6: Agent Ecosystem (v4.2 - High Priority)
 
-✅ TMS-272, CRITICAL bugs (v2.6.1), GitHub Action (v3.0) - See git history for details
+**Timeline**: April 2026 (16-20h estimated)
+**Status**: ⏸️ Planned
+**Theme**: Multi-tool support and runtime agent integration
+
+| Task                   | Description                                                                              | Effort | Priority |
+| :--------------------- | :--------------------------------------------------------------------------------------- | :----- | :------- |
+| **Multi-Tool Config**  | `cortex-tms init` generates CLAUDE.md + .cursorrules + .windsurfrules from single source | 6-8h   | 🟡 P1    |
+| **MCP Server**         | Expose docs as MCP resources for any AI tool                                             | 8-10h  | 🟡 P1    |
+| **Skills Integration** | Runtime agent hooks and custom skills support                                            | 4-6h   | 🟢 P2    |
+
+**Business Value**:
+
+- Expands addressable market beyond Claude Code users
+- MCP server makes Cortex universal (any AI tool can use it)
+- Skills integration enables advanced workflows
+
+**Acceptance Criteria**:
+
+- [ ] Single config generates rules for Cursor, Claude, Windsurf, Copilot
+- [ ] MCP server exposes PATTERNS.md, ARCHITECTURE.md as resources
+- [ ] Skills can query/update TMS docs at runtime
 
 ---
 
-## 🔴 High Priority (Audit-Driven - v3.2+)
+## 🔴 High Priority (Next 1-2 Months)
 
-### Benchmark Suite (Top Priority - All Audits Agree)
+### Context Profile Enhancements (v4.1+)
 
-- **AI Agent Performance Benchmarks**: Prove "3-5x faster collaboration" claim
-  - **Why**: **#1 credibility gap** - Current claim is "plausible but unverified" (all audits agree, including Opus 4.5)
-  - **Status**: Remains the highest-priority missing piece after v3.0 release
-  - **Approach**:
-    1. Create standardized tasks (e.g., "add new API endpoint")
-    2. Measure with TMS: token count, agent turns, time to completion
-    3. Measure without TMS: same metrics
-    4. Repeat across 10-20 tasks, report statistical results
-  - **Business Value**: Converts "plausible" to "proven" claims, essential for credibility
-  - **Effort**: 16-20h (research-heavy)
-  - **Source**: All audit reports (QCS, Viability, Analysis, Opus 4.5)
+**If/when context profiles ship (target v4.1), keep them explicitly secondary to governance**:
+
+- **Profile Templates**: Pre-built profiles for common scenarios
+  - `cortex-tms context bug-fix` - Minimal context for quick fixes
+  - `cortex-tms context feature` - Full governance for new features
+  - `cortex-tms context refactor` - Architecture + patterns only
+  - **Effort**: 4-6h
+  - **Priority**: 🟡 P1
+
+- **Auto Profile Switching**: Detect task complexity and suggest profile
+  - Analyze commit message, file count, affected areas
+  - Suggest appropriate context profile
+  - **Effort**: 6-8h
+  - **Priority**: 🟢 P2
+
+- **Custom Profiles**: User-defined context profiles
+  - `cortex-tms context create <name>` - Define custom profile
+  - Store in `.cortex/profiles/<name>.json`
+  - **Effort**: 4-5h
+  - **Priority**: 🟢 P2
+
+---
+
+### Archive Command Enhancements (v4.1+)
+
+**Build on the archive command introduced in v4.0**:
+
+- **Smart Archive Detection**: Auto-detect archivable content
+  - Completed tasks in NEXT-TASKS.md
+  - Old sprint retrospectives
+  - Outdated ADRs (superseded by newer decisions)
+  - **Effort**: 3-4h
+  - **Priority**: 🟡 P1
+
+- **Archive Index**: Searchable archive with metadata
+  - Generate `docs/archive/INDEX.md` with links
+  - Add timestamps, sprint numbers, categories
+  - **Effort**: 2-3h
+  - **Priority**: 🟢 P2
+
+- **Archive Retrieval**: Bring archived content back when needed
+  - `cortex-tms archive restore <sprint-id>`
+  - Useful for referencing old decisions
+  - **Effort**: 2-3h
+  - **Priority**: 🟢 P2
 
 ---
 
@@ -113,46 +126,35 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
     ```
   - **Business Value**: Reduces migration from hours to minutes
   - **Effort**: 16-20h
+  - **Priority**: 🟡 P1
   - **Trigger**: Validate demand first (wait for 10+ migration requests)
   - **Source**: Analysis Report Section 7.4
 
 ---
 
-### Pattern Library Marketplace
-
-- **Community Templates**: Share/import patterns for specific frameworks
-  - **Why**: Reduces onboarding time, creates community engagement
-  - **Implementation**:
-    ```bash
-    cortex-tms patterns add @cortex-tms/react-patterns
-    cortex-tms patterns add @mycompany/internal-patterns
-    ```
-  - **Technical**: Requires pattern versioning and conflict resolution
-  - **Effort**: 20-24h (platform development)
-  - **Trigger**: Validate demand first (wait for 20+ custom patterns shared)
-  - **Source**: Analysis Report Section 7.2
-
----
-
-## 🟡 Medium Priority (Next 1-2 Months)
+## 🟡 Medium Priority (2-4 Months)
 
 ### CLI Tool Enhancements
 
 - **Interactive Template Selection**: Prompt users to choose which `docs/core/*.md` files they need
   - **Why**: Not all projects need `SCHEMA.md` or `TROUBLESHOOTING.md`
   - **Effort**: 4h
+  - **Priority**: 🟢 P2
 
 - **Detect Existing Package Manager**: Auto-detect if user uses npm/yarn/pnpm/bun
   - **Why**: Respect user's existing tooling
   - **Effort**: 2h
+  - **Priority**: 🟢 P2
 
 - **Safe File Merging**: Don't overwrite existing files without confirmation
   - **Why**: Brownfield projects may have existing `README.md` or `.github/` files
   - **Effort**: 3h
+  - **Priority**: 🟡 P1
 
 - **GitHub Actions Detection**: If `.github/workflows/` exists, offer to add TMS validation workflow
   - **Why**: Automate enforcement of line limits and structure
   - **Effort**: 4h
+  - **Priority**: 🟢 P2
 
 ---
 
@@ -161,170 +163,57 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
 - **QUICK-START.md**: 5-minute setup guide
   - **Why**: New users need fast onboarding
   - **Effort**: 2h
+  - **Priority**: 🟡 P1
 
 - **MIGRATION-GUIDE.md**: How to add TMS to existing projects
   - **Why**: Most users have brownfield projects
   - **Effort**: 3h
+  - **Priority**: 🟡 P1
 
 - **BEST-PRACTICES.md**: How to write effective DOMAIN-LOGIC, PATTERNS, etc.
   - **Why**: Quality of docs determines AI agent success
   - **Effort**: 3h
+  - **Priority**: 🟢 P2
 
 ---
 
-## 🟡 Medium Priority: Community & Adoption (v3.0+)
+### Example Projects
 
-### Lower Adoption Friction (GPT-5 Report Recommendations)
+- **examples/cli-tool/**: Node.js CLI application with TMS
+  - **Why**: Shows TMS works for non-web projects
+  - **Effort**: 4h
+  - **Priority**: 🟢 P2
 
-- **Minimalist Preset** [GPT5-REC-1]
+- **examples/api-service/**: Express + PostgreSQL API with TMS
+  - **Why**: Demonstrates `SCHEMA.md` and `TROUBLESHOOTING.md` usage
+  - **Effort**: 6h
+  - **Priority**: 🟢 P2
+
+---
+
+## 🟡 Medium Priority: Community & Adoption
+
+### Lower Adoption Friction
+
+- **Minimalist Preset**
   - **Feature**: New scope `cortex-tms init --scope minimal`
-  - **Why**: Reduces cognitive load for first-time users (current HOT+WARM docs are overwhelming)
+  - **Why**: Reduces cognitive load for first-time users
   - **Implementation**: Only sets up:
     - `NEXT-TASKS.md` (task management)
     - `.github/copilot-instructions.md` (AI collaboration)
     - `docs/core/ARCHITECTURE.md` (system overview)
   - **Effort**: 4-6h
-  - **Priority**: 🟡 Medium
-  - **Source**: External GPT-5 repository analysis (Jan 24, 2026)
+  - **Priority**: 🟢 P2
 
-- **One-Click Try Path** [GPT5-REC-2]
-  - **Feature**: Screencast/GIF showing typical dev session with Claude/Copilot using TMS
+- **Video Demo / Screencast**
+  - **Feature**: 2-3 minute demo of AI agent using TMS docs
   - **Why**: "Show, don't tell" - demonstrates value in 30 seconds
   - **Implementation**:
-    - Record 2-3 minute demo of AI agent using TMS docs
+    - Record typical dev session with Claude/Copilot using TMS
     - Add to website landing page hero section
     - Include in README.md above fold
   - **Effort**: 2-3h
-  - **Priority**: 🟡 Medium
-  - **Source**: External GPT-5 repository analysis (Jan 24, 2026)
-
-- **Reusable GitHub Action** [GPT5-REC-3]
-  - **Feature**: Package existing workflow as reusable action
-  - **Why**: High leverage - teams can validate TMS without local setup
-  - **Implementation**:
-    ```yaml
-    - uses: cortex-tms/validate-action@v1
-      with:
-        strict: true
-    ```
-  - **Effort**: 3-4h (lower than GitHub Action feature below - just packaging)
-  - **Priority**: 🟡 Medium (consider moving to v2.9)
-  - **Source**: External GPT-5 repository analysis (Jan 24, 2026)
-
----
-
-## 🟢 Bootstrap Enhancements (v3.1+)
-
-**Context**: Bootstrap onboarding feature shipped in v3.0. See implementation feedback: `docs/archive/bootstrap-v3.0-implementation-feedback.md`
-
-### Blog Article Examples
-- **Feature**: Add real AI-generated ARCHITECTURE.md excerpt to blog article
-- **Why**: Makes "90% accurate first draft" claim concrete and helps readers calibrate expectations
-- **Implementation**:
-  - Take actual AI-generated content from dogfooding
-  - Show before/after with refinements
-  - Add to `website/src/content/blog/ai-powered-bootstrapping.md`
-- **Effort**: 30 min - 1h
-- **Priority**: 🟢 Low (nice-to-have)
-- **Source**: Implementation feedback 4.3
-
-### Barebones Sample Repo for Bootstrap Testing
-- **Feature**: Create minimal Node/TS project with unfilled docs for bootstrap testing
-- **Why**: todo-app already populated, need clean slate for realistic testing
-- **Implementation**:
-  - Create `examples/fresh-start/` (basic Express + TypeScript)
-  - Add to CI/CD for automated bootstrap testing
-  - Document in examples README
-- **Effort**: 2-3h
-- **Priority**: 🟢 Low (validation tool, not user-facing)
-- **Source**: Implementation feedback 4.4, dogfooding report
-
-### CLI Bootstrap Command (Layer 3 - Automation)
-- **Feature**: `cortex-tms bootstrap --auto` for fully automated doc generation
-- **Why**: Users who prefer one-command automation vs prompt-first approach
-- **Implementation**:
-  - Reuse `src/utils/llm-client.ts` for LLM calls
-  - Add codebase analyzer with safety exclusions (.env, secrets, node_modules)
-  - Interactive mode + dry-run
-  - Cost estimation (~$0.15-0.25 per run)
-- **Decision gate**: Only build if 60%+ of users successfully use prompt-first approach
-- **Effort**: 16-20h
-- **Priority**: ⏸️ Deferred (validate prompt-first approach first)
-- **Source**: Original v2 strategy, deferred to v3.1+
-
-### Safety Framing for User Communication
-- **Context**: Safety rules are prompt-level (not code-enforced) in v3.0
-- **Remember**: Frame as "high-confidence compliance" not "guaranteed safety"
-- **Rationale**:
-  - AI agents have built-in safety training
-  - Prompt explicitly lists exclusions
-  - But it's best-effort, not cryptographic guarantee
-- **Action**: When discussing with users, emphasize:
-  - "Likely to comply + we reinforce in prompt"
-  - Not "guaranteed" (guarantees require Layer 3 CLI with hardcoded exclusions)
-- **Source**: Implementation feedback 4.1
-
-### Metrics Measurement Strategy
-- **Context**: No telemetry layer in OSS CLI (by design)
-- **Approach**: Measure indirectly via:
-  - User anecdotes and community feedback
-  - Self-reported usage surveys
-  - GitHub discussions and issues
-- **If adding opt-in telemetry later**: Track:
-  - `cortex-tms prompt bootstrap` usage
-  - Validator AI-DRAFT vs clean file counts
-  - Time to remove AI-DRAFT markers (user self-report)
-- **Source**: Implementation feedback 4.2
-
----
-
-## 🟡 Medium Priority (2-4 Months)
-
-### Example Projects
-
-- **examples/todo-app/**: Next.js 15 + Shadcn todo app with full TMS
-  - **Why**: Reference implementation validates the structure
-  - **Effort**: 8h
-
-- **examples/cli-tool/**: Node.js CLI application with TMS
-  - **Why**: Shows TMS works for non-web projects
-  - **Effort**: 4h
-
-- **examples/api-service/**: Express + PostgreSQL API with TMS
-  - **Why**: Demonstrates `SCHEMA.md` and `TROUBLESHOOTING.md` usage
-  - **Effort**: 6h
-
----
-
-### Template Enhancements
-
-- **Complete ARCHITECTURE.md template**: Add sections for deployment, security, scalability
-  - **Effort**: 2h
-
-- **Complete TROUBLESHOOTING.md template**: Add common framework gotchas
-  - **Effort**: 2h
-
-- **Complete SCHEMA.md template**: Add examples for SQL, NoSQL, GraphQL schemas
-  - **Effort**: 3h
-
-- **Add README.md template**: Project-specific README that references TMS
-  - **Effort**: 1h
-
----
-
-### Automation & Validation
-
-- **TMS Validation CLI Command**: `cortex-tms validate`
-  - Checks file sizes (HOT files under limits)
-  - Detects placeholders that weren't replaced
-  - Verifies file structure
-  - **Effort**: 6h
-
-- **GitHub Action for TMS Validation**: Auto-check PRs
-  - **Effort**: 3h
-
-- **Pre-commit Hook**: Warn if `NEXT-TASKS.md` exceeds 200 lines
-  - **Effort**: 2h
+  - **Priority**: 🟡 P1
 
 ---
 
@@ -332,44 +221,45 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
 
 ### VS Code Extension
 
-- **TMS File Navigator**: Sidebar showing HOT/WARM/COLD tiers
+- **TMS File Navigator**: Sidebar showing documentation structure
   - **Effort**: 12h
+  - **Priority**: 🟢 P2
 
 - **Snippet Library**: Quick insert for patterns, ADRs, tasks
   - **Effort**: 4h
+  - **Priority**: 🟢 P2
 
 - **Placeholder Detection**: Highlight bracket-syntax placeholders in templates
   - **Effort**: 3h
+  - **Priority**: 🟢 P2
 
 ---
 
-### Advanced Features
+### Template Enhancements
 
-- **AI Agent Performance Metrics**: Track before/after TMS adoption
-  - Measure: hallucination rate, task completion time, file reads
-  - **Effort**: 16h (research-heavy)
+- **Complete ARCHITECTURE.md template**: Add sections for deployment, security, scalability
+  - **Effort**: 2h
+  - **Priority**: 🟢 P2
 
-- **Multi-Language Support**: Templates in Spanish, French, Mandarin
-  - **Effort**: 8h per language
+- **Complete TROUBLESHOOTING.md template**: Add common framework gotchas
+  - **Effort**: 2h
+  - **Priority**: 🟢 P2
 
-- **TMS for Non-Code Projects**: Adapt for marketing, design, operations teams
-  - **Effort**: 12h (requires research)
+- **Complete SCHEMA.md template**: Add examples for SQL, NoSQL, GraphQL schemas
+  - **Effort**: 3h
+  - **Priority**: 🟢 P2
 
 ---
 
 ### Distribution Enhancements
 
-- **NPM Package Publishing**: Publish `cortex-tms` to npm
-  - **Effort**: 4h (includes CI/CD setup)
-
-- **GitHub Template Repository**: Configure repo as template
-  - **Effort**: 1h
-
 - **Homebrew Formula**: `brew install cortex-tms`
   - **Effort**: 4h
+  - **Priority**: 🟢 P2
 
 - **Docker Image**: Containerized CLI tool
   - **Effort**: 3h
+  - **Priority**: 🟢 P2
 
 ---
 
@@ -377,115 +267,109 @@ These tasks were originally considered for v3.1 but deferred to focus on git-bas
 
 ### AI Agent Integration
 
-- **Claude Code Integration**: Native support for TMS structure
-  - **Effort**: Unknown (requires Anthropic partnership)
-
 - **Cursor Rules Generator**: Auto-generate `.cursorrules` from `copilot-instructions.md`
   - **Effort**: 4h
+  - **Priority**: 🟢 P2
 
 - **Copilot Chat Slash Commands**: `/tms-sprint`, `/tms-pattern`, `/tms-decision`
   - **Effort**: Unknown (requires GitHub partnership)
+  - **Priority**: 🟢 P2
 
 ---
 
 ### Community Features
 
-- **Template Marketplace**: User-submitted templates for specific frameworks
-  - Example: "TMS for Django", "TMS for Rails"
-  - **Effort**: 20h (platform development)
+- **Pattern Library Marketplace**: Share/import patterns for specific frameworks
+  - **Why**: Reduces onboarding time, creates community engagement
+  - **Implementation**:
+    ```bash
+    cortex-tms patterns add @cortex-tms/react-patterns
+    cortex-tms patterns add @mycompany/internal-patterns
+    ```
+  - **Technical**: Requires pattern versioning and conflict resolution
+  - **Effort**: 20-24h
+  - **Priority**: 🟢 P2
+  - **Trigger**: Validate demand first (wait for 20+ custom patterns shared)
 
 - **TMS Showcase**: Gallery of projects using TMS
   - **Effort**: 8h
+  - **Priority**: 🟢 P2
 
 ---
 
-## 🗑️ Rejected Ideas
+## 🗑️ Removed / Deprecated Ideas
 
-### Why We're NOT Doing These
+### Removed / Deprecated as part of the v4.0 Pivot (planned)
 
-- **YAML/JSON Templates**: Markdown is more human-readable
-- **GUI Tool**: CLI-first philosophy; GUI adds complexity
-- **Automatic Archiving**: Too risky; requires manual review
-- **AI-Generated Docs**: Quality control is too difficult
+- ❌ **Token Counter Dashboard**: Remove (token savings claims invalidated)
+- ❌ **Green Governance Metrics**: Remove (based on invalidated token-savings premise)
+- ❌ **Auto-Tier Scoring**: Repurpose into Archive UX (deprecate, don't hard-break)
+- ❌ **Cost Comparison Charts**: Remove (no longer claiming cost savings)
+- ❌ **HOT/WARM/COLD Optimization**: Reframe as organizational structure only
+
+### Still Rejected
+
+- ❌ **YAML/JSON Templates**: Markdown is more human-readable
+- ❌ **GUI Tool**: CLI-first philosophy; GUI adds complexity
+- ❌ **Automatic Archiving**: Too risky; requires manual review
+- ❌ **AI-Generated Docs**: Quality control is too difficult
 
 ---
 
-## 📊 Audit Findings Summary
+## 📊 Audit Findings Summary (Updated for v4.0)
 
-### Audit History
+### Post-Benchmark Insights
 
-Five comprehensive audits conducted during v2.6-v3.0 development:
+**What Testing Proved**:
 
-1. **QCS Analysis** (Jan 21, 2026): Quality, Cost, Sustainability framework
-2. **Viability Report** (Jan 21, 2026): Evidence-based code audit (found critical bugs)
-3. **Analysis Report** (Jan 21, 2026): Architecture and market assessment
-4. **Comparison Report** (Jan 21, 2026): Synthesis of all findings
-5. **GPT-5 Repository Analysis** (Jan 24, 2026): External review
-6. **Opus 4.5 Deep Analysis** (Jan 21, 2026): Comprehensive technical audit (analyzed v2.6.0)
+- ✅ Documentation governance improves code quality
+- ✅ Pattern docs influence AI behavior positively
+- ✅ Validation catches context rot (unique value)
+- ❌ Token savings claims were invalidated (+15.8% more tokens)
 
-### Progress Since Initial Audits (v2.6.0 → v3.0.0)
+**New Strategic Focus**:
 
-**What's Been Addressed**:
-- ✅ Critical Bugs: All 3 BLOCKER bugs fixed in v2.6.1
-- ✅ GitHub Action: Reusable workflow shipped in v3.0 (GPT5-REC-3)
-- ✅ Prerelease Version Support: Fixed in v3.0 (TMS-272)
-- ✅ 15-minute Onboarding: Improved to 10 minutes with Bootstrap feature (v3.0)
-- ✅ Zero-drift Governance: `cortex-tms validate` exists and working
-- ✅ Website Optimization: Performance improvements in v3.0 (TECH-1)
-
-**Status**: ~50% of audit high-priority items completed. v3.0 release represents major maturity milestone.
+1. **Quality Governance** - Validated by benchmark (better test coverage, pattern adherence)
+2. **Context Rot Prevention** - No competitor offers this
+3. **Optional Context Profiles** - Useful workflow helper, but not the core wedge
 
 ### Remaining High-Value Opportunities
 
-#### Category A: Technical Debt (Deferred to v3.2)
-- **Error Handling**: Centralize error handling, remove `process.exit()` [AUDIT-1] → v3.2
-- **Input Validation**: Add Zod validation for CLI inputs [AUDIT-2] → v3.2
-- **Integration Tests**: E2E CLI workflow tests [AUDIT-3] → v3.2
-- **Dependency Scanning**: Add `npm audit` to CI [AUDIT-4] → v3.2
-- **Path Traversal Protection**: Validate template paths [AUDIT-5] → v3.2
-- **Guardian Key Redaction**: Ensure API keys never exposed [AUDIT-6] → v3.2
+**Category A: Definition of Done for v4.0 (do not claim complete until shipped)**
 
-**Status**: These items moved to dedicated v3.2 sprint (see v3.2 section above for details)
+- [ ] Token/cost/"Green Governance" claims removed across docs + website
+- [ ] CLI no longer exposes token counting UX (`status --tokens` removed)
+- [ ] Staleness detection + strict CI enforcement works (or fails with actionable guidance)
+- [ ] Deprecation path for `auto-tier` is documented and tested
 
-#### Category B: Strategic Features (High Priority Backlog)
-- **Benchmark Suite**: **#1 credibility gap** - prove "3-5x faster" claim (all audits agree)
-- **Pattern Library Marketplace**: Community templates for frameworks
-- **Migration Assistant**: Automate brownfield project migration
-- **Compliance Packages**: Pre-built validation rule sets (SOC2, GDPR)
+**Category B: Next Priorities (v4.1-4.2)**
 
-### Consensus Findings (All Audits Agree)
+- Organic Sync (git hooks, staleness improvements)
+- Agent Ecosystem (multi-tool support, MCP server)
+- Migration Assistant (brownfield automation)
 
-✅ **Core Concept is Sound**: Tiered Memory System solves a real problem in AI development
-✅ **Token/Cost Savings**: 40-60% context reduction is achievable and valuable
-✅ **Sustainability Angle**: "Green Governance" positioning is unique and defensible
-✅ **Continue Development**: All audits recommend continuing with strategic focus
-✅ **Architecture is Strong**: Clean separation, good TypeScript practices
-⚠️ **Benchmark Suite**: Remains #1 missing piece for credibility (unchanged since v2.6.0)
+---
 
-### Rejected/Deprioritized Audit Recommendations
+## 🎯 Long-Term Vision (6-12 Months)
 
-**Low-value or premature items**:
-- ❌ Hardcoded Strings / Localization: No i18n demand (Audit Section 3.6)
-- ❌ Snapshot Tests: Brittle during active development (Audit Section 4.4)
-- ❌ Monorepo Separation: Working fine at current scale (Audit Section 2.4)
-- ❌ Core Package Extraction: Wait for second consumer (Audit Section 8)
-- ❌ Cursor-Specific Optimizations: Low priority, IDE-agnostic by design (Audit Section 5)
+### Advanced Features
 
-**Rationale**: Focus on high-impact security/quality improvements first. These can be revisited if demand emerges.
+- **AI Agent Performance Metrics**: Track before/after TMS adoption
+  - Measure: hallucination rate, task completion time, file reads
+  - **NOTE**: Focus on quality metrics, not token counts
+  - **Effort**: 16h (research-heavy)
+  - **Priority**: 🟢 P2
 
-### Revised Viability Score
+- **Multi-Language Support**: Templates in Spanish, French, Mandarin
+  - **Effort**: 8h per language
+  - **Priority**: 🟢 P2
 
-**Before Audits** (Jan 21, 2026): 8.2/10 (internal assessment)
-**After Initial Audits**: 7.2/10 (accounting for critical bugs)
-**After v2.6.1 Fix**: 8.0/10 (bugs fixed)
-**After v3.0 Release** (Jan 28, 2026): 8.5/10 (major features shipped, bootstrap onboarding, GitHub Action)
-**Target After v3.1** (security hardening): 9.0/10
-**Target After Benchmark Suite**: 9.5/10 (claims proven)
+- **TMS for Non-Code Projects**: Adapt for marketing, design, operations teams
+  - **Effort**: 12h (requires research)
+  - **Priority**: 🟢 P2
 
-### Source Documents
+---
 
-All audit documents available in `/tmp/` directory:
-- `tmp/cortex-tms-analysis-report-opus-28-01-2026.md` (Opus 4.5 Deep Analysis)
-- Earlier audit reports from Jan 21-24, 2026
+**See**: `NEXT-TASKS.md` for active sprint | `docs/archive/` for completed work
 
-<!-- @cortex-tms-version 3.2.0 -->
+<!-- @cortex-tms-version 4.0.0 -->
