@@ -10,16 +10,6 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { getProjectStatus, calculateProgress } from '../utils/status.js';
 import { validateProject } from '../utils/validator.js';
-import {
-  analyzeTokenUsage,
-  calculateCostEstimates,
-  formatTokens,
-  formatCost,
-  formatPercent,
-  type ModelName,
-  MODEL_PRICING,
-} from '../utils/token-counter.js';
-import { statusOptionsSchema, validateOptions } from '../utils/validation.js';
 
 /**
  * Create and configure the status command
@@ -28,22 +18,9 @@ export function createStatusCommand(): Command {
   const statusCommand = new Command('status');
 
   statusCommand
-    .description('Show project health dashboard')
-    .option('-t, --tokens', 'Show token usage analysis and cost estimates')
-    .option(
-      '-m, --model <model>',
-      'Model for cost estimates (claude-sonnet-4.5, claude-opus-4.5, gpt-4-turbo, gpt-4)',
-      'claude-sonnet-4.5'
-    )
-    .action(async (options) => {
-      // Validate options using Zod schema
-      const validated = validateOptions(statusOptionsSchema, options, 'status');
-
-      if (validated.tokens) {
-        await runTokenAnalysis(validated.model);
-      } else {
-        await runStatus();
-      }
+    .description('Show project health dashboard and sprint progress')
+    .action(async () => {
+      await runStatus();
     });
 
   return statusCommand;
@@ -140,156 +117,6 @@ async function runStatus(): Promise<void> {
 }
 
 /**
- * Token analysis command logic
- */
-async function runTokenAnalysis(modelName: string = 'claude-sonnet-4.5'): Promise<void> {
-  const cwd = process.cwd();
-
-  console.log(chalk.bold.cyan('\n📊 Token Usage Analysis\n'));
-
-  const spinner = ora('Analyzing token usage...').start();
-
-  try {
-    const stats = await analyzeTokenUsage(cwd);
-    spinner.succeed('Analysis complete');
-
-    // HOT Files Section
-    console.log(chalk.bold('\n🔥 HOT Files (Always Read)'));
-    console.log(chalk.gray('  Files read at the start of every AI session\n'));
-
-    if (stats.hot.files.length > 0) {
-      stats.hot.files.forEach((file) => {
-        const tokenStr = formatTokens(file.tokens).padStart(8);
-        console.log(`  ${chalk.cyan(tokenStr)} tokens  ${chalk.gray(file.path)}`);
-      });
-      console.log(
-        chalk.gray('\n  ─────────────────────────────────────────────────────')
-      );
-      console.log(
-        `  ${chalk.bold.cyan(formatTokens(stats.hot.totalTokens).padStart(8))} tokens  ${chalk.bold('Total HOT')}`
-      );
-    } else {
-      console.log(chalk.gray('  No HOT files found'));
-    }
-
-    // WARM Files Section
-    console.log(chalk.bold('\n📚 WARM Files (Read On Demand)'));
-    console.log(chalk.gray('  Files read when implementing specific features\n'));
-
-    if (stats.warm.files.length > 0) {
-      // Show top 10 WARM files
-      const topWarm = stats.warm.files.slice(0, 10);
-      topWarm.forEach((file) => {
-        const tokenStr = formatTokens(file.tokens).padStart(8);
-        console.log(`  ${chalk.yellow(tokenStr)} tokens  ${chalk.gray(file.path)}`);
-      });
-
-      if (stats.warm.files.length > 10) {
-        console.log(
-          chalk.gray(`  ... and ${stats.warm.files.length - 10} more files`)
-        );
-      }
-
-      console.log(
-        chalk.gray('\n  ─────────────────────────────────────────────────────')
-      );
-      console.log(
-        `  ${chalk.bold.yellow(formatTokens(stats.warm.totalTokens).padStart(8))} tokens  ${chalk.bold('Total WARM')}`
-      );
-    } else {
-      console.log(chalk.gray('  No WARM files found'));
-    }
-
-    // COLD Files Section
-    console.log(chalk.bold('\n❄️  COLD Files (Archived)'));
-    console.log(chalk.gray('  Historical context - rarely read by AI\n'));
-
-    if (stats.cold.files.length > 0) {
-      // Show top 5 COLD files
-      const topCold = stats.cold.files.slice(0, 5);
-      topCold.forEach((file) => {
-        const tokenStr = formatTokens(file.tokens).padStart(8);
-        console.log(`  ${chalk.blue(tokenStr)} tokens  ${chalk.gray(file.path)}`);
-      });
-
-      if (stats.cold.files.length > 5) {
-        console.log(
-          chalk.gray(`  ... and ${stats.cold.files.length - 5} more files`)
-        );
-      }
-
-      console.log(
-        chalk.gray('\n  ─────────────────────────────────────────────────────')
-      );
-      console.log(
-        `  ${chalk.bold.blue(formatTokens(stats.cold.totalTokens).padStart(8))} tokens  ${chalk.bold('Total COLD')}`
-      );
-    } else {
-      console.log(chalk.gray('  No COLD files found'));
-    }
-
-    // Summary Section
-    console.log(chalk.bold('\n📈 Summary'));
-    console.log(
-      `  ${chalk.cyan('Active Context (HOT):')} ${chalk.bold(formatTokens(stats.hot.totalTokens))} tokens`
-    );
-    console.log(
-      `  ${chalk.cyan('Full Repository:')} ${formatTokens(stats.total.tokens)} tokens`
-    );
-    console.log(
-      `  ${chalk.green('Context Reduction:')} ${chalk.bold(formatPercent(stats.savings.percentReduction))}`
-    );
-    console.log(
-      `  ${chalk.cyan('Tokens Avoided:')} ${formatTokens(stats.savings.tokensAvoided)} per session`
-    );
-
-    // Add context about the numbers
-    console.log(chalk.gray('\n  💡 Understanding the reduction:'));
-    console.log(chalk.gray('     • This shows HOT tier vs. full repository (including archives)'));
-    console.log(chalk.gray('     • Typical measured reduction: 60-70% in day-to-day usage'));
-    console.log(chalk.gray('     • Your number above: HOT vs. everything (theoretical maximum)'));
-
-    // Cost Estimates Section
-    const model = modelName as ModelName;
-    if (MODEL_PRICING[model]) {
-      const costs = calculateCostEstimates(stats.hot.totalTokens, model);
-
-      console.log(chalk.bold(`\n💰 Cost Estimates (${model})`));
-      console.log(
-        `  ${chalk.cyan('Per Session:')} ${chalk.bold(formatCost(costs.perSession))}`
-      );
-      console.log(
-        `  ${chalk.cyan('Per Day (10 sessions):')} ${formatCost(costs.perDay)}`
-      );
-      console.log(
-        `  ${chalk.cyan('Per Month (20 days):')} ${chalk.bold(formatCost(costs.perMonth))}`
-      );
-    } else {
-      console.log(chalk.yellow(`\n⚠️  Unknown model: ${modelName}`));
-      console.log(
-        chalk.gray(`  Available: ${Object.keys(MODEL_PRICING).join(', ')}`)
-      );
-    }
-
-    // Sustainability Note
-    console.log(chalk.bold('\n🌱 Sustainability Impact'));
-    console.log(
-      chalk.gray(
-        `  By organizing context (60-70% typical reduction), you're:`
-      )
-    );
-    console.log(chalk.gray('  • Reducing API costs significantly'));
-    console.log(chalk.gray('  • Lowering compute requirements'));
-    console.log(chalk.gray('  • Decreasing energy consumption per AI query'));
-
-    console.log(); // Trailing newline
-  } catch (error) {
-    spinner.fail('Token analysis failed');
-    throw error instanceof Error ? error : new Error('Unknown error');
-  }
-}
-
-/**
  * Format scope name with proper capitalization
  */
 function formatScope(scope: string): string {
@@ -328,5 +155,6 @@ function createProgressBar(progress: number, width: number): string {
   return `[${filledColor('█'.repeat(filled))}${chalk.gray('░'.repeat(empty))}]`;
 }
 
-// Export the command
+// Export the command instance
 export const statusCommand = createStatusCommand();
+export default createStatusCommand;

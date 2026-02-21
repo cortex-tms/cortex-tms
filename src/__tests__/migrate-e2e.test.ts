@@ -2,7 +2,7 @@
  * E2E Integration Tests - Migrate Command
  *
  * Tests the complete migrate command workflow including:
- * - Version migration (v2.x to v3.x)
+ * - Version migration (v2.x to v4.x)
  * - Dry-run mode
  * - Backup creation
  * - File updates and preservation
@@ -57,7 +57,7 @@ describe('Migrate E2E - Basic Migration', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should migrate from v2.x to v3.x successfully', async () => {
+  it('should migrate from v2.x to v4.x successfully', async () => {
     // Use --force to upgrade customized files
     const result = await runCommand('migrate', ['--apply', '--force'], tempDir);
 
@@ -69,9 +69,9 @@ describe('Migrate E2E - Basic Migration', () => {
       result.stdout.includes('migrated')
     ).toBe(true);
 
-    // Verify files have v3.x version tags
+    // Verify files have v4.x version tags
     const nextTasks = await readFile(join(tempDir, 'NEXT-TASKS.md'), 'utf-8');
-    expect(nextTasks).toMatch(/<!-- @cortex-tms-version 3\.\d+\.\d+ -->/);
+    expect(nextTasks).toMatch(/<!-- @cortex-tms-version 4\.\d+\.\d+ -->/);
   });
 
   it('should skip customized files during migration (without --force)', async () => {
@@ -110,7 +110,7 @@ describe('Migrate E2E - Basic Migration', () => {
 
     // Check that version tags were updated
     const patterns = await readFile(join(tempDir, 'docs/core/PATTERNS.md'), 'utf-8');
-    expect(patterns).toMatch(/<!-- @cortex-tms-version 3\.\d+\.\d+ -->/);
+    expect(patterns).toMatch(/<!-- @cortex-tms-version 4\.\d+\.\d+ -->/);
   });
 });
 
@@ -163,7 +163,7 @@ describe('Migrate E2E - Already Migrated', () => {
 
   beforeEach(async () => {
     tempDir = await createTempDir();
-    // Create a v3.x project
+    // Create a v4.x project
     await runCommand('init', ['--scope', 'standard', '--force'], tempDir);
   });
 
@@ -219,12 +219,12 @@ describe('Migrate E2E - File Creation', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should create missing v3.x files during migration', async () => {
+  it('should create missing v4.x files during migration', async () => {
     const result = await runCommand('migrate', [], tempDir);
     expectSuccess(result);
 
-    // Check for new v3.x files that didn't exist in v2.x
-    // (Implementation dependent - adjust based on actual v3.x additions)
+    // Check for new v4.x files that didn't exist in v2.x
+    // (Implementation dependent - adjust based on actual v4.x additions)
     const cortexrcExists = existsSync(join(tempDir, '.cortexrc'));
     expect(cortexrcExists).toBe(true);
   });

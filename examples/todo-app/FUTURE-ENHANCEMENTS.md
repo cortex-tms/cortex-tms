@@ -79,4 +79,4 @@ A task moves from FUTURE → NEXT when:
 **Why Rejected**: [Reason - e.g., "User research showed low demand", "Technical complexity too high"]
 **Alternative**: [What we did instead - e.g., "Built simplified version in Sprint 3"]
 
-<!-- @cortex-tms-version 3.2.0 -->
+<!-- @cortex-tms-version 4.0.0 -->

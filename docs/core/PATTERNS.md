@@ -1072,4 +1072,4 @@ When converting existing `.md` files to `.mdx`:
 - **Components**: `website/src/components/blog/`
 - **Guide**: `tmp/mdx-components-guide.md` (temporary reference)
 
-<!-- @cortex-tms-version 3.2.0 -->
+<!-- @cortex-tms-version 4.0.0 -->

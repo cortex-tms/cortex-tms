@@ -41,4 +41,4 @@
 
 **MVP COMPLETE!** All tasks done. Todo app is fully functional with polished UX and validated documentation. Ready for Phase 3 closure and archival.
 
-<!-- @cortex-tms-version 3.2.0 -->
+<!-- @cortex-tms-version 4.0.0 -->

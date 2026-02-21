@@ -171,28 +171,9 @@ export const promptOptionsSchema = z.object({
 });
 
 /**
- * Schema for status command options
+ * Schema for status command options (no options currently)
  */
-export const statusOptionsSchema = z.object({
-  tokens: booleanFlag,
-  model: z
-    .string()
-    .default('claude-sonnet-4.5')
-    .refine(
-      (val) =>
-        [
-          'claude-sonnet-4.5',
-          'claude-opus-4.5',
-          'gpt-4-turbo',
-          'gpt-4',
-          'gpt-4o',
-        ].includes(val),
-      {
-        message:
-          'Invalid model. Must be one of: claude-sonnet-4.5, claude-opus-4.5, gpt-4-turbo, gpt-4, gpt-4o',
-      }
-    ),
-});
+export const statusOptionsSchema = z.object({});
 
 // ============================================================================
 // Validation Helper

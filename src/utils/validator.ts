@@ -24,6 +24,7 @@ import {
   getScopePreset,
 } from './config.js';
 import { getTemplatesDir, processTemplate } from './templates.js';
+import { checkDocStaleness, isShallowClone } from './git-staleness.js';
 
 /**
  * Default line limits for TMS files (Rule 4)
@@ -433,6 +434,98 @@ export async function validateArchiveStatus(cwd: string): Promise<ValidationChec
 }
 
 /**
+ * Validate documentation staleness using git history
+ */
+async function validateDocStaleness(
+  cwd: string,
+  config: any
+): Promise<ValidationCheck[]> {
+  const checks: ValidationCheck[] = [];
+
+  // Check if staleness detection is enabled
+  const stalenessConfig = config.staleness || {};
+  const enabled = stalenessConfig.enabled !== false; // Default: true
+  const thresholdDays = stalenessConfig.thresholdDays || 30;
+  const minCommits = stalenessConfig.minCommits || 3;
+
+  if (!enabled) {
+    return checks;
+  }
+
+  // Check for shallow clone
+  if (isShallowClone(cwd)) {
+    checks.push({
+      name: 'Staleness Detection',
+      passed: true,
+      level: 'warning',
+      message: 'Shallow clone detected - staleness check skipped',
+      details: 'Run with fetch-depth: 0 in CI to enable staleness detection',
+    });
+    return checks;
+  }
+
+  // Default doc-to-path mappings
+  const defaultDocs = stalenessConfig.docs || {
+    'docs/core/PATTERNS.md': ['src/'],
+    'docs/core/ARCHITECTURE.md': ['src/', 'infrastructure/'],
+    'docs/core/DOMAIN-LOGIC.md': ['src/'],
+  };
+
+  // Check each configured doc
+  for (const [docPath, watchPaths] of Object.entries(defaultDocs)) {
+    const fullDocPath = join(cwd, docPath);
+
+    // Skip if doc doesn't exist
+    if (!existsSync(fullDocPath)) {
+      continue;
+    }
+
+    // Check staleness
+    const result = checkDocStaleness(
+      docPath,
+      watchPaths as string[],
+      thresholdDays,
+      minCommits,
+      cwd
+    );
+
+    if (result.isStale) {
+      checks.push({
+        name: 'Doc Staleness',
+        passed: false,
+        level: 'warning',
+        message: `${basename(docPath)} may be outdated`,
+        details: `${result.reason}\n  Code: ${result.codeLastModified ? new Date(result.codeLastModified * 1000).toISOString().split('T')[0] : 'N/A'}\n  Doc:  ${result.docLastModified ? new Date(result.docLastModified * 1000).toISOString().split('T')[0] : 'N/A'}\n\n  Note: Staleness v1 uses git timestamps (temporal comparison only)\n  Review ${docPath} to ensure it reflects current codebase`,
+        file: docPath,
+      });
+    } else if (result.daysSinceDocUpdate !== null && result.daysSinceDocUpdate > 0) {
+      // Not stale, but show info if there's been activity
+      checks.push({
+        name: 'Doc Freshness',
+        passed: true,
+        level: 'info',
+        message: `${basename(docPath)} is current`,
+        details: result.reason,
+        file: docPath,
+      });
+    }
+  }
+
+  // If no checks were added, add a success check
+  if (checks.length === 0) {
+    checks.push({
+      name: 'Doc Staleness',
+      passed: true,
+      level: 'info',
+      message: 'All governance docs are current',
+      details: `Checked with ${thresholdDays} day threshold, ${minCommits} commit minimum`,
+    });
+  }
+
+  return checks;
+}
+
+/**
  * Run all validation checks
  */
 export async function validateProject(
@@ -452,13 +545,14 @@ export async function validateProject(
   const ignoreFiles = config.validation?.ignoreFiles || [];
 
   // Run all checks in parallel
-  const [fileSizeChecks, mandatoryChecks, configChecks, placeholderChecks, archiveChecks] =
+  const [fileSizeChecks, mandatoryChecks, configChecks, placeholderChecks, archiveChecks, stalenessChecks] =
     await Promise.all([
       validateFileSizes(cwd, limits),
       Promise.resolve(validateMandatoryFiles(cwd, config.scope)),
       Promise.resolve(validateConfig(cwd)),
       validatePlaceholders(cwd, ignoreFiles),
       validateArchiveStatus(cwd),
+      validateDocStaleness(cwd, config),
     ]);
 
   const checks = [
@@ -467,6 +561,7 @@ export async function validateProject(
     ...fileSizeChecks,
     ...placeholderChecks,
     ...archiveChecks,
+    ...stalenessChecks,
   ];
 
   // Calculate summary

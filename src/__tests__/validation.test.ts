@@ -241,40 +241,15 @@ describe('Zod Input Validation', () => {
   });
 
   describe('statusOptionsSchema', () => {
-    it('should validate valid status options', () => {
-      const result = statusOptionsSchema.parse({
-        tokens: true,
-        model: 'claude-opus-4.5',
-      });
-
-      expect(result.tokens).toBe(true);
-      expect(result.model).toBe('claude-opus-4.5');
-    });
-
-    it('should default to claude-sonnet-4.5', () => {
+    it('should parse empty options (v4.0: status has no options)', () => {
       const result = statusOptionsSchema.parse({});
-      expect(result.model).toBe('claude-sonnet-4.5');
+      expect(result).toEqual({});
     });
 
-    it('should accept valid model names', () => {
-      const models = [
-        'claude-sonnet-4.5',
-        'claude-opus-4.5',
-        'gpt-4-turbo',
-        'gpt-4',
-        'gpt-4o',
-      ];
-
-      models.forEach((model) => {
-        const result = statusOptionsSchema.parse({ model });
-        expect(result.model).toBe(model);
-      });
-    });
-
-    it('should reject invalid model name', () => {
-      expect(() =>
-        statusOptionsSchema.parse({ model: 'invalid-model' })
-      ).toThrow('Invalid model');
+    it('should ignore unknown properties (schema is empty in v4.0)', () => {
+      const result = statusOptionsSchema.parse({ tokens: true, model: 'gpt-4' });
+      // Empty schema ignores all properties
+      expect(result).toEqual({});
     });
   });
 

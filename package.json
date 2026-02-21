@@ -1,7 +1,7 @@
 {
   "name": "cortex-tms",
-  "version": "3.2.0",
-  "description": "AI-powered project scaffolding CLI for documentation, task management, and workflow automation. Optimized for Claude Code, GitHub Copilot, and LLM-assisted development.",
+  "version": "4.0.0",
+  "description": "Documentation scaffolder and governance platform for AI coding agents",
   "type": "module",
   "bin": {
     "cortex-tms": "./bin/cortex-tms.js",

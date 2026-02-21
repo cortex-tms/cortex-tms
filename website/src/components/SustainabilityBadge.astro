@@ -1,10 +1,10 @@
 ---
 /**
- * SustainabilityBadge Component
+ * GovernanceBadge Component
  *
- * Displays Green AI Development badge with sustainability metrics
+ * Displays AI Governance badge with quality validation metrics
  */
-import { Leaf } from '@lucide/astro';
+import { Shield } from '@lucide/astro';
 import '../styles/glass-library.css';
 import '../styles/sustainability-badge.css';
 ---
@@ -13,42 +13,41 @@ import '../styles/sustainability-badge.css';
   <div class="bloom"></div>
   <div class="panel-content">
     <div class="badge-header">
-      <Leaf size={48} stroke-width="1.5" />
-      <h3>Reduce Your Carbon Footprint</h3>
+      <Shield size={48} stroke-width="1.5" />
+      <h3>Keep AI Agents Aligned</h3>
     </div>
 
     <p class="badge-description">
-      Every AI query you run wastes energy reading outdated documentation.
-      Cortex TMS reduces your compute requirements by <strong>60-70%</strong>
-      (up to 94% with archives) through intelligent context management.
+      Modern AI agents are powerful but can drift from your standards.
+      Cortex TMS validates that governance docs stay <strong>current and well-structured</strong>—preventing
+      stale documentation from misleading AI.
     </p>
 
     <div class="stats-grid">
       <div class="stat-card">
-        <p class="stat-value">60-70%</p>
-        <p class="stat-label">LESS CONTEXT</p>
-        <p class="stat-detail">Typical reduction</p>
+        <p class="stat-value">Fresh</p>
+        <p class="stat-label">STALENESS DETECTION</p>
+        <p class="stat-detail">Catches outdated docs</p>
       </div>
 
       <div class="stat-card">
-        <p class="stat-value">63K</p>
-        <p class="stat-label">TOKENS SAVED</p>
-        <p class="stat-detail">Per session average</p>
+        <p class="stat-value">CI/CD</p>
+        <p class="stat-label">AUTOMATED CHECKS</p>
+        <p class="stat-detail">Validation in GitHub Actions</p>
       </div>
 
       <div class="stat-card">
-        <p class="stat-value">10x</p>
-        <p class="stat-label">EFFICIENCY GAIN</p>
-        <p class="stat-detail">Signal over noise</p>
+        <p class="stat-value">Patterns</p>
+        <p class="stat-label">CONSISTENCY</p>
+        <p class="stat-detail">AI follows YOUR standards</p>
       </div>
     </div>
 
     <div class="badge-footer">
       <p>
         <strong>Why this matters:</strong>
-        AI models consume significant energy. By reading only what's needed
-        (HOT/WARM/COLD tiers), Cortex TMS dramatically reduces compute requirements—saving
-        costs and energy.
+        As AI gets more autonomous, governance becomes critical. Cortex validates
+        documentation health—structure, freshness, completeness—so AI always has accurate context.
       </p>
     </div>
   </div>

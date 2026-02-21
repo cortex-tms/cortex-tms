@@ -22,15 +22,15 @@ We're here to help you navigate the new frontier of AI-assisted development. Her
 - **Real-World Case Studies**: How teams use Cortex TMS to ship faster with AI while maintaining quality
 
 <Callout type="tip" title="Quick Start">
-New to Cortex TMS? Install it in seconds and see immediate token savings:
+New to Cortex TMS? Install it in seconds and set up governance docs:
 
 ```bash
 npm install -g cortex-tms
-cortex init my-project
-cortex status --tokens
+cortex-tms init
+cortex-tms validate --strict
 ```
 
-Watch your context costs drop by 60-94% instantly.
+Scaffold governance docs and validate their health.
 </Callout>
 
 ## Coming Soon: Guardian
@@ -69,35 +69,38 @@ AI assistants can generate code 10x faster, but without governance, you're build
 
 ## The Challenge We're Solving
 
-Modern AI tools like Claude Code are incredibly powerful, but they come with a hidden cost: **context explosion**. Without Cortex TMS, your AI assistant reads:
+Modern AI tools are incredibly powerful and autonomous, but they can drift from your project standards. Without governance, AI reads:
 
-- Old documentation nobody maintains
-- Deprecated code paths
-- Irrelevant test fixtures
-- Configuration for platforms you don't use
+- Old documentation that's no longer accurate
+- Inconsistent patterns across files
+- No record of architectural decisions
+- No validation that docs stay current
 
-Result? **Higher costs, slower responses, worse suggestions.**
+Result? **Inconsistent code, pattern violations, overengineering.**
 
 <Terminal
   language="typescript"
-  content={`// Without Cortex TMS
-const context = await readEverything() // 66,834 tokens
-const cost = calculateCost(context)    // $0.20 per query
+  content={`// Without governance docs
+const result = await aiAgent.implement(feature)
+// ❌ Uses different patterns each time
+// ❌ No test coverage
+// ❌ Overwrites project conventions
 
-// With Cortex TMS tiered memory
-const context = await readHotTier()    // 3,647 tokens
-const cost = calculateCost(context)    // $0.01 per query
-const savings = "94.5% reduction"      // ✨`}
+// With Cortex TMS validation
+const result = await aiAgent.implement(feature)
+// ✅ Follows PATTERNS.md
+// ✅ Includes tests (CLAUDE.md requirement)
+// ✅ Consistent with project standards`}
 />
 
-<Callout type="tip" title="Token Savings Explained">
-Cortex TMS uses a **tiered memory system** (HOT/WARM/COLD) to give AI only what it needs:
+<Callout type="tip" title="Governance Explained">
+Cortex TMS uses a **tiered memory system** (HOT/WARM/COLD) to organize documentation:
 
-- **HOT** (Active): Current work context - AI reads this
-- **WARM** (Truth): Documentation, patterns - On-demand only
-- **COLD** (Archive): Old code, deprecated files - Ignored
+- **HOT** (Active): Current work context - Always visible
+- **WARM** (Truth): Patterns, architecture - Reference docs
+- **COLD** (Archive): Historical content - Out of sight
 
-Smart context = better AI suggestions at 10x lower cost.
+Clear organization + validation = AI follows YOUR standards.
 </Callout>
 
 ## Stay Connected

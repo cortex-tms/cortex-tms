@@ -31,4 +31,4 @@ contain placeholder content. Help the user populate them:
 
 After setup, remove this "First Session Setup" section.
 
-<!-- @cortex-tms-version 3.2.0 -->
+<!-- @cortex-tms-version 4.0.0 -->

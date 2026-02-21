@@ -1,0 +1,21 @@
+{
+  "version": "4.0.0",
+  "scope": "standard",
+  "staleness": {
+    "enabled": true,
+    "thresholdDays": 30,
+    "minCommits": 3,
+    "docs": {
+      "docs/core/PATTERNS.md": ["src/"],
+      "docs/core/ARCHITECTURE.md": ["src/", "infrastructure/"],
+      "docs/core/DOMAIN-LOGIC.md": ["src/"]
+    }
+  },
+  "validation": {
+    "ignoreFiles": []
+  },
+  "limits": {
+    "NEXT-TASKS.md": 200,
+    "FUTURE-ENHANCEMENTS.md": 500
+  }
+}

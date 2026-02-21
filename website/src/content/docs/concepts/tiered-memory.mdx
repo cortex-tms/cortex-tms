@@ -1,11 +1,11 @@
 ---
 title: Tiered Memory System
-description: Understanding the HOT/WARM/COLD documentation architecture that optimizes AI agent performance
+description: Understanding the HOT/WARM/COLD documentation architecture for organizing project context
 ---
 
 import { Card, CardGrid, Tabs, TabItem, Aside, FileTree } from '@astrojs/starlight/components';
 
-The **Tiered Memory System (TMS)** is the core architectural pattern of Cortex TMS. It organizes project documentation by **access frequency** instead of content type, optimizing for AI agent context windows.
+The **Tiered Memory System (TMS)** is the core architectural pattern of Cortex TMS. It organizes project documentation by **access frequency** instead of content type, helping AI agents find what's relevant for each task.
 
 ## The Problem with Traditional Documentation
 
@@ -21,7 +21,7 @@ Traditional documentation structures organize files by type:
 </FileTree>
 
 **The issue**: AI agents don't know which files to prioritize. They either:
-- Read everything (wasting context on irrelevant history)
+- Read everything (including stale historical content)
 - Read nothing (hallucinating conventions)
 - Ask constantly (slowing development)
 
@@ -59,7 +59,7 @@ Instead of organizing by content type, TMS organizes by **how often AI agents sh
 
 **Characteristics**:
 - **Always loaded** into AI context at session start
-- **Strict size limits** to preserve context budget
+- **Strict size limits** to keep docs focused and scannable
 - Contains **current** actionable information only
 
 **Files in HOT Tier**:

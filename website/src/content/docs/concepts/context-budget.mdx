@@ -1,50 +1,25 @@
 ---
-title: Context Budget Management
-description: Understanding and enforcing file size limits to optimize AI agent context windows
+title: Documentation Size Management
+description: Enforcing file size limits to keep governance docs focused and maintainable
 ---
 
 import { Card, CardGrid, Aside } from '@astrojs/starlight/components';
 
-**Context Budget** is the practice of enforcing strict size limits on documentation files to preserve AI agent context windows. Every line in a file "costs" tokens—waste those tokens, and AI performance suffers.
+**Documentation Size Management** is the practice of enforcing strict size limits on governance files to keep them focused, maintainable, and scannable by both humans and AI agents.
 
-## The Context Window Problem
+## The Bloat Problem
 
-AI coding agents have **limited context windows**:
-
-<CardGrid>
-  <Card title="Claude 3.5 Sonnet" icon="star">
-    **200,000 tokens** (~150,000 words)
-  </Card>
-
-  <Card title="GPT-4 Turbo" icon="document">
-    **128,000 tokens** (~96,000 words)
-  </Card>
-
-  <Card title="GitHub Copilot" icon="github">
-    **32,000 tokens** (~24,000 words)
-  </Card>
-</CardGrid>
-
-**The problem**: This seems like a lot, but it fills up quickly:
-
-```
-Your codebase:           50,000 tokens
-Documentation:           30,000 tokens
-Conversation history:    20,000 tokens
-AI's working memory:     10,000 tokens
--------------------------------------------
-Total:                  110,000 tokens
-```
+Documentation tends to grow unbounded without limits:
 
 <Aside type="caution">
-  **What happens when context fills up?**
-  - AI "forgets" earlier instructions
-  - Hallucinations increase
-  - Response quality degrades
-  - Processing slows down significantly
+  **What happens when docs get too large?**
+  - Hard for humans to scan and update
+  - AI agents struggle to find relevant information
+  - Stale content accumulates
+  - Maintenance becomes burdensome
 </Aside>
 
-**The solution**: Treat context like a budget. Every line of documentation must justify its existence.
+**The solution**: Enforce size limits. Every line of documentation must justify its existence.
 
 ---
 
