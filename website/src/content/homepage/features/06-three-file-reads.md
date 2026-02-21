@@ -1,8 +1,8 @@
 ---
 type: feature
 icon: zap
-title: < 3 File Reads
+title: Archive Management
 order: 6
 ---
 
-Our validation test: "Can an AI agent find what it needs in under 3 file reads?" The answer is yes—HOT files give instant context, WARM files provide architectural truth on-demand.
+`cortex-tms archive` moves completed tasks from NEXT-TASKS.md to docs/archive/. Keeps your active task list lean and focused for the current sprint.

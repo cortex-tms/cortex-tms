@@ -1,16 +1,16 @@
 ---
 type: pillar
-icon: trending-up
-title: Cost Efficiency
-description: Reduce AI API costs through intelligent context tiering. Less context per session = lower bills.
+icon: file-text
+title: Consistency
+description: Scaffold governance docs AI agents actually read. PATTERNS.md, CLAUDE.md, ARCHITECTURE.md keep your AI aligned with YOUR standards.
 order: 1
 beforeMetric:
-  label: 'Full repo context'
+  label: 'Without governance'
   value: '100'
   barWidth: '100%'
 afterMetric:
-  label: 'HOT tier only'
-  value: '30'
-  barWidth: '30%'
-impactText: 'Focused context = lower costs'
+  label: 'With governance docs'
+  value: '20'
+  barWidth: '20%'
+impactText: 'Pattern violations reduced by 80%'
 ---

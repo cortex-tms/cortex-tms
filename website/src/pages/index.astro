@@ -14,7 +14,7 @@ import SustainabilityBadge from '../components/SustainabilityBadge.astro'
 import CTABox from '../components/CTABox.astro'
 import ScriptedTerminal from '../components/ScriptedTerminal.astro'
 import GuardianShowcase from '../components/GuardianShowcase.astro'
-import TokenCounter from '../components/TokenCounter.astro'
+// import TokenCounter from '../components/TokenCounter.astro' // Removed in v4.0.0
 import ComparisonMatrix from '../components/ComparisonMatrix.astro'
 import FeaturedBlogPost from '../components/FeaturedBlogPost.astro'
 import InstallationTerminals from '../components/InstallationTerminals.astro'
@@ -158,10 +158,9 @@ const iconMap: Record<IconType, typeof Flame> = {
       <GuardianShowcase />
     </section>
 
-    {/* Token Savings Proof */}
+    {/* Documentation Governance Metrics */}
     <section class='content-section'>
-      <h2 class='section-label'>Real Numbers, Real Savings</h2>
-      <TokenCounter />
+      <h2 class='section-label'>Documentation Governance in Action</h2>
       <MetricsShowcase />
     </section>
 
@@ -171,9 +170,9 @@ const iconMap: Record<IconType, typeof Flame> = {
       <ComparisonMatrix />
     </section>
 
-    {/* Green AI Development Badge */}
+    {/* Quality AI Development Badge */}
     <section class='content-section'>
-      <h2 class='section-label'>Green AI Development</h2>
+      <h2 class='section-label'>Quality AI Development</h2>
       <SustainabilityBadge />
     </section>
 
