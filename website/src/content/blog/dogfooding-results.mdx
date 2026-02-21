@@ -1,0 +1,221 @@
+---
+title: 'Cortex TMS Dogfooding Results: Quality Over Token Count'
+description: 'What we learned building Cortex with Cortex: governance documentation improves code quality, but token savings claims were overstated. Here are the real results and what matters.'
+pubDate: 2026-02-21
+author: 'Cortex TMS Team'
+tags: ['dogfooding', 'quality', 'governance', 'validation', 'transparency']
+heroImage: '/images/blog/dogfooding-quality-results.webp'
+draft: false
+---
+
+import { Terminal, Callout } from '../../components/blog'
+
+We built Cortex TMS using Cortex TMS. Internal dogfooding over several weeks showed something important—just not what we initially thought.
+
+**What we expected**: Token savings would be the big win.
+**What we found**: Governance documentation improved code quality. Token usage actually increased.
+
+This post shares what actually happened when we measured both.
+
+<Callout type="tip" title="Key Takeaway">
+Documentation governance helps AI agents write better code—more tests, better pattern adherence, cleaner structure. It costs ~15-20% more tokens, but the output quality makes it worthwhile.
+</Callout>
+
+---
+
+## What We Measured
+
+We compared development tasks with and without Cortex TMS governance docs (PATTERNS.md, CLAUDE.md, ARCHITECTURE.md).
+
+**Sample**: 5 matched pairs of similar-complexity tasks
+**Model**: Claude Sonnet 4.5 via Claude Code
+**Timeframe**: January 2026
+**Developer**: Single maintainer (limited sample)
+
+### Quality Metrics (TMS vs Control)
+
+**Test Coverage**:
+- TMS tasks: 4/5 included regression tests
+- Control tasks: 2/5 included tests
+- **Result**: Better test coverage with governance docs
+
+**Pattern Adherence**:
+- TMS tasks: Followed PATTERNS.md conventions (error handling, validation patterns)
+- Control tasks: Inconsistent patterns, mixed conventions
+- **Result**: More consistent code with governance docs
+
+**Scope Discipline**:
+- TMS tasks: Stayed focused on requirements
+- Control tasks: Some overengineering (unnecessary abstractions)
+- **Result**: CLAUDE.md scope rules prevented complexity creep
+
+### Token Usage (The Surprise)
+
+**Average tokens per task**:
+- TMS: 12,847 input tokens
+- Control: 11,092 input tokens
+- **Result**: +15.8% MORE tokens with TMS (not less)
+
+**Why more tokens?** The AI spent additional tokens:
+- Reading governance docs (PATTERNS.md, ARCHITECTURE.md)
+- Following documented conventions more carefully
+- Adding tests that control tasks skipped
+
+---
+
+## What This Means
+
+### What Works
+
+1. **Governance Improves Quality**
+   - Pattern docs → more consistent code
+   - CLAUDE.md rules → better human oversight
+   - Documented conventions → fewer mistakes
+
+2. **Validation Catches Drift**
+   - `cortex-tms validate` detects missing files, stale docs
+   - Human review gates prevent autonomous mistakes
+   - Structured docs help AI understand project context
+
+3. **Organization Matters**
+   - HOT/WARM/COLD structure helps AI find what's relevant
+   - Not about reducing tokens—about organizing context
+   - Clear structure = better AI comprehension
+
+### What Doesn't Work
+
+1. **Token Savings Claims**
+   - Our "60-70% reduction" claims were invalidated
+   - Real result: 15.8% MORE tokens (AI reads + follows docs)
+   - **Learning**: Quality costs tokens, and that's okay
+
+2. **Cost Optimization as Primary Benefit**
+   - Modern models (200K+ context windows) make token limits less critical
+   - The real bottleneck: keeping AI aligned with YOUR project standards
+   - Governance > optimization
+
+---
+
+## The Pivot: v4.0.0
+
+Based on these findings, we're repositioning Cortex TMS:
+
+**From**: "Save 60-70% on AI costs through token optimization"
+**To**: "Validate governance docs to keep AI agents aligned"
+
+### What v4.0 Ships
+
+1. **Staleness Detection**
+   - Detects when governance docs go stale relative to code
+   - Git-based heuristic (v1): compares doc vs code commit timestamps
+   - Catches obvious drift before AI gets misled
+
+2. **CI Validation**
+   - `cortex-tms validate --strict` in GitHub Actions
+   - Checks: file structure, staleness, completeness
+   - Prevents PRs with outdated governance docs
+
+3. **Documentation Health**
+   - Not just scaffolding—active validation
+   - Ensures PATTERNS.md, ARCHITECTURE.md stay current
+   - Governance as code, continuously validated
+
+### What We're Removing
+
+- ❌ Token savings claims (invalidated by testing)
+- ❌ Cost comparison charts (not the primary value)
+- ❌ "Green Governance" sustainability messaging (based on invalid token premise)
+- ❌ `cortex-tms status --tokens` flag (streamlining to focus on governance)
+
+---
+
+## Why This Matters
+
+### The Real Problem
+
+As AI models get more powerful (GPT-4, Claude Opus 4.6, 200K+ contexts), they can do more autonomously—but they can also drift further from your project's standards.
+
+**Without governance docs**:
+- AI writes inconsistent code across sessions
+- Patterns vary, conventions change
+- Overengineering creeps in
+- No record of what was decided and why
+
+**With governance docs (validated)**:
+- AI follows YOUR patterns consistently
+- Human approval required for critical ops (via CLAUDE.md)
+- Stale docs get caught before misleading AI
+- Project standards stay enforced
+
+### The Honest Approach
+
+We could have hidden these results. The token increase would have been easy to bury.
+
+Instead, we're:
+- Publishing the real data (quality up, tokens up)
+- Removing invalidated claims from all docs
+- Repositioning around what actually works
+- Building validation features (staleness detection)
+
+**Credibility > marketing claims**
+
+---
+
+## Try It Yourself
+
+```bash
+# Initialize governance docs
+npx cortex-tms@latest init
+
+# Validate doc health
+npx cortex-tms@latest validate --strict
+
+# Check for staleness (v4.0+)
+npx cortex-tms@latest validate
+# Will detect if PATTERNS.md is stale relative to src/
+```
+
+**What to expect**:
+- More tokens spent on reading docs (15-20% increase)
+- Better code quality (tests, patterns, consistency)
+- Stale doc warnings (staleness detection)
+
+---
+
+## Limitations
+
+**Small sample**: 5 task pairs, one developer, one model
+**Not a formal benchmark**: Controlled comparison, not randomized study
+**Your results will vary**: Different projects, models, and workflows will see different outcomes
+**Staleness v1 is basic**: Git timestamps only, not semantic analysis
+
+We're being transparent about what we DO and DON'T know.
+
+---
+
+## What's Next
+
+**v4.0.0** (targeting Feb 28, 2026):
+- Staleness detection ships
+- All token claims removed
+- Validation-first messaging
+- CI integration templates
+
+**v4.1+** (future):
+- Git hooks for automatic doc validation
+- Improved staleness heuristics
+- Multi-tool config generation
+
+See [NEXT-TASKS.md](https://github.com/cortex-tms/cortex-tms/blob/main/NEXT-TASKS.md) for full roadmap.
+
+---
+
+## Conclusion
+
+**What we learned**: Governance documentation improves AI code quality. It costs more tokens, but produces better output.
+
+**What we're building**: A validation layer for governance docs—catch staleness, enforce structure, maintain standards.
+
+**What we're not**: A token optimization tool. Modern models make that less relevant. Quality governance matters more.
+
+⭐ [Star us on GitHub](https://github.com/cortex-tms/cortex-tms) if you believe in transparent, evidence-based development.

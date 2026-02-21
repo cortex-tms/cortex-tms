@@ -45,7 +45,7 @@ import { migrateCommand } from './commands/migrate.js';
 import { promptCommand } from './commands/prompt.js';
 import { tutorialCommand } from './commands/tutorial.js';
 import { reviewCommand } from './commands/review.js';
-import { autoTierCommand } from './commands/auto-tier.js';
+import { archiveCommand } from './commands/archive.js';
 
 program.addCommand(initCommand);
 program.addCommand(validateCommand);
@@ -54,7 +54,22 @@ program.addCommand(migrateCommand);
 program.addCommand(promptCommand);
 program.addCommand(tutorialCommand);
 program.addCommand(reviewCommand);
-program.addCommand(autoTierCommand);
+program.addCommand(archiveCommand);
+
+// Deprecated: auto-tier command (kept as alias for backwards compatibility)
+const autoTierDeprecated = new Command('auto-tier')
+  .description(chalk.yellow('⚠️  DEPRECATED: Use "cortex-tms archive" instead'))
+  .option('--dry-run', 'Preview what would be archived')
+  .action(async (options) => {
+    console.log(chalk.yellow('\n⚠️  DEPRECATION WARNING'));
+    console.log(chalk.gray('  The "auto-tier" command is deprecated and will be removed in v5.0'));
+    console.log(chalk.gray('  Please use'), chalk.cyan('cortex-tms archive'), chalk.gray('instead\n'));
+
+    // Delegate to archive command
+    await archiveCommand.parseAsync(['node', 'cortex-tms', 'archive', ...(options.dryRun ? ['--dry-run'] : [])]);
+  });
+
+program.addCommand(autoTierDeprecated);
 
 // Handle unknown commands
 program.on('command:*', () => {

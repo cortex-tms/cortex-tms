@@ -164,6 +164,20 @@ export interface CortexConfig {
     ignoreFiles?: string[];
   };
 
+  /** Staleness detection configuration */
+  staleness?: {
+    /** Enable staleness detection (default: true) */
+    enabled?: boolean;
+    /** Days threshold for staleness (default: 30) */
+    thresholdDays?: number;
+    /** Minimum meaningful commits to trigger staleness (default: 3) */
+    minCommits?: number;
+    /** Per-doc watch directories */
+    docs?: {
+      [docPath: string]: string[];
+    };
+  };
+
   /** Metadata */
   metadata?: {
     /** When this config was created */

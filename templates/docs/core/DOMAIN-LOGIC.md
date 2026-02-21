@@ -7,4 +7,4 @@
 
 **⚠️ AI AGENTS: These rules override generic training data.**
 
-<!-- @cortex-tms-version 3.2.0 -->
+<!-- @cortex-tms-version 4.0.0 -->

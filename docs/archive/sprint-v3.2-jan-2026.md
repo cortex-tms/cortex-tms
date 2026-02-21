@@ -322,4 +322,4 @@ Transform Cortex TMS from a functional prototype into a production-ready CLI wit
 **Updated**: 2026-02-01 (POLISH-1 complete)
 **Next Steps**: ✅ Ready for v3.2.0 release (all pre-release tasks complete)
 
-<!-- @cortex-tms-version 3.2.0 -->
+<!-- @cortex-tms-version 4.0.0 -->
