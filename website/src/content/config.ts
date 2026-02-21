@@ -65,7 +65,7 @@ export const collections = {
       // Pillar card
       z.object({
         type: z.literal('pillar'),
-        icon: z.enum(['trending-up', 'shield', 'leaf']),
+        icon: z.enum(['file-text', 'clock', 'shield']),
         title: z.string(),
         description: z.string(),
         order: z.number(),

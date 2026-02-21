@@ -1,7 +1,7 @@
 ---
 type: step
 number: 3
-title: Track Savings
+title: Validate Health
 ---
 
-Run `cortex-tms status --tokens` to see your exact cost savings and sustainability impact. Prove ROI with real numbers.
+Run `cortex-tms validate` to check documentation health—staleness detection, structure validation, and size limits. Use `--strict` in CI to catch issues early.

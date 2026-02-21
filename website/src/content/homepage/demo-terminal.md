@@ -1,14 +1,15 @@
 ---
 type: demo-terminal
 title: See It In Action
-command: npx cortex-tms status --tokens -m claude-sonnet-4.5
-model: claude-sonnet-4.5
+command: npx cortex-tms validate
+model: cortex-tms
 ---
 
-Real CLI output showing intelligent context management:
+Real CLI output showing documentation health checks:
 
-- **HOT** (Active): 3,647 tokens ← AI reads this
-- **WARM** (Truth): 20,109 tokens ← On-demand
-- **COLD** (Archive): 43,078 tokens ← Ignored
+- ✅ **Mandatory files**: All required governance docs present
+- ✅ **Structure validation**: Proper HOT/WARM/COLD organization
+- ✅ **Size limits**: Documentation within reasonable bounds
+- ⚠️ **Staleness detected**: PATTERNS.md unchanged for 45 days
 
-**Cost**: $0.01/session (vs $0.20 without tiering)
+**Result**: Project governance validated with actionable insights

@@ -5,6 +5,10 @@ description: Automatically assign HOT/WARM/COLD tiers based on git commit histor
 
 import { Card, CardGrid, Tabs, TabItem, Steps, Aside } from '@astrojs/starlight/components';
 
+<Aside type="caution" title="Deprecated in v4.0.0">
+  The `auto-tier` command is deprecated and will be removed in a future version. Use [`cortex-tms archive`](/reference/cli/archive/) instead to manually move completed tasks from NEXT-TASKS.md to docs/archive/. The v4.0 pivot focuses on governance validation rather than automatic tier management.
+</Aside>
+
 The `cortex-tms auto-tier` command analyzes your git repository's commit history and file patterns to automatically suggest and apply tier tags to documentation files. It uses a scoring system to prioritize high-value documentation while capping HOT files to prevent context bloat, keeping your tiering system aligned with actual work patterns.
 
 ## Synopsis
@@ -299,12 +303,10 @@ cortex-tms auto-tier --force
 # Step 1: Apply tier tags
 cortex-tms auto-tier
 
-# Step 2: See token distribution
-cortex-tms status --tokens
+# Step 2: Check tier assignments
+cortex-tms status
 
-# Output shows:
-# HOT files: 70,000 tokens (always in context)
-# WARM files: 12,000 tokens (on-demand)
+# Output shows tier distribution and file organization
 # COLD files: Excluded from analysis
 #
 # Context Reduction: 85% (70K instead of 82K)
@@ -739,10 +741,8 @@ $ cortex-tms auto-tier
 # Apply tier tags
 cortex-tms auto-tier
 
-# See how tiers affect token usage
-cortex-tms status --tokens
-
-# Verify HOT tier is focused on recent work
+# Verify tier assignments
+cortex-tms status
 ```
 
 ---
@@ -797,9 +797,10 @@ cortex-tms validate
 
 ## Related Commands
 
-- [`cortex-tms status --tokens`](/reference/cli/status/) - View token distribution by tier (uses tier tags)
-- [`cortex-tms validate`](/reference/cli/validate/) - Health checks (tier tags don't affect validation)
+- [`cortex-tms status`](/reference/cli/status/) - View project status and tier distribution
+- [`cortex-tms validate`](/reference/cli/validate/) - Health checks and documentation validation
 - [`cortex-tms init`](/reference/cli/init/) - Initialize TMS (creates files to be tiered)
+- [`cortex-tms archive`](/reference/cli/archive/) - Recommended replacement for tier management
 
 ---
 

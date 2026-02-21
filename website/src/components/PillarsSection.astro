@@ -2,10 +2,10 @@
 /**
  * PillarsSection Component
  *
- * Displays three pillars (Cost, Quality, Sustainability) with viz-bar visualizations
+ * Displays three pillars (Consistency, Freshness, Safety) with viz-bar visualizations
  * Adapted from branding/designs/library liquid glass design
  */
-import { TrendingUp, Shield, Leaf, Target } from '@lucide/astro'
+import { FileText, Clock, Shield, Target } from '@lucide/astro'
 import { getCollection } from 'astro:content'
 import '../styles/glass-library.css'
 import '../styles/pillars-section.css'
@@ -17,7 +17,7 @@ const pillars = allHomepageContent
     (entry): entry is typeof entry & {
       data: {
         type: 'pillar'
-        icon: 'trending-up' | 'shield' | 'leaf'
+        icon: 'file-text' | 'clock' | 'shield'
         title: string
         description: string
         order: number
@@ -31,16 +31,16 @@ const pillars = allHomepageContent
 
 // Icon mapping
 const iconMap = {
-  'trending-up': TrendingUp,
+  'file-text': FileText,
+  clock: Clock,
   shield: Shield,
-  leaf: Leaf,
 }
 
 // Data attribute mapping for pillar types
 const pillarDataAttr = {
-  'trending-up': 'cost',
-  shield: 'quality',
-  leaf: 'sustainability',
+  'file-text': 'consistency',
+  clock: 'freshness',
+  shield: 'safety',
 }
 ---
 

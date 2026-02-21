@@ -35,9 +35,9 @@ Cortex TMS enforces **strict size limits** on HOT files and **relaxed limits** o
 | `.github/copilot-instructions.md` | **100 lines** | Critical rules only, no explanations |
 
 <Aside type="note" title="Why So Strict?">
-  HOT files are read **at the start of every AI session**. If `NEXT-TASKS.md` grows to 500 lines, the AI wastes ~2,000 tokens on outdated tasks every time.
+  HOT files are read **at the start of every AI session**. If `NEXT-TASKS.md` grows to 500 lines, the AI wastes attention on outdated tasks every time.
 
-  **200 lines = ~800 tokens**. That's the sweet spot for one focused sprint.
+  **200 lines** keeps the sprint focused and scannable.
 </Aside>
 
 ### WARM Tier Limits (Recommended)
@@ -51,7 +51,7 @@ Cortex TMS enforces **strict size limits** on HOT files and **relaxed limits** o
 | `docs/core/GLOSSARY.md` | **200 lines** | Terminology definitions |
 
 <Aside type="tip">
-  WARM files are read **on demand**, so limits can be higher. But bloat still wastes context—a 2,000-line PATTERNS.md file is hard for AI (and humans) to navigate.
+  WARM files are read **on demand**, so limits can be higher. But bloat still reduces usefulness—a 2,000-line PATTERNS.md file is hard for AI (and humans) to navigate.
 </Aside>
 
 ### COLD Tier Limits
@@ -88,8 +88,6 @@ Let's compare two projects:
 ...
 ```
 
-**Context cost**: ~3,400 tokens read **every session**
-
 **AI behavior**:
 - Gets confused about current priority
 - References completed tasks as if they're active
@@ -109,14 +107,12 @@ Let's compare two projects:
 ...
 ```
 
-**Context cost**: ~720 tokens
-
 **AI behavior**:
 - Immediately understands current focus
 - Stays on task without prompting
 - Follows established patterns from WARM tier
 
-**Savings**: 2,680 tokens per session = 30-40% more room for code and conversation
+**Result**: Focused docs = better AI behavior and easier maintenance
 
 ---
 
@@ -261,7 +257,7 @@ AI can scan the index, jump to the relevant section.
 ```
 
 <Aside type="tip">
-  Duplication wastes context **and** causes drift. Canonical links stay accurate and use 90% fewer tokens.
+  Duplication wastes space **and** causes drift. Canonical links stay accurate and keep docs focused.
 </Aside>
 
 ### 2. Keep Examples Minimal
@@ -316,39 +312,7 @@ for distributed systems where you can't share a secret safely.
 - Why: Asymmetric keys are safer for distributed systems
 ```
 
-**Savings**: ~60% fewer tokens for the same information.
-
----
-
-## Monitoring Context Usage
-
-### Track Context Consumption
-
-Use AI agent analytics (if available) to see context usage:
-
-```
-Session #1234
-- Code files read:        45,000 tokens
-- NEXT-TASKS.md:             800 tokens
-- docs/core/PATTERNS.md:   2,200 tokens
-- Conversation history:   15,000 tokens
-----------------------------------------
-Total:                    63,000 tokens
-Context remaining:        137,000 tokens
-```
-
-**Red flags**:
-- Documentation > 20% of context
-- Same file read multiple times per session
-- Frequent "I don't remember" responses
-
-### Optimize Based on Usage
-
-If AI repeatedly reads `docs/core/ARCHITECTURE.md` (5,000 tokens):
-
-**Option 1**: Summarize it → Reduce to 2,000 tokens
-**Option 2**: Split it → Create focused sub-docs
-**Option 3**: Promote to HOT → Move critical parts to `copilot-instructions.md`
+**Benefit**: More concise and scannable for both humans and AI.
 
 ---
 
@@ -387,65 +351,22 @@ If AI repeatedly reads `docs/core/ARCHITECTURE.md` (5,000 tokens):
 ## Benefits of Context Budget Discipline
 
 <CardGrid stagger>
-  <Card title="Faster AI Response" icon="rocket">
-    Less context to process = faster generation. AI spends time coding, not reading irrelevant docs.
+  <Card title="Better AI Focus" icon="rocket">
+    Lean docs keep AI focused on what matters. Less time scanning, more time coding.
   </Card>
 
-  <Card title="Better AI Memory" icon="approve-check">
-    AI "remembers" earlier instructions because context isn't crowded with noise.
+  <Card title="Easier Maintenance" icon="approve-check">
+    Smaller files are easier for humans to review, update, and keep current.
   </Card>
 
-  <Card title="More Room for Code" icon="document">
-    Leaner docs = more tokens available for showing AI your actual codebase.
+  <Card title="Reduced Staleness" icon="document">
+    Focused docs are more likely to stay up-to-date with code changes.
   </Card>
 
   <Card title="Enforced Clarity" icon="star">
     Size limits force concise writing. No room for fluff or redundancy.
   </Card>
 </CardGrid>
-
----
-
-## Real-World Context Budget Calculation
-
-Let's calculate the context budget for a typical project:
-
-### Before Cortex TMS
-
-```
-NEXT-TASKS.md (unconstrained):        3,500 tokens
-README.md (kitchen sink):             2,000 tokens
-docs/architecture.md (verbose):       4,500 tokens
-docs/api.md (duplicates code):        3,000 tokens
-CHANGELOG.md (2 years of history):    2,500 tokens
-----------------------------------------------------
-Documentation total:                 15,500 tokens
-
-Context remaining for code:          84,500 tokens (of 100k)
-```
-
-### After Cortex TMS
-
-```
-HOT Tier:
-  NEXT-TASKS.md (200 lines):            800 tokens
-  copilot-instructions.md (100 lines):  400 tokens
-
-WARM Tier (read on demand):
-  docs/core/PATTERNS.md:              2,200 tokens
-  docs/core/ARCHITECTURE.md:          1,800 tokens
-
-COLD Tier (ignored):
-  docs/archive/* (not loaded)             0 tokens
-----------------------------------------------------
-Documentation total:                  5,200 tokens
-
-Context remaining for code:          94,800 tokens (of 100k)
-```
-
-**Savings**: 10,300 tokens = **66% less documentation overhead**
-
-That's enough room for 50+ additional source files or 100+ turns of conversation.
 
 ---
 

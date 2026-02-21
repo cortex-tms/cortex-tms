@@ -36,26 +36,22 @@ if (!entry) throw new Error('Demo terminal content not found');
     </div>
 
     <div class="terminal-output">
-      <div class="output-line">📊 <span class="output-header">Token Analysis</span></div>
+      <div class="output-line">🔍 <span class="output-header">Documentation Health Check</span></div>
       <div class="output-line tier-hot">
-        <span class="tier-label">HOT (Active):</span>
-        <span class="tier-value">3,647 tokens</span>
-        <span class="tier-note">← AI reads this</span>
+        <span class="tier-label">✅ Mandatory files:</span>
+        <span class="tier-value">All required governance docs present</span>
       </div>
       <div class="output-line tier-warm">
-        <span class="tier-label">WARM (Truth):</span>
-        <span class="tier-value">20,109 tokens</span>
-        <span class="tier-note">← On-demand</span>
+        <span class="tier-label">✅ Structure validation:</span>
+        <span class="tier-value">Proper HOT/WARM/COLD organization</span>
       </div>
       <div class="output-line tier-cold">
-        <span class="tier-label">COLD (Archive):</span>
-        <span class="tier-value">43,078 tokens</span>
-        <span class="tier-note">← Ignored</span>
+        <span class="tier-label">✅ Size limits:</span>
+        <span class="tier-value">Documentation within reasonable bounds</span>
       </div>
       <div class="output-line cost-line">
-        💰 <span class="cost-label">Cost:</span>
-        <span class="cost-value">$0.01/session</span>
-        <span class="cost-comparison">(vs $0.20 without tiering)</span>
+        ⚠️ <span class="cost-label">Staleness detected:</span>
+        <span class="cost-value">PATTERNS.md unchanged for 45 days</span>
       </div>
     </div>
   </div>

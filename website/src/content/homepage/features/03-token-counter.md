@@ -1,8 +1,8 @@
 ---
 type: feature
 icon: bar-chart
-title: Token Counter
+title: Staleness Detection
 order: 3
 ---
 
-Real-time token analysis shows your exact savings with multi-model cost comparison (Claude, GPT-4, and more). Track your sustainability impact and prove ROI to stakeholders.
+Git-based freshness checks detect when governance docs go stale. Configurable thresholds flag docs that haven't been updated while code evolved around them.
