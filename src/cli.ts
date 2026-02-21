@@ -46,7 +46,6 @@ import { promptCommand } from './commands/prompt.js';
 import { tutorialCommand } from './commands/tutorial.js';
 import { reviewCommand } from './commands/review.js';
 import { archiveCommand } from './commands/archive.js';
-import { analyzeCommand } from './commands/analyze.js';
 import { dashboardCommand } from './commands/dashboard.js';
 
 program.addCommand(initCommand);
@@ -57,7 +56,6 @@ program.addCommand(promptCommand);
 program.addCommand(tutorialCommand);
 program.addCommand(reviewCommand);
 program.addCommand(archiveCommand);
-program.addCommand(analyzeCommand);
 program.addCommand(dashboardCommand);
 
 // Deprecated: auto-tier command (kept as alias for backwards compatibility)
