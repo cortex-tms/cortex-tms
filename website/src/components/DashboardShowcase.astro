@@ -3,55 +3,62 @@
  * DashboardShowcase — homepage section highlighting the cortex-tms dashboard command.
  * Two-column layout: copy left, DashboardPreview right, benefit cards full-width below.
  */
-import DashboardPreview from './DashboardPreview.astro';
+import DashboardPreview from './DashboardPreview.astro'
 ---
 
-<div class="dashboard-showcase">
-
+<div class='dashboard-showcase'>
   {/* Left column: copy */}
-  <div class="ds-copy">
-    <h3 class="ds-headline">One command.<br />Complete visibility.</h3>
-    <p class="ds-description">
+  <div class='ds-copy'>
+    <h3 class='ds-headline'>One command.<br />Complete visibility.</h3>
+    <p class='ds-description'>
       The Cortex TMS dashboard gives you a real-time terminal UI showing
-      governance health, documentation freshness, and sprint progress —
-      all without leaving your terminal.
+      governance health, documentation freshness, and sprint progress — all
+      without leaving your terminal.
     </p>
 
-    <div class="ds-live-badge">
-      <span class="ds-live-dot"></span>
+    <div class='ds-live-badge'>
+      <span class='ds-live-dot'></span>
       <code>--live</code> mode: auto-refreshes every 5 seconds
     </div>
 
-    <a href="/reference/cli/dashboard/" class="ds-link">
+    <a
+      href='/reference/cli/dashboard/'
+      class='ds-link'
+    >
       Explore the Dashboard docs →
     </a>
   </div>
 
   {/* Right column: DashboardPreview with ambient glow */}
-  <div class="ds-preview-wrapper">
-    <div class="ds-glow"></div>
+  <div class='ds-preview-wrapper'>
+    <div class='ds-glow'></div>
     <DashboardPreview />
   </div>
 
   {/* Full-width row: 3 benefit cards */}
-  <div class="ds-benefits">
-    <div class="ds-benefit">
-      <div class="ds-benefit-value ds-gradient-text">92/100</div>
-      <div class="ds-benefit-title">Governance Health</div>
-      <div class="ds-benefit-caption">Spot compliance gaps before they become tech debt</div>
+  <div class='ds-benefits'>
+    <div class='ds-benefit'>
+      <div class='ds-benefit-value ds-gradient-text'>92/100</div>
+      <div class='ds-benefit-title'>Governance Health</div>
+      <div class='ds-benefit-caption'>
+        Spot compliance gaps before they become tech debt
+      </div>
     </div>
-    <div class="ds-benefit">
-      <div class="ds-benefit-value ds-gradient-text">95%</div>
-      <div class="ds-benefit-title">Documentation Freshness</div>
-      <div class="ds-benefit-caption">Know exactly which docs need attention and when</div>
+    <div class='ds-benefit'>
+      <div class='ds-benefit-value ds-gradient-text'>95%</div>
+      <div class='ds-benefit-title'>Documentation Freshness</div>
+      <div class='ds-benefit-caption'>
+        Know exactly which docs need attention and when
+      </div>
     </div>
-    <div class="ds-benefit">
-      <div class="ds-benefit-value ds-live-value"><code>--live</code></div>
-      <div class="ds-benefit-title">Real-Time Monitoring</div>
-      <div class="ds-benefit-caption">Auto-refreshing terminal dashboard for continuous insight</div>
+    <div class='ds-benefit'>
+      <div class='ds-benefit-value ds-live-value'><code>--live</code></div>
+      <div class='ds-benefit-title'>Real-Time Monitoring</div>
+      <div class='ds-benefit-caption'>
+        Auto-refreshing terminal dashboard for continuous insight
+      </div>
     </div>
   </div>
-
 </div>
 
 <style>
@@ -122,8 +129,13 @@ import DashboardPreview from './DashboardPreview.astro';
   }
 
   @keyframes ds-pulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.35; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
   }
 
   /* ── Docs link ───────────────────────────────────────────────────── */
@@ -138,17 +150,26 @@ import DashboardPreview from './DashboardPreview.astro';
     transition: opacity 0.2s ease;
   }
 
-  .ds-link:hover { opacity: 0.75; }
+  .ds-link:hover {
+    opacity: 0.75;
+  }
 
   /* ── Preview wrapper ─────────────────────────────────────────────── */
   .ds-preview-wrapper {
     position: relative;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .ds-glow {
     position: absolute;
-    inset: -20%;
-    background: radial-gradient(ellipse at center, rgba(249, 115, 22, 0.1), transparent 70%);
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(249, 115, 22, 0.1),
+      transparent 70%
+    );
     pointer-events: none;
     z-index: 0;
   }
@@ -182,7 +203,12 @@ import DashboardPreview from './DashboardPreview.astro';
   }
 
   .ds-gradient-text {
-    background: linear-gradient(135deg, #ff9f5a, var(--sl-color-accent), #ff7033);
+    background: linear-gradient(
+      135deg,
+      #ff9f5a,
+      var(--sl-color-accent),
+      #ff7033
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

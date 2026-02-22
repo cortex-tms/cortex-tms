@@ -46,11 +46,11 @@
       >
         <span
           class='dp-tab-bracket'
-          style='opacity: 0;'
+          style='opacity: 0.4;'
           >[</span
         >2. Files<span
           class='dp-tab-bracket'
-          style='opacity: 0;'
+          style='opacity: 0.4;'
           >]</span
         >
       </button>
@@ -62,178 +62,204 @@
       >
         <span
           class='dp-tab-bracket'
-          style='opacity: 0;'
+          style='opacity: 0.4;'
           >[</span
         >3. Health<span
           class='dp-tab-bracket'
-          style='opacity: 0;'
+          style='opacity: 0.4;'
           >]</span
         >
       </button>
     </div>
 
-    <div
-      class='dp-view dp-view-active'
-      id='dp-view-overview'
-    >
-      <div class='dp-grid-2'>
-        <fieldset class='dp-card'>
-          <legend class='dp-card-title green'>✅ GOVERNANCE HEALTH</legend>
-          <div class='dp-score'>92<span class='dp-score-denom'>/100</span></div>
-          <div class='dp-score-label'>overall quality score</div>
+    <div class='dp-views'>
+      <div
+        class='dp-view dp-view-active'
+        id='dp-view-overview'
+      >
+        <div class='dp-grid-2'>
+          <fieldset class='dp-card'>
+            <legend class='dp-card-title green'>✅ GOVERNANCE HEALTH</legend>
+            <div class='dp-score'>
+              92<span class='dp-score-denom'>/100</span>
+            </div>
+            <div class='dp-score-label'>overall quality score</div>
 
-          <div class='dp-card-rows'>
-            <div class='dp-row'>
-              <span class='dp-row-key'>Validation:</span>
-              <span class='dp-row-val green'>healthy</span>
+            <div class='dp-card-rows'>
+              <div class='dp-row'>
+                <span class='dp-row-key'>Validation:</span>
+                <span class='dp-row-val green'>healthy</span>
+              </div>
+              <div class='dp-row'>
+                <span class='dp-row-key'>Guardian:</span>
+                <span class='dp-row-val green'>compliant</span>
+              </div>
+              <div class='dp-row'>
+                <span class='dp-row-key'>Stale docs:</span>
+                <span class='dp-row-val yellow'>1</span>
+              </div>
             </div>
-            <div class='dp-row'>
-              <span class='dp-row-key'>Guardian:</span>
-              <span class='dp-row-val green'>compliant</span>
+          </fieldset>
+
+          <fieldset class='dp-card'>
+            <legend class='dp-card-title cyan'
+              >📅 DOCUMENTATION FRESHNESS</legend
+            >
+            <div class='dp-block-bar'>
+              <span class='dp-block-filled'
+                >██████████████████████████████████████</span
+              ><span class='dp-block-empty'>██</span>
             </div>
-            <div class='dp-row'>
-              <span class='dp-row-key'>Stale docs:</span>
-              <span class='dp-row-val yellow'>1</span>
+            <div class='dp-freshness-pct'>95%</div>
+
+            <div class='dp-card-rows'>
+              <div class='dp-row'>
+                <span class='dp-row-key'>Fresh docs:</span>
+                <span class='dp-row-val white'>19/20</span>
+              </div>
+              <div class='dp-row'>
+                <span class='dp-row-key'>Oldest:</span>
+                <span class='dp-row-val white'>23 days</span>
+              </div>
+              <div class='dp-row'>
+                <span class='dp-row-key'>Status:</span>
+                <span class='dp-row-val white'>1 need review</span>
+              </div>
             </div>
+          </fieldset>
+        </div>
+
+        <fieldset class='dp-card dp-card-full'>
+          <legend class='dp-card-title cyan'>🎯 SPRINT PROGRESS</legend>
+          <div
+            class='dp-row'
+            style='margin-bottom: 0.75rem;'
+          >
+            <span class='dp-row-key'>Current:</span>
+            <span class='white'
+              >v4.0.0 - Quality Governance & Staleness Detection</span
+            >
           </div>
-        </fieldset>
 
-        <fieldset class='dp-card'>
-          <legend class='dp-card-title cyan'>📅 DOCUMENTATION FRESHNESS</legend>
-          <div class='dp-block-bar'>
-            <span class='dp-block-filled'>██████████████████████████████████████</span><span class="dp-block-empty">██</span>
+          <div class='dp-progress-wrapper'>
+            <div class='dp-block-bar'>
+              <span class='dp-block-filled'
+                >████████████████████████████████████</span
+              ><span class='dp-block-empty'>████</span>
+            </div>
+            <span class='dp-progress-pct white'>90%</span>
           </div>
-          <div class='dp-freshness-pct'>95%</div>
 
-          <div class='dp-card-rows'>
-            <div class='dp-row'>
-              <span class='dp-row-key'>Fresh docs:</span>
-              <span class='dp-row-val white'>19/20</span>
-            </div>
-            <div class='dp-row'>
-              <span class='dp-row-key'>Oldest:</span>
-              <span class='dp-row-val white'>23 days</span>
-            </div>
-            <div class='dp-row'>
-              <span class='dp-row-key'>Status:</span>
-              <span class='dp-row-val white'>1 need review</span>
-            </div>
+          <div class='dp-sprint-stats'>
+            <span class='green'>✅ Done: 9</span>
+            <span class='dp-divider'>│</span>
+            <span class='cyan'>🔄 In Progress: 1</span>
+            <span class='dp-divider'>│</span>
+            <span class='dp-dim'>📋 Todo: 0</span>
           </div>
         </fieldset>
       </div>
 
-      <fieldset class='dp-card dp-card-full'>
-        <legend class='dp-card-title cyan'>🎯 SPRINT PROGRESS</legend>
-        <div
-          class='dp-row'
-          style='margin-bottom: 0.75rem;'
-        >
-          <span class='dp-row-key'>Current:</span>
-          <span class='white'
-            >v4.0.0 - Quality Governance & Staleness Detection</span
-          >
-        </div>
-
-        <div class='dp-progress-wrapper'>
-          <div class='dp-block-bar'>
-            <span class='dp-block-filled'>████████████████████████████████████</span><span class="dp-block-empty">████</span>
+      <div
+        class='dp-view'
+        id='dp-view-files'
+      >
+        <!-- HotFilesCard: title is "🔥 ACTIVE FILES (n)", bullet list, footer note -->
+        <fieldset class='dp-card dp-card-full'>
+          <legend class='dp-card-title yellow'>🔥 ACTIVE FILES (6)</legend>
+          <div class='dp-file-list'>
+            <div class='dp-file'><span class='dp-bullet'>•</span>CLAUDE.md</div>
+            <div class='dp-file'>
+              <span class='dp-bullet'>•</span>NEXT-TASKS.md
+            </div>
+            <div class='dp-file'>
+              <span class='dp-bullet'>•</span>docs/core/PATTERNS.md
+            </div>
+            <div class='dp-file'>
+              <span class='dp-bullet'>•</span>docs/core/ARCHITECTURE.md
+            </div>
+            <div class='dp-file'>
+              <span class='dp-bullet'>•</span>CHANGELOG.md
+            </div>
           </div>
-          <span class='dp-progress-pct white'>90%</span>
-        </div>
-
-        <div class='dp-sprint-stats'>
-          <span class='green'>✅ Done: 9</span>
-          <span class='dp-divider'>│</span>
-          <span class='cyan'>🔄 In Progress: 1</span>
-          <span class='dp-divider'>│</span>
-          <span class='dp-dim'>📋 Todo: 0</span>
-        </div>
-      </fieldset>
-    </div>
-
-    <div
-      class='dp-view'
-      id='dp-view-files'
-    >
-      <!-- HotFilesCard: title is "🔥 ACTIVE FILES (n)", bullet list, footer note -->
-      <fieldset class='dp-card dp-card-full'>
-        <legend class='dp-card-title yellow'>🔥 ACTIVE FILES (6)</legend>
-        <div class='dp-file-list'>
-          <div class='dp-file'><span class='dp-bullet'>•</span>CLAUDE.md</div>
-          <div class='dp-file'><span class='dp-bullet'>•</span>NEXT-TASKS.md</div>
-          <div class='dp-file'><span class='dp-bullet'>•</span>docs/core/PATTERNS.md</div>
-          <div class='dp-file'><span class='dp-bullet'>•</span>docs/core/ARCHITECTURE.md</div>
-          <div class='dp-file'><span class='dp-bullet'>•</span>CHANGELOG.md</div>
-        </div>
-        <div class='dp-card-footer'>These files are always loaded by AI assistants</div>
-      </fieldset>
-
-      <!-- FileDistributionCard: title "📁 FILE DISTRIBUTION", bar chart -->
-      <fieldset class='dp-card dp-card-full'>
-        <legend class='dp-card-title'>📁 FILE DISTRIBUTION</legend>
-        <div class='dp-dist-row'>
-          <span class='dp-dist-label yellow'>🔥 HOT</span>
-          <span class='dp-dist-count'>6</span>
-          <span class='dp-dist-pct dp-dim'>(27%)</span>
-          <div class='dp-dist-bar-text'>
-            <span class='yellow'>██████</span><span class='dp-bar-empty'>██████████████</span>
+          <div class='dp-card-footer'>
+            These files are always loaded by AI assistants
           </div>
-        </div>
-        <div class='dp-dist-row'>
-          <span class='dp-dist-label blue'>~ WARM</span>
-          <span class='dp-dist-count'>12</span>
-          <span class='dp-dist-pct dp-dim'>(55%)</span>
-          <div class='dp-dist-bar-text'>
-            <span class='blue'>████████████</span><span class='dp-bar-empty'>████████</span>
+        </fieldset>
+
+        <!-- FileDistributionCard: title "📁 FILE DISTRIBUTION", bar chart -->
+        <fieldset class='dp-card dp-card-full'>
+          <legend class='dp-card-title'>📁 FILE DISTRIBUTION</legend>
+          <div class='dp-dist-row'>
+            <span class='dp-dist-label yellow'>🔥 HOT</span>
+            <span class='dp-dist-count'>6</span>
+            <span class='dp-dist-pct dp-dim'>(27%)</span>
+            <div class='dp-dist-bar-text'>
+              <span class='yellow'>██████</span><span class='dp-bar-empty'
+                >██████████████</span
+              >
+            </div>
           </div>
-        </div>
-        <div class='dp-dist-row'>
-          <span class='dp-dist-label cyan'>❄️ COLD</span>
-          <span class='dp-dist-count'>4</span>
-          <span class='dp-dist-pct dp-dim'>(18%)</span>
-          <div class='dp-dist-bar-text'>
-            <span class='cyan'>████</span><span class='dp-bar-empty'>████████████████</span>
+          <div class='dp-dist-row'>
+            <span class='dp-dist-label blue'>~ WARM</span>
+            <span class='dp-dist-count'>12</span>
+            <span class='dp-dist-pct dp-dim'>(55%)</span>
+            <div class='dp-dist-bar-text'>
+              <span class='blue'>████████████</span><span class='dp-bar-empty'
+                >████████</span
+              >
+            </div>
           </div>
-        </div>
-      </fieldset>
+          <div class='dp-dist-row'>
+            <span class='dp-dist-label cyan'>❄️ COLD</span>
+            <span class='dp-dist-count'>4</span>
+            <span class='dp-dist-pct dp-dim'>(18%)</span>
+            <div class='dp-dist-bar-text'>
+              <span class='cyan'>████</span><span class='dp-bar-empty'
+                >████████████████</span
+              >
+            </div>
+          </div>
+        </fieldset>
 
-      <!-- FileSizeHealthCard: title "📏 FILE SIZE HEALTH" -->
-      <fieldset class='dp-card dp-card-full dp-card-yellow'>
-        <legend class='dp-card-title yellow'>📏 FILE SIZE HEALTH</legend>
-        <div class='dp-size-row'>
-          <span class='dp-size-emoji'>🟡</span>
-          <span class='dp-size-file yellow'>NEXT-TASKS.md</span>
-          <span class='dp-dim'>172/200 lines (86%)</span>
-        </div>
-        <div class='dp-size-row'>
-          <span class='dp-size-emoji'>🟢</span>
-          <span class='dp-size-file green'>docs/core/PATTERNS.md</span>
-          <span class='dp-dim'>98/200 lines (49%)</span>
-        </div>
-      </fieldset>
-    </div>
+        <!-- FileSizeHealthCard: title "📏 FILE SIZE HEALTH" -->
+        <fieldset class='dp-card dp-card-full dp-card-yellow'>
+          <legend class='dp-card-title yellow'>📏 FILE SIZE HEALTH</legend>
+          <div class='dp-size-row'>
+            <span class='dp-size-emoji'>🟡</span>
+            <span class='dp-size-file yellow'>NEXT-TASKS.md</span>
+            <span class='dp-dim'>172/200 lines (86%)</span>
+          </div>
+          <div class='dp-size-row'>
+            <span class='dp-size-emoji'>🟢</span>
+            <span class='dp-size-file green'>docs/core/PATTERNS.md</span>
+            <span class='dp-dim'>98/200 lines (49%)</span>
+          </div>
+        </fieldset>
+      </div>
 
-    <div
-      class='dp-view'
-      id='dp-view-health'
-    >
-      <!-- ValidationCard: title "■ VALIDATION STATUS" -->
-      <fieldset class='dp-card dp-card-full dp-card-green'>
-        <legend class='dp-card-title green'>■ VALIDATION STATUS</legend>
-        <div class='dp-health-status green'>✅ HEALTHY</div>
-        <div class='dp-dim dp-health-meta'>Last checked: 2m ago</div>
-      </fieldset>
+      <div
+        class='dp-view'
+        id='dp-view-health'
+      >
+        <!-- ValidationCard: title "■ VALIDATION STATUS" -->
+        <fieldset class='dp-card dp-card-full dp-card-green'>
+          <legend class='dp-card-title green'>■ VALIDATION STATUS</legend>
+          <div class='dp-health-status green'>✅ HEALTHY</div>
+          <div class='dp-dim dp-health-meta'>Last checked: 2m ago</div>
+        </fieldset>
 
-      <!-- GuardianStatusCard: title "■ GUARDIAN CODE REVIEW" -->
-      <fieldset class='dp-card dp-card-full dp-card-green'>
-        <legend class='dp-card-title green'>■ GUARDIAN CODE REVIEW</legend>
-        <div class='dp-health-status green'>✅ All Clear</div>
-        <div class='dp-dim dp-health-meta'>Last review: 5 minutes ago</div>
-        <div class='dp-health-meta dp-dim'>
-          Run: <span class='cyan'>cortex-tms review &lt;file&gt;</span>
-        </div>
-      </fieldset>
-    </div>
+        <!-- GuardianStatusCard: title "■ GUARDIAN CODE REVIEW" -->
+        <fieldset class='dp-card dp-card-full dp-card-green'>
+          <legend class='dp-card-title green'>■ GUARDIAN CODE REVIEW</legend>
+          <div class='dp-health-status green'>✅ All Clear</div>
+          <div class='dp-dim dp-health-meta'>Last review: 5 minutes ago</div>
+          <div class='dp-health-meta dp-dim'>
+            Run: <span class='cyan'>cortex-tms review &lt;file&gt;</span>
+          </div>
+        </fieldset>
+      </div>
+    </div>{/* /.dp-views */}
 
     <div class='dp-footer'>
       <div>
@@ -254,6 +280,9 @@
     border-radius: 16px;
     overflow: hidden;
     margin: 2rem 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     backdrop-filter: blur(10px);
     color: #e5e7eb;
   }
@@ -288,6 +317,8 @@
   /* ── Terminal Content Area ───────────────────────────────────── */
   .dp-terminal-window {
     padding: 1.5rem 2rem;
+    overflow: hidden; /* backstop: prevent any view content from escaping the terminal */
+    box-sizing: border-box;
   }
 
   /* ── Brand header ────────────────────────────────────────────── */
@@ -307,6 +338,8 @@
     justify-content: space-between;
     margin-bottom: 2rem;
     color: var(--sl-color-gray-3);
+    gap: 1rem;
+    min-width: 0;
   }
   .dp-project span {
     color: #e5e7eb;
@@ -320,45 +353,62 @@
     display: flex;
     gap: 1.5rem;
     margin-bottom: 2rem;
+    flex-wrap: wrap;
+    min-width: 0;
   }
   .dp-tab {
     background: none;
     border: none;
+    border-bottom: 2px solid transparent;
     font-family: inherit;
     font-size: 1em;
     color: #9ca3af;
     cursor: pointer;
-    padding: 0;
+    padding: 0 0 4px 0;
     margin: 0;
-    transition: color 0.15s ease;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
-  .dp-tab:hover {
+  .dp-tab:hover:not(.dp-tab-active) {
     color: #d1d5db;
+    border-bottom-color: rgba(249, 115, 22, 0.4);
   }
   .dp-tab-active {
     color: #e5e7eb;
     font-weight: bold;
+    border-bottom-color: var(--sl-color-accent);
   }
   .dp-tab-bracket {
     color: #6b7280;
   }
 
   /* ── Views ───────────────────────────────────────────────────── */
-  .dp-view {
-    display: none;
-  }
-  .dp-view-active {
-    display: block;
-    animation: fadeIn 0.2s ease-in-out;
+  /* Stacked absolute views + measured container height = no CLS + no overlap. */
+  .dp-views {
+    position: relative;
+    min-width: 0;
+    min-height: 34rem; /* fallback before JS measurement */
   }
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0.5;
-    }
-    to {
-      opacity: 1;
-    }
+  .dp-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    min-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s;
+  }
+  .dp-view-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 
   /* ── Card grid ───────────────────────────────────────────────── */
@@ -441,6 +491,7 @@
   .dp-row {
     display: flex;
     gap: 0.5rem;
+    min-width: 0;
   }
   .dp-row-key {
     color: #9ca3af;
@@ -458,9 +509,15 @@
     overflow: hidden;
     white-space: nowrap;
   }
-  .dp-block-filled { color: #e5e7eb; }
-  .dp-block-empty  { color: #2d3748; }
-  .dp-bar-empty    { color: #2d3748; }
+  .dp-block-filled {
+    color: #e5e7eb;
+  }
+  .dp-block-empty {
+    color: #2d3748;
+  }
+  .dp-bar-empty {
+    color: #2d3748;
+  }
 
   .dp-freshness-pct {
     text-align: center;
@@ -475,6 +532,7 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
+    min-width: 0;
   }
   .dp-progress-wrapper > .dp-block-bar {
     flex: 1;
@@ -486,40 +544,106 @@
     gap: 1rem;
     align-items: center;
     margin-top: 1rem;
+    flex-wrap: wrap;
   }
   .dp-divider {
     color: #4b5563;
   }
 
   /* ── Files view ──────────────────────────────────────────────── */
-  .dp-file-list { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; }
-  .dp-file { color: #d1d5db; display: flex; gap: 0.5rem; }
-  .dp-bullet { color: #6b7280; }
-  .dp-card-footer { color: #6b7280; font-size: 0.9em; margin-top: 0.5rem; }
+  .dp-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .dp-file {
+    color: #d1d5db;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .dp-bullet {
+    color: #6b7280;
+  }
+  .dp-card-footer {
+    color: #6b7280;
+    font-size: 0.9em;
+    margin-top: 0.5rem;
+  }
 
-  .dp-dist-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
-  .dp-dist-label { min-width: 70px; }
-  .dp-dist-count { min-width: 1.5rem; text-align: right; color: #e5e7eb; }
-  .dp-dist-pct { min-width: 3.5rem; }
-  .dp-dist-bar-text { font-size: 0.85em; letter-spacing: -0.03em; }
-  .blue { color: #60a5fa; }
+  .dp-dist-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    min-width: 0;
+  }
+  .dp-dist-label {
+    min-width: 70px;
+    flex-shrink: 0;
+  }
+  .dp-dist-count {
+    min-width: 1.5rem;
+    flex-shrink: 0;
+    text-align: right;
+    color: #e5e7eb;
+  }
+  .dp-dist-pct {
+    min-width: 3.5rem;
+    flex-shrink: 0;
+  }
+  /* flex: 1 + min-width: 0 lets the bar shrink; overflow: hidden clips the block chars */
+  .dp-dist-bar-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 0.85em;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+  .blue {
+    color: #60a5fa;
+  }
 
-  .dp-size-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; }
-  .dp-size-emoji { min-width: 1.5rem; }
-  .dp-size-file { min-width: 180px; }
+  .dp-size-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+    min-width: 0;
+  }
+  .dp-size-emoji {
+    min-width: 1.5rem;
+    flex-shrink: 0;
+  }
+  .dp-size-file {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   /* ── Health view ─────────────────────────────────────────────── */
-  .dp-health-status { font-size: 1.1em; font-weight: bold; margin: 0.5rem 0 0.25rem; }
-  .dp-health-meta { font-size: 0.9em; margin-bottom: 0.25rem; }
+  .dp-health-status {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0.5rem 0 0.25rem;
+  }
+  .dp-health-meta {
+    font-size: 0.9em;
+    margin-bottom: 0.25rem;
+  }
 
   /* ── Footer ──────────────────────────────────────────────────── */
   .dp-footer {
     text-align: center;
-    margin-top: 3rem;
+    margin-top: 1.5rem;
     color: #9ca3af;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    overflow-wrap: anywhere;
   }
   .dp-footer code {
     background: none;
@@ -548,9 +672,15 @@
     color: #0e7490;
   }
 
-  :root[data-theme='light'] .dp-block-filled { color: #374151; }
-  :root[data-theme='light'] .dp-block-empty  { color: #e5e7eb; }
-  :root[data-theme='light'] .dp-bar-empty    { color: #e5e7eb; }
+  :root[data-theme='light'] .dp-block-filled {
+    color: #374151;
+  }
+  :root[data-theme='light'] .dp-block-empty {
+    color: #e5e7eb;
+  }
+  :root[data-theme='light'] .dp-bar-empty {
+    color: #e5e7eb;
+  }
 
   :root[data-theme='light'] .dp-meta-row,
   :root[data-theme='light'] .dp-time,
@@ -623,10 +753,18 @@
     color: #111827;
   }
 
-  :root[data-theme='light'] .dp-dist-count { color: #111827; }
-  :root[data-theme='light'] .dp-card-footer { color: #9ca3af; }
-  :root[data-theme='light'] .dp-bullet { color: #9ca3af; }
-  :root[data-theme='light'] .blue { color: #1d4ed8; } /* 6.96:1 on white ✅ */
+  :root[data-theme='light'] .dp-dist-count {
+    color: #111827;
+  }
+  :root[data-theme='light'] .dp-card-footer {
+    color: #9ca3af;
+  }
+  :root[data-theme='light'] .dp-bullet {
+    color: #9ca3af;
+  }
+  :root[data-theme='light'] .blue {
+    color: #1d4ed8;
+  } /* 6.96:1 on white ✅ */
 
   :root[data-theme='light'] .dp-file {
     color: #374151;
@@ -651,45 +789,205 @@
 
   /* ── Light mode semantic colors (WCAG AA compliant on white/light bg) ── */
   /* Dark versions of the bright terminal colors — each ≥ 4.5:1 on #fff   */
-  :root[data-theme='light'] .green         { color: #15803d; } /* 6.65:1 ✅ */
-  :root[data-theme='light'] .yellow        { color: #92400e; } /* 7.64:1 ✅ */
-  :root[data-theme='light'] .cyan          { color: #0e7490; } /* 6.03:1 ✅ */
-  :root[data-theme='light'] .hot           { color: #b91c1c; } /* 6.83:1 ✅ */
-  :root[data-theme='light'] .dp-row-key    { color: #6b7280; } /* 4.59:1 ✅ */
-  :root[data-theme='light'] .dp-card-title { color: #374151; } /* base title */
+  :root[data-theme='light'] .green {
+    color: #15803d;
+  } /* 6.65:1 ✅ */
+  :root[data-theme='light'] .yellow {
+    color: #92400e;
+  } /* 7.64:1 ✅ */
+  :root[data-theme='light'] .cyan {
+    color: #0e7490;
+  } /* 6.03:1 ✅ */
+  :root[data-theme='light'] .hot {
+    color: #b91c1c;
+  } /* 6.83:1 ✅ */
+  :root[data-theme='light'] .dp-row-key {
+    color: #6b7280;
+  } /* 4.59:1 ✅ */
+  :root[data-theme='light'] .dp-card-title {
+    color: #374151;
+  } /* base title */
+
+  @media (max-width: 600px) {
+    .dp-views {
+      min-height: 0;
+      height: auto !important;
+    }
+
+    .dp-view {
+      position: static;
+      display: none;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      overflow: visible;
+      transition: none;
+    }
+
+    .dp-view-active {
+      display: block;
+    }
+
+    .dp-terminal-window {
+      padding: 1rem;
+    }
+
+    .dp-meta-row {
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .dp-tabs {
+      gap: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .dp-row {
+      flex-wrap: wrap;
+    }
+
+    .dp-row-key {
+      min-width: 0;
+    }
+
+    .dp-progress-wrapper {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+  }
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const previews = document.querySelectorAll('.dashboard-preview')
-    previews.forEach((preview) => {
-      const tabs = preview.querySelectorAll<HTMLButtonElement>('.dp-tab')
-      const views = preview.querySelectorAll<HTMLElement>('.dp-view')
+  function initDashboardPreview(preview: Element) {
+    const tabs = preview.querySelectorAll<HTMLButtonElement>('.dp-tab')
+    const views = preview.querySelectorAll<HTMLElement>('.dp-view')
+    const viewsContainer = preview.querySelector<HTMLElement>('.dp-views')
+    const mobileQuery = window.matchMedia('(max-width: 600px)')
 
-      tabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-          const target = tab.dataset.view
+    let tabIndex = 0
+    let userInteracted = false
+    let cycleTimer: ReturnType<typeof setInterval> | null = null
+    let observer: IntersectionObserver | null = null
 
-          tabs.forEach((t) => {
-            t.classList.remove('dp-tab-active')
-            t.setAttribute('aria-selected', 'false')
-            // Hide brackets visually for inactive tabs while keeping layout stable
-            const brackets = t.querySelectorAll('.dp-tab-bracket')
-            brackets.forEach((b) => ((b as HTMLElement).style.opacity = '0'))
-          })
-          views.forEach((v) => v.classList.remove('dp-view-active'))
+    function isMobile() {
+      return mobileQuery.matches
+    }
 
-          tab.classList.add('dp-tab-active')
-          tab.setAttribute('aria-selected', 'true')
-          const activeBrackets = tab.querySelectorAll('.dp-tab-bracket')
-          activeBrackets.forEach(
-            (b) => ((b as HTMLElement).style.opacity = '1'),
-          )
+    function stopAutoCycle() {
+      if (cycleTimer) {
+        clearInterval(cycleTimer)
+        cycleTimer = null
+      }
+    }
 
-          const view = preview.querySelector<HTMLElement>(`#dp-view-${target}`)
-          if (view) view.classList.add('dp-view-active')
-        })
+    function updateViewsHeight() {
+      if (!viewsContainer || views.length === 0) return
+
+      if (isMobile()) {
+        viewsContainer.style.height = ''
+        return
+      }
+
+      let maxHeight = 0
+      views.forEach((view) => {
+        maxHeight = Math.max(maxHeight, view.scrollHeight)
+      })
+
+      if (maxHeight > 0) {
+        viewsContainer.style.height = `${maxHeight}px`
+      }
+    }
+
+    function switchTo(index: number) {
+      const tab = tabs[index]
+      const target = tab.dataset.view
+
+      tabs.forEach((t) => {
+        t.classList.remove('dp-tab-active')
+        t.setAttribute('aria-selected', 'false')
+        t.querySelectorAll<HTMLElement>('.dp-tab-bracket').forEach(
+          (b) => (b.style.opacity = '0.4'),
+        )
+      })
+      views.forEach((v) => v.classList.remove('dp-view-active'))
+
+      tab.classList.add('dp-tab-active')
+      tab.setAttribute('aria-selected', 'true')
+      tab
+        .querySelectorAll<HTMLElement>('.dp-tab-bracket')
+        .forEach((b) => (b.style.opacity = '1'))
+
+      const view = preview.querySelector<HTMLElement>(`#dp-view-${target}`)
+      if (view) view.classList.add('dp-view-active')
+
+      tabIndex = index
+    }
+
+    // Measure after layout, and again after fonts/load settle.
+    requestAnimationFrame(() => {
+      updateViewsHeight()
+      requestAnimationFrame(updateViewsHeight)
+    })
+
+    window.addEventListener('resize', () => {
+      updateViewsHeight()
+      if (isMobile()) {
+        stopAutoCycle()
+      }
+    })
+    window.addEventListener('load', updateViewsHeight)
+    mobileQuery.addEventListener('change', () => {
+      updateViewsHeight()
+      if (isMobile()) {
+        stopAutoCycle()
+      }
+    })
+
+    // Click: take control and stop auto-cycle
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        userInteracted = true
+        stopAutoCycle()
+        switchTo(i)
       })
     })
-  })
+
+    // Auto-cycle when scrolled into view, pause when out of view
+    observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (isMobile()) {
+            stopAutoCycle()
+            return
+          }
+
+          if (entry.isIntersecting && !userInteracted && !cycleTimer) {
+            cycleTimer = setInterval(() => {
+              switchTo((tabIndex + 1) % tabs.length)
+            }, 3000)
+          } else if (!entry.isIntersecting && cycleTimer) {
+            stopAutoCycle()
+          }
+        })
+      },
+      { threshold: 0.4 },
+    )
+
+    if (!isMobile()) {
+      observer.observe(preview)
+    }
+  }
+
+  function init() {
+    document
+      .querySelectorAll('.dashboard-preview')
+      .forEach(initDashboardPreview)
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init)
+  } else {
+    init()
+  }
 </script>
