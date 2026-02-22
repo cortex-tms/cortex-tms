@@ -168,6 +168,71 @@ class AtomicRelease {
       log.detail('✓ Pulled latest from origin/main');
     }
 
+    // ── Quality gates: everything must be green before touching the version ──
+
+    // Gate 1: version tags in sync
+    log.detail('Checking version tag drift...');
+    try {
+      this.exec('node scripts/sync-project.js --check', { silent: false });
+      log.detail('✓ Version tags in sync');
+    } catch {
+      throw new Error(
+        'Version tags are out of sync with package.json.\n' +
+        'Run: pnpm run docs:sync  →  commit  →  then release.'
+      );
+    }
+
+    // Gate 2: tests
+    log.detail('Running test suite...');
+    try {
+      this.exec('pnpm test', { silent: false });
+      log.detail('✓ All tests pass');
+    } catch {
+      throw new Error('Tests failed. Fix all failures before releasing.');
+    }
+
+    // Gate 3: lint
+    log.detail('Running linter...');
+    try {
+      this.exec('pnpm run lint', { silent: false });
+      log.detail('✓ Lint clean');
+    } catch {
+      throw new Error('Lint errors found. Fix all lint errors before releasing.');
+    }
+
+    // Gate 4: build
+    log.detail('Running build...');
+    try {
+      this.exec('pnpm run build', { silent: false });
+      log.detail('✓ Build succeeded');
+    } catch {
+      throw new Error('Build failed. Fix build errors before releasing.');
+    }
+
+    // Gate 5: CLI sanity check
+    log.detail('Verifying CLI works after build...');
+    try {
+      const cliVersion = this.exec('node bin/cortex-tms.js --version', { silent: true }).trim();
+      const pkg = JSON.parse(fs.readFileSync(this.packageJsonPath, 'utf-8'));
+      if (cliVersion !== pkg.version) {
+        throw new Error(`CLI reports v${cliVersion} but package.json is v${pkg.version}`);
+      }
+      log.detail(`✓ CLI responds correctly (v${cliVersion})`);
+    } catch (error) {
+      throw new Error(`CLI sanity check failed: ${error.message}`);
+    }
+
+    // Gate 6: governance validation
+    log.detail('Running cortex-tms validate --strict...');
+    try {
+      this.exec('node bin/cortex-tms.js validate --strict', { silent: false });
+      log.detail('✓ Governance validation passed');
+    } catch {
+      throw new Error('cortex-tms validate --strict failed. Fix all errors before releasing.');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
     log.success('✓ All pre-flight checks passed');
   }
 
@@ -483,9 +548,11 @@ See CHANGELOG.md for full details.`;
         rollbackSteps.push('files_restored');
       }
 
-      // Reset Git state
-      this.exec('git reset --hard HEAD', { silent: true, ignoreError: true });
-      rollbackSteps.push('git_reset');
+      // Reset Git state — only if we actually started modifying things (Phase 2+)
+      if (this.backupPath) {
+        this.exec('git reset --hard HEAD', { silent: true, ignoreError: true });
+        rollbackSteps.push('git_reset');
+      }
 
       // Return to original branch
       if (this.originalBranch) {

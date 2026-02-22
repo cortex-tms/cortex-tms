@@ -1,2 +1,5 @@
 # Git Guardian - Enforce Git Protocol with intelligent flexibility
 node scripts/git-guardian.js
+
+# Version drift check - blocks commit if @cortex-tms-version tags don't match package.json
+node scripts/sync-project.js --check

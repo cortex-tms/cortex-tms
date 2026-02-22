@@ -163,4 +163,4 @@ Four hardening tasks identified during GPT-5.1 code review:
 
 **Priority**: Address P0 items in v3.1.1 patch release.
 
-<!-- @cortex-tms-version 4.0.0 -->
+<!-- @cortex-tms-version 4.0.1 -->

@@ -440,8 +440,8 @@ MIT - See [LICENSE](LICENSE) for details
 
 ## Status
 
-**Version**: 4.0.0
+**Version**: 4.0.1
 **Last Updated**: 2026-02-21
 **Current Sprint**: v4.0 - "Quality Governance & Staleness Detection"
 
-<!-- @cortex-tms-version 4.0.0 -->
+<!-- @cortex-tms-version 4.0.1 -->

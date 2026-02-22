@@ -228,7 +228,7 @@ const promoteToStable = (betaVersion) => {
 - [ ] Run test suite: `npm test`
 
 ### Verify
-- [ ] Manual test: Create file with `<!-- @cortex-tms-version 4.0.0 -->`
+- [ ] Manual test: Create file with `<!-- @cortex-tms-version 4.0.1 -->`
 - [ ] Run migrate analysis → should parse version correctly
 - [ ] Test release script with prerelease version
 

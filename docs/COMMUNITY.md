@@ -134,4 +134,4 @@ Together, we're making AI-assisted development better for everyone.
 
 **Questions about the community?** Ask in [General Discussions](https://github.com/cortex-tms/cortex-tms/discussions/categories/general)
 
-<!-- @cortex-tms-version 4.0.0 -->
+<!-- @cortex-tms-version 4.0.1 -->

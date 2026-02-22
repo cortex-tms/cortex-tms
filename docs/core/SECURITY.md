@@ -1,6 +1,6 @@
 # Security Practices
 
-<!-- @cortex-tms-version 4.0.0 -->
+<!-- @cortex-tms-version 4.0.1 -->
 
 This document outlines Cortex TMS's security practices and automated security checks.
 

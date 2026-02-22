@@ -53,4 +53,4 @@ v4.0.0 published to NPM on 2026-02-22. This sprint addresses post-release audit 
 
 ---
 
-<!-- @cortex-tms-version 4.0.0 -->
+<!-- @cortex-tms-version 4.0.1 -->

@@ -19,7 +19,8 @@
   },
   "scripts": {
     "build": "pnpm run cli:build",
-    "prepublishOnly": "pnpm run build",
+    "prepublishOnly": "pnpm run docs:check && pnpm run build",
+    "version": "node scripts/sync-project.js && git add -A",
     "cli:dev": "tsx src/cli.ts",
     "cli:build": "tsc -p tsconfig.cli.json",
     "cli:test": "node bin/cortex-tms.js --help",
