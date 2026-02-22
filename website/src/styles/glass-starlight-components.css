@@ -125,17 +125,17 @@
 
 /* ── Light mode — same as DashboardPreview light mode ──────────── */
 :root[data-theme='light'] .expressive-code .frame {
-  background: #f8f9fa;
-  border-color: rgba(0, 0, 0, 0.12);
+  background: #f8f9fa !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
   color: #1f2937;
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.08),
-    0 1px 4px rgba(0, 0, 0, 0.06);
+    0 1px 4px rgba(0, 0, 0, 0.06) !important;
 }
 
 :root[data-theme='light'] .expressive-code .header {
-  background: #e9ecef;
-  border-bottom-color: rgba(0, 0, 0, 0.1);
+  background: #e9ecef !important;
+  border-bottom-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 :root[data-theme='light'] .expressive-code .copy button {
