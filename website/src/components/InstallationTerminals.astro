@@ -1,13 +1,11 @@
 ---
 /**
  * InstallationTerminals - Two-column installation commands
- * Shows npm and npx options side-by-side
  */
-import GlassPanel from './GlassPanel.astro';
-import { Copy, Star } from '@lucide/astro';
+import TerminalWindow from './TerminalWindow.astro';
+import { Star } from '@lucide/astro';
 import { getCollection } from 'astro:content';
 import type { InstallationEntry } from '../types/homepage';
-import '../styles/installation-terminals.css';
 
 const allContent = await getCollection('homepage');
 const entry = allContent.find(
@@ -19,55 +17,56 @@ if (!entry) throw new Error('Installation content not found');
 
 <div class="installation-grid">
   {entry.data.commands.map((cmd) => (
-    <GlassPanel variant="bordered" class="installation-terminal">
-      <div class="terminal-header">
-        <div class="terminal-dots">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
-        </div>
-        <div class="terminal-title">{cmd.label}</div>
-        <button class="copy-install-btn" data-command={cmd.code} title="Copy command">
-          <Copy size={16} />
-        </button>
+    <TerminalWindow title={cmd.label} copyText={cmd.code}>
+      <div class="terminal-line">
+        <span class="terminal-prompt">$</span>
+        <span class="terminal-command">{cmd.code}</span>
       </div>
-
-      <div class="terminal-content">
-        <div class="terminal-line">
-          <span class="terminal-prompt">$</span>
-          <span class="terminal-command">{cmd.code}</span>
+      {cmd.recommended && (
+        <div class="recommended-badge">
+          <Star size={16} />
+          Recommended
         </div>
-        {cmd.recommended && (
-          <div class="recommended-badge">
-            <Star size={16} />
-            Recommended
-          </div>
-        )}
-      </div>
-    </GlassPanel>
+      )}
+    </TerminalWindow>
   ))}
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const copyBtns = document.querySelectorAll('.copy-install-btn');
+<style>
+  .installation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
 
-    copyBtns.forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const command = btn.getAttribute('data-command');
-        if (!command) return;
+  .terminal-line    { margin-bottom: 1rem; display: flex; align-items: center; }
+  .terminal-prompt  { color: var(--sl-color-accent); margin-right: 0.5rem; user-select: none; }
+  .terminal-command { color: #fbbf24; word-break: break-all; }
 
-        try {
-          await navigator.clipboard.writeText(command);
-          btn.classList.add('copied');
+  .recommended-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4ade80;
+    width: fit-content;
+  }
 
-          setTimeout(() => {
-            btn.classList.remove('copied');
-          }, 2000);
-        } catch (err) {
-          console.error('Failed to copy:', err);
-        }
-      });
-    });
-  });
-</script>
+  @media (max-width: 768px) {
+    .installation-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  /* Light mode */
+  :root[data-theme='light'] .terminal-command    { color: #92400e; }
+  :root[data-theme='light'] .recommended-badge  {
+    background: rgba(21, 128, 61, 0.1);
+    border-color: rgba(21, 128, 61, 0.3);
+    color: #15803d;
+  }
+</style>

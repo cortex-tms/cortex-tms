@@ -2,11 +2,9 @@
 /**
  * ScriptedTerminal - Renders demo terminal from content
  */
-import GlassPanel from './GlassPanel.astro';
-import { Copy } from '@lucide/astro';
+import TerminalWindow from './TerminalWindow.astro';
 import { getCollection } from 'astro:content';
 import type { DemoTerminalEntry } from '../types/homepage';
-import '../styles/scripted-terminal.css';
 
 const allContent = await getCollection('homepage');
 const entry = allContent.find(
@@ -16,61 +14,63 @@ const entry = allContent.find(
 if (!entry) throw new Error('Demo terminal content not found');
 ---
 
-<GlassPanel variant="bordered" class="scripted-terminal">
-  <div class="terminal-header">
-    <div class="terminal-dots">
-      <span class="dot dot-red"></span>
-      <span class="dot dot-yellow"></span>
-      <span class="dot dot-green"></span>
-    </div>
-    <div class="terminal-title">Terminal</div>
-    <button class="copy-terminal-btn" title="Copy command">
-      <Copy size={16} />
-    </button>
+<TerminalWindow title="Terminal" copyText={entry.data.command}>
+  <div class="terminal-line">
+    <span class="terminal-prompt">$</span>
+    <span class="terminal-command">{entry.data.command}</span>
   </div>
 
-  <div class="terminal-content">
-    <div class="terminal-line">
-      <span class="terminal-prompt">$</span>
-      <span class="terminal-command">{entry.data.command}</span>
+  <div class="terminal-output">
+    <div class="output-line">🔍 <span class="output-header">Documentation Health Check</span></div>
+    <div class="output-line tier-hot">
+      <span class="tier-label">✅ Mandatory files:</span>
+      <span class="tier-value">All required governance docs present</span>
     </div>
-
-    <div class="terminal-output">
-      <div class="output-line">🔍 <span class="output-header">Documentation Health Check</span></div>
-      <div class="output-line tier-hot">
-        <span class="tier-label">✅ Mandatory files:</span>
-        <span class="tier-value">All required governance docs present</span>
-      </div>
-      <div class="output-line tier-warm">
-        <span class="tier-label">✅ Structure validation:</span>
-        <span class="tier-value">Proper HOT/WARM/COLD organization</span>
-      </div>
-      <div class="output-line tier-cold">
-        <span class="tier-label">✅ Size limits:</span>
-        <span class="tier-value">Documentation within reasonable bounds</span>
-      </div>
-      <div class="output-line cost-line">
-        ⚠️ <span class="cost-label">Staleness detected:</span>
-        <span class="cost-value">PATTERNS.md unchanged for 45 days</span>
-      </div>
+    <div class="output-line tier-warm">
+      <span class="tier-label">✅ Structure validation:</span>
+      <span class="tier-value">Proper HOT/WARM/COLD organization</span>
+    </div>
+    <div class="output-line tier-cold">
+      <span class="tier-label">✅ Size limits:</span>
+      <span class="tier-value">Documentation within reasonable bounds</span>
+    </div>
+    <div class="output-line cost-line">
+      ⚠️ <span class="cost-label">Staleness detected:</span>
+      <span class="cost-value">PATTERNS.md unchanged for 45 days</span>
     </div>
   </div>
-</GlassPanel>
+</TerminalWindow>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const terminals = document.querySelectorAll('.scripted-terminal');
-    terminals.forEach((terminal) => {
-      const copyBtn = terminal.querySelector('.copy-terminal-btn') as HTMLButtonElement;
-      const command = terminal.querySelector('.terminal-command') as HTMLElement;
+<style>
+  .terminal-line   { margin-bottom: 1rem; }
+  .terminal-prompt { color: var(--sl-color-accent); margin-right: 0.5rem; user-select: none; }
+  .terminal-command { color: #fbbf24; }
 
-      if (copyBtn && command) {
-        copyBtn.addEventListener('click', async () => {
-          await navigator.clipboard.writeText(command.textContent || '');
-          copyBtn.classList.add('copied');
-          setTimeout(() => copyBtn.classList.remove('copied'), 2000);
-        });
-      }
-    });
-  });
-</script>
+  .terminal-output { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .output-line  { display: flex; gap: 0.75rem; color: #d1d5db; }
+  .output-header { font-weight: 600; color: #e5e7eb; }
+
+  .tier-label { min-width: 160px; color: #9ca3af; }
+  .tier-value { font-weight: 600; }
+
+  .tier-hot  .tier-value { color: #f87171; }
+  .tier-warm .tier-value { color: #fbbf24; }
+  .tier-cold .tier-value { color: #6b7280; }
+
+  .cost-line  { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); }
+  .cost-label { color: #9ca3af; }
+  .cost-value { font-weight: 700; color: #4ade80; }
+
+  /* Light mode */
+  :root[data-theme='light'] .terminal-command { color: #92400e; }
+  :root[data-theme='light'] .output-line      { color: #374151; }
+  :root[data-theme='light'] .output-header    { color: #111827; }
+  :root[data-theme='light'] .tier-label       { color: #6b7280; }
+  :root[data-theme='light'] .tier-hot  .tier-value { color: #b91c1c; }
+  :root[data-theme='light'] .tier-warm .tier-value { color: #92400e; }
+  :root[data-theme='light'] .tier-cold .tier-value { color: #374151; }
+  :root[data-theme='light'] .cost-line  { border-top-color: rgba(0,0,0,0.1); }
+  :root[data-theme='light'] .cost-label { color: #6b7280; }
+  :root[data-theme='light'] .cost-value { color: #15803d; }
+</style>

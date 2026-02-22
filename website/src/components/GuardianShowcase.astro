@@ -1,8 +1,9 @@
 ---
 /**
- * GuardianShowcase - Two liquid glass cards side by side
+ * GuardianShowcase - Description card + terminal demo side by side
  */
 import GlassPanel from './GlassPanel.astro';
+import TerminalWindow from './TerminalWindow.astro';
 import { Shield, CheckCircle } from '@lucide/astro';
 import { getCollection } from 'astro:content';
 import type { GuardianShowcaseEntry } from '../types/homepage';
@@ -61,42 +62,46 @@ if (!entry) throw new Error('Guardian showcase content not found');
   </GlassPanel>
 
   {/* Card 2: Terminal Demo */}
-  <GlassPanel variant="bordered" liquidBlob>
-    <div class="terminal-demo">
-      <div class="terminal-header">
-        <div class="terminal-dots">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
-        </div>
-        <div class="terminal-title">Guardian Safe Mode</div>
+  <TerminalWindow title="Guardian Safe Mode">
+    <div class="terminal-line">
+      <span class="terminal-prompt">$</span>
+      <span class="terminal-command">npx cortex-tms review src/commands/init.ts --safe</span>
+    </div>
+
+    <div class="terminal-output">
+      <div class="output-line guardian-header">
+        <Shield size={16} />
+        <span>Guardian: Semantic Validation</span>
       </div>
-
-      <div class="terminal-content">
-        <div class="terminal-line">
-          <span class="terminal-prompt">$</span>
-          <span class="terminal-command">npx cortex-tms review src/commands/init.ts --safe</span>
-        </div>
-
-        <div class="terminal-output">
-          <div class="output-line guardian-header">
-            <Shield size={16} />
-            <span>Guardian: Semantic Validation</span>
-          </div>
-          <div class="output-line success">
-            <CheckCircle size={16} />
-            <span>Pattern compliance verified</span>
-          </div>
-          <div class="output-line success">
-            <CheckCircle size={16} />
-            <span>Safe Mode: No file operations executed</span>
-          </div>
-          <div class="output-line success">
-            <CheckCircle size={16} />
-            <span>0 violations found</span>
-          </div>
-        </div>
+      <div class="output-line success">
+        <CheckCircle size={16} />
+        <span>Pattern compliance verified</span>
+      </div>
+      <div class="output-line success">
+        <CheckCircle size={16} />
+        <span>Safe Mode: No file operations executed</span>
+      </div>
+      <div class="output-line success">
+        <CheckCircle size={16} />
+        <span>0 violations found</span>
       </div>
     </div>
-  </GlassPanel>
+  </TerminalWindow>
 </div>
+
+<style>
+  .terminal-line   { margin-bottom: 1rem; }
+  .terminal-prompt { color: var(--sl-color-accent); margin-right: 0.5rem; user-select: none; }
+  .terminal-command { color: #fbbf24; }
+
+  .terminal-output { display: flex; flex-direction: column; gap: 0.5rem; }
+  .output-line     { display: flex; align-items: center; gap: 0.75rem; color: #d1d5db; }
+  .guardian-header { color: #67e8f9; font-weight: 600; }
+  .success         { color: #4ade80; }
+
+  /* Light mode */
+  :root[data-theme='light'] .terminal-command  { color: #92400e; }
+  :root[data-theme='light'] .output-line       { color: #374151; }
+  :root[data-theme='light'] .guardian-header   { color: #0e7490; }
+  :root[data-theme='light'] .success           { color: #15803d; }
+</style>

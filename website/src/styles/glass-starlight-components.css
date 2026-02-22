@@ -8,79 +8,108 @@
  * Static design (no hover animations) for content display
  */
 
-/* === CODE BLOCK GLASS STYLING === */
+/* === CODE BLOCK STYLING — matches DashboardPreview exactly === */
 
-/* Target Expressive Code frames */
+/* Outer wrapper: transparent, just spacing */
 .expressive-code {
   position: relative;
-  background: var(--glass-surface);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   margin: 1.5rem 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
 }
 
+/* Frame: single container — same values as .dashboard-preview */
 .expressive-code .frame {
   position: relative;
-  background: var(--glass-surface);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: none !important;
   margin: 0;
+  font-family: var(--sl-font-mono);
+  color: #e5e7eb;
+  /* Override ec theme variables */
+  --ec-brdCol: transparent;
+  --ec-brdWd: 0px;
+  --ec-brdRad: 0px;
 }
 
-/* Noise texture overlay for depth */
+/* No noise texture — DashboardPreview doesn't use one */
 .expressive-code .frame::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity: var(--noise-opacity);
-  pointer-events: none;
-  z-index: 1;
-  mix-blend-mode: overlay;
+  display: none;
 }
 
-/* Code content should be above the noise overlay */
-.expressive-code pre,
-.expressive-code code {
-  position: relative;
-  z-index: 3;
-}
-
-/* Header styling (for code blocks with titles) */
+/* Header — same as .dp-header */
 .expressive-code .header {
   position: relative;
   z-index: 3;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid var(--glass-border);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
 }
 
-/* Copy button styling */
+/* Kill the extra ::after border line that ec adds under the header */
+.expressive-code .header::after {
+  display: none !important;
+}
+
+/* Kill the extra ::before border on non-terminal editor headers */
+.expressive-code .header::before {
+  border: none !important;
+}
+
+/* Replace single-color SVG mask dots with macOS-style colored dots */
+.expressive-code .frame.is-terminal .header::before {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  background-image:
+    radial-gradient(circle 5px at 5.5px 50%, #ff5f57 100%, transparent 100%),
+    radial-gradient(circle 5px at 21px 50%,  #ffbd2e 100%, transparent 100%),
+    radial-gradient(circle 5px at 36.5px 50%, #28c840 100%, transparent 100%) !important;
+  background-color: transparent !important;
+  width: 50px !important;
+  height: 11px !important;
+  opacity: 1 !important;
+}
+
+/* Code content — transparent so .frame background shows through */
+.expressive-code pre {
+  position: relative;
+  z-index: 3;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.expressive-code code {
+  position: relative;
+  z-index: 3;
+  background: transparent !important;
+}
+
+/* Copy button */
 .expressive-code .copy button {
   position: relative;
   z-index: 3;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: background 0.2s var(--ease-smooth);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  color: #9ca3af;
 }
 
 .expressive-code .copy button:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--sl-color-accent);
+  color: #e5e7eb;
 }
 
-/* Line numbers styling */
+/* Line numbers */
 .expressive-code .line-number {
   position: relative;
   z-index: 3;
@@ -94,33 +123,30 @@
   border-left: 2px solid var(--sl-color-accent);
 }
 
-/* Terminal/Shell styling variant */
-.expressive-code[data-language="bash"] .frame,
-.expressive-code[data-language="sh"] .frame,
-.expressive-code[data-language="shell"] .frame {
-  background: rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Light theme adjustments */
+/* ── Light mode — same as DashboardPreview light mode ──────────── */
 :root[data-theme='light'] .expressive-code .frame {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1f2937;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.08),
+    0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 :root[data-theme='light'] .expressive-code .header {
-  background: rgba(0, 0, 0, 0.02);
+  background: #e9ecef;
   border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
 :root[data-theme='light'] .expressive-code .copy button {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #6b7280;
 }
 
 :root[data-theme='light'] .expressive-code .copy button:hover {
   background: rgba(0, 0, 0, 0.08);
+  color: #111827;
 }
 
 /* Accessibility: Reduce motion */

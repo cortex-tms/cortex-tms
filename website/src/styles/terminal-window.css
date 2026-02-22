@@ -1,0 +1,119 @@
+/**
+ * TerminalWindow — single source of truth for all terminal chrome styling.
+ * Used by every terminal component on the site.
+ */
+
+/* ── Wrapper ─────────────────────────────────────────────────────── */
+.terminal-window {
+  font-family: var(--sl-font-mono);
+  font-size: 0.82em;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #e5e7eb;
+}
+
+/* ── Header chrome ───────────────────────────────────────────────── */
+.tw-header {
+  display: flex;
+  align-items: center;
+  padding: 0.65rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.tw-dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.tw-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.tw-dot-red    { background: #ff5f57; }
+.tw-dot-yellow { background: #ffbd2e; }
+.tw-dot-green  { background: #28c840; }
+
+.tw-title {
+  flex: 1;
+  text-align: center;
+  font-size: 0.85em;
+  color: #6b7280;
+}
+
+/* ── Copy button ─────────────────────────────────────────────────── */
+.tw-copy-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 0.4rem;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.tw-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--sl-color-accent);
+  color: #e5e7eb;
+}
+
+.tw-copy-btn.copied {
+  color: #4ade80;
+  border-color: #4ade80;
+}
+
+/* ── Content slot ────────────────────────────────────────────────── */
+.tw-content {
+  padding: 1.5rem 2rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .terminal-window { font-size: 0.78em; }
+  .tw-content      { padding: 1rem 1.25rem; }
+}
+
+/* ── Light mode — WCAG AA compliant ─────────────────────────────── */
+:root[data-theme='light'] .terminal-window {
+  background: #f8f9fa;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1f2937;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.08),
+    0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-theme='light'] .tw-header {
+  background: #e9ecef;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme='light'] .tw-title { color: #6b7280; }
+
+:root[data-theme='light'] .tw-copy-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #6b7280;
+}
+
+:root[data-theme='light'] .tw-copy-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #111827;
+}
+
+:root[data-theme='light'] .tw-copy-btn.copied {
+  color: #15803d;
+  border-color: #15803d;
+}
