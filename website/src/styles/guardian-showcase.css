@@ -1,5 +1,6 @@
 /**
- * Guardian Showcase Component Styles
+ * Guardian Showcase — layout and card-1 (description) styles only.
+ * Terminal chrome is handled by TerminalWindow / terminal-window.css.
  */
 
 .guardian-showcase {
@@ -7,9 +8,9 @@
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin: 2rem 0;
+  align-items: start;
 }
 
-/* Card 1: Description */
 .guardian-icon {
   color: var(--sl-color-accent);
   margin-bottom: 1rem;
@@ -57,83 +58,6 @@
 
 .guardian-link:hover {
   opacity: 0.8;
-}
-
-/* Card 2: Terminal */
-.terminal-demo {
-  font-family: var(--sl-font-mono);
-  font-size: 0.85em;
-}
-
-.terminal-header {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid var(--glass-border);
-  border-radius: 16px 16px 0 0;
-}
-
-.terminal-dots {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.dot-red { background: #ff5f57; }
-.dot-yellow { background: #ffbd2e; }
-.dot-green { background: #28c840; }
-
-.terminal-title {
-  flex: 1;
-  text-align: center;
-  font-size: 0.85em;
-  color: var(--sl-color-gray-3);
-}
-
-.terminal-content {
-  padding: 1.5rem;
-}
-
-.terminal-line {
-  margin-bottom: 1rem;
-}
-
-.terminal-prompt {
-  color: var(--sl-color-accent);
-  margin-right: 0.5rem;
-}
-
-.terminal-command {
-  color: var(--sl-color-text);
-}
-
-.terminal-output {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.output-line {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: var(--sl-color-gray-2);
-}
-
-.guardian-header {
-  color: var(--sl-color-accent);
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.success {
-  color: #10b981;
 }
 
 @media (max-width: 968px) {

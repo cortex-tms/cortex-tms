@@ -1,0 +1,62 @@
+---
+/**
+ * TerminalWindow — single reusable terminal chrome component.
+ *
+ * Used by: ScriptedTerminal, InstallationTerminals, GuardianShowcase, blog/Terminal
+ *
+ * Props:
+ *   title    — text shown in the title bar   (default: "Terminal")
+ *   copyText — string to copy on button click (omit to hide copy button)
+ */
+import { Copy } from '@lucide/astro';
+import '../styles/terminal-window.css';
+
+interface Props {
+  title?: string;
+  copyText?: string;
+}
+
+const { title = 'Terminal', copyText } = Astro.props;
+---
+
+<div class="terminal-window">
+  <div class="tw-header">
+    <div class="tw-dots">
+      <span class="tw-dot tw-dot-red"></span>
+      <span class="tw-dot tw-dot-yellow"></span>
+      <span class="tw-dot tw-dot-green"></span>
+    </div>
+    <div class="tw-title">{title}</div>
+    {copyText !== undefined && (
+      <button type="button" class="tw-copy-btn" data-copy-text={copyText} title="Copy to clipboard" aria-label="Copy to clipboard">
+        <Copy size={16} />
+      </button>
+    )}
+  </div>
+  <div class="tw-content">
+    <slot />
+  </div>
+</div>
+
+<script>
+  function initCopyButtons() {
+    document.querySelectorAll('.tw-copy-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const text = (btn as HTMLElement).dataset.copyText ?? '';
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 2000);
+        } catch {
+          // Clipboard unavailable (HTTP, permissions denied)
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCopyButtons);
+  } else {
+    initCopyButtons();
+  }
+</script>
