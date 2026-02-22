@@ -10,6 +10,7 @@ import { parseSprintInfo, calculateProgress } from './status.js';
 import { analyzeTokenUsage, calculateCostEstimates, type ModelName } from './token-counter.js';
 import { validateFileSizes, DEFAULT_LINE_LIMITS } from './validator.js';
 import { SAFE_MODE_THRESHOLD } from '../types/guardian.js';
+import { checkDocStaleness, type StalenessResult } from './git-staleness.js';
 
 export interface TMSStats {
   files: {
@@ -52,6 +53,17 @@ export interface TMSStats {
     violationCount: number;
     highConfidenceCount: number;
     lastChecked: Date | null;
+  };
+  staleness?: {
+    staleDocsCount: number;
+    totalChecked: number;
+    freshnessPercent: number;
+    oldestDocDays: number | null;
+    staleFiles: Array<{
+      path: string;
+      daysSinceUpdate: number;
+      meaningfulCommits: number;
+    }>;
   };
 }
 
@@ -312,6 +324,59 @@ export async function collectTMSStats(
     } catch {
       // Ignore cache read errors
     }
+  }
+
+  // Collect staleness data (v4.0.0)
+  try {
+    const governanceDocs = [
+      { path: 'docs/core/PATTERNS.md', watchPaths: ['src/'] },
+      { path: 'docs/core/ARCHITECTURE.md', watchPaths: ['src/', 'infrastructure/'] },
+      { path: 'docs/core/DOMAIN-LOGIC.md', watchPaths: ['src/'] },
+      { path: 'docs/core/GIT-STANDARDS.md', watchPaths: ['.github/', 'src/'] },
+      { path: 'CLAUDE.md', watchPaths: ['src/', 'docs/'] },
+    ];
+
+    const stalenessResults: Array<{
+      path: string;
+      result: StalenessResult;
+    }> = [];
+
+    // Default thresholds (can be configured via .cortexrc in the future)
+    const thresholdDays = 30;
+    const minCommits = 3;
+
+    for (const doc of governanceDocs) {
+      const fullPath = path.join(cwd, doc.path);
+      if (fs.existsSync(fullPath)) {
+        const result = checkDocStaleness(doc.path, doc.watchPaths, thresholdDays, minCommits, cwd);
+        stalenessResults.push({ path: doc.path, result });
+      }
+    }
+
+    if (stalenessResults.length > 0) {
+      const staleFiles = stalenessResults
+        .filter((r) => r.result.isStale)
+        .map((r) => ({
+          path: r.path,
+          daysSinceUpdate: r.result.daysSinceDocUpdate || 0,
+          meaningfulCommits: r.result.meaningfulCommits,
+        }));
+
+      const oldestDocDays = stalenessResults.reduce((max, r) => {
+        const days = r.result.daysSinceDocUpdate || 0;
+        return days > max ? days : max;
+      }, 0);
+
+      stats.staleness = {
+        staleDocsCount: staleFiles.length,
+        totalChecked: stalenessResults.length,
+        freshnessPercent: ((stalenessResults.length - staleFiles.length) / stalenessResults.length) * 100,
+        oldestDocDays: oldestDocDays > 0 ? oldestDocDays : null,
+        staleFiles,
+      };
+    }
+  } catch {
+    // Ignore staleness check errors (e.g., not a git repo, shallow clone)
   }
 
   return stats;

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box } from 'ink';
 import { TMSStats } from '../../../utils/stats-collector.js';
-import { ContextReductionCard } from './ContextReductionCard.js';
+import { StalenessCard } from './StalenessCard.js';
 import { SprintProgressCard } from './SprintProgressCard.js';
-import { CostSavingsCard } from './CostSavingsCard.js';
+import { GovernanceHealthCard } from './GovernanceHealthCard.js';
 import { HotFilesCard } from './HotFilesCard.js';
 import { FileDistributionCard } from './FileDistributionCard.js';
 import { FileSizeHealthCard } from './FileSizeHealthCard.js';
@@ -27,21 +27,56 @@ interface ViewContainerProps {
 export const ViewContainer: React.FC<ViewContainerProps> = ({
   view,
   stats,
-  contextReduction,
-  typicalReads,
   total,
   hotFiles,
 }) => {
-  const { files, sprint, savings, fileSizeHealth, validation, guardian } = stats;
+  const { files, sprint, fileSizeHealth, validation, guardian } = stats;
 
   if (view === 'overview') {
+    // Calculate governance health score (0-100)
+    const calculateGovernanceScore = (): number => {
+      let score = 100;
+
+      // Deduct for validation issues
+      if (validation.status === 'errors') score -= 40;
+      else if (validation.status === 'warnings') score -= 20;
+      else if (validation.status === 'unknown') score -= 10;
+
+      // Deduct for guardian issues
+      if (guardian && guardian.status === 'major_violations') score -= 30;
+      else if (guardian && guardian.status === 'minor_issues') score -= 15;
+
+      // TODO: Deduct for staleness when git-staleness is integrated
+
+      return Math.max(0, score);
+    };
+
+    // Get staleness data from stats (v4.0.0 git-based detection)
+    const staleness = stats.staleness;
+    const staleDocsCount = staleness?.staleDocsCount || 0;
+    const totalDocsCount = staleness?.totalChecked || 0;
+    const freshnessPercent = staleness?.freshnessPercent || 100;
+    const oldestDocDays = staleness?.oldestDocDays ?? undefined;
+
+    const governanceScore = calculateGovernanceScore();
+
     return (
       <Box flexDirection="column">
-        <ContextReductionCard
-          contextReduction={contextReduction}
-          typicalReads={typicalReads}
-          total={total}
+        <GovernanceHealthCard
+          score={governanceScore}
+          validationStatus={validation.status}
+          guardianStatus={guardian?.status || 'unknown'}
+          staleness={staleDocsCount}
         />
+
+        {totalDocsCount > 0 && (
+          <StalenessCard
+            staleDocsCount={staleDocsCount}
+            totalDocsCount={totalDocsCount}
+            freshnessPercent={freshnessPercent}
+            oldestDocDays={oldestDocDays}
+          />
+        )}
 
         {sprint ? (
           <SprintProgressCard
@@ -56,22 +91,6 @@ export const ViewContainer: React.FC<ViewContainerProps> = ({
             title="SPRINT PROGRESS"
             message="No sprint configured in NEXT-TASKS.md"
             icon="🎯"
-            color="gray"
-          />
-        )}
-
-        {savings ? (
-          <CostSavingsCard
-            monthlyCost={savings.monthlyCost}
-            tokensAvoided={savings.tokensAvoided}
-            percentReduction={savings.percentReduction}
-            model={savings.model}
-          />
-        ) : (
-          <NotConfiguredCard
-            title="MONTHLY SAVINGS"
-            message="Token analysis not available (may take time on large projects)"
-            icon="💰"
             color="gray"
           />
         )}
