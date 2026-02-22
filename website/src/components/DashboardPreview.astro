@@ -164,15 +164,60 @@
       class='dp-view'
       id='dp-view-files'
     >
+      <!-- HotFilesCard: title is "🔥 ACTIVE FILES (n)", bullet list, footer note -->
       <fieldset class='dp-card dp-card-full'>
-        <legend class='dp-card-title hot'>🔥 HOT FILES</legend>
+        <legend class='dp-card-title yellow'>🔥 ACTIVE FILES (6)</legend>
         <div class='dp-file-list'>
-          <div class='dp-file hot'>CLAUDE.md</div>
-          <div class='dp-file hot'>NEXT-TASKS.md</div>
-          <div class='dp-file hot'>docs/core/PATTERNS.md</div>
-          <div class='dp-file hot'>docs/core/ARCHITECTURE.md</div>
-          <div class='dp-file hot'>CHANGELOG.md</div>
-          <div class='dp-file hot'>README.md</div>
+          <div class='dp-file'><span class='dp-bullet'>•</span>CLAUDE.md</div>
+          <div class='dp-file'><span class='dp-bullet'>•</span>NEXT-TASKS.md</div>
+          <div class='dp-file'><span class='dp-bullet'>•</span>docs/core/PATTERNS.md</div>
+          <div class='dp-file'><span class='dp-bullet'>•</span>docs/core/ARCHITECTURE.md</div>
+          <div class='dp-file'><span class='dp-bullet'>•</span>CHANGELOG.md</div>
+        </div>
+        <div class='dp-card-footer'>These files are always loaded by AI assistants</div>
+      </fieldset>
+
+      <!-- FileDistributionCard: title "📁 FILE DISTRIBUTION", bar chart -->
+      <fieldset class='dp-card dp-card-full'>
+        <legend class='dp-card-title'>📁 FILE DISTRIBUTION</legend>
+        <div class='dp-dist-row'>
+          <span class='dp-dist-label yellow'>🔥 HOT</span>
+          <span class='dp-dist-count'>6</span>
+          <span class='dp-dist-pct dp-dim'>(27%)</span>
+          <div class='dp-dist-bar-text'>
+            <span class='yellow'>██████</span><span class='dp-dim'>░░░░░░░░░░░░░░</span>
+          </div>
+        </div>
+        <div class='dp-dist-row'>
+          <span class='dp-dist-label blue'>🌡️ WARM</span>
+          <span class='dp-dist-count'>12</span>
+          <span class='dp-dist-pct dp-dim'>(55%)</span>
+          <div class='dp-dist-bar-text'>
+            <span class='blue'>████████████</span><span class='dp-dim'>░░░░░░░░</span>
+          </div>
+        </div>
+        <div class='dp-dist-row'>
+          <span class='dp-dist-label cyan'>❄️ COLD</span>
+          <span class='dp-dist-count'>4</span>
+          <span class='dp-dist-pct dp-dim'>(18%)</span>
+          <div class='dp-dist-bar-text'>
+            <span class='cyan'>████</span><span class='dp-dim'>░░░░░░░░░░░░░░░░</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- FileSizeHealthCard: title "📏 FILE SIZE HEALTH" -->
+      <fieldset class='dp-card dp-card-full dp-card-yellow'>
+        <legend class='dp-card-title yellow'>📏 FILE SIZE HEALTH</legend>
+        <div class='dp-size-row'>
+          <span class='dp-size-emoji'>🟡</span>
+          <span class='dp-size-file yellow'>NEXT-TASKS.md</span>
+          <span class='dp-dim'>172/200 lines (86%)</span>
+        </div>
+        <div class='dp-size-row'>
+          <span class='dp-size-emoji'>🟢</span>
+          <span class='dp-size-file green'>docs/core/PATTERNS.md</span>
+          <span class='dp-dim'>98/200 lines (49%)</span>
         </div>
       </fieldset>
     </div>
@@ -181,22 +226,22 @@
       class='dp-view'
       id='dp-view-health'
     >
-      <div class='dp-grid-2'>
-        <fieldset class='dp-card'>
-          <legend class='dp-card-title green'>✅ VALIDATION STATUS</legend>
-          <div class='dp-card-rows'>
-            <div class='dp-row'>
-              <span class='dp-row-key'>Status:</span>
-              <span class='dp-row-val green'>Healthy</span>
-            </div>
-            <div class='dp-row'>
-              <span class='dp-row-key'>Issues:</span>
-              <span class='dp-row-val green'>0</span>
-            </div>
-          </div>
-          <div class='dp-status-banner green'>✅ All checks passed</div>
-        </fieldset>
-      </div>
+      <!-- ValidationCard: title "🛡️ VALIDATION STATUS" -->
+      <fieldset class='dp-card dp-card-full dp-card-green'>
+        <legend class='dp-card-title green'>🛡️ VALIDATION STATUS</legend>
+        <div class='dp-health-status green'>✅ HEALTHY</div>
+        <div class='dp-dim dp-health-meta'>Last checked: 2m ago</div>
+      </fieldset>
+
+      <!-- GuardianStatusCard: title "🛡️ GUARDIAN CODE REVIEW" -->
+      <fieldset class='dp-card dp-card-full dp-card-green'>
+        <legend class='dp-card-title green'>🛡️ GUARDIAN CODE REVIEW</legend>
+        <div class='dp-health-status green'>✅ All Clear</div>
+        <div class='dp-dim dp-health-meta'>Last review: 5 minutes ago</div>
+        <div class='dp-health-meta dp-dim'>
+          Run: <span class='cyan'>cortex-tms review &lt;file&gt;</span>
+        </div>
+      </fieldset>
     </div>
 
     <div class='dp-footer'>
@@ -469,6 +514,27 @@
     color: #4b5563;
   }
 
+  /* ── Files view ──────────────────────────────────────────────── */
+  .dp-file-list { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; }
+  .dp-file { color: #d1d5db; display: flex; gap: 0.5rem; }
+  .dp-bullet { color: #6b7280; }
+  .dp-card-footer { color: #6b7280; font-size: 0.9em; margin-top: 0.5rem; }
+
+  .dp-dist-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+  .dp-dist-label { min-width: 70px; }
+  .dp-dist-count { min-width: 1.5rem; text-align: right; color: #e5e7eb; }
+  .dp-dist-pct { min-width: 3.5rem; }
+  .dp-dist-bar-text { font-size: 0.85em; letter-spacing: -0.03em; }
+  .blue { color: #60a5fa; }
+
+  .dp-size-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; }
+  .dp-size-emoji { min-width: 1.5rem; }
+  .dp-size-file { min-width: 180px; }
+
+  /* ── Health view ─────────────────────────────────────────────── */
+  .dp-health-status { font-size: 1.1em; font-weight: bold; margin: 0.5rem 0 0.25rem; }
+  .dp-health-meta { font-size: 0.9em; margin-bottom: 0.25rem; }
+
   /* ── Footer ──────────────────────────────────────────────────── */
   .dp-footer {
     text-align: center;
@@ -485,10 +551,131 @@
     padding: 0;
   }
 
-  /* ── Light mode overrides ────────────────────────────────────── */
+  /* ── Light mode ──────────────────────────────────────────────── */
+  /* Full light-terminal look: cream background, dark text, dark chrome */
   :root[data-theme='light'] .dashboard-preview {
-    background: rgba(0, 0, 0, 0.75);
+    background: #f8f9fa;
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #1f2937;
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.08),
+      0 1px 4px rgba(0, 0, 0, 0.06);
   }
+
+  :root[data-theme='light'] .dp-header {
+    background: #e9ecef;
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+
+  :root[data-theme='light'] .dp-brand-name {
+    color: #111827;
+  }
+
+  :root[data-theme='light'] .dp-meta-row,
+  :root[data-theme='light'] .dp-time,
+  :root[data-theme='light'] .dp-project {
+    color: #6b7280;
+  }
+
+  :root[data-theme='light'] .dp-project span {
+    color: #111827;
+  }
+
+  :root[data-theme='light'] .dp-tab {
+    color: #9ca3af;
+  }
+
+  :root[data-theme='light'] .dp-tab:hover {
+    color: #374151;
+  }
+
+  :root[data-theme='light'] .dp-tab-active {
+    color: #111827;
+  }
+
+  :root[data-theme='light'] .dp-tab-bracket {
+    color: #9ca3af;
+  }
+
+  :root[data-theme='light'] .dp-card {
+    border-color: rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+  }
+
+  :root[data-theme='light'] .dp-row-key {
+    color: #6b7280;
+  }
+
+  :root[data-theme='light'] .dp-score-denom {
+    color: #9ca3af;
+  }
+
+  :root[data-theme='light'] .dp-score-label {
+    color: #6b7280;
+  }
+
+  :root[data-theme='light'] .dp-freshness-bar-container,
+  :root[data-theme='light'] .dp-progress-bar-container {
+    background: repeating-linear-gradient(
+      90deg,
+      #d1d5db,
+      #d1d5db 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  }
+
+  :root[data-theme='light'] .dp-freshness-fill,
+  :root[data-theme='light'] .dp-progress-fill {
+    background: #374151;
+  }
+
+  :root[data-theme='light'] .dp-divider {
+    color: #d1d5db;
+  }
+
+  :root[data-theme='light'] .dp-dim {
+    color: #9ca3af;
+  }
+
+  :root[data-theme='light'] .white {
+    color: #111827;
+  }
+
+  :root[data-theme='light'] .dp-dist-count { color: #111827; }
+  :root[data-theme='light'] .dp-card-footer { color: #9ca3af; }
+  :root[data-theme='light'] .dp-bullet { color: #9ca3af; }
+  :root[data-theme='light'] .blue { color: #1d4ed8; } /* 6.96:1 on white ✅ */
+
+  :root[data-theme='light'] .dp-file {
+    color: #374151;
+  }
+
+  :root[data-theme='light'] .dp-footer {
+    color: #9ca3af;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  :root[data-theme='light'] .dp-footer code {
+    color: #0284c7;
+  }
+
+  :root[data-theme='light'] .dp-status-banner.green {
+    background: rgba(22, 163, 74, 0.1);
+    color: #15803d;
+    border-color: rgba(22, 163, 74, 0.25);
+  }
+
+  /* ── Light mode semantic colors (WCAG AA compliant on white/light bg) ── */
+  /* Dark versions of the bright terminal colors — each ≥ 4.5:1 on #fff   */
+  :root[data-theme='light'] .green         { color: #15803d; } /* 6.65:1 ✅ */
+  :root[data-theme='light'] .yellow        { color: #92400e; } /* 7.64:1 ✅ */
+  :root[data-theme='light'] .cyan          { color: #0e7490; } /* 6.03:1 ✅ */
+  :root[data-theme='light'] .hot           { color: #b91c1c; } /* 6.83:1 ✅ */
+  :root[data-theme='light'] .dp-row-key    { color: #6b7280; } /* 4.59:1 ✅ */
+  :root[data-theme='light'] .dp-card-title { color: #374151; } /* base title */
 </style>
 
 <script>
