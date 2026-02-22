@@ -8,23 +8,13 @@ on:
         required: false
         type: boolean
         default: true
-      scope:
-        description: 'Validation scope (nano, standard, enterprise, or auto-detect)'
-        required: false
-        type: string
-        default: 'auto-detect'
-      ignore-files:
-        description: 'Comma-separated list of files to ignore during validation'
-        required: false
-        type: string
-        default: ''
       node-version:
         description: 'Node.js version to use'
         required: false
         type: string
         default: '20'
       cortex-version:
-        description: 'Cortex TMS version to install (e.g., "latest", "2.7.0")'
+        description: 'Cortex TMS version to install (e.g., "latest", "4.0.1")'
         required: false
         type: string
         default: 'latest'
@@ -57,20 +47,6 @@ jobs:
             CMD="$CMD --strict"
           fi
 
-          # Add scope if specified and not auto-detect
-          if [ "${{ inputs.scope }}" != "auto-detect" ]; then
-            CMD="$CMD --scope ${{ inputs.scope }}"
-          fi
-
-          # Add ignore files if specified
-          if [ -n "${{ inputs.ignore-files }}" ]; then
-            # Convert comma-separated list to space-separated for CLI
-            IGNORE_FILES=$(echo "${{ inputs.ignore-files }}" | tr ',' ' ')
-            for file in $IGNORE_FILES; do
-              CMD="$CMD --ignore $file"
-            done
-          fi
-
           # Run validation
           echo "Running: $CMD"
           eval $CMD
@@ -82,8 +58,4 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Configuration:**" >> $GITHUB_STEP_SUMMARY
           echo "- Strict mode: ${{ inputs.strict }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Scope: ${{ inputs.scope }}" >> $GITHUB_STEP_SUMMARY
           echo "- Cortex TMS version: ${{ inputs.cortex-version }}" >> $GITHUB_STEP_SUMMARY
-          if [ -n "${{ inputs.ignore-files }}" ]; then
-            echo "- Ignored files: ${{ inputs.ignore-files }}" >> $GITHUB_STEP_SUMMARY
-          fi

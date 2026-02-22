@@ -66,8 +66,6 @@ jobs:
     uses: cortex-tms/cortex-tms/.github/workflows/validate-reusable.yml@main
     with:
       strict: true                    # Enable strict mode (default: true)
-      scope: 'standard'               # Validation scope (default: auto-detect)
-      ignore-files: 'README.md'       # Comma-separated files to ignore
       cortex-version: 'latest'        # Cortex TMS version (default: latest)
       node-version: '20'              # Node.js version (default: 20)
 ```
@@ -77,9 +75,7 @@ jobs:
 | Input | Description | Default |
 |:------|:------------|:--------|
 | `strict` | Enable strict validation mode (fails on warnings) | `true` |
-| `scope` | Validation scope (nano/standard/enterprise/auto-detect) | `auto-detect` |
-| `ignore-files` | Comma-separated list of files to ignore | `''` |
-| `cortex-version` | Cortex TMS version to install (e.g., "latest", "2.7.0") | `latest` |
+| `cortex-version` | Cortex TMS version to install (e.g., `latest`, `4.0.1`) | `latest` |
 | `node-version` | Node.js version to use | `20` |
 
 #### Step 3: Pin to a Specific Version (Production)
