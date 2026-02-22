@@ -41,7 +41,7 @@ export const collections = {
       // Feature card
       z.object({
         type: z.literal('feature'),
-        icon: z.enum(['flame', 'shield', 'bar-chart', 'file-text', 'key', 'zap']),
+        icon: z.enum(['flame', 'shield', 'bar-chart', 'file-text', 'key', 'zap', 'monitor']),
         title: z.string(),
         order: z.number(),
       }),

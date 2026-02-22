@@ -4,7 +4,7 @@
 
 import type { CollectionEntry } from 'astro:content'
 
-export type IconType = 'flame' | 'shield' | 'bar-chart' | 'file-text' | 'key' | 'zap'
+export type IconType = 'flame' | 'shield' | 'bar-chart' | 'file-text' | 'key' | 'zap' | 'monitor'
 export type PillarIconType = 'file-text' | 'clock' | 'shield'
 
 export type HeroEntry = CollectionEntry<'homepage'> & {
