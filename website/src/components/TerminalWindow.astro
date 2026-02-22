@@ -28,7 +28,7 @@ const { title = 'Terminal', copyText } = Astro.props;
     </div>
     <div class="tw-title">{title}</div>
     {copyText !== undefined && (
-      <button class="tw-copy-btn" data-copy-text={copyText} title="Copy to clipboard">
+      <button type="button" class="tw-copy-btn" data-copy-text={copyText} title="Copy to clipboard" aria-label="Copy to clipboard">
         <Copy size={16} />
       </button>
     )}
@@ -39,14 +39,24 @@ const { title = 'Terminal', copyText } = Astro.props;
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  function initCopyButtons() {
     document.querySelectorAll('.tw-copy-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const text = (btn as HTMLElement).dataset.copyText ?? '';
-        await navigator.clipboard.writeText(text);
-        btn.classList.add('copied');
-        setTimeout(() => btn.classList.remove('copied'), 2000);
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 2000);
+        } catch {
+          // Clipboard unavailable (HTTP, permissions denied)
+        }
       });
     });
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCopyButtons);
+  } else {
+    initCopyButtons();
+  }
 </script>
