@@ -1,0 +1,254 @@
+---
+/**
+ * DashboardShowcase — homepage section highlighting the cortex-tms dashboard command.
+ * Two-column layout: copy left, DashboardPreview right, benefit cards full-width below.
+ */
+import DashboardPreview from './DashboardPreview.astro';
+---
+
+<div class="dashboard-showcase">
+
+  {/* Left column: copy */}
+  <div class="ds-copy">
+    <h3 class="ds-headline">One command.<br />Complete visibility.</h3>
+    <p class="ds-description">
+      The Cortex TMS dashboard gives you a real-time terminal UI showing
+      governance health, documentation freshness, and sprint progress —
+      all without leaving your terminal.
+    </p>
+
+    <div class="ds-live-badge">
+      <span class="ds-live-dot"></span>
+      <code>--live</code> mode: auto-refreshes every 5 seconds
+    </div>
+
+    <a href="/reference/cli/dashboard/" class="ds-link">
+      Explore the Dashboard docs →
+    </a>
+  </div>
+
+  {/* Right column: DashboardPreview with ambient glow */}
+  <div class="ds-preview-wrapper">
+    <div class="ds-glow"></div>
+    <DashboardPreview />
+  </div>
+
+  {/* Full-width row: 3 benefit cards */}
+  <div class="ds-benefits">
+    <div class="ds-benefit">
+      <div class="ds-benefit-value ds-gradient-text">92/100</div>
+      <div class="ds-benefit-title">Governance Health</div>
+      <div class="ds-benefit-caption">Spot compliance gaps before they become tech debt</div>
+    </div>
+    <div class="ds-benefit">
+      <div class="ds-benefit-value ds-gradient-text">95%</div>
+      <div class="ds-benefit-title">Documentation Freshness</div>
+      <div class="ds-benefit-caption">Know exactly which docs need attention and when</div>
+    </div>
+    <div class="ds-benefit">
+      <div class="ds-benefit-value ds-live-value"><code>--live</code></div>
+      <div class="ds-benefit-title">Real-Time Monitoring</div>
+      <div class="ds-benefit-caption">Auto-refreshing terminal dashboard for continuous insight</div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  /* ── Layout ──────────────────────────────────────────────────────── */
+  .dashboard-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  /* Benefits row spans full width */
+  .ds-benefits {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ── Copy column ─────────────────────────────────────────────────── */
+  .ds-headline {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 1.25rem 0;
+    color: var(--sl-color-text);
+  }
+
+  .ds-description {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--sl-color-gray-2);
+    margin: 0 0 0 0;
+  }
+
+  /* ── Live badge ──────────────────────────────────────────────────── */
+  .ds-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 1rem;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 999px;
+    font-family: var(--sl-font-mono);
+    font-size: 0.82rem;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.06);
+    margin: 1.5rem 0;
+    width: fit-content;
+  }
+
+  .ds-live-badge code {
+    background: none;
+    color: inherit;
+    font-family: inherit;
+    padding: 0;
+    font-weight: 600;
+  }
+
+  .ds-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    flex-shrink: 0;
+    animation: ds-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes ds-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.35; }
+  }
+
+  /* ── Docs link ───────────────────────────────────────────────────── */
+  .ds-link {
+    color: var(--sl-color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .ds-link:hover { opacity: 0.75; }
+
+  /* ── Preview wrapper ─────────────────────────────────────────────── */
+  .ds-preview-wrapper {
+    position: relative;
+  }
+
+  .ds-glow {
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(ellipse at center, rgba(249, 115, 22, 0.1), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Remove DashboardPreview's default margin when embedded here */
+  .ds-preview-wrapper :global(.dashboard-preview) {
+    margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Benefit cards ───────────────────────────────────────────────── */
+  .ds-benefit {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .ds-benefit-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: var(--sl-font-mono);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .ds-gradient-text {
+    background: linear-gradient(135deg, #ff9f5a, var(--sl-color-accent), #ff7033);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .ds-live-value code {
+    background: none;
+    color: #4ade80;
+    font-family: var(--sl-font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    padding: 0;
+  }
+
+  .ds-benefit-title {
+    font-weight: 600;
+    color: var(--sl-color-text);
+    font-size: 0.95rem;
+  }
+
+  .ds-benefit-caption {
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.5;
+  }
+
+  /* ── Responsive ──────────────────────────────────────────────────── */
+  @media (max-width: 968px) {
+    .dashboard-showcase {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .ds-benefits {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 968px) {
+    .ds-benefits {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* ── Light mode ──────────────────────────────────────────────────── */
+  :root[data-theme='light'] .ds-glow {
+    display: none;
+  }
+
+  :root[data-theme='light'] .ds-benefit {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  :root[data-theme='light'] .ds-live-badge {
+    border-color: rgba(21, 128, 61, 0.35);
+    background: rgba(21, 128, 61, 0.06);
+    color: #15803d;
+  }
+
+  :root[data-theme='light'] .ds-live-dot {
+    background: #15803d;
+  }
+
+  :root[data-theme='light'] .ds-live-value code {
+    color: #15803d;
+  }
+</style>

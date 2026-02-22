@@ -8,7 +8,7 @@ import SimpleLayout from '../layouts/SimpleLayout.astro'
 import GlassPanel from '../components/GlassPanel.astro'
 import GlassButton from '../components/GlassButton.astro'
 import Blockquote from '../components/Blockquote.astro'
-import MetricsShowcase from '../components/MetricsShowcase.astro'
+import DashboardShowcase from '../components/DashboardShowcase.astro'
 import PillarsSection from '../components/PillarsSection.astro'
 import SustainabilityBadge from '../components/SustainabilityBadge.astro'
 import CTABox from '../components/CTABox.astro'
@@ -153,16 +153,16 @@ const iconMap: Record<IconType, typeof Flame> = {
       )}
     </section>
 
+    {/* Dashboard Showcase */}
+    <section class='content-section'>
+      <h2 class='section-label'>Your Project at a Glance</h2>
+      <DashboardShowcase />
+    </section>
+
     {/* Guardian Showcase */}
     <section class='content-section'>
       <h2 class='section-label'>Guardian CLI: Semantic Validation</h2>
       <GuardianShowcase />
-    </section>
-
-    {/* Documentation Governance Metrics */}
-    <section class='content-section'>
-      <h2 class='section-label'>Documentation Governance in Action</h2>
-      <MetricsShowcase />
     </section>
 
     {/* Comparison Matrix */}
