@@ -1,0 +1,527 @@
+---
+/**
+ * DashboardPreview - Visual preview of cortex-tms dashboard terminal UI
+ * Matches the website's glass design system and mimics the actual terminal output.
+ */
+---
+
+<div class='dashboard-preview'>
+  <div class='dp-header'>
+    <div class='dp-dots'>
+      <span class='dp-dot dp-dot-red'></span>
+      <span class='dp-dot dp-dot-yellow'></span>
+      <span class='dp-dot dp-dot-green'></span>
+    </div>
+  </div>
+
+  <div class='dp-terminal-window'>
+    <div class='dp-brand'>
+      <span class='dp-brand-icon'>🧠</span>
+      <span class='dp-brand-name'>CORTEX TMS DASHBOARD</span>
+    </div>
+
+    <div class='dp-meta-row'>
+      <div class='dp-project'>Project: <span>cortex-tms</span></div>
+      <div class='dp-time'>2:47:35 PM</div>
+    </div>
+
+    <div
+      class='dp-tabs'
+      role='tablist'
+    >
+      <button
+        class='dp-tab dp-tab-active'
+        data-view='overview'
+        role='tab'
+        aria-selected='true'
+      >
+        <span class='dp-tab-bracket'>[</span>1. Overview<span
+          class='dp-tab-bracket'>]</span
+        >
+      </button>
+      <button
+        class='dp-tab'
+        data-view='files'
+        role='tab'
+        aria-selected='false'
+      >
+        <span
+          class='dp-tab-bracket'
+          style='opacity: 0;'
+          >[</span
+        >2. Files<span
+          class='dp-tab-bracket'
+          style='opacity: 0;'
+          >]</span
+        >
+      </button>
+      <button
+        class='dp-tab'
+        data-view='health'
+        role='tab'
+        aria-selected='false'
+      >
+        <span
+          class='dp-tab-bracket'
+          style='opacity: 0;'
+          >[</span
+        >3. Health<span
+          class='dp-tab-bracket'
+          style='opacity: 0;'
+          >]</span
+        >
+      </button>
+    </div>
+
+    <div
+      class='dp-view dp-view-active'
+      id='dp-view-overview'
+    >
+      <div class='dp-grid-2'>
+        <fieldset class='dp-card'>
+          <legend class='dp-card-title green'>✅ GOVERNANCE HEALTH</legend>
+          <div class='dp-score'>92<span class='dp-score-denom'>/100</span></div>
+          <div class='dp-score-label'>overall quality score</div>
+
+          <div class='dp-card-rows'>
+            <div class='dp-row'>
+              <span class='dp-row-key'>Validation:</span>
+              <span class='dp-row-val green'>healthy</span>
+            </div>
+            <div class='dp-row'>
+              <span class='dp-row-key'>Guardian:</span>
+              <span class='dp-row-val green'>compliant</span>
+            </div>
+            <div class='dp-row'>
+              <span class='dp-row-key'>Stale docs:</span>
+              <span class='dp-row-val yellow'>1</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class='dp-card'>
+          <legend class='dp-card-title cyan'>📅 DOCUMENTATION FRESHNESS</legend>
+          <div class='dp-freshness-bar-container'>
+            <div
+              class='dp-freshness-fill'
+              style='width: 95%'
+            >
+            </div>
+          </div>
+          <div class='dp-freshness-pct'>95%</div>
+
+          <div class='dp-card-rows'>
+            <div class='dp-row'>
+              <span class='dp-row-key'>Fresh docs:</span>
+              <span class='dp-row-val white'>19/20</span>
+            </div>
+            <div class='dp-row'>
+              <span class='dp-row-key'>Oldest:</span>
+              <span class='dp-row-val white'>23 days</span>
+            </div>
+            <div class='dp-row'>
+              <span class='dp-row-key'>Status:</span>
+              <span class='dp-row-val white'>1 need review</span>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <fieldset class='dp-card dp-card-full'>
+        <legend class='dp-card-title cyan'>🎯 SPRINT PROGRESS</legend>
+        <div
+          class='dp-row'
+          style='margin-bottom: 0.75rem;'
+        >
+          <span class='dp-row-key'>Current:</span>
+          <span class='white'
+            >v4.0.0 - Quality Governance & Staleness Detection</span
+          >
+        </div>
+
+        <div class='dp-progress-wrapper'>
+          <div class='dp-progress-bar-container'>
+            <div
+              class='dp-progress-fill'
+              style='width: 90%'
+            >
+            </div>
+          </div>
+          <span class='dp-progress-pct white'>90%</span>
+        </div>
+
+        <div class='dp-sprint-stats'>
+          <span class='green'>✅ Done: 9</span>
+          <span class='dp-divider'>│</span>
+          <span class='cyan'>🔄 In Progress: 1</span>
+          <span class='dp-divider'>│</span>
+          <span class='dp-dim'>📋 Todo: 0</span>
+        </div>
+      </fieldset>
+    </div>
+
+    <div
+      class='dp-view'
+      id='dp-view-files'
+    >
+      <fieldset class='dp-card dp-card-full'>
+        <legend class='dp-card-title hot'>🔥 HOT FILES</legend>
+        <div class='dp-file-list'>
+          <div class='dp-file hot'>CLAUDE.md</div>
+          <div class='dp-file hot'>NEXT-TASKS.md</div>
+          <div class='dp-file hot'>docs/core/PATTERNS.md</div>
+          <div class='dp-file hot'>docs/core/ARCHITECTURE.md</div>
+          <div class='dp-file hot'>CHANGELOG.md</div>
+          <div class='dp-file hot'>README.md</div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div
+      class='dp-view'
+      id='dp-view-health'
+    >
+      <div class='dp-grid-2'>
+        <fieldset class='dp-card'>
+          <legend class='dp-card-title green'>✅ VALIDATION STATUS</legend>
+          <div class='dp-card-rows'>
+            <div class='dp-row'>
+              <span class='dp-row-key'>Status:</span>
+              <span class='dp-row-val green'>Healthy</span>
+            </div>
+            <div class='dp-row'>
+              <span class='dp-row-key'>Issues:</span>
+              <span class='dp-row-val green'>0</span>
+            </div>
+          </div>
+          <div class='dp-status-banner green'>✅ All checks passed</div>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class='dp-footer'>
+      <div>
+        Tab: Switch view &nbsp;•&nbsp; 1/2/3: Jump to view &nbsp;•&nbsp; q: Quit
+      </div>
+      <div>Use <code>--live</code> for auto-refresh (5s interval)</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ── Wrapper ─────────────────────────────────────────────────── */
+  .dashboard-preview {
+    font-family: var(--sl-font-mono);
+    font-size: 0.82em;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 2rem 0;
+    backdrop-filter: blur(10px);
+    color: #e5e7eb;
+  }
+
+  /* ── Terminal chrome ─────────────────────────────────────────── */
+  .dp-header {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .dp-dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .dp-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+  .dp-dot-red {
+    background: #ff5f57;
+  }
+  .dp-dot-yellow {
+    background: #ffbd2e;
+  }
+  .dp-dot-green {
+    background: #28c840;
+  }
+
+  /* ── Terminal Content Area ───────────────────────────────────── */
+  .dp-terminal-window {
+    padding: 1.5rem 2rem;
+  }
+
+  /* ── Brand header ────────────────────────────────────────────── */
+  .dp-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+  }
+  .dp-brand-icon {
+    font-size: 1.2em;
+  }
+  .dp-brand-name {
+    color: #e5e7eb;
+  }
+
+  /* ── Meta Row ────────────────────────────────────────────────── */
+  .dp-meta-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    color: var(--sl-color-gray-3);
+  }
+  .dp-project span {
+    color: #e5e7eb;
+  }
+  .dp-time {
+    color: var(--sl-color-gray-3);
+  }
+
+  /* ── Tab bar ─────────────────────────────────────────────────── */
+  .dp-tabs {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .dp-tab {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 1em;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    transition: color 0.15s ease;
+  }
+  .dp-tab:hover {
+    color: #d1d5db;
+  }
+  .dp-tab-active {
+    color: #e5e7eb;
+    font-weight: bold;
+  }
+  .dp-tab-bracket {
+    color: #6b7280;
+  }
+
+  /* ── Views ───────────────────────────────────────────────────── */
+  .dp-view {
+    display: none;
+  }
+  .dp-view-active {
+    display: block;
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0.5;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* ── Card grid ───────────────────────────────────────────────── */
+  .dp-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 600px) {
+    .dp-grid-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Cards (Fieldsets) ───────────────────────────────────────── */
+  .dp-card {
+    border: 1px solid #4b5563; /* Mimics TUI box-drawing */
+    border-radius: 6px;
+    padding: 1rem 1.5rem 1.5rem;
+    margin: 0;
+    min-width: 0;
+  }
+  .dp-card-full {
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── Card title (Legend) ─────────────────────────────────────── */
+  .dp-card-title {
+    font-size: 0.9em;
+    letter-spacing: 0.04em;
+    padding: 0 0.75rem;
+    margin-left: 0.5rem;
+  }
+
+  /* ── Color utils ─────────────────────────────────────────────── */
+  .green {
+    color: #4ade80;
+  }
+  .yellow {
+    color: #fbbf24;
+  }
+  .cyan {
+    color: #67e8f9;
+  }
+  .hot {
+    color: #f87171;
+  }
+  .white {
+    color: #e5e7eb;
+  }
+  .dp-dim {
+    color: #6b7280;
+  }
+
+  /* ── Score display (Overview) ────────────────────────────────── */
+  .dp-score {
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    padding: 0.5rem 0 0;
+  }
+  .dp-score-denom {
+    font-size: 0.5em;
+    color: #6b7280;
+  }
+  .dp-score-label {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.9em;
+    margin-bottom: 1.25rem;
+  }
+
+  /* ── Card rows ───────────────────────────────────────────────── */
+  .dp-card-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .dp-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .dp-row-key {
+    color: #9ca3af;
+    min-width: 120px;
+  }
+  .dp-row-val {
+    font-weight: normal;
+  }
+
+  /* ── TUI Style Progress Bars ─────────────────────────────────── */
+  .dp-freshness-bar-container,
+  .dp-progress-bar-container {
+    height: 14px;
+    background: repeating-linear-gradient(
+      90deg,
+      #374151,
+      #374151 2px,
+      transparent 2px,
+      transparent 4px
+    ); /* Creates the TUI shaded block ▒ effect */
+    margin: 1rem 0;
+    display: flex;
+  }
+
+  .dp-freshness-fill,
+  .dp-progress-fill {
+    height: 100%;
+    background: #e5e7eb; /* Solid █ block */
+  }
+
+  .dp-freshness-pct {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  /* ── Sprint progress ─────────────────────────────────────────── */
+  .dp-progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .dp-progress-wrapper > .dp-progress-bar-container {
+    flex: 1;
+    margin: 0;
+  }
+
+  .dp-sprint-stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  .dp-divider {
+    color: #4b5563;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────── */
+  .dp-footer {
+    text-align: center;
+    margin-top: 3rem;
+    color: #9ca3af;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .dp-footer code {
+    background: none;
+    color: #67e8f9;
+    font-family: inherit;
+    padding: 0;
+  }
+
+  /* ── Light mode overrides ────────────────────────────────────── */
+  :root[data-theme='light'] .dashboard-preview {
+    background: rgba(0, 0, 0, 0.75);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const previews = document.querySelectorAll('.dashboard-preview')
+    previews.forEach((preview) => {
+      const tabs = preview.querySelectorAll<HTMLButtonElement>('.dp-tab')
+      const views = preview.querySelectorAll<HTMLElement>('.dp-view')
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const target = tab.dataset.view
+
+          tabs.forEach((t) => {
+            t.classList.remove('dp-tab-active')
+            t.setAttribute('aria-selected', 'false')
+            // Hide brackets visually for inactive tabs while keeping layout stable
+            const brackets = t.querySelectorAll('.dp-tab-bracket')
+            brackets.forEach((b) => ((b as HTMLElement).style.opacity = '0'))
+          })
+          views.forEach((v) => v.classList.remove('dp-view-active'))
+
+          tab.classList.add('dp-tab-active')
+          tab.setAttribute('aria-selected', 'true')
+          const activeBrackets = tab.querySelectorAll('.dp-tab-bracket')
+          activeBrackets.forEach(
+            (b) => ((b as HTMLElement).style.opacity = '1'),
+          )
+
+          const view = preview.querySelector<HTMLElement>(`#dp-view-${target}`)
+          if (view) view.classList.add('dp-view-active')
+        })
+      })
+    })
+  })
+</script>
