@@ -11,26 +11,26 @@
  * - Test edge cases (credentials, dirty workspace, network issues)
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { join } from 'path';
-import { writeFile, mkdir, readFile as fsReadFile, rm } from 'fs/promises';
-import { existsSync, readFileSync } from 'fs';
-import { execSync } from 'child_process';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { join } from "path";
+import { writeFile, mkdir, readFile as fsReadFile, rm } from "fs/promises";
+import { existsSync, readFileSync } from "fs";
+import { execSync } from "child_process";
 import {
   createTempDir,
   cleanupTempDir,
   fileExists,
   readFile,
-} from './utils/temp-dir.js';
-import { extractVersion, injectVersionMetadata } from '../utils/templates.js';
+} from "./utils/temp-dir.js";
+import { extractVersion, injectVersionMetadata } from "../utils/templates.js";
 
 // Mock child_process
-vi.mock('child_process', () => ({
+vi.mock("child_process", () => ({
   execSync: vi.fn(),
 }));
 
 // Mock chalk to avoid ANSI codes in test output
-vi.mock('chalk', () => ({
+vi.mock("chalk", () => ({
   default: {
     blue: (str: string) => str,
     green: (str: string) => str,
@@ -44,25 +44,37 @@ vi.mock('chalk', () => ({
 /**
  * Helper to create a minimal project structure for testing
  */
-async function createMinimalProject(dir: string, version = '2.5.0'): Promise<void> {
+async function createMinimalProject(
+  dir: string,
+  version = "2.5.0",
+): Promise<void> {
   // Create package.json
   const packageJson = {
-    name: 'cortex-tms',
+    name: "cortex-tms",
     version,
-    description: 'Test project',
+    description: "Test project",
   };
-  await writeFile(join(dir, 'package.json'), JSON.stringify(packageJson, null, 2) + '\n');
+  await writeFile(
+    join(dir, "package.json"),
+    JSON.stringify(packageJson, null, 2) + "\n",
+  );
 
   // Create other files that get synced
-  await writeFile(join(dir, 'README.md'), '# Cortex TMS\nv' + version + '\n');
-  await writeFile(join(dir, 'CHANGELOG.md'), '# Changelog\n## v' + version + '\n');
-  await writeFile(join(dir, 'NEXT-TASKS.md'), '# Tasks\n<!-- @cortex-tms-version ' + version + ' -->\n');
+  await writeFile(join(dir, "README.md"), "# Cortex TMS\nv" + version + "\n");
+  await writeFile(
+    join(dir, "CHANGELOG.md"),
+    "# Changelog\n## v" + version + "\n",
+  );
+  await writeFile(
+    join(dir, "NEXT-TASKS.md"),
+    "# Tasks\n<!-- @cortex-tms-version " + version + " -->\n",
+  );
 
   // Create scripts directory with a mock sync script
-  await mkdir(join(dir, 'scripts'), { recursive: true });
+  await mkdir(join(dir, "scripts"), { recursive: true });
   await writeFile(
-    join(dir, 'scripts/sync-project.js'),
-    '#!/usr/bin/env node\nconsole.log("Sync complete");\n'
+    join(dir, "scripts/sync-project.js"),
+    '#!/usr/bin/env node\nconsole.log("Sync complete");\n',
   );
 }
 
@@ -70,12 +82,12 @@ async function createMinimalProject(dir: string, version = '2.5.0'): Promise<voi
  * Helper to verify backup was created
  */
 async function verifyBackupExists(projectDir: string): Promise<boolean> {
-  const cortexDir = join(projectDir, '.cortex', 'backups');
+  const cortexDir = join(projectDir, ".cortex", "backups");
   if (!existsSync(cortexDir)) {
     return false;
   }
   // Check if any backup directory exists
-  const { readdir } = await import('fs/promises');
+  const { readdir } = await import("fs/promises");
   const backups = await readdir(cortexDir);
   return backups.length > 0;
 }
@@ -84,11 +96,11 @@ async function verifyBackupExists(projectDir: string): Promise<boolean> {
  * Helper to get the latest backup directory
  */
 async function getLatestBackup(projectDir: string): Promise<string | null> {
-  const cortexDir = join(projectDir, '.cortex', 'backups');
+  const cortexDir = join(projectDir, ".cortex", "backups");
   if (!existsSync(cortexDir)) {
     return null;
   }
-  const { readdir } = await import('fs/promises');
+  const { readdir } = await import("fs/promises");
   const backups = await readdir(cortexDir);
   if (backups.length === 0) {
     return null;
@@ -98,7 +110,7 @@ async function getLatestBackup(projectDir: string): Promise<string | null> {
   return join(cortexDir, sorted[0]);
 }
 
-describe('Atomic Release Engine - Happy Path', () => {
+describe("Atomic Release Engine - Happy Path", () => {
   let tempDir: string;
   let mockExecSync: ReturnType<typeof vi.fn>;
 
@@ -115,21 +127,21 @@ describe('Atomic Release Engine - Happy Path', () => {
       const cmd = command.toString();
 
       // Git operations
-      if (cmd.includes('git branch --show-current')) {
-        return Buffer.from('main\n');
+      if (cmd.includes("git branch --show-current")) {
+        return Buffer.from("main\n");
       }
-      if (cmd.includes('git status --porcelain')) {
-        return Buffer.from(''); // Clean workspace
+      if (cmd.includes("git status --porcelain")) {
+        return Buffer.from(""); // Clean workspace
       }
-      if (cmd.includes('npm whoami')) {
-        return Buffer.from('test-user\n');
+      if (cmd.includes("npm whoami")) {
+        return Buffer.from("test-user\n");
       }
-      if (cmd.includes('gh auth status')) {
-        return Buffer.from('✓ Logged in\n');
+      if (cmd.includes("gh auth status")) {
+        return Buffer.from("✓ Logged in\n");
       }
 
       // All other commands succeed silently
-      return Buffer.from('');
+      return Buffer.from("");
     });
   });
 
@@ -138,51 +150,54 @@ describe('Atomic Release Engine - Happy Path', () => {
     vi.clearAllMocks();
   });
 
-  it('should complete all 6 phases successfully for patch release', async () => {
+  it("should complete all 6 phases successfully for patch release", async () => {
     // This test validates the full release flow
     // Note: We're testing the AtomicRelease class logic, not executing the actual script
 
-    const packageJsonPath = join(tempDir, 'package.json');
+    const packageJsonPath = join(tempDir, "package.json");
     const pkgBefore = JSON.parse(await readFile(packageJsonPath));
-    expect(pkgBefore.version).toBe('2.5.0');
+    expect(pkgBefore.version).toBe("2.5.0");
 
     // Verify backup would be created (this tests our backup mechanism)
-    const backupPath = join(tempDir, '.cortex', 'backups', 'test-backup');
+    const backupPath = join(tempDir, ".cortex", "backups", "test-backup");
     await mkdir(backupPath, { recursive: true });
-    await writeFile(join(backupPath, 'manifest.json'), JSON.stringify({
-      timestamp: new Date().toISOString(),
-      reason: 'Test backup',
-      files: ['package.json'],
-      originalBranch: 'main',
-    }));
+    await writeFile(
+      join(backupPath, "manifest.json"),
+      JSON.stringify({
+        timestamp: new Date().toISOString(),
+        reason: "Test backup",
+        files: ["package.json"],
+        originalBranch: "main",
+      }),
+    );
 
     const backupExists = await verifyBackupExists(tempDir);
     expect(backupExists).toBe(true);
   });
 
-  it('should calculate version bumps correctly', () => {
+  it("should calculate version bumps correctly", () => {
     // Test version bump logic
     const testCases = [
-      { current: '2.5.0', type: 'patch', expected: '2.5.1' },
-      { current: '2.5.0', type: 'minor', expected: '2.6.0' },
-      { current: '2.5.0', type: 'major', expected: '3.0.0' },
-      { current: '1.0.9', type: 'patch', expected: '1.0.10' },
-      { current: '1.9.0', type: 'minor', expected: '1.10.0' },
-      { current: '9.0.0', type: 'major', expected: '10.0.0' },
+      { current: "2.5.0", type: "patch", expected: "2.5.1" },
+      { current: "2.5.0", type: "minor", expected: "2.6.0" },
+      { current: "2.5.0", type: "major", expected: "3.0.0" },
+      { current: "1.0.9", type: "patch", expected: "1.0.10" },
+      { current: "1.9.0", type: "minor", expected: "1.10.0" },
+      { current: "9.0.0", type: "major", expected: "10.0.0" },
     ];
 
     testCases.forEach(({ current, type, expected }) => {
-      const [major, minor, patch] = current.split('.').map(Number);
+      const [major, minor, patch] = current.split(".").map(Number);
       let newVersion: string;
 
       switch (type) {
-        case 'major':
+        case "major":
           newVersion = `${major + 1}.0.0`;
           break;
-        case 'minor':
+        case "minor":
           newVersion = `${major}.${minor + 1}.0`;
           break;
-        case 'patch':
+        case "patch":
           newVersion = `${major}.${minor}.${patch + 1}`;
           break;
         default:
@@ -196,10 +211,10 @@ describe('Atomic Release Engine - Happy Path', () => {
   it('should promote prerelease to stable with "stable" bump type (TMS-272)', () => {
     // Test stable bump type for prerelease promotion
     const testCases = [
-      { current: '2.6.0-beta.1', expected: '2.6.0' },
-      { current: '2.6.0-alpha.3', expected: '2.6.0' },
-      { current: '3.0.0-rc.2', expected: '3.0.0' },
-      { current: '1.0.0-beta', expected: '1.0.0' },
+      { current: "2.6.0-beta.1", expected: "2.6.0" },
+      { current: "2.6.0-alpha.3", expected: "2.6.0" },
+      { current: "3.0.0-rc.2", expected: "3.0.0" },
+      { current: "1.0.0-beta", expected: "1.0.0" },
     ];
 
     testCases.forEach(({ current, expected }) => {
@@ -223,9 +238,9 @@ describe('Atomic Release Engine - Happy Path', () => {
   });
 
   it('should reject "stable" bump for already stable versions (TMS-272)', () => {
-    const stableVersions = ['2.5.0', '1.0.0', '10.20.30'];
+    const stableVersions = ["2.5.0", "1.0.0", "10.20.30"];
 
-    stableVersions.forEach(version => {
+    stableVersions.forEach((version) => {
       // Parse version
       const match = version.match(/^(\d+)\.(\d+)\.(\d+)(?:-(.+))?$/);
       expect(match).not.toBeNull();
@@ -240,15 +255,10 @@ describe('Atomic Release Engine - Happy Path', () => {
     });
   });
 
-  it('should support explicit version via --version flag (TMS-272)', () => {
-    const explicitVersions = [
-      '2.7.0',
-      '3.0.0',
-      '2.6.0-beta.2',
-      '1.0.0-rc.1',
-    ];
+  it("should support explicit version via --version flag (TMS-272)", () => {
+    const explicitVersions = ["2.7.0", "3.0.0", "2.6.0-beta.2", "1.0.0-rc.1"];
 
-    explicitVersions.forEach(version => {
+    explicitVersions.forEach((version) => {
       // Validate version format
       const match = version.match(/^(\d+)\.(\d+)\.(\d+)(?:-(.+))?$/);
       expect(match).not.toBeNull();
@@ -266,7 +276,7 @@ describe('Atomic Release Engine - Happy Path', () => {
   });
 });
 
-describe('Atomic Release Engine - Pre-flight Validation', () => {
+describe("Atomic Release Engine - Pre-flight Validation", () => {
   let tempDir: string;
   let mockExecSync: ReturnType<typeof vi.fn>;
 
@@ -282,64 +292,66 @@ describe('Atomic Release Engine - Pre-flight Validation', () => {
     vi.clearAllMocks();
   });
 
-  it('should detect when not on main branch', () => {
+  it("should detect when not on main branch", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
-      if (cmd.includes('git branch --show-current')) {
-        return Buffer.from('feature/test-branch\n');
+      if (cmd.includes("git branch --show-current")) {
+        return Buffer.from("feature/test-branch\n");
       }
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
-    const currentBranch = mockExecSync('git branch --show-current').toString().trim();
-    expect(currentBranch).toBe('feature/test-branch');
-    expect(currentBranch).not.toBe('main');
+    const currentBranch = mockExecSync("git branch --show-current")
+      .toString()
+      .trim();
+    expect(currentBranch).toBe("feature/test-branch");
+    expect(currentBranch).not.toBe("main");
   });
 
-  it('should detect dirty workspace', () => {
+  it("should detect dirty workspace", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
-      if (cmd.includes('git status --porcelain')) {
-        return Buffer.from(' M package.json\n?? newfile.txt\n');
+      if (cmd.includes("git status --porcelain")) {
+        return Buffer.from(" M package.json\n?? newfile.txt\n");
       }
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
-    const status = mockExecSync('git status --porcelain').toString().trim();
-    expect(status).not.toBe('');
-    expect(status).toContain('package.json');
+    const status = mockExecSync("git status --porcelain").toString().trim();
+    expect(status).not.toBe("");
+    expect(status).toContain("package.json");
   });
 
-  it('should detect missing NPM credentials', () => {
+  it("should detect missing NPM credentials", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
-      if (cmd.includes('npm whoami')) {
-        throw new Error('npm ERR! need auth');
+      if (cmd.includes("npm whoami")) {
+        throw new Error("npm ERR! need auth");
       }
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     expect(() => {
-      mockExecSync('npm whoami');
-    }).toThrow('npm ERR! need auth');
+      mockExecSync("npm whoami");
+    }).toThrow("npm ERR! need auth");
   });
 
-  it('should detect missing GitHub CLI authentication', () => {
+  it("should detect missing GitHub CLI authentication", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
-      if (cmd.includes('gh auth status')) {
-        throw new Error('gh: not logged in');
+      if (cmd.includes("gh auth status")) {
+        throw new Error("gh: not logged in");
       }
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     expect(() => {
-      mockExecSync('gh auth status');
-    }).toThrow('gh: not logged in');
+      mockExecSync("gh auth status");
+    }).toThrow("gh: not logged in");
   });
 });
 
-describe('Atomic Release Engine - Backup and Restore', () => {
+describe("Atomic Release Engine - Backup and Restore", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -351,23 +363,23 @@ describe('Atomic Release Engine - Backup and Restore', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should create backup with all critical files', async () => {
-    const backupPath = join(tempDir, '.cortex', 'backups', 'release-test');
+  it("should create backup with all critical files", async () => {
+    const backupPath = join(tempDir, ".cortex", "backups", "release-test");
     await mkdir(backupPath, { recursive: true });
 
     // Backup critical files
     const criticalFiles = [
-      'package.json',
-      'README.md',
-      'CHANGELOG.md',
-      'NEXT-TASKS.md',
+      "package.json",
+      "README.md",
+      "CHANGELOG.md",
+      "NEXT-TASKS.md",
     ];
 
     for (const file of criticalFiles) {
       const sourcePath = join(tempDir, file);
       if (existsSync(sourcePath)) {
         const destPath = join(backupPath, file);
-        const content = readFileSync(sourcePath, 'utf-8');
+        const content = readFileSync(sourcePath, "utf-8");
         await writeFile(destPath, content);
       }
     }
@@ -375,47 +387,60 @@ describe('Atomic Release Engine - Backup and Restore', () => {
     // Write manifest
     const manifest = {
       timestamp: new Date().toISOString(),
-      reason: 'Atomic release',
+      reason: "Atomic release",
       files: criticalFiles,
-      originalBranch: 'main',
+      originalBranch: "main",
     };
-    await writeFile(join(backupPath, 'manifest.json'), JSON.stringify(manifest, null, 2));
+    await writeFile(
+      join(backupPath, "manifest.json"),
+      JSON.stringify(manifest, null, 2),
+    );
 
     // Verify backup
-    const manifestExists = await fileExists(join(backupPath, 'manifest.json'));
+    const manifestExists = await fileExists(join(backupPath, "manifest.json"));
     expect(manifestExists).toBe(true);
 
-    const packageJsonBackupExists = await fileExists(join(backupPath, 'package.json'));
+    const packageJsonBackupExists = await fileExists(
+      join(backupPath, "package.json"),
+    );
     expect(packageJsonBackupExists).toBe(true);
   });
 
-  it('should restore files from backup on rollback', async () => {
-    const backupPath = join(tempDir, '.cortex', 'backups', 'release-test');
+  it("should restore files from backup on rollback", async () => {
+    const backupPath = join(tempDir, ".cortex", "backups", "release-test");
     await mkdir(backupPath, { recursive: true });
 
     // Create backup
-    const originalContent = await readFile(join(tempDir, 'package.json'));
-    await writeFile(join(backupPath, 'package.json'), originalContent);
+    const originalContent = await readFile(join(tempDir, "package.json"));
+    await writeFile(join(backupPath, "package.json"), originalContent);
 
     const manifest = {
       timestamp: new Date().toISOString(),
-      reason: 'Test rollback',
-      files: ['package.json'],
-      originalBranch: 'main',
+      reason: "Test rollback",
+      files: ["package.json"],
+      originalBranch: "main",
     };
-    await writeFile(join(backupPath, 'manifest.json'), JSON.stringify(manifest, null, 2));
+    await writeFile(
+      join(backupPath, "manifest.json"),
+      JSON.stringify(manifest, null, 2),
+    );
 
     // Modify original file
     const pkg = JSON.parse(originalContent);
-    pkg.version = '999.999.999';
-    await writeFile(join(tempDir, 'package.json'), JSON.stringify(pkg, null, 2));
+    pkg.version = "999.999.999";
+    await writeFile(
+      join(tempDir, "package.json"),
+      JSON.stringify(pkg, null, 2),
+    );
 
     // Verify modification
-    const modified = JSON.parse(await readFile(join(tempDir, 'package.json')));
-    expect(modified.version).toBe('999.999.999');
+    const modified = JSON.parse(await readFile(join(tempDir, "package.json")));
+    expect(modified.version).toBe("999.999.999");
 
     // Simulate rollback: restore from backup
-    const manifestData = JSON.parse(await readFile(join(backupPath, 'manifest.json')));
+    const manifestData = JSON.parse(
+      await readFile(join(backupPath, "manifest.json")),
+    );
     for (const file of manifestData.files) {
       const sourcePath = join(backupPath, file);
       const destPath = join(tempDir, file);
@@ -426,12 +451,12 @@ describe('Atomic Release Engine - Backup and Restore', () => {
     }
 
     // Verify restoration
-    const restored = JSON.parse(await readFile(join(tempDir, 'package.json')));
-    expect(restored.version).toBe('2.5.0');
+    const restored = JSON.parse(await readFile(join(tempDir, "package.json")));
+    expect(restored.version).toBe("2.5.0");
   });
 });
 
-describe('Atomic Release Engine - Failure Scenarios', () => {
+describe("Atomic Release Engine - Failure Scenarios", () => {
   let tempDir: string;
   let mockExecSync: ReturnType<typeof vi.fn>;
 
@@ -447,88 +472,88 @@ describe('Atomic Release Engine - Failure Scenarios', () => {
     vi.clearAllMocks();
   });
 
-  it('should handle Git push failure (Phase 4)', () => {
+  it("should handle Git push failure (Phase 4)", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
 
       // Pre-flight checks pass
-      if (cmd.includes('git branch --show-current')) {
-        return Buffer.from('main\n');
+      if (cmd.includes("git branch --show-current")) {
+        return Buffer.from("main\n");
       }
-      if (cmd.includes('git status --porcelain')) {
-        return Buffer.from('');
+      if (cmd.includes("git status --porcelain")) {
+        return Buffer.from("");
       }
-      if (cmd.includes('npm whoami')) {
-        return Buffer.from('test-user\n');
+      if (cmd.includes("npm whoami")) {
+        return Buffer.from("test-user\n");
       }
-      if (cmd.includes('gh auth status')) {
-        return Buffer.from('✓ Logged in\n');
+      if (cmd.includes("gh auth status")) {
+        return Buffer.from("✓ Logged in\n");
       }
 
       // Phase 4: Git push fails
-      if (cmd.includes('git push origin release/')) {
-        throw new Error('fatal: unable to access network');
+      if (cmd.includes("git push origin release/")) {
+        throw new Error("fatal: unable to access network");
       }
 
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     // Test that push failure is detected
     expect(() => {
-      mockExecSync('git push origin release/v2.5.1');
-    }).toThrow('unable to access network');
+      mockExecSync("git push origin release/v2.5.1");
+    }).toThrow("unable to access network");
   });
 
-  it('should handle NPM publish failure (Phase 5a)', () => {
+  it("should handle NPM publish failure (Phase 5a)", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
 
-      if (cmd.includes('npm publish')) {
-        throw new Error('npm ERR! 402 Payment Required');
+      if (cmd.includes("npm publish")) {
+        throw new Error("npm ERR! 402 Payment Required");
       }
 
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     expect(() => {
-      mockExecSync('npm publish');
-    }).toThrow('402 Payment Required');
+      mockExecSync("npm publish");
+    }).toThrow("402 Payment Required");
   });
 
-  it('should handle GitHub release creation failure (Phase 5b)', () => {
+  it("should handle GitHub release creation failure (Phase 5b)", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
 
-      if (cmd.includes('gh release create')) {
-        throw new Error('HTTP 401: Unauthorized');
+      if (cmd.includes("gh release create")) {
+        throw new Error("HTTP 401: Unauthorized");
       }
 
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     expect(() => {
-      mockExecSync('gh release create v2.5.1');
-    }).toThrow('401: Unauthorized');
+      mockExecSync("gh release create v2.5.1");
+    }).toThrow("401: Unauthorized");
   });
 
-  it('should handle merge failure (Phase 6)', () => {
+  it("should handle merge failure (Phase 6)", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
 
-      if (cmd.includes('git merge')) {
-        throw new Error('CONFLICT (content): Merge conflict in package.json');
+      if (cmd.includes("git merge")) {
+        throw new Error("CONFLICT (content): Merge conflict in package.json");
       }
 
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     expect(() => {
-      mockExecSync('git merge release/v2.5.1 --no-ff');
-    }).toThrow('Merge conflict');
+      mockExecSync("git merge release/v2.5.1 --no-ff");
+    }).toThrow("Merge conflict");
   });
 });
 
-describe('Atomic Release Engine - Rollback Operations', () => {
+describe("Atomic Release Engine - Rollback Operations", () => {
   let tempDir: string;
   let mockExecSync: ReturnType<typeof vi.fn>;
 
@@ -544,66 +569,66 @@ describe('Atomic Release Engine - Rollback Operations', () => {
     vi.clearAllMocks();
   });
 
-  it('should delete remote tag on rollback', () => {
+  it("should delete remote tag on rollback", () => {
     const commands: string[] = [];
 
     mockExecSync.mockImplementation((command: string) => {
       commands.push(command.toString());
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     // Simulate rollback: delete tag
-    mockExecSync('git tag -d v2.5.1');
-    mockExecSync('git push origin :refs/tags/v2.5.1');
+    mockExecSync("git tag -d v2.5.1");
+    mockExecSync("git push origin :refs/tags/v2.5.1");
 
-    expect(commands).toContain('git tag -d v2.5.1');
-    expect(commands).toContain('git push origin :refs/tags/v2.5.1');
+    expect(commands).toContain("git tag -d v2.5.1");
+    expect(commands).toContain("git push origin :refs/tags/v2.5.1");
   });
 
-  it('should delete release branch on rollback', () => {
+  it("should delete release branch on rollback", () => {
     const commands: string[] = [];
 
     mockExecSync.mockImplementation((command: string) => {
       commands.push(command.toString());
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     // Simulate rollback: delete branch
-    mockExecSync('git branch -D release/v2.5.1');
+    mockExecSync("git branch -D release/v2.5.1");
 
-    expect(commands).toContain('git branch -D release/v2.5.1');
+    expect(commands).toContain("git branch -D release/v2.5.1");
   });
 
-  it('should restore original branch on rollback', () => {
+  it("should restore original branch on rollback", () => {
     const commands: string[] = [];
 
     mockExecSync.mockImplementation((command: string) => {
       commands.push(command.toString());
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     // Simulate rollback: return to main
-    mockExecSync('git checkout main');
+    mockExecSync("git checkout main");
 
-    expect(commands).toContain('git checkout main');
+    expect(commands).toContain("git checkout main");
   });
 
-  it('should reset workspace on rollback', () => {
+  it("should reset workspace on rollback", () => {
     const commands: string[] = [];
 
     mockExecSync.mockImplementation((command: string) => {
       commands.push(command.toString());
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     // Simulate rollback: hard reset
-    mockExecSync('git reset --hard HEAD');
+    mockExecSync("git reset --hard HEAD");
 
-    expect(commands).toContain('git reset --hard HEAD');
+    expect(commands).toContain("git reset --hard HEAD");
   });
 });
 
-describe('Atomic Release Engine - Edge Cases', () => {
+describe("Atomic Release Engine - Edge Cases", () => {
   let tempDir: string;
   let mockExecSync: ReturnType<typeof vi.fn>;
 
@@ -619,54 +644,54 @@ describe('Atomic Release Engine - Edge Cases', () => {
     vi.clearAllMocks();
   });
 
-  it('should handle network timeout during git operations', () => {
+  it("should handle network timeout during git operations", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
 
-      if (cmd.includes('git pull') || cmd.includes('git push')) {
-        throw new Error('fatal: unable to access - Operation timed out');
+      if (cmd.includes("git pull") || cmd.includes("git push")) {
+        throw new Error("fatal: unable to access - Operation timed out");
       }
 
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     expect(() => {
-      mockExecSync('git push origin main');
-    }).toThrow('Operation timed out');
+      mockExecSync("git push origin main");
+    }).toThrow("Operation timed out");
   });
 
-  it('should handle missing lock files gracefully', async () => {
+  it("should handle missing lock files gracefully", async () => {
     // Remove lock files that are optional
-    const packageLockPath = join(tempDir, 'package-lock.json');
-    const pnpmLockPath = join(tempDir, 'pnpm-lock.yaml');
+    const packageLockPath = join(tempDir, "package-lock.json");
+    const pnpmLockPath = join(tempDir, "pnpm-lock.yaml");
 
     // Verify they don't exist (they weren't created in setup)
     expect(existsSync(packageLockPath)).toBe(false);
     expect(existsSync(pnpmLockPath)).toBe(false);
 
     // Backup should still work with only existing files
-    const backupPath = join(tempDir, '.cortex', 'backups', 'test-no-locks');
+    const backupPath = join(tempDir, ".cortex", "backups", "test-no-locks");
     await mkdir(backupPath, { recursive: true });
 
     const filesToBackup = [
-      'package.json',
-      'package-lock.json',
-      'pnpm-lock.yaml',
-      'README.md',
-    ].filter(f => existsSync(join(tempDir, f)));
+      "package.json",
+      "package-lock.json",
+      "pnpm-lock.yaml",
+      "README.md",
+    ].filter((f) => existsSync(join(tempDir, f)));
 
-    expect(filesToBackup).toContain('package.json');
-    expect(filesToBackup).not.toContain('package-lock.json');
+    expect(filesToBackup).toContain("package.json");
+    expect(filesToBackup).not.toContain("package-lock.json");
   });
 
-  it('should handle dry-run mode without side effects', async () => {
+  it("should handle dry-run mode without side effects", async () => {
     // In dry-run mode, no files should be modified
-    const packageJsonPath = join(tempDir, 'package.json');
+    const packageJsonPath = join(tempDir, "package.json");
     const contentBefore = await readFile(packageJsonPath);
 
     // Simulate dry-run: read but don't write
     const pkg = JSON.parse(contentBefore);
-    const [major, minor, patch] = pkg.version.split('.').map(Number);
+    const [major, minor, patch] = pkg.version.split(".").map(Number);
     const newVersion = `${major}.${minor}.${patch + 1}`;
 
     // Don't actually write in dry-run
@@ -677,90 +702,92 @@ describe('Atomic Release Engine - Edge Cases', () => {
     expect(contentAfter).toBe(contentBefore);
   });
 
-  it('should handle simultaneous release attempts', () => {
+  it("should handle simultaneous release attempts", () => {
     mockExecSync.mockImplementation((command: string) => {
       const cmd = command.toString();
 
-      if (cmd.includes('git checkout -b release/')) {
-        throw new Error("fatal: A branch named 'release/v2.5.1' already exists");
+      if (cmd.includes("git checkout -b release/")) {
+        throw new Error(
+          "fatal: A branch named 'release/v2.5.1' already exists",
+        );
       }
 
-      return Buffer.from('');
+      return Buffer.from("");
     });
 
     expect(() => {
-      mockExecSync('git checkout -b release/v2.5.1');
-    }).toThrow('already exists');
+      mockExecSync("git checkout -b release/v2.5.1");
+    }).toThrow("already exists");
   });
 
-  it('should validate version format', () => {
-    const invalidVersions = ['2.5', '2.5.0.1', 'v2.5.0', '2.x.0', '2.5.a'];
-    const validVersions = ['2.5.0', '0.0.1', '10.20.30'];
+  it("should validate version format", () => {
+    const invalidVersions = ["2.5", "2.5.0.1", "v2.5.0", "2.x.0", "2.5.a"];
+    const validVersions = ["2.5.0", "0.0.1", "10.20.30"];
 
     const semverRegex = /^\d+\.\d+\.\d+$/;
 
-    invalidVersions.forEach(version => {
+    invalidVersions.forEach((version) => {
       expect(semverRegex.test(version)).toBe(false);
     });
 
-    validVersions.forEach(version => {
+    validVersions.forEach((version) => {
       expect(semverRegex.test(version)).toBe(true);
     });
   });
 
-  it('should validate prerelease version format (CRITICAL-3 fix)', () => {
+  it("should validate prerelease version format (CRITICAL-3 fix)", () => {
     // Test the regex that supports prerelease tags
     const semverPrereleaseRegex = /^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?$/;
 
-    const validStableVersions = ['2.5.0', '0.0.1', '10.20.30'];
+    const validStableVersions = ["2.5.0", "0.0.1", "10.20.30"];
     const validPrereleaseVersions = [
-      '2.6.0-beta.1',
-      '2.6.0-alpha.3',
-      '2.6.0-rc.2',
-      '3.0.0-beta',
-      '1.0.0-alpha.1.2',
+      "2.6.0-beta.1",
+      "2.6.0-alpha.3",
+      "2.6.0-rc.2",
+      "3.0.0-beta",
+      "1.0.0-alpha.1.2",
     ];
     const invalidVersions = [
-      '2.5',
-      '2.5.0.1',
-      'v2.5.0',
-      '2.x.0',
-      '2.5.a',
-      '2.5.0-',
-      '2.5.0-beta-',
+      "2.5",
+      "2.5.0.1",
+      "v2.5.0",
+      "2.x.0",
+      "2.5.a",
+      "2.5.0-",
+      "2.5.0-beta-",
     ];
 
-    validStableVersions.forEach(version => {
+    validStableVersions.forEach((version) => {
       expect(semverPrereleaseRegex.test(version)).toBe(true);
     });
 
-    validPrereleaseVersions.forEach(version => {
+    validPrereleaseVersions.forEach((version) => {
       expect(semverPrereleaseRegex.test(version)).toBe(true);
     });
 
-    invalidVersions.forEach(version => {
+    invalidVersions.forEach((version) => {
       expect(semverPrereleaseRegex.test(version)).toBe(false);
     });
   });
 
-  it('should extract prerelease versions from files (CRITICAL-3 fix)', async () => {
+  it("should extract prerelease versions from files (CRITICAL-3 fix)", async () => {
     const tempDir = await createTempDir();
 
     try {
       // Test stable version
-      const stableFile = join(tempDir, 'stable.md');
-      const stableContent = '# Test\n\n<!-- @cortex-tms-version 2.6.0 -->\n';
+      const stableFile = join(tempDir, "stable.md");
+      const stableContent = "# Test\n\n<!-- @cortex-tms-version 2.6.0 -->\n";
       await writeFile(stableFile, stableContent);
 
       const stableVersion = await extractVersion(stableFile);
-      expect(stableVersion).toBe('2.6.0');
+      expect(stableVersion).toBe("2.6.0");
 
       // Test prerelease versions
       const testCases = [
-        { file: 'beta.md', version: '2.6.0-beta.1' },
-        { file: 'alpha.md', version: '2.6.0-alpha.3' },
-        { file: 'rc.md', version: '3.0.0-rc.2' },
-        { file: 'complex.md', version: '1.0.0-alpha.1.2.3' },
+        { file: "beta.md", version: "2.6.0-beta.1" },
+        { file: "alpha.md", version: "2.6.0-alpha.3" },
+        { file: "rc.md", version: "3.0.0-rc.2" },
+        { file: "complex.md", version: "1.0.0-alpha.1.2.3" },
       ];
 
       for (const { file, version } of testCases) {
@@ -773,8 +800,8 @@ describe('Atomic Release Engine - Edge Cases', () => {
       }
 
       // Test file without version tag
-      const noVersionFile = join(tempDir, 'no-version.md');
-      await writeFile(noVersionFile, '# Test\nNo version here\n');
+      const noVersionFile = join(tempDir, "no-version.md");
+      await writeFile(noVersionFile, "# Test\nNo version here\n");
       const noVersion = await extractVersion(noVersionFile);
       expect(noVersion).toBeNull();
     } finally {
@@ -783,7 +810,7 @@ describe('Atomic Release Engine - Edge Cases', () => {
   });
 });
 
-describe('Atomic Release Engine - Dry Run Mode', () => {
+describe("Atomic Release Engine - Dry Run Mode", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -795,28 +822,28 @@ describe('Atomic Release Engine - Dry Run Mode', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should not create backup in dry-run mode', async () => {
+  it("should not create backup in dry-run mode", async () => {
     // In dry-run mode, backup should be skipped
     const backupExists = await verifyBackupExists(tempDir);
     expect(backupExists).toBe(false);
   });
 
-  it('should not modify package.json in dry-run mode', async () => {
-    const packageJsonPath = join(tempDir, 'package.json');
+  it("should not modify package.json in dry-run mode", async () => {
+    const packageJsonPath = join(tempDir, "package.json");
     const contentBefore = await readFile(packageJsonPath);
     const versionBefore = JSON.parse(contentBefore).version;
 
     // Simulate dry-run: calculate but don't write
-    const [major, minor, patch] = versionBefore.split('.').map(Number);
+    const [major, minor, patch] = versionBefore.split(".").map(Number);
     const newVersion = `${major}.${minor}.${patch + 1}`;
 
-    expect(newVersion).toBe('2.5.1'); // Calculation works
+    expect(newVersion).toBe("2.5.1"); // Calculation works
 
     // But file isn't modified
     const contentAfter = await readFile(packageJsonPath);
     const versionAfter = JSON.parse(contentAfter).version;
 
     expect(versionAfter).toBe(versionBefore);
-    expect(versionAfter).toBe('2.5.0');
+    expect(versionAfter).toBe("2.5.0");
   });
 });

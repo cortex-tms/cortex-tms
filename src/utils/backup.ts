@@ -5,9 +5,9 @@
  * Used by migrate --apply and other potentially destructive commands
  */
 
-import { join, dirname, relative } from 'path';
-import { existsSync, mkdirSync } from 'fs';
-import fs from 'fs-extra';
+import { join, dirname, relative } from "path";
+import { existsSync, mkdirSync } from "fs";
+import fs from "fs-extra";
 
 /**
  * Metadata for a backed-up file
@@ -53,12 +53,12 @@ export async function createBackup(
   projectRoot: string,
   filesToBackup: string[],
   reason: string,
-  version: string
+  version: string,
 ): Promise<BackupResult> {
   try {
     // Generate timestamp for backup directory
     const timestamp = generateTimestamp();
-    const backupDir = join(projectRoot, '.cortex', 'backups', timestamp);
+    const backupDir = join(projectRoot, ".cortex", "backups", timestamp);
 
     // Ensure backup directory exists
     if (!existsSync(backupDir)) {
@@ -110,7 +110,7 @@ export async function createBackup(
     };
 
     // Write manifest to backup directory
-    const manifestPath = join(backupDir, 'manifest.json');
+    const manifestPath = join(backupDir, "manifest.json");
     await fs.writeJson(manifestPath, manifest, { spaces: 2 });
 
     return {
@@ -121,9 +121,9 @@ export async function createBackup(
   } catch (error) {
     return {
       success: false,
-      backupPath: '',
+      backupPath: "",
       filesBackedUp: 0,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -136,10 +136,10 @@ export async function createBackup(
  */
 export async function restoreBackup(backupPath: string): Promise<number> {
   // Read manifest
-  const manifestPath = join(backupPath, 'manifest.json');
+  const manifestPath = join(backupPath, "manifest.json");
 
   if (!existsSync(manifestPath)) {
-    throw new Error('Backup manifest not found');
+    throw new Error("Backup manifest not found");
   }
 
   const manifest: BackupManifest = await fs.readJson(manifestPath);
@@ -176,8 +176,10 @@ export async function restoreBackup(backupPath: string): Promise<number> {
  * @param projectRoot - Root directory of the project
  * @returns Array of backup manifests
  */
-export async function listBackups(projectRoot: string): Promise<BackupManifest[]> {
-  const backupsDir = join(projectRoot, '.cortex', 'backups');
+export async function listBackups(
+  projectRoot: string,
+): Promise<BackupManifest[]> {
+  const backupsDir = join(projectRoot, ".cortex", "backups");
 
   if (!existsSync(backupsDir)) {
     return [];
@@ -187,13 +189,13 @@ export async function listBackups(projectRoot: string): Promise<BackupManifest[]
   const manifests: BackupManifest[] = [];
 
   for (const dir of backupDirs) {
-    const manifestPath = join(backupsDir, dir, 'manifest.json');
+    const manifestPath = join(backupsDir, dir, "manifest.json");
 
     if (existsSync(manifestPath)) {
       try {
         const manifest = await fs.readJson(manifestPath);
         manifests.push(manifest);
-      } catch (error) {
+      } catch {
         // Skip invalid manifests
         continue;
       }
@@ -213,7 +215,7 @@ export async function listBackups(projectRoot: string): Promise<BackupManifest[]
  */
 export async function pruneBackups(
   projectRoot: string,
-  keepCount: number = 10
+  keepCount: number = 10,
 ): Promise<number> {
   const backups = await listBackups(projectRoot);
 
@@ -221,7 +223,7 @@ export async function pruneBackups(
     return 0;
   }
 
-  const backupsDir = join(projectRoot, '.cortex', 'backups');
+  const backupsDir = join(projectRoot, ".cortex", "backups");
   const toDelete = backups.slice(keepCount);
   let deletedCount = 0;
 
@@ -245,11 +247,11 @@ export async function pruneBackups(
 function generateTimestamp(): string {
   const now = new Date();
   const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
 
   return `${year}-${month}-${day}_${hours}${minutes}${seconds}`;
 }
@@ -261,7 +263,7 @@ function generateTimestamp(): string {
  * @returns Size in bytes
  */
 export async function getBackupSize(backupPath: string): Promise<number> {
-  const manifestPath = join(backupPath, 'manifest.json');
+  const manifestPath = join(backupPath, "manifest.json");
 
   if (!existsSync(manifestPath)) {
     return 0;
@@ -279,7 +281,7 @@ export async function getBackupSize(backupPath: string): Promise<number> {
  * @returns Formatted string (e.g., "1.5 MB")
  */
 export function formatBackupSize(bytes: number): string {
-  const units = ['B', 'KB', 'MB', 'GB'];
+  const units = ["B", "KB", "MB", "GB"];
   let size = bytes;
   let unitIndex = 0;
 

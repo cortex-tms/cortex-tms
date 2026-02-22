@@ -7,9 +7,17 @@
  * Goal: Achieve 70%+ accuracy in detecting pattern/rule violations
  */
 
-import { describe, it, expect, beforeAll, vi } from 'vitest';
-import { callLLM, parseGuardianJSON, type LLMConfig, type LLMMessage } from '../utils/llm-client.js';
-import { buildGuardianSystemPrompt, buildGuardianUserPrompt } from '../utils/guardian-prompt.js';
+import { describe, it, expect, beforeAll, vi } from "vitest";
+import {
+  callLLM,
+  parseGuardianJSON,
+  type LLMConfig,
+  type LLMMessage,
+} from "../utils/llm-client.js";
+import {
+  buildGuardianSystemPrompt,
+  buildGuardianUserPrompt,
+} from "../utils/guardian-prompt.js";
 
 // Test configuration constants
 const ACCURACY_THRESHOLDS = {
@@ -33,56 +41,56 @@ interface TestCase {
 const TEST_DATASET: TestCase[] = [
   // ===== PATTERN 1: Placeholder Syntax =====
   {
-    id: 'P1-PASS-1',
-    name: 'Pattern 1: Correct bracket syntax',
+    id: "P1-PASS-1",
+    name: "Pattern 1: Correct bracket syntax",
     code: `# Project Setup
 
 ## Tech Stack
 - **Frontend**: [e.g., Next.js 15, Vue 3, Svelte]
 - **Backend**: [e.g., Express, Fastify, NestJS]`,
     expectedViolation: false,
-    description: 'Uses correct [bracket] placeholder syntax',
+    description: "Uses correct [bracket] placeholder syntax",
   },
   {
-    id: 'P1-FAIL-1',
-    name: 'Pattern 1: TODO placeholder violation',
+    id: "P1-FAIL-1",
+    name: "Pattern 1: TODO placeholder violation",
     code: `# Project Setup
 
 ## Tech Stack
 - **Frontend**: TODO
 - **Backend**: FIXME`,
     expectedViolation: true,
-    violatedRules: ['Pattern 1'],
-    description: 'Uses TODO/FIXME instead of bracket syntax',
+    violatedRules: ["Pattern 1"],
+    description: "Uses TODO/FIXME instead of bracket syntax",
   },
   {
-    id: 'P1-FAIL-2',
-    name: 'Pattern 1: XML placeholder violation',
+    id: "P1-FAIL-2",
+    name: "Pattern 1: XML placeholder violation",
     code: `# Project Setup
 
 ## Tech Stack
 - **Frontend**: <insert framework here>
 - **Backend**: <placeholder>`,
     expectedViolation: true,
-    violatedRules: ['Pattern 1'],
-    description: 'Uses XML tags instead of bracket syntax',
+    violatedRules: ["Pattern 1"],
+    description: "Uses XML tags instead of bracket syntax",
   },
 
   // ===== PATTERN 2: Framework-Agnostic Templates =====
   {
-    id: 'P2-PASS-1',
-    name: 'Pattern 2: Framework-agnostic tech stack',
+    id: "P2-PASS-1",
+    name: "Pattern 2: Framework-agnostic tech stack",
     code: `## Tech Stack
 
 - **Frontend**: [e.g., Next.js 15, Vue 3, Svelte]
 - **Styling**: [e.g., Tailwind CSS, CSS Modules]
 - **Database**: [e.g., PostgreSQL, MongoDB, Redis]`,
     expectedViolation: false,
-    description: 'Provides examples without hardcoding specific stack',
+    description: "Provides examples without hardcoding specific stack",
   },
   {
-    id: 'P2-FAIL-1',
-    name: 'Pattern 2: Hardcoded tech stack violation',
+    id: "P2-FAIL-1",
+    name: "Pattern 2: Hardcoded tech stack violation",
     code: `## Tech Stack
 
 - Next.js 15
@@ -90,14 +98,14 @@ const TEST_DATASET: TestCase[] = [
 - Tailwind CSS
 - PostgreSQL`,
     expectedViolation: true,
-    violatedRules: ['Pattern 2'],
-    description: 'Hardcodes specific tech stack in template',
+    violatedRules: ["Pattern 2"],
+    description: "Hardcodes specific tech stack in template",
   },
 
   // ===== PATTERN 3: Canonical Links =====
   {
-    id: 'P3-PASS-1',
-    name: 'Pattern 3: Proper canonical link usage',
+    id: "P3-PASS-1",
+    name: "Pattern 3: Proper canonical link usage",
     code: `## Button Component Pattern
 
 **Canonical Example**: \`src/components/Button.tsx:15\`
@@ -106,11 +114,11 @@ const TEST_DATASET: TestCase[] = [
 - Uses cva for variant composition
 - Supports size, variant, disabled props`,
     expectedViolation: false,
-    description: 'Uses canonical links instead of duplicating code',
+    description: "Uses canonical links instead of duplicating code",
   },
   {
-    id: 'P3-FAIL-1',
-    name: 'Pattern 3: Code duplication violation',
+    id: "P3-FAIL-1",
+    name: "Pattern 3: Code duplication violation",
     code: `## Button Component Pattern
 
 Here's the complete implementation:
@@ -127,14 +135,14 @@ const variants = {
 // ... 50 more lines of duplicated code
 \`\`\``,
     expectedViolation: true,
-    violatedRules: ['Pattern 3'],
-    description: 'Duplicates code instead of using canonical links',
+    violatedRules: ["Pattern 3"],
+    description: "Duplicates code instead of using canonical links",
   },
 
   // ===== PATTERN 4: Inline Documentation =====
   {
-    id: 'P4-PASS-1',
-    name: 'Pattern 4: Helpful inline comments',
+    id: "P4-PASS-1",
+    name: "Pattern 4: Helpful inline comments",
     code: `## Definition of Done
 
 <!-- Customize this checklist based on your project's quality standards -->
@@ -142,36 +150,36 @@ const variants = {
 - [ ] Documentation updated in \`docs/core/\`
 - [ ] Code follows \`docs/core/PATTERNS.md\``,
     expectedViolation: false,
-    description: 'Includes concise inline guidance',
+    description: "Includes concise inline guidance",
   },
   {
-    id: 'P4-FAIL-1',
-    name: 'Pattern 4: Missing inline guidance',
+    id: "P4-FAIL-1",
+    name: "Pattern 4: Missing inline guidance",
     code: `## Definition of Done
 
 - [ ] Tests passing
 - [ ] Documentation updated
 - [ ] Code reviewed`,
     expectedViolation: true,
-    violatedRules: ['Pattern 4'],
-    description: 'No inline comments explaining what to customize',
+    violatedRules: ["Pattern 4"],
+    description: "No inline comments explaining what to customize",
   },
 
   // ===== PATTERN 8: No Meta-Documentation =====
   {
-    id: 'P8-PASS-1',
-    name: 'Pattern 8: Clean template without meta-docs',
+    id: "P8-PASS-1",
+    name: "Pattern 8: Clean template without meta-docs",
     code: `# NEXT: Upcoming Tasks
 
 ## Active Sprint: [Feature Name]
 
 **Why this matters**: [Briefly describe user value]`,
     expectedViolation: false,
-    description: 'Template is clean and ready to use',
+    description: "Template is clean and ready to use",
   },
   {
-    id: 'P8-FAIL-1',
-    name: 'Pattern 8: Meta-documentation in template',
+    id: "P8-FAIL-1",
+    name: "Pattern 8: Meta-documentation in template",
     code: `# NEXT: Upcoming Tasks
 
 This file is part of the Tiered Memory System (TMS).
@@ -180,14 +188,14 @@ will read this at the start of every session...
 
 ## Active Sprint: [Feature Name]`,
     expectedViolation: true,
-    violatedRules: ['Pattern 8'],
-    description: 'Template contains TMS explanations',
+    violatedRules: ["Pattern 8"],
+    description: "Template contains TMS explanations",
   },
 
   // ===== PATTERN 9: Archive Triggers =====
   {
-    id: 'P9-PASS-1',
-    name: 'Pattern 9: Proper archiving behavior',
+    id: "P9-PASS-1",
+    name: "Pattern 9: Proper archiving behavior",
     code: `# Sprint Archive moved to docs/archive/sprint-2026-01.md
 
 ## Current Sprint: User Authentication
@@ -195,11 +203,11 @@ will read this at the start of every session...
 - [ ] Implement login flow
 - [ ] Add password reset`,
     expectedViolation: false,
-    description: 'Completed tasks moved to archive',
+    description: "Completed tasks moved to archive",
   },
   {
-    id: 'P9-FAIL-1',
-    name: 'Pattern 9: Completed tasks not archived',
+    id: "P9-FAIL-1",
+    name: "Pattern 9: Completed tasks not archived",
     code: `# NEXT: Upcoming Tasks
 
 ## Completed Tasks (Jan 2026)
@@ -213,26 +221,26 @@ will read this at the start of every session...
 - [x] Old task 2
 [... 100 more lines ...]`,
     expectedViolation: true,
-    violatedRules: ['Pattern 9'],
-    description: 'Keeping completed tasks in NEXT-TASKS.md',
+    violatedRules: ["Pattern 9"],
+    description: "Keeping completed tasks in NEXT-TASKS.md",
   },
 
   // ===== RULE 2: Framework-Agnostic Templates =====
   {
-    id: 'R2-PASS-1',
-    name: 'Rule 2: Framework flexibility',
+    id: "R2-PASS-1",
+    name: "Rule 2: Framework flexibility",
     code: `## Authentication Strategy
 
 - [e.g., OAuth 2.0, JWT, Session-based]
 - [Provider: Auth0, Clerk, custom implementation]`,
     expectedViolation: false,
-    description: 'Provides options rather than prescribing specific solution',
+    description: "Provides options rather than prescribing specific solution",
   },
 
   // ===== RULE 3: Bracket Syntax =====
   {
-    id: 'R3-FAIL-1',
-    name: 'Rule 3: Missing bracket placeholders',
+    id: "R3-FAIL-1",
+    name: "Rule 3: Missing bracket placeholders",
     code: `# Project: My App
 
 ## Description
@@ -241,39 +249,39 @@ TODO: Add project description here
 ## Goals
 - FIXME: Define project goals`,
     expectedViolation: true,
-    violatedRules: ['Rule 3'],
-    description: 'Uses TODO/FIXME instead of bracket syntax',
+    violatedRules: ["Rule 3"],
+    description: "Uses TODO/FIXME instead of bracket syntax",
   },
 
   // ===== RULE 4: Context Budget Enforcement =====
   {
-    id: 'R4-FAIL-1',
-    name: 'Rule 4: HOT file exceeding line limits',
+    id: "R4-FAIL-1",
+    name: "Rule 4: HOT file exceeding line limits",
     code: `# NEXT-TASKS.md
-${Array(250).fill('- [ ] Some task\n').join('')}
+${Array(250).fill("- [ ] Some task\n").join("")}
 `,
     expectedViolation: true,
-    violatedRules: ['Rule 4'],
-    description: 'NEXT-TASKS.md exceeds 200 line limit',
+    violatedRules: ["Rule 4"],
+    description: "NEXT-TASKS.md exceeds 200 line limit",
   },
 
   // ===== RULE 6: Archive Trigger =====
   {
-    id: 'R6-PASS-1',
-    name: 'Rule 6: Proper archiving workflow',
+    id: "R6-PASS-1",
+    name: "Rule 6: Proper archiving workflow",
     code: `// Archive process completed
 // 1. Tests passed ✓
 // 2. Changes committed ✓
 // 3. Documentation updated in docs/core/ARCHITECTURE.md ✓
 // 4. Tasks moved to docs/archive/sprint-2026-01.md ✓`,
     expectedViolation: false,
-    description: 'Follows complete maintenance protocol',
+    description: "Follows complete maintenance protocol",
   },
 
   // ===== RULE 7: No Meta-Documentation =====
   {
-    id: 'R7-FAIL-1',
-    name: 'Rule 7: Explaining TMS in template',
+    id: "R7-FAIL-1",
+    name: "Rule 7: Explaining TMS in template",
     code: `# ARCHITECTURE.md
 
 NOTE: This is a WARM tier file, which means AI agents
@@ -283,14 +291,14 @@ The Tiered Memory System organizes files by access frequency...
 ## System Overview
 [Content...]`,
     expectedViolation: true,
-    violatedRules: ['Rule 7'],
-    description: 'Template explains TMS concepts instead of being ready to use',
+    violatedRules: ["Rule 7"],
+    description: "Template explains TMS concepts instead of being ready to use",
   },
 
   // ===== RULE 8: Canonical Links =====
   {
-    id: 'R8-PASS-1',
-    name: 'Rule 8: Referencing actual implementation',
+    id: "R8-PASS-1",
+    name: "Rule 8: Referencing actual implementation",
     code: `## Error Handling Pattern
 
 **Location**: \`src/utils/error-handler.ts:42\`
@@ -298,13 +306,13 @@ The Tiered Memory System organizes files by access frequency...
 All errors should use the centralized handler.
 See canonical implementation for error types and handling logic.`,
     expectedViolation: false,
-    description: 'Links to actual code instead of duplicating',
+    description: "Links to actual code instead of duplicating",
   },
 
   // ===== COMPLEX CASES (Multiple Violations) =====
   {
-    id: 'MULTI-FAIL-1',
-    name: 'Multiple violations: Meta-docs + TODO + Hardcoded stack',
+    id: "MULTI-FAIL-1",
+    name: "Multiple violations: Meta-docs + TODO + Hardcoded stack",
     code: `# PROJECT SETUP GUIDE
 
 This file is part of TMS and explains how to set up your project.
@@ -318,14 +326,14 @@ This file is part of TMS and explains how to set up your project.
 ## Database Schema
 TODO: Define schema here`,
     expectedViolation: true,
-    violatedRules: ['Pattern 2', 'Pattern 8', 'Rule 3', 'Rule 7'],
-    description: 'Contains meta-docs, TODO, and hardcoded tech stack',
+    violatedRules: ["Pattern 2", "Pattern 8", "Rule 3", "Rule 7"],
+    description: "Contains meta-docs, TODO, and hardcoded tech stack",
   },
 
   // ===== EDGE CASES (Should Pass) =====
   {
-    id: 'EDGE-PASS-1',
-    name: 'Edge: Example project with specific stack (allowed)',
+    id: "EDGE-PASS-1",
+    name: "Edge: Example project with specific stack (allowed)",
     code: `# Example: Todo App
 
 This is a reference implementation.
@@ -337,11 +345,12 @@ This is a reference implementation.
 
 (This is an example project, not a template)`,
     expectedViolation: false,
-    description: 'Example projects can have specific stacks per Rule 2 exception',
+    description:
+      "Example projects can have specific stacks per Rule 2 exception",
   },
   {
-    id: 'EDGE-PASS-2',
-    name: 'Edge: Code snippet showing anti-pattern (allowed)',
+    id: "EDGE-PASS-2",
+    name: "Edge: Code snippet showing anti-pattern (allowed)",
     code: `## Pattern 1: Placeholder Syntax
 
 ### ❌ Anti-Pattern
@@ -356,38 +365,38 @@ This is a reference implementation.
 - Frontend: [e.g., Next.js, Vue]
 \`\`\``,
     expectedViolation: false,
-    description: 'Documentation showing anti-patterns is allowed',
+    description: "Documentation showing anti-patterns is allowed",
   },
 
   // ===== SUBTLE VIOLATIONS =====
   {
-    id: 'SUBTLE-FAIL-1',
-    name: 'Subtle: Implicit hardcoding',
+    id: "SUBTLE-FAIL-1",
+    name: "Subtle: Implicit hardcoding",
     code: `## Setup Instructions
 
 1. Install dependencies: \`npm install react react-dom next\`
 2. Configure Tailwind CSS
 3. Set up PostgreSQL database`,
     expectedViolation: true,
-    violatedRules: ['Pattern 2'],
-    description: 'Implicitly assumes specific tech stack in instructions',
+    violatedRules: ["Pattern 2"],
+    description: "Implicitly assumes specific tech stack in instructions",
   },
   {
-    id: 'SUBTLE-PASS-1',
-    name: 'Subtle: Generic instructions (correct)',
+    id: "SUBTLE-PASS-1",
+    name: "Subtle: Generic instructions (correct)",
     code: `## Setup Instructions
 
 1. Install dependencies: \`[package-manager] install\`
 2. Configure your styling solution
 3. Set up your database connection`,
     expectedViolation: false,
-    description: 'Generic instructions that adapt to any stack',
+    description: "Generic instructions that adapt to any stack",
   },
 
   // ===== PATTERN 5: Tiered Organization =====
   {
-    id: 'P5-PASS-1',
-    name: 'Pattern 5: Correct tier structure',
+    id: "P5-PASS-1",
+    name: "Pattern 5: Correct tier structure",
     code: `// File: NEXT-TASKS.md (HOT tier)
 # Current Sprint Tasks
 
@@ -398,11 +407,11 @@ This is a reference implementation.
 // Archived old content to:
 // - docs/archive/sprint-2025-12.md`,
     expectedViolation: false,
-    description: 'Follows HOT/WARM/COLD tier organization',
+    description: "Follows HOT/WARM/COLD tier organization",
   },
   {
-    id: 'P5-FAIL-1',
-    name: 'Pattern 5: Wrong organization structure',
+    id: "P5-FAIL-1",
+    name: "Pattern 5: Wrong organization structure",
     code: `// Project structure:
 // docs/
 //   architecture/
@@ -412,14 +421,14 @@ This is a reference implementation.
 
 // Organizing by content type instead of access frequency`,
     expectedViolation: true,
-    violatedRules: ['Pattern 5'],
-    description: 'Organizes by content type instead of access tiers',
+    violatedRules: ["Pattern 5"],
+    description: "Organizes by content type instead of access tiers",
   },
 
   // ===== PATTERN 11: Website Design System =====
   {
-    id: 'P11-PASS-1',
-    name: 'Pattern 11: Proper theme support',
+    id: "P11-PASS-1",
+    name: "Pattern 11: Proper theme support",
     code: `/* Using CSS custom properties for theme support */
 :root {
   --glass-surface: rgba(255, 255, 255, 0.03);
@@ -431,113 +440,118 @@ This is a reference implementation.
   --glass-border: rgba(0, 0, 0, 0.08);
 }`,
     expectedViolation: false,
-    description: 'Uses CSS variables for proper theme switching',
+    description: "Uses CSS variables for proper theme switching",
   },
   {
-    id: 'P11-FAIL-1',
-    name: 'Pattern 11: Hard-coded colors',
+    id: "P11-FAIL-1",
+    name: "Pattern 11: Hard-coded colors",
     code: `/* Website component */
 .glass-panel {
   background: #111111;
   border: 1px solid #333333;
 }`,
     expectedViolation: true,
-    violatedRules: ['Pattern 11'],
-    description: 'Hard-codes colors instead of using theme variables',
+    violatedRules: ["Pattern 11"],
+    description: "Hard-codes colors instead of using theme variables",
   },
 
   // ===== VALIDATION EDGE CASE: Checkbox content =====
   {
-    id: 'CHECKBOX-PASS-1',
-    name: 'Edge: Checkbox content is not a placeholder',
+    id: "CHECKBOX-PASS-1",
+    name: "Edge: Checkbox content is not a placeholder",
     code: `## Definition of Done
 
 - [ ] Tests passing
 - [ ] Documentation updated
 - [ ] Code reviewed`,
     expectedViolation: true,
-    violatedRules: ['Pattern 4'],
-    description: 'Missing inline guidance (checkboxes are not placeholders)',
+    violatedRules: ["Pattern 4"],
+    description: "Missing inline guidance (checkboxes are not placeholders)",
   },
 ];
 
-describe('Guardian Accuracy Validation', () => {
+describe("Guardian Accuracy Validation", () => {
   // Unit tests for legacy detection function (regex improvements)
-  describe('Legacy Detection Logic (Regex Word Boundaries)', () => {
-    it('should correctly identify violations with word boundaries', () => {
+  describe("Legacy Detection Logic (Regex Word Boundaries)", () => {
+    it("should correctly identify violations with word boundaries", () => {
       // Test case: "violation" as standalone word
-      const responseWithViolation = 'This code has a violation of Pattern 1.';
+      const responseWithViolation = "This code has a violation of Pattern 1.";
       expect(detectViolationInResponseLegacy(responseWithViolation)).toBe(true);
 
       // Test case: "no violations" should be compliant (not false positive from "violations")
-      const responseNoViolations = 'This code has no violations.';
+      const responseNoViolations = "This code has no violations.";
       expect(detectViolationInResponseLegacy(responseNoViolations)).toBe(false);
 
       // Test case: documentation mentioning "violation" should not trigger (context matters)
-      const responseDocumentation = 'This follows the pattern. Note: violation examples are shown above.';
-      expect(detectViolationInResponseLegacy(responseDocumentation)).toBe(false);
+      const responseDocumentation =
+        "This follows the pattern. Note: violation examples are shown above.";
+      expect(detectViolationInResponseLegacy(responseDocumentation)).toBe(
+        false,
+      );
     });
 
-    it('should handle emoji indicators correctly', () => {
-      const majorViolations = '❌ major violations detected in this code.';
+    it("should handle emoji indicators correctly", () => {
+      const majorViolations = "❌ major violations detected in this code.";
       expect(detectViolationInResponseLegacy(majorViolations)).toBe(true);
 
-      const compliant = '✅ compliant with all patterns.';
+      const compliant = "✅ compliant with all patterns.";
       expect(detectViolationInResponseLegacy(compliant)).toBe(false);
 
-      const minorIssues = '⚠️  minor issues found.';
+      const minorIssues = "⚠️  minor issues found.";
       expect(detectViolationInResponseLegacy(minorIssues)).toBe(true);
     });
 
-    it('should handle multi-word phrases with word boundaries', () => {
-      const shouldUse = 'You should use named exports instead.';
+    it("should handle multi-word phrases with word boundaries", () => {
+      const shouldUse = "You should use named exports instead.";
       expect(detectViolationInResponseLegacy(shouldUse)).toBe(true);
 
-      const mustUse = 'You must use bracket syntax.';
+      const mustUse = "You must use bracket syntax.";
       expect(detectViolationInResponseLegacy(mustUse)).toBe(true);
 
       // Edge case: "shoulduse" (no space) should not match
-      const noSpace = 'This shoulduse proper spacing.';
+      const noSpace = "This shoulduse proper spacing.";
       expect(detectViolationInResponseLegacy(noSpace)).toBe(false);
     });
 
-    it('should prioritize first indicator when both present', () => {
+    it("should prioritize first indicator when both present", () => {
       // Violation appears first → has violations
-      const violationFirst = 'This has a violation. However, it complies with other patterns.';
+      const violationFirst =
+        "This has a violation. However, it complies with other patterns.";
       expect(detectViolationInResponseLegacy(violationFirst)).toBe(true);
 
       // Compliance appears first → no violations
-      const complianceFirst = '✅ compliant overall. Note: violation examples in docs.';
+      const complianceFirst =
+        "✅ compliant overall. Note: violation examples in docs.";
       expect(detectViolationInResponseLegacy(complianceFirst)).toBe(false);
     });
 
-    it('should avoid false positives from substring matches', () => {
+    it("should avoid false positives from substring matches", () => {
       // "violationCount" should NOT match "violation" with word boundary
-      const substring1 = 'The violationCount variable tracks issues.';
+      const substring1 = "The violationCount variable tracks issues.";
       expect(detectViolationInResponseLegacy(substring1)).toBe(false);
 
       // "noViolations" should NOT match "violations"
-      const substring2 = 'Check the noViolations flag.';
+      const substring2 = "Check the noViolations flag.";
       expect(detectViolationInResponseLegacy(substring2)).toBe(false);
 
       // Actual "violations" should match
-      const actualWord = 'This code has violations.';
+      const actualWord = "This code has violations.";
       expect(detectViolationInResponseLegacy(actualWord)).toBe(true);
     });
 
-    it('should be case-insensitive', () => {
-      const uppercase = 'This has a VIOLATION.';
+    it("should be case-insensitive", () => {
+      const uppercase = "This has a VIOLATION.";
       expect(detectViolationInResponseLegacy(uppercase)).toBe(true);
 
-      const mixedCase = 'This is COMPLIANT.';
+      const mixedCase = "This is COMPLIANT.";
       expect(detectViolationInResponseLegacy(mixedCase)).toBe(false);
 
-      const titleCase = 'Should Use Bracket Syntax.';
+      const titleCase = "Should Use Bracket Syntax.";
       expect(detectViolationInResponseLegacy(titleCase)).toBe(true);
     });
   });
 
-  let results: {
+  const results: {
     testCase: TestCase;
     guardianResponse: string;
     guardianDetectedViolation: boolean;
@@ -549,11 +563,13 @@ describe('Guardian Accuracy Validation', () => {
     // Check if API key is available
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-      console.warn('⚠️  ANTHROPIC_API_KEY not set - skipping accuracy validation');
+      console.warn(
+        "⚠️  ANTHROPIC_API_KEY not set - skipping accuracy validation",
+      );
       return;
     }
 
-    console.log('\n🛡️  Guardian Accuracy Validation\n');
+    console.log("\n🛡️  Guardian Accuracy Validation\n");
     console.log(`Testing ${TEST_DATASET.length} cases...\n`);
 
     for (const testCase of TEST_DATASET) {
@@ -561,8 +577,7 @@ describe('Guardian Accuracy Validation', () => {
         const response = await runGuardianOnTestCase(testCase);
         const detectedViolation = detectViolationInResponse(response);
 
-        const correct =
-          detectedViolation === testCase.expectedViolation;
+        const correct = detectedViolation === testCase.expectedViolation;
 
         results.push({
           testCase,
@@ -572,7 +587,7 @@ describe('Guardian Accuracy Validation', () => {
         });
 
         // Progress indicator
-        const status = correct ? '✅' : '❌';
+        const status = correct ? "✅" : "❌";
         console.log(`${status} ${testCase.id}: ${testCase.name}`);
       } catch (error) {
         console.error(`Error testing ${testCase.id}:`, error);
@@ -580,9 +595,9 @@ describe('Guardian Accuracy Validation', () => {
     }
   }, ACCURACY_THRESHOLDS.API_TIMEOUT_MS);
 
-  it('should achieve 70%+ accuracy on test dataset', () => {
+  it("should achieve 70%+ accuracy on test dataset", () => {
     if (results.length === 0) {
-      console.log('⏭️  Skipping - no API key available');
+      console.log("⏭️  Skipping - no API key available");
       return;
     }
 
@@ -592,27 +607,27 @@ describe('Guardian Accuracy Validation', () => {
 
     // Calculate confusion matrix
     const truePositives = results.filter(
-      (r) => r.testCase.expectedViolation && r.guardianDetectedViolation
+      (r) => r.testCase.expectedViolation && r.guardianDetectedViolation,
     ).length;
     const trueNegatives = results.filter(
-      (r) => !r.testCase.expectedViolation && !r.guardianDetectedViolation
+      (r) => !r.testCase.expectedViolation && !r.guardianDetectedViolation,
     ).length;
     const falsePositives = results.filter(
-      (r) => !r.testCase.expectedViolation && r.guardianDetectedViolation
+      (r) => !r.testCase.expectedViolation && r.guardianDetectedViolation,
     ).length;
     const falseNegatives = results.filter(
-      (r) => r.testCase.expectedViolation && !r.guardianDetectedViolation
+      (r) => r.testCase.expectedViolation && !r.guardianDetectedViolation,
     ).length;
 
     // Print detailed results
-    console.log('\n' + '='.repeat(60));
-    console.log('📊 GUARDIAN ACCURACY REPORT');
-    console.log('='.repeat(60));
+    console.log("\n" + "=".repeat(60));
+    console.log("📊 GUARDIAN ACCURACY REPORT");
+    console.log("=".repeat(60));
     console.log(`Total Test Cases: ${totalCount}`);
     console.log(`Correct: ${correctCount}`);
     console.log(`Incorrect: ${totalCount - correctCount}`);
     console.log(`Accuracy: ${accuracy.toFixed(1)}%`);
-    console.log('\nConfusion Matrix:');
+    console.log("\nConfusion Matrix:");
     console.log(`  True Positives:  ${truePositives}`);
     console.log(`  True Negatives:  ${trueNegatives}`);
     console.log(`  False Positives: ${falsePositives}`);
@@ -621,29 +636,33 @@ describe('Guardian Accuracy Validation', () => {
     // Print failures for debugging
     const failures = results.filter((r) => !r.correct);
     if (failures.length > 0) {
-      console.log('\n❌ FAILURES:');
+      console.log("\n❌ FAILURES:");
       failures.forEach((f) => {
         console.log(`\n  ${f.testCase.id}: ${f.testCase.name}`);
-        console.log(`  Expected: ${f.testCase.expectedViolation ? 'VIOLATION' : 'COMPLIANT'}`);
-        console.log(`  Got: ${f.guardianDetectedViolation ? 'VIOLATION' : 'COMPLIANT'}`);
+        console.log(
+          `  Expected: ${f.testCase.expectedViolation ? "VIOLATION" : "COMPLIANT"}`,
+        );
+        console.log(
+          `  Got: ${f.guardianDetectedViolation ? "VIOLATION" : "COMPLIANT"}`,
+        );
         console.log(`  Description: ${f.testCase.description}`);
       });
     }
 
-    console.log('='.repeat(60) + '\n');
+    console.log("=".repeat(60) + "\n");
 
     // Assert minimum accuracy threshold
-    expect(accuracy).toBeGreaterThanOrEqual(ACCURACY_THRESHOLDS.MINIMUM_ACCURACY);
+    expect(accuracy).toBeGreaterThanOrEqual(
+      ACCURACY_THRESHOLDS.MINIMUM_ACCURACY,
+    );
   });
 
-  it('should have low false positive rate (< 30%)', () => {
+  it("should have low false positive rate (< 30%)", () => {
     if (results.length === 0) return;
 
-    const compliantCases = results.filter(
-      (r) => !r.testCase.expectedViolation
-    );
+    const compliantCases = results.filter((r) => !r.testCase.expectedViolation);
     const falsePositives = compliantCases.filter(
-      (r) => r.guardianDetectedViolation
+      (r) => r.guardianDetectedViolation,
     ).length;
 
     const falsePositiveRate =
@@ -652,17 +671,17 @@ describe('Guardian Accuracy Validation', () => {
         : 0;
 
     console.log(`False Positive Rate: ${falsePositiveRate.toFixed(1)}%`);
-    expect(falsePositiveRate).toBeLessThan(ACCURACY_THRESHOLDS.MAX_FALSE_POSITIVE_RATE);
+    expect(falsePositiveRate).toBeLessThan(
+      ACCURACY_THRESHOLDS.MAX_FALSE_POSITIVE_RATE,
+    );
   });
 
-  it('should have low false negative rate (< 30%)', () => {
+  it("should have low false negative rate (< 30%)", () => {
     if (results.length === 0) return;
 
-    const violationCases = results.filter(
-      (r) => r.testCase.expectedViolation
-    );
+    const violationCases = results.filter((r) => r.testCase.expectedViolation);
     const falseNegatives = violationCases.filter(
-      (r) => !r.guardianDetectedViolation
+      (r) => !r.guardianDetectedViolation,
     ).length;
 
     const falseNegativeRate =
@@ -671,7 +690,9 @@ describe('Guardian Accuracy Validation', () => {
         : 0;
 
     console.log(`False Negative Rate: ${falseNegativeRate.toFixed(1)}%`);
-    expect(falseNegativeRate).toBeLessThan(ACCURACY_THRESHOLDS.MAX_FALSE_NEGATIVE_RATE);
+    expect(falseNegativeRate).toBeLessThan(
+      ACCURACY_THRESHOLDS.MAX_FALSE_NEGATIVE_RATE,
+    );
   });
 });
 
@@ -680,16 +701,16 @@ describe('Guardian Accuracy Validation', () => {
  */
 async function runGuardianOnTestCase(testCase: TestCase): Promise<string> {
   // Read actual PATTERNS.md and DOMAIN-LOGIC.md
-  const { readFileSync } = await import('fs');
-  const { join } = await import('path');
+  const { readFileSync } = await import("fs");
+  const { join } = await import("path");
 
   const patterns = readFileSync(
-    join(process.cwd(), 'docs/core/PATTERNS.md'),
-    'utf-8'
+    join(process.cwd(), "docs/core/PATTERNS.md"),
+    "utf-8",
   );
   const domainLogic = readFileSync(
-    join(process.cwd(), 'docs/core/DOMAIN-LOGIC.md'),
-    'utf-8'
+    join(process.cwd(), "docs/core/DOMAIN-LOGIC.md"),
+    "utf-8",
   );
 
   // Build Guardian prompt
@@ -697,16 +718,16 @@ async function runGuardianOnTestCase(testCase: TestCase): Promise<string> {
   const userPrompt = buildGuardianUserPrompt(testCase);
 
   const messages: LLMMessage[] = [
-    { role: 'system', content: systemPrompt },
-    { role: 'user', content: userPrompt },
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
   ];
 
   const config: LLMConfig = {
-    provider: 'anthropic',
+    provider: "anthropic",
     apiKey: process.env.ANTHROPIC_API_KEY!,
-    model: 'claude-sonnet-4-5-20250929', // Claude Sonnet 4.5
+    model: "claude-sonnet-4-5-20250929", // Claude Sonnet 4.5
     timeoutMs: 60000, // 60 seconds for code review (longer than default)
-    responseFormat: 'json', // Request structured JSON output
+    responseFormat: "json", // Request structured JSON output
   };
 
   const response = await callLLM(config, messages);
@@ -735,7 +756,9 @@ function detectViolationInResponse(response: string): boolean {
   // Try JSON parsing first
   const parsed = parseGuardianJSON(response);
   if (parsed) {
-    return parsed.summary.status !== 'compliant' || parsed.violations.length > 0;
+    return (
+      parsed.summary.status !== "compliant" || parsed.violations.length > 0
+    );
   }
 
   // Fallback to legacy string matching
@@ -751,50 +774,48 @@ function detectViolationInResponse(response: string): boolean {
 function detectViolationInResponseLegacy(response: string): boolean {
   // Violation indicators with regex word boundaries
   const violationPatterns = [
-    /❌\s*major\s+violations/i,           // "❌ major violations"
-    /⚠️\s*minor\s+issues/i,               // "⚠️  minor issues"
-    /\bviolations?:\s/i,                  // "violations:" or "violation:"
-    /\bviolated\b/i,                      // "violated" (word boundary)
-    /\bviolations?\b/i,                   // "violation" or "violations" (not "violationCount")
-    /\banti-pattern\b/i,                  // "anti-pattern"
-    /\bshould\s+use\b/i,                  // "should use" (not "shoulduse")
-    /\bmust\s+use\b/i,                    // "must use"
-    /\bincorrect\b/i,                     // "incorrect"
-    /\bwrong\b/i,                         // "wrong"
+    /❌\s*major\s+violations/i, // "❌ major violations"
+    /⚠️\s*minor\s+issues/i, // "⚠️  minor issues"
+    /\bviolations?:\s/i, // "violations:" or "violation:"
+    /\bviolated\b/i, // "violated" (word boundary)
+    /\bviolations?\b/i, // "violation" or "violations" (not "violationCount")
+    /\banti-pattern\b/i, // "anti-pattern"
+    /\bshould\s+use\b/i, // "should use" (not "shoulduse")
+    /\bmust\s+use\b/i, // "must use"
+    /\bincorrect\b/i, // "incorrect"
+    /\bwrong\b/i, // "wrong"
   ];
 
   // Compliance indicators with regex word boundaries
   const compliancePatterns = [
-    /✅\s*compliant/i,                    // "✅ compliant"
-    /\bno\s+violations\b/i,               // "no violations" (word boundary prevents "violations" alone)
-    /\bcomplies\s+with\b/i,               // "complies with"
-    /\bfollows\s+the\s+pattern\b/i,       // "follows the pattern"
-    /\badheres\s+to\b/i,                  // "adheres to"
-    /\bcorrectly\s+uses\b/i,              // "correctly uses"
+    /✅\s*compliant/i, // "✅ compliant"
+    /\bno\s+violations\b/i, // "no violations" (word boundary prevents "violations" alone)
+    /\bcomplies\s+with\b/i, // "complies with"
+    /\bfollows\s+the\s+pattern\b/i, // "follows the pattern"
+    /\badheres\s+to\b/i, // "adheres to"
+    /\bcorrectly\s+uses\b/i, // "correctly uses"
   ];
 
   // Check for violation patterns
   const hasViolation = violationPatterns.some((pattern) =>
-    pattern.test(response)
+    pattern.test(response),
   );
 
   // Check for compliance patterns
   const hasCompliance = compliancePatterns.some((pattern) =>
-    pattern.test(response)
+    pattern.test(response),
   );
 
   // If both detected, check which appears first
   if (hasViolation && hasCompliance) {
-    const violationMatches = violationPatterns
-      .map((pattern) => {
-        const match = response.match(pattern);
-        return match ? match.index! : Infinity;
-      });
-    const complianceMatches = compliancePatterns
-      .map((pattern) => {
-        const match = response.match(pattern);
-        return match ? match.index! : Infinity;
-      });
+    const violationMatches = violationPatterns.map((pattern) => {
+      const match = response.match(pattern);
+      return match ? match.index! : Infinity;
+    });
+    const complianceMatches = compliancePatterns.map((pattern) => {
+      const match = response.match(pattern);
+      return match ? match.index! : Infinity;
+    });
 
     const firstViolationIndex = Math.min(...violationMatches);
     const firstComplianceIndex = Math.min(...complianceMatches);

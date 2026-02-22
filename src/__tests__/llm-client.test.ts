@@ -4,23 +4,28 @@
  * Tests the LLM client with mocked API responses
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { callLLM, getApiKey, type LLMConfig, type LLMMessage } from '../utils/llm-client.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  callLLM,
+  getApiKey,
+  type LLMConfig,
+  type LLMMessage,
+} from "../utils/llm-client.js";
 
 // Mock fetch globally
 global.fetch = vi.fn();
 
-describe('LLM Client - OpenAI', () => {
+describe("LLM Client - OpenAI", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should successfully call OpenAI API', async () => {
+  it("should successfully call OpenAI API", async () => {
     const mockResponse = {
       choices: [
         {
           message: {
-            content: 'Test response from OpenAI',
+            content: "Test response from OpenAI",
           },
         },
       ],
@@ -37,33 +42,33 @@ describe('LLM Client - OpenAI', () => {
     });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'test-key',
+      provider: "openai",
+      apiKey: "test-key",
     };
 
     const messages: LLMMessage[] = [
-      { role: 'system', content: 'You are a helpful assistant' },
-      { role: 'user', content: 'Test message' },
+      { role: "system", content: "You are a helpful assistant" },
+      { role: "user", content: "Test message" },
     ];
 
     const response = await callLLM(config, messages);
 
-    expect(response.content).toBe('Test response from OpenAI');
+    expect(response.content).toBe("Test response from OpenAI");
     expect(response.usage?.totalTokens).toBe(150);
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://api.openai.com/v1/chat/completions',
+      "https://api.openai.com/v1/chat/completions",
       expect.objectContaining({
-        method: 'POST',
+        method: "POST",
         headers: expect.objectContaining({
-          'Authorization': 'Bearer test-key',
+          Authorization: "Bearer test-key",
         }),
-      })
+      }),
     );
   });
 
-  it('should use custom model when provided', async () => {
+  it("should use custom model when provided", async () => {
     const mockResponse = {
-      choices: [{ message: { content: 'Response' } }],
+      choices: [{ message: { content: "Response" } }],
       usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
     };
 
@@ -73,62 +78,62 @@ describe('LLM Client - OpenAI', () => {
     });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'test-key',
-      model: 'gpt-4o',
+      provider: "openai",
+      apiKey: "test-key",
+      model: "gpt-4o",
     };
 
-    await callLLM(config, [{ role: 'user', content: 'Test' }]);
+    await callLLM(config, [{ role: "user", content: "Test" }]);
 
     const fetchCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
     const requestBody = JSON.parse(fetchCall[1].body);
-    expect(requestBody.model).toBe('gpt-4o');
+    expect(requestBody.model).toBe("gpt-4o");
   });
 
-  it('should throw error on API failure', async () => {
+  it("should throw error on API failure", async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: false,
       status: 401,
-      text: async () => 'Invalid API key',
+      text: async () => "Invalid API key",
     });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'invalid-key',
+      provider: "openai",
+      apiKey: "invalid-key",
     };
 
     await expect(
-      callLLM(config, [{ role: 'user', content: 'Test' }])
-    ).rejects.toThrow('OpenAI API error: 401');
+      callLLM(config, [{ role: "user", content: "Test" }]),
+    ).rejects.toThrow("OpenAI API error: 401");
   });
 
-  it('should throw error on invalid response', async () => {
+  it("should throw error on invalid response", async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: true,
       json: async () => ({ choices: [] }), // Missing required fields
     });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'test-key',
+      provider: "openai",
+      apiKey: "test-key",
     };
 
     await expect(
-      callLLM(config, [{ role: 'user', content: 'Test' }])
-    ).rejects.toThrow('Invalid OpenAI response');
+      callLLM(config, [{ role: "user", content: "Test" }]),
+    ).rejects.toThrow("Invalid OpenAI response");
   });
 });
 
-describe('LLM Client - Anthropic', () => {
+describe("LLM Client - Anthropic", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should successfully call Anthropic API', async () => {
+  it("should successfully call Anthropic API", async () => {
     const mockResponse = {
       content: [
         {
-          text: 'Test response from Anthropic',
+          text: "Test response from Anthropic",
         },
       ],
       usage: {
@@ -143,33 +148,33 @@ describe('LLM Client - Anthropic', () => {
     });
 
     const config: LLMConfig = {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+      provider: "anthropic",
+      apiKey: "test-key",
     };
 
     const messages: LLMMessage[] = [
-      { role: 'system', content: 'You are a code reviewer' },
-      { role: 'user', content: 'Review this code' },
+      { role: "system", content: "You are a code reviewer" },
+      { role: "user", content: "Review this code" },
     ];
 
     const response = await callLLM(config, messages);
 
-    expect(response.content).toBe('Test response from Anthropic');
+    expect(response.content).toBe("Test response from Anthropic");
     expect(response.usage?.totalTokens).toBe(200); // 120 + 80
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://api.anthropic.com/v1/messages',
+      "https://api.anthropic.com/v1/messages",
       expect.objectContaining({
-        method: 'POST',
+        method: "POST",
         headers: expect.objectContaining({
-          'x-api-key': 'test-key',
+          "x-api-key": "test-key",
         }),
-      })
+      }),
     );
   });
 
-  it('should separate system message from conversation', async () => {
+  it("should separate system message from conversation", async () => {
     const mockResponse = {
-      content: [{ text: 'Response' }],
+      content: [{ text: "Response" }],
       usage: { input_tokens: 10, output_tokens: 5 },
     };
 
@@ -179,13 +184,13 @@ describe('LLM Client - Anthropic', () => {
     });
 
     const config: LLMConfig = {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+      provider: "anthropic",
+      apiKey: "test-key",
     };
 
     const messages: LLMMessage[] = [
-      { role: 'system', content: 'System prompt' },
-      { role: 'user', content: 'User message' },
+      { role: "system", content: "System prompt" },
+      { role: "user", content: "User message" },
     ];
 
     await callLLM(config, messages);
@@ -193,14 +198,14 @@ describe('LLM Client - Anthropic', () => {
     const fetchCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
     const requestBody = JSON.parse(fetchCall[1].body);
 
-    expect(requestBody.system).toBe('System prompt');
+    expect(requestBody.system).toBe("System prompt");
     expect(requestBody.messages).toHaveLength(1);
-    expect(requestBody.messages[0].role).toBe('user');
+    expect(requestBody.messages[0].role).toBe("user");
   });
 
-  it('should use custom model when provided', async () => {
+  it("should use custom model when provided", async () => {
     const mockResponse = {
-      content: [{ text: 'Response' }],
+      content: [{ text: "Response" }],
       usage: { input_tokens: 10, output_tokens: 5 },
     };
 
@@ -210,37 +215,37 @@ describe('LLM Client - Anthropic', () => {
     });
 
     const config: LLMConfig = {
-      provider: 'anthropic',
-      apiKey: 'test-key',
-      model: 'claude-opus-4-5-20251101',
+      provider: "anthropic",
+      apiKey: "test-key",
+      model: "claude-opus-4-5-20251101",
     };
 
-    await callLLM(config, [{ role: 'user', content: 'Test' }]);
+    await callLLM(config, [{ role: "user", content: "Test" }]);
 
     const fetchCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
     const requestBody = JSON.parse(fetchCall[1].body);
-    expect(requestBody.model).toBe('claude-opus-4-5-20251101');
+    expect(requestBody.model).toBe("claude-opus-4-5-20251101");
   });
 
-  it('should throw error on API failure', async () => {
+  it("should throw error on API failure", async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: false,
       status: 403,
-      text: async () => 'Forbidden',
+      text: async () => "Forbidden",
     });
 
     const config: LLMConfig = {
-      provider: 'anthropic',
-      apiKey: 'invalid-key',
+      provider: "anthropic",
+      apiKey: "invalid-key",
     };
 
     await expect(
-      callLLM(config, [{ role: 'user', content: 'Test' }])
-    ).rejects.toThrow('Anthropic API error: 403');
+      callLLM(config, [{ role: "user", content: "Test" }]),
+    ).rejects.toThrow("Anthropic API error: 403");
   });
 });
 
-describe('LLM Client - API Key Management', () => {
+describe("LLM Client - API Key Management", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
@@ -252,46 +257,46 @@ describe('LLM Client - API Key Management', () => {
     process.env = originalEnv;
   });
 
-  it('should get OpenAI API key from environment', () => {
-    process.env.OPENAI_API_KEY = 'sk-test-openai';
-    expect(getApiKey('openai')).toBe('sk-test-openai');
+  it("should get OpenAI API key from environment", () => {
+    process.env.OPENAI_API_KEY = "sk-test-openai";
+    expect(getApiKey("openai")).toBe("sk-test-openai");
   });
 
-  it('should get Anthropic API key from environment', () => {
-    process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
-    expect(getApiKey('anthropic')).toBe('sk-ant-test');
+  it("should get Anthropic API key from environment", () => {
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test";
+    expect(getApiKey("anthropic")).toBe("sk-ant-test");
   });
 
-  it('should return null when API key not set', () => {
+  it("should return null when API key not set", () => {
     delete process.env.OPENAI_API_KEY;
     delete process.env.ANTHROPIC_API_KEY;
 
-    expect(getApiKey('openai')).toBeNull();
-    expect(getApiKey('anthropic')).toBeNull();
+    expect(getApiKey("openai")).toBeNull();
+    expect(getApiKey("anthropic")).toBeNull();
   });
 });
 
-describe('LLM Client - Unsupported Provider', () => {
-  it('should throw error for unsupported provider', async () => {
+describe("LLM Client - Unsupported Provider", () => {
+  it("should throw error for unsupported provider", async () => {
     const config = {
-      provider: 'unsupported' as any,
-      apiKey: 'test-key',
+      provider: "unsupported" as any,
+      apiKey: "test-key",
     };
 
     await expect(
-      callLLM(config, [{ role: 'user', content: 'Test' }])
-    ).rejects.toThrow('Unsupported provider');
+      callLLM(config, [{ role: "user", content: "Test" }]),
+    ).rejects.toThrow("Unsupported provider");
   });
 });
 
-describe('LLM Client - Retry Logic', () => {
+describe("LLM Client - Retry Logic", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should retry on rate limit error (429) and succeed', async () => {
+  it("should retry on rate limit error (429) and succeed", async () => {
     const mockSuccessResponse = {
-      choices: [{ message: { content: 'Success after retry' } }],
+      choices: [{ message: { content: "Success after retry" } }],
       usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
     };
 
@@ -300,7 +305,7 @@ describe('LLM Client - Retry Logic', () => {
       .mockResolvedValueOnce({
         ok: false,
         status: 429,
-        text: async () => 'Rate limit exceeded',
+        text: async () => "Rate limit exceeded",
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -308,23 +313,23 @@ describe('LLM Client - Retry Logic', () => {
       });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'test-key',
+      provider: "openai",
+      apiKey: "test-key",
       retryConfig: {
         maxRetries: 3,
         initialDelayMs: 10, // Very short delay for tests
       },
     };
 
-    const response = await callLLM(config, [{ role: 'user', content: 'Test' }]);
+    const response = await callLLM(config, [{ role: "user", content: "Test" }]);
 
-    expect(response.content).toBe('Success after retry');
+    expect(response.content).toBe("Success after retry");
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('should retry on server error (503) and succeed', async () => {
+  it("should retry on server error (503) and succeed", async () => {
     const mockSuccessResponse = {
-      content: [{ text: 'Success after retry' }],
+      content: [{ text: "Success after retry" }],
       usage: { input_tokens: 10, output_tokens: 5 },
     };
 
@@ -333,7 +338,7 @@ describe('LLM Client - Retry Logic', () => {
       .mockResolvedValueOnce({
         ok: false,
         status: 503,
-        text: async () => 'Service temporarily unavailable',
+        text: async () => "Service temporarily unavailable",
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -341,77 +346,77 @@ describe('LLM Client - Retry Logic', () => {
       });
 
     const config: LLMConfig = {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+      provider: "anthropic",
+      apiKey: "test-key",
       retryConfig: {
         maxRetries: 3,
         initialDelayMs: 10, // Very short delay for tests
       },
     };
 
-    const response = await callLLM(config, [{ role: 'user', content: 'Test' }]);
+    const response = await callLLM(config, [{ role: "user", content: "Test" }]);
 
-    expect(response.content).toBe('Success after retry');
+    expect(response.content).toBe("Success after retry");
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('should NOT retry on authentication error (401)', async () => {
+  it("should NOT retry on authentication error (401)", async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: false,
       status: 401,
-      text: async () => 'Invalid API key',
+      text: async () => "Invalid API key",
     });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'invalid-key',
+      provider: "openai",
+      apiKey: "invalid-key",
       retryConfig: {
         maxRetries: 3,
       },
     };
 
     await expect(
-      callLLM(config, [{ role: 'user', content: 'Test' }])
-    ).rejects.toThrow('OpenAI API error: 401');
+      callLLM(config, [{ role: "user", content: "Test" }]),
+    ).rejects.toThrow("OpenAI API error: 401");
 
     // Should only be called once (no retry)
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
-  it('should NOT retry on client error (400)', async () => {
+  it("should NOT retry on client error (400)", async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: false,
       status: 400,
-      text: async () => 'Bad request',
+      text: async () => "Bad request",
     });
 
     const config: LLMConfig = {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+      provider: "anthropic",
+      apiKey: "test-key",
       retryConfig: {
         maxRetries: 3,
       },
     };
 
     await expect(
-      callLLM(config, [{ role: 'user', content: 'Test' }])
-    ).rejects.toThrow('Anthropic API error: 400');
+      callLLM(config, [{ role: "user", content: "Test" }]),
+    ).rejects.toThrow("Anthropic API error: 400");
 
     // Should only be called once (no retry)
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
-  it('should exhaust retries and throw final error', async () => {
+  it("should exhaust retries and throw final error", async () => {
     // All attempts fail with 503
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: false,
       status: 503,
-      text: async () => 'Service unavailable',
+      text: async () => "Service unavailable",
     });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'test-key',
+      provider: "openai",
+      apiKey: "test-key",
       retryConfig: {
         maxRetries: 2, // Will try 3 times total (initial + 2 retries)
         initialDelayMs: 10, // Very short delay for tests
@@ -419,16 +424,16 @@ describe('LLM Client - Retry Logic', () => {
     };
 
     await expect(
-      callLLM(config, [{ role: 'user', content: 'Test' }])
-    ).rejects.toThrow('OpenAI API error: 503');
+      callLLM(config, [{ role: "user", content: "Test" }]),
+    ).rejects.toThrow("OpenAI API error: 503");
 
     // Should be called 3 times (initial + 2 retries)
     expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 
-  it('should use exponential backoff for delays', async () => {
+  it("should use exponential backoff for delays", async () => {
     const mockSuccessResponse = {
-      choices: [{ message: { content: 'Success' } }],
+      choices: [{ message: { content: "Success" } }],
       usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
     };
 
@@ -437,12 +442,12 @@ describe('LLM Client - Retry Logic', () => {
       .mockResolvedValueOnce({
         ok: false,
         status: 429,
-        text: async () => 'Rate limit',
+        text: async () => "Rate limit",
       })
       .mockResolvedValueOnce({
         ok: false,
         status: 429,
-        text: async () => 'Rate limit',
+        text: async () => "Rate limit",
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -450,8 +455,8 @@ describe('LLM Client - Retry Logic', () => {
       });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'test-key',
+      provider: "openai",
+      apiKey: "test-key",
       retryConfig: {
         maxRetries: 3,
         initialDelayMs: 10, // Very short for tests
@@ -460,23 +465,23 @@ describe('LLM Client - Retry Logic', () => {
       },
     };
 
-    const response = await callLLM(config, [{ role: 'user', content: 'Test' }]);
+    const response = await callLLM(config, [{ role: "user", content: "Test" }]);
 
-    expect(response.content).toBe('Success');
+    expect(response.content).toBe("Success");
     expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 
-  it('should respect maxDelayMs cap', async () => {
+  it("should respect maxDelayMs cap", async () => {
     // All attempts fail
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: false,
       status: 503,
-      text: async () => 'Server error',
+      text: async () => "Server error",
     });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'test-key',
+      provider: "openai",
+      apiKey: "test-key",
       retryConfig: {
         maxRetries: 3,
         initialDelayMs: 10,
@@ -486,16 +491,16 @@ describe('LLM Client - Retry Logic', () => {
     };
 
     await expect(
-      callLLM(config, [{ role: 'user', content: 'Test' }])
+      callLLM(config, [{ role: "user", content: "Test" }]),
     ).rejects.toThrow();
 
     // Should retry maxRetries times
     expect(global.fetch).toHaveBeenCalledTimes(4); // initial + 3 retries
   });
 
-  it('should use default retry config when not provided', async () => {
+  it("should use default retry config when not provided", async () => {
     const mockSuccessResponse = {
-      choices: [{ message: { content: 'Success' } }],
+      choices: [{ message: { content: "Success" } }],
       usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
     };
 
@@ -504,7 +509,7 @@ describe('LLM Client - Retry Logic', () => {
       .mockResolvedValueOnce({
         ok: false,
         status: 429,
-        text: async () => 'Rate limit',
+        text: async () => "Rate limit",
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -512,14 +517,14 @@ describe('LLM Client - Retry Logic', () => {
       });
 
     const config: LLMConfig = {
-      provider: 'openai',
-      apiKey: 'test-key',
+      provider: "openai",
+      apiKey: "test-key",
       // No retryConfig provided - should use defaults
     };
 
-    const response = await callLLM(config, [{ role: 'user', content: 'Test' }]);
+    const response = await callLLM(config, [{ role: "user", content: "Test" }]);
 
-    expect(response.content).toBe('Success');
+    expect(response.content).toBe("Success");
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 });

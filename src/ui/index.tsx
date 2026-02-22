@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { render } from 'ink';
-import { Dashboard } from './components/Dashboard.js';
-import { collectTMSStats, TMSStats } from '../utils/stats-collector.js';
+import React, { useState, useEffect } from "react";
+import { render } from "ink";
+import { Dashboard } from "./components/Dashboard.js";
+import { collectTMSStats, TMSStats } from "../utils/stats-collector.js";
 
 interface DashboardAppProps {
   cwd: string;
@@ -25,7 +25,7 @@ const DashboardApp: React.FC<DashboardAppProps> = ({ cwd, live = false }) => {
         setStats(newStats);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load stats');
+        setError(err instanceof Error ? err.message : "Failed to load stats");
       } finally {
         setLoading(false);
       }
@@ -43,23 +43,36 @@ const DashboardApp: React.FC<DashboardAppProps> = ({ cwd, live = false }) => {
   }, [cwd, live]);
 
   if (!stats) {
-    return <Dashboard stats={
-      {
-        files: { hot: 0, warm: 0, cold: 0, total: 0 },
-        hotFiles: [],
-        validation: { status: 'unknown', violations: 0, lastChecked: null },
-        project: { name: '', hasTMS: false },
-      }
-    } loading={loading} error={error} />;
+    return (
+      <Dashboard
+        stats={{
+          files: { hot: 0, warm: 0, cold: 0, total: 0 },
+          hotFiles: [],
+          validation: { status: "unknown", violations: 0, lastChecked: null },
+          project: { name: "", hasTMS: false },
+        }}
+        loading={loading}
+        error={error}
+      />
+    );
   }
 
-  return <Dashboard stats={stats} hotFiles={stats.hotFiles} loading={loading} error={error} />;
+  return (
+    <Dashboard
+      stats={stats}
+      hotFiles={stats.hotFiles}
+      loading={loading}
+      error={error}
+    />
+  );
 };
 
 /**
  * Render the dashboard
  */
-export function renderDashboard(options: { cwd?: string; live?: boolean } = {}) {
+export function renderDashboard(
+  options: { cwd?: string; live?: boolean } = {},
+) {
   const { cwd = process.cwd(), live = false } = options;
 
   const { waitUntilExit } = render(<DashboardApp cwd={cwd} live={live} />);

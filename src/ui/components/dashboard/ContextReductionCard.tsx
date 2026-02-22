@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text, Newline } from 'ink';
+import React from "react";
+import { Box, Text, Newline } from "ink";
 
 interface ContextReductionCardProps {
   contextReduction: number;
@@ -14,7 +14,12 @@ export const ContextReductionCard: React.FC<ContextReductionCardProps> = ({
 }) => {
   return (
     <>
-      <Box flexDirection="column" borderStyle="round" borderColor="green" padding={1}>
+      <Box
+        flexDirection="column"
+        borderStyle="round"
+        borderColor="green"
+        padding={1}
+      >
         <Box justifyContent="center">
           <Text bold color="green">
             📊 CONTEXT REDUCTION
@@ -25,7 +30,7 @@ export const ContextReductionCard: React.FC<ContextReductionCardProps> = ({
 
         <Box justifyContent="center">
           <Text bold color="green" dimColor={false}>
-            {'█'.repeat(Math.min(40, Math.round(contextReduction / 2.5)))}
+            {"█".repeat(Math.min(40, Math.round(contextReduction / 2.5)))}
           </Text>
         </Box>
 
@@ -43,7 +48,7 @@ export const ContextReductionCard: React.FC<ContextReductionCardProps> = ({
 
         <Box justifyContent="center">
           <Text dimColor>
-            Typical AI session:{' '}
+            Typical AI session:{" "}
             <Text color="cyan">
               {typicalReads}/{total} files
             </Text>
@@ -52,7 +57,7 @@ export const ContextReductionCard: React.FC<ContextReductionCardProps> = ({
 
         <Box justifyContent="center">
           <Text dimColor>
-            Estimated token savings:{' '}
+            Estimated token savings:{" "}
             <Text color="green">~{Math.round(contextReduction * 0.8)}%</Text>
           </Text>
         </Box>

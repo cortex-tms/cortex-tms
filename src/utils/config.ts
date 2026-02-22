@@ -4,35 +4,35 @@
  * Handles loading, merging, and saving .cortexrc configuration files
  */
 
-import { readFile, writeFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { readFile, writeFile } from "fs/promises";
+import { existsSync } from "fs";
+import { join } from "path";
 import type {
   CortexConfig,
   ProjectScope,
   ScopePreset,
   LineLimits,
-} from '../types/cli.js';
+} from "../types/cli.js";
 
 /**
  * Current config schema version
  */
-export const CONFIG_VERSION = '1.0.0';
+export const CONFIG_VERSION = "1.0.0";
 
 /**
  * Default line limits for TMS files (Rule 4)
  * Duplicated here to avoid circular dependency with validator.ts
  */
 const DEFAULT_LINE_LIMITS: LineLimits = {
-  'NEXT-TASKS.md': 200,
-  'FUTURE-ENHANCEMENTS.md': 500,
-  'ARCHITECTURE.md': 500,
-  'PATTERNS.md': 650, // Updated to match DOMAIN-LOGIC.md Rule 4
-  'DOMAIN-LOGIC.md': 400, // Updated to match DOMAIN-LOGIC.md Rule 4
-  'DECISIONS.md': 400,
-  'GLOSSARY.md': 200,
-  'SCHEMA.md': 600,
-  'TROUBLESHOOTING.md': 400,
+  "NEXT-TASKS.md": 200,
+  "FUTURE-ENHANCEMENTS.md": 500,
+  "ARCHITECTURE.md": 500,
+  "PATTERNS.md": 650, // Updated to match DOMAIN-LOGIC.md Rule 4
+  "DOMAIN-LOGIC.md": 400, // Updated to match DOMAIN-LOGIC.md Rule 4
+  "DECISIONS.md": 400,
+  "GLOSSARY.md": 200,
+  "SCHEMA.md": 600,
+  "TROUBLESHOOTING.md": 400,
 };
 
 /**
@@ -40,11 +40,11 @@ const DEFAULT_LINE_LIMITS: LineLimits = {
  */
 export const DEFAULT_CONFIG: CortexConfig = {
   version: CONFIG_VERSION,
-  scope: 'standard',
+  scope: "standard",
   paths: {
-    docs: 'docs/core',
-    tasks: 'NEXT-TASKS.md',
-    archive: 'docs/archive',
+    docs: "docs/core",
+    tasks: "NEXT-TASKS.md",
+    archive: "docs/archive",
   },
   limits: {},
   validation: {
@@ -58,71 +58,71 @@ export const DEFAULT_CONFIG: CortexConfig = {
  */
 export const SCOPE_PRESETS: ScopePreset[] = [
   {
-    name: 'nano',
-    displayName: 'Nano',
-    description: 'Minimal setup for scripts and small tools',
-    mandatoryFiles: ['NEXT-TASKS.md', 'CLAUDE.md'],
+    name: "nano",
+    displayName: "Nano",
+    description: "Minimal setup for scripts and small tools",
+    mandatoryFiles: ["NEXT-TASKS.md", "CLAUDE.md"],
     optionalFiles: [],
     lineLimits: {
-      'NEXT-TASKS.md': 100,
+      "NEXT-TASKS.md": 100,
     },
   },
   {
-    name: 'standard',
-    displayName: 'Standard',
-    description: 'Complete setup for most products (recommended)',
+    name: "standard",
+    displayName: "Standard",
+    description: "Complete setup for most products (recommended)",
     mandatoryFiles: [
-      'NEXT-TASKS.md',
-      'CLAUDE.md',
-      '.github/copilot-instructions.md',
+      "NEXT-TASKS.md",
+      "CLAUDE.md",
+      ".github/copilot-instructions.md",
     ],
     optionalFiles: [
-      'PROMPTS.md',
-      'FUTURE-ENHANCEMENTS.md',
-      'docs/core/ARCHITECTURE.md',
-      'docs/core/PATTERNS.md',
-      'docs/core/DOMAIN-LOGIC.md',
-      'docs/core/DECISIONS.md',
-      'docs/core/TROUBLESHOOTING.md',
+      "PROMPTS.md",
+      "FUTURE-ENHANCEMENTS.md",
+      "docs/core/ARCHITECTURE.md",
+      "docs/core/PATTERNS.md",
+      "docs/core/DOMAIN-LOGIC.md",
+      "docs/core/DECISIONS.md",
+      "docs/core/TROUBLESHOOTING.md",
     ],
     lineLimits: DEFAULT_LINE_LIMITS,
   },
   {
-    name: 'enterprise',
-    displayName: 'Enterprise',
-    description: 'Full suite for large, complex repositories',
+    name: "enterprise",
+    displayName: "Enterprise",
+    description: "Full suite for large, complex repositories",
     mandatoryFiles: [
-      'NEXT-TASKS.md',
-      'CLAUDE.md',
-      '.github/copilot-instructions.md',
+      "NEXT-TASKS.md",
+      "CLAUDE.md",
+      ".github/copilot-instructions.md",
     ],
     optionalFiles: [
-      'PROMPTS.md',
-      'FUTURE-ENHANCEMENTS.md',
-      'docs/core/ARCHITECTURE.md',
-      'docs/core/PATTERNS.md',
-      'docs/core/DOMAIN-LOGIC.md',
-      'docs/core/DECISIONS.md',
-      'docs/core/TROUBLESHOOTING.md',
-      'docs/core/GLOSSARY.md',
-      'docs/core/SCHEMA.md',
+      "PROMPTS.md",
+      "FUTURE-ENHANCEMENTS.md",
+      "docs/core/ARCHITECTURE.md",
+      "docs/core/PATTERNS.md",
+      "docs/core/DOMAIN-LOGIC.md",
+      "docs/core/DECISIONS.md",
+      "docs/core/TROUBLESHOOTING.md",
+      "docs/core/GLOSSARY.md",
+      "docs/core/SCHEMA.md",
     ],
     lineLimits: {
-      'NEXT-TASKS.md': 300,
-      'FUTURE-ENHANCEMENTS.md': 800,
-      'ARCHITECTURE.md': 800,
-      'PATTERNS.md': 800,
-      'DOMAIN-LOGIC.md': 500,
-      'DECISIONS.md': 600,
-      'GLOSSARY.md': 400,
-      'SCHEMA.md': 1000,
-      'TROUBLESHOOTING.md': 600,
+      "NEXT-TASKS.md": 300,
+      "FUTURE-ENHANCEMENTS.md": 800,
+      "ARCHITECTURE.md": 800,
+      "PATTERNS.md": 800,
+      "DOMAIN-LOGIC.md": 500,
+      "DECISIONS.md": 600,
+      "GLOSSARY.md": 400,
+      "SCHEMA.md": 1000,
+      "TROUBLESHOOTING.md": 600,
     },
   },
   {
-    name: 'custom',
-    displayName: 'Custom',
-    description: 'Choose specific files to include (advanced)',
+    name: "custom",
+    displayName: "Custom",
+    description: "Choose specific files to include (advanced)",
     mandatoryFiles: [], // Will be determined by user selection
     optionalFiles: [], // Will be determined by user selection
     lineLimits: DEFAULT_LINE_LIMITS,
@@ -133,7 +133,7 @@ export const SCOPE_PRESETS: ScopePreset[] = [
  * Get the path to .cortexrc in a directory
  */
 export function getConfigPath(cwd: string): string {
-  return join(cwd, '.cortexrc');
+  return join(cwd, ".cortexrc");
 }
 
 /**
@@ -154,20 +154,20 @@ export async function loadConfig(cwd: string): Promise<CortexConfig | null> {
   }
 
   try {
-    const content = await readFile(configPath, 'utf-8');
+    const content = await readFile(configPath, "utf-8");
     const config = JSON.parse(content) as CortexConfig;
 
     // Validate version (for future migrations)
     if (config.version !== CONFIG_VERSION) {
       console.warn(
-        `⚠️  Config version mismatch: expected ${CONFIG_VERSION}, got ${config.version}`
+        `⚠️  Config version mismatch: expected ${CONFIG_VERSION}, got ${config.version}`,
       );
     }
 
     return config;
   } catch (error) {
     throw new Error(
-      `Failed to parse .cortexrc: ${error instanceof Error ? error.message : 'Unknown error'}`
+      `Failed to parse .cortexrc: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
   }
 }
@@ -176,7 +176,7 @@ export async function loadConfig(cwd: string): Promise<CortexConfig | null> {
  * Merge user config with defaults
  */
 export function mergeConfig(
-  userConfig: Partial<CortexConfig> | null
+  userConfig: Partial<CortexConfig> | null,
 ): CortexConfig {
   if (!userConfig) {
     return { ...DEFAULT_CONFIG };
@@ -212,16 +212,16 @@ export function mergeConfig(
  */
 export async function saveConfig(
   cwd: string,
-  config: CortexConfig
+  config: CortexConfig,
 ): Promise<void> {
   const configPath = getConfigPath(cwd);
 
   try {
     const content = JSON.stringify(config, null, 2);
-    await writeFile(configPath, content, 'utf-8');
+    await writeFile(configPath, content, "utf-8");
   } catch (error) {
     throw new Error(
-      `Failed to write .cortexrc: ${error instanceof Error ? error.message : 'Unknown error'}`
+      `Failed to write .cortexrc: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
   }
 }
@@ -232,7 +232,7 @@ export async function saveConfig(
 export function createConfigFromScope(
   scope: ProjectScope,
   projectName?: string,
-  customFiles?: string[]
+  customFiles?: string[],
 ): CortexConfig {
   const preset = SCOPE_PRESETS.find((p) => p.name === scope);
 
@@ -252,7 +252,7 @@ export function createConfigFromScope(
     config.metadata = {
       created: new Date().toISOString(),
       projectName,
-      ...(scope === 'custom' && customFiles && { customFiles }),
+      ...(scope === "custom" && customFiles && { customFiles }),
     };
   }
 

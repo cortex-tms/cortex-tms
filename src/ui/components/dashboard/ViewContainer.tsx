@@ -1,16 +1,16 @@
-import React from 'react';
-import { Box } from 'ink';
-import { TMSStats } from '../../../utils/stats-collector.js';
-import { StalenessCard } from './StalenessCard.js';
-import { SprintProgressCard } from './SprintProgressCard.js';
-import { GovernanceHealthCard } from './GovernanceHealthCard.js';
-import { HotFilesCard } from './HotFilesCard.js';
-import { FileDistributionCard } from './FileDistributionCard.js';
-import { FileSizeHealthCard } from './FileSizeHealthCard.js';
-import { ValidationCard } from './ValidationCard.js';
-import { GuardianStatusCard } from './GuardianStatusCard.js';
-import { NotConfiguredCard } from './NotConfiguredCard.js';
-import type { ViewType } from './TabBar.js';
+import React from "react";
+import { Box } from "ink";
+import { TMSStats } from "../../../utils/stats-collector.js";
+import { StalenessCard } from "./StalenessCard.js";
+import { SprintProgressCard } from "./SprintProgressCard.js";
+import { GovernanceHealthCard } from "./GovernanceHealthCard.js";
+import { HotFilesCard } from "./HotFilesCard.js";
+import { FileDistributionCard } from "./FileDistributionCard.js";
+import { FileSizeHealthCard } from "./FileSizeHealthCard.js";
+import { ValidationCard } from "./ValidationCard.js";
+import { GuardianStatusCard } from "./GuardianStatusCard.js";
+import { NotConfiguredCard } from "./NotConfiguredCard.js";
+import type { ViewType } from "./TabBar.js";
 
 interface ViewContainerProps {
   view: ViewType;
@@ -32,19 +32,19 @@ export const ViewContainer: React.FC<ViewContainerProps> = ({
 }) => {
   const { files, sprint, fileSizeHealth, validation, guardian } = stats;
 
-  if (view === 'overview') {
+  if (view === "overview") {
     // Calculate governance health score (0-100)
     const calculateGovernanceScore = (): number => {
       let score = 100;
 
       // Deduct for validation issues
-      if (validation.status === 'errors') score -= 40;
-      else if (validation.status === 'warnings') score -= 20;
-      else if (validation.status === 'unknown') score -= 10;
+      if (validation.status === "errors") score -= 40;
+      else if (validation.status === "warnings") score -= 20;
+      else if (validation.status === "unknown") score -= 10;
 
       // Deduct for guardian issues
-      if (guardian && guardian.status === 'major_violations') score -= 30;
-      else if (guardian && guardian.status === 'minor_issues') score -= 15;
+      if (guardian && guardian.status === "major_violations") score -= 30;
+      else if (guardian && guardian.status === "minor_issues") score -= 15;
 
       // TODO: Deduct for staleness when git-staleness is integrated
 
@@ -65,7 +65,7 @@ export const ViewContainer: React.FC<ViewContainerProps> = ({
         <GovernanceHealthCard
           score={governanceScore}
           validationStatus={validation.status}
-          guardianStatus={guardian?.status || 'unknown'}
+          guardianStatus={guardian?.status || "unknown"}
           staleness={staleDocsCount}
         />
 
@@ -98,12 +98,17 @@ export const ViewContainer: React.FC<ViewContainerProps> = ({
     );
   }
 
-  if (view === 'files') {
+  if (view === "files") {
     return (
       <Box flexDirection="column">
         <HotFilesCard hotFiles={hotFiles} count={files.hot} />
 
-        <FileDistributionCard hot={files.hot} warm={files.warm} cold={files.cold} total={total} />
+        <FileDistributionCard
+          hot={files.hot}
+          warm={files.warm}
+          cold={files.cold}
+          total={total}
+        />
 
         {fileSizeHealth && fileSizeHealth.length > 0 && (
           <FileSizeHealthCard files={fileSizeHealth} />
@@ -112,7 +117,7 @@ export const ViewContainer: React.FC<ViewContainerProps> = ({
     );
   }
 
-  if (view === 'health') {
+  if (view === "health") {
     return (
       <Box flexDirection="column">
         <ValidationCard

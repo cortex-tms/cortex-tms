@@ -1,8 +1,8 @@
-import React from 'react';
-import { Box, Text, Newline } from 'ink';
+import React from "react";
+import { Box, Text, Newline } from "ink";
 
-type ValidationStatus = 'healthy' | 'warnings' | 'errors' | 'unknown';
-type InkColor = 'green' | 'yellow' | 'red' | 'gray';
+type ValidationStatus = "healthy" | "warnings" | "errors" | "unknown";
+type InkColor = "green" | "yellow" | "red" | "gray";
 
 interface ValidationCardProps {
   status: ValidationStatus;
@@ -11,24 +11,24 @@ interface ValidationCardProps {
 }
 
 function getHealthEmoji(status: ValidationStatus): string {
-  if (status === 'healthy') return '✅';
-  if (status === 'warnings') return '⚠️ ';
-  if (status === 'errors') return '❌';
-  return '❓';
+  if (status === "healthy") return "✅";
+  if (status === "warnings") return "⚠️ ";
+  if (status === "errors") return "❌";
+  return "❓";
 }
 
 function getHealthText(status: ValidationStatus, violations: number): string {
-  if (status === 'healthy') return 'HEALTHY';
-  if (status === 'warnings') return `${violations} warnings`;
-  if (status === 'errors') return `${violations} errors`;
-  return 'Not validated';
+  if (status === "healthy") return "HEALTHY";
+  if (status === "warnings") return `${violations} warnings`;
+  if (status === "errors") return `${violations} errors`;
+  return "Not validated";
 }
 
 function getHealthColor(status: ValidationStatus): InkColor {
-  if (status === 'healthy') return 'green';
-  if (status === 'warnings') return 'yellow';
-  if (status === 'errors') return 'red';
-  return 'gray'; // 'unknown' - neutral
+  if (status === "healthy") return "green";
+  if (status === "warnings") return "yellow";
+  if (status === "errors") return "red";
+  return "gray"; // 'unknown' - neutral
 }
 
 function getTimeAgo(date: Date): string {
@@ -49,9 +49,14 @@ export const ValidationCard: React.FC<ValidationCardProps> = ({
 
   return (
     <>
-      <Box flexDirection="column" borderStyle="single" borderColor={color} paddingX={1}>
+      <Box
+        flexDirection="column"
+        borderStyle="single"
+        borderColor={color}
+        paddingX={1}
+      >
         <Text bold color={color}>
-          🛡️  VALIDATION STATUS
+          🛡️ VALIDATION STATUS
         </Text>
 
         <Newline />

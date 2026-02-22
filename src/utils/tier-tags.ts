@@ -1,4 +1,4 @@
-export type Tier = 'HOT' | 'WARM' | 'COLD';
+export type Tier = "HOT" | "WARM" | "COLD";
 
 const TIER_TAG_PATTERN = /<!--\s*@cortex-tms-tier\s+(HOT|WARM|COLD)\s*-->/;
 
@@ -26,8 +26,8 @@ export function writeTierTag(content: string, tier: Tier): string {
   if (frontMatterMatch) {
     const frontMatter = frontMatterMatch[0];
     const rest = content.slice(frontMatter.length);
-    return frontMatter + tag + '\n' + rest;
+    return frontMatter + tag + "\n" + rest;
   }
 
-  return tag + '\n' + content;
+  return tag + "\n" + content;
 }

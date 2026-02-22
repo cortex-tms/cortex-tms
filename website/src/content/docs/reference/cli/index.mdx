@@ -11,10 +11,10 @@ The **Cortex TMS CLI** is the primary tool for managing your TMS projects. Use i
 
 ```bash
 # Install globally
-npm install -g cortex-tms@3.1.0
+npm install -g cortex-tms@latest
 
 # Or use with npx (no installation)
-npx cortex-tms@3.1.0 <command>
+npx cortex-tms@latest <command>
 ```
 
 ## Global Usage
@@ -207,7 +207,7 @@ The CLI uses `.cortexrc` in your project root for configuration:
 
 ```json
 {
-  "version": "3.1.0",
+  "version": "1.0.0",
   "scope": "standard",
   "projectName": "my-project",
   "metadata": {
@@ -216,6 +216,10 @@ The CLI uses `.cortexrc` in your project root for configuration:
   }
 }
 ```
+
+:::note
+The `version` field is the **config schema version** (currently `1.0.0`), not the Cortex TMS CLI version. It is used internally for future config migrations.
+:::
 
 This file is automatically created by `cortex-tms init` and updated by other commands.
 

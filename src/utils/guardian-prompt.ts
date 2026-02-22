@@ -12,11 +12,14 @@
  * @param domainLogic - Content of DOMAIN-LOGIC.md (optional)
  * @returns Formatted system prompt for Guardian
  */
-export function buildGuardianSystemPrompt(patterns: string, domainLogic: string | null): string {
+export function buildGuardianSystemPrompt(
+  patterns: string,
+  domainLogic: string | null,
+): string {
   let prompt = `You are Guardian, a code review assistant that analyzes code against project-specific patterns and architectural rules.
 
 # Your Task
-Analyze the provided code file and identify violations of the patterns defined in PATTERNS.md${domainLogic ? ' and domain logic rules in DOMAIN-LOGIC.md' : ''}.
+Analyze the provided code file and identify violations of the patterns defined in PATTERNS.md${domainLogic ? " and domain logic rules in DOMAIN-LOGIC.md" : ""}.
 
 # PATTERNS.md
 ${patterns}
@@ -97,7 +100,10 @@ Be concise but specific. Reference exact line numbers in violations when possibl
  * @param code - Code content to review
  * @returns Formatted user prompt for Guardian
  */
-export function buildGuardianUserPrompt(filePath: string, code: string): string {
+export function buildGuardianUserPrompt(
+  filePath: string,
+  code: string,
+): string {
   return `# File to Review
 **Path**: \`${filePath}\`
 

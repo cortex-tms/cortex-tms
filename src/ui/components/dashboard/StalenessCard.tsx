@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text, Newline } from 'ink';
+import React from "react";
+import { Box, Text, Newline } from "ink";
 
 interface StalenessCardProps {
   staleDocsCount: number;
@@ -18,11 +18,16 @@ export const StalenessCard: React.FC<StalenessCardProps> = ({
   oldestDocDays,
 }) => {
   const isFresh = staleDocsCount === 0;
-  const color = isFresh ? 'green' : freshnessPercent >= 70 ? 'yellow' : 'red';
+  const color = isFresh ? "green" : freshnessPercent >= 70 ? "yellow" : "red";
 
   return (
     <>
-      <Box flexDirection="column" borderStyle="round" borderColor={color} padding={1}>
+      <Box
+        flexDirection="column"
+        borderStyle="round"
+        borderColor={color}
+        padding={1}
+      >
         <Box justifyContent="center">
           <Text bold color={color}>
             📅 DOCUMENTATION FRESHNESS
@@ -33,7 +38,7 @@ export const StalenessCard: React.FC<StalenessCardProps> = ({
 
         <Box justifyContent="center">
           <Text bold color={color} dimColor={false}>
-            {'█'.repeat(Math.min(40, Math.round(freshnessPercent / 2.5)))}
+            {"█".repeat(Math.min(40, Math.round(freshnessPercent / 2.5)))}
           </Text>
         </Box>
 
@@ -51,7 +56,7 @@ export const StalenessCard: React.FC<StalenessCardProps> = ({
 
         <Box justifyContent="center">
           <Text dimColor>
-            Fresh docs:{' '}
+            Fresh docs:{" "}
             <Text color={color}>
               {totalDocsCount - staleDocsCount}/{totalDocsCount}
             </Text>
@@ -61,8 +66,8 @@ export const StalenessCard: React.FC<StalenessCardProps> = ({
         {oldestDocDays !== undefined && oldestDocDays > 0 && (
           <Box justifyContent="center">
             <Text dimColor>
-              Oldest:{' '}
-              <Text color={oldestDocDays > 60 ? 'red' : 'yellow'}>
+              Oldest:{" "}
+              <Text color={oldestDocDays > 60 ? "red" : "yellow"}>
                 {oldestDocDays} days
               </Text>
             </Text>
@@ -71,9 +76,9 @@ export const StalenessCard: React.FC<StalenessCardProps> = ({
 
         <Box justifyContent="center">
           <Text dimColor>
-            Status:{' '}
+            Status:{" "}
             <Text color={color}>
-              {isFresh ? 'All docs current' : `${staleDocsCount} need review`}
+              {isFresh ? "All docs current" : `${staleDocsCount} need review`}
             </Text>
           </Text>
         </Box>

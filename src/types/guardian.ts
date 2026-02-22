@@ -27,7 +27,7 @@ export interface Violation {
   recommendation: string;
 
   /** Severity level */
-  severity: 'minor' | 'major';
+  severity: "minor" | "major";
 
   /** Confidence score (0-1 scale) indicating certainty about this violation */
   confidence?: number;
@@ -40,7 +40,7 @@ export interface GuardianResult {
   /** Overall assessment summary */
   summary: {
     /** Overall status of the code review */
-    status: 'compliant' | 'minor_issues' | 'major_violations';
+    status: "compliant" | "minor_issues" | "major_violations";
 
     /** Brief message summarizing the assessment */
     message: string;

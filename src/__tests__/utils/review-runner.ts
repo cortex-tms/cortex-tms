@@ -4,14 +4,23 @@
  * Helper to run review command in test environment
  */
 
-import { resolve, join } from 'path';
-import { existsSync, readFileSync } from 'fs';
-import { callLLM, getApiKey, parseGuardianJSON, type LLMConfig, type LLMMessage } from '../../utils/llm-client.js';
-import { buildGuardianSystemPrompt, buildGuardianUserPrompt } from '../../utils/guardian-prompt.js';
-import { SAFE_MODE_THRESHOLD } from '../../types/guardian.js';
+import { resolve, join } from "path";
+import { existsSync, readFileSync } from "fs";
+import {
+  callLLM,
+  getApiKey,
+  parseGuardianJSON,
+  type LLMConfig,
+  type LLMMessage,
+} from "../../utils/llm-client.js";
+import {
+  buildGuardianSystemPrompt,
+  buildGuardianUserPrompt,
+} from "../../utils/guardian-prompt.js";
+import { SAFE_MODE_THRESHOLD } from "../../types/guardian.js";
 
 interface ReviewOptions {
-  provider: 'openai' | 'anthropic';
+  provider: "openai" | "anthropic";
   model?: string;
   apiKey?: string;
   safe?: boolean;
@@ -36,17 +45,17 @@ interface ReviewResult {
 export async function runReviewForTest(
   cwd: string,
   filePath: string,
-  options: ReviewOptions
+  options: ReviewOptions,
 ): Promise<ReviewResult> {
   try {
     // Step 1: Validate TMS files exist
-    const patternsPath = join(cwd, 'docs/core/PATTERNS.md');
-    const domainLogicPath = join(cwd, 'docs/core/DOMAIN-LOGIC.md');
+    const patternsPath = join(cwd, "docs/core/PATTERNS.md");
+    const domainLogicPath = join(cwd, "docs/core/DOMAIN-LOGIC.md");
 
     if (!existsSync(patternsPath)) {
       return {
         success: false,
-        error: 'PATTERNS.md not found at docs/core/PATTERNS.md',
+        error: "PATTERNS.md not found at docs/core/PATTERNS.md",
       };
     }
 
@@ -60,11 +69,11 @@ export async function runReviewForTest(
     }
 
     // Step 3: Read files
-    const patterns = readFileSync(patternsPath, 'utf-8');
+    const patterns = readFileSync(patternsPath, "utf-8");
     const domainLogic = existsSync(domainLogicPath)
-      ? readFileSync(domainLogicPath, 'utf-8')
+      ? readFileSync(domainLogicPath, "utf-8")
       : null;
-    const codeToReview = readFileSync(targetPath, 'utf-8');
+    const codeToReview = readFileSync(targetPath, "utf-8");
 
     // Step 4: Get API key
     const apiKey = options.apiKey || getApiKey(options.provider);
@@ -72,7 +81,7 @@ export async function runReviewForTest(
     if (!apiKey) {
       return {
         success: false,
-        error: 'API key is required',
+        error: "API key is required",
       };
     }
 
@@ -81,8 +90,8 @@ export async function runReviewForTest(
     const userPrompt = buildGuardianUserPrompt(filePath, codeToReview);
 
     const messages: LLMMessage[] = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
     ];
 
     // Step 6: Call LLM
@@ -102,13 +111,13 @@ export async function runReviewForTest(
       const originalCount = parsedResult.violations.length;
 
       parsedResult.violations = parsedResult.violations.filter(
-        v => (v.confidence ?? 1.0) >= SAFE_MODE_THRESHOLD
+        (v) => (v.confidence ?? 1.0) >= SAFE_MODE_THRESHOLD,
       );
 
       // Update summary if all violations filtered out
       if (originalCount > 0 && parsedResult.violations.length === 0) {
-        parsedResult.summary.status = 'compliant';
-        parsedResult.summary.message = `No high-confidence violations found (Safe Mode filtered ${originalCount} low-confidence issue${originalCount === 1 ? '' : 's'})`;
+        parsedResult.summary.status = "compliant";
+        parsedResult.summary.message = `No high-confidence violations found (Safe Mode filtered ${originalCount} low-confidence issue${originalCount === 1 ? "" : "s"})`;
       }
     }
 
@@ -119,14 +128,20 @@ export async function runReviewForTest(
       if (parsedResult) {
         output = JSON.stringify(parsedResult, null, 2);
       } else {
-        output = JSON.stringify({
-          error: 'Failed to parse Guardian response',
-          rawContent: response.content
-        }, null, 2);
+        output = JSON.stringify(
+          {
+            error: "Failed to parse Guardian response",
+            rawContent: response.content,
+          },
+          null,
+          2,
+        );
       }
     } else {
       // Default mode: formatted output
-      output = parsedResult ? formatGuardianResult(parsedResult) : response.content;
+      output = parsedResult
+        ? formatGuardianResult(parsedResult)
+        : response.content;
     }
 
     return {
@@ -137,7 +152,7 @@ export async function runReviewForTest(
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -145,14 +160,16 @@ export async function runReviewForTest(
 /**
  * Format Guardian JSON result for display (duplicated from review.ts for testing)
  */
-function formatGuardianResult(result: import('../../types/guardian.js').GuardianResult): string {
-  let output = '';
+function formatGuardianResult(
+  result: import("../../types/guardian.js").GuardianResult,
+): string {
+  let output = "";
 
   // Summary section with status emoji
   const statusConfig = {
-    compliant: { emoji: '✅', label: 'Compliant' },
-    minor_issues: { emoji: '⚠️ ', label: 'Minor Issues' },
-    major_violations: { emoji: '❌', label: 'Major Violations' },
+    compliant: { emoji: "✅", label: "Compliant" },
+    minor_issues: { emoji: "⚠️ ", label: "Minor Issues" },
+    major_violations: { emoji: "❌", label: "Major Violations" },
   };
 
   const { emoji, label } = statusConfig[result.summary.status];
@@ -161,9 +178,9 @@ function formatGuardianResult(result: import('../../types/guardian.js').Guardian
 
   // Violations section
   if (result.violations.length > 0) {
-    output += '## Violations\n\n';
+    output += "## Violations\n\n";
     result.violations.forEach((v, index) => {
-      const severityIcon = v.severity === 'major' ? '❌' : '⚠️ ';
+      const severityIcon = v.severity === "major" ? "❌" : "⚠️ ";
       output += `${index + 1}. ${severityIcon} **${v.pattern}**\n`;
       if (v.line) {
         output += `   📍 Line: ${v.line}\n`;
@@ -173,13 +190,13 @@ function formatGuardianResult(result: import('../../types/guardian.js').Guardian
       if (v.confidence !== undefined) {
         output += `   📊 Confidence: ${Math.round(v.confidence * 100)}%\n`;
       }
-      output += '\n';
+      output += "\n";
     });
   }
 
   // Positive observations section
   if (result.positiveObservations.length > 0) {
-    output += '## Positive Observations\n\n';
+    output += "## Positive Observations\n\n";
     result.positiveObservations.forEach((obs) => {
       output += `✅ ${obs}\n`;
     });

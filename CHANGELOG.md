@@ -5,6 +5,29 @@ All notable changes to Cortex TMS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.1] - 2026-02-22
+
+**Theme**: Post-release bug fixes from GPT-5.2 audit
+
+### Bug Fixes
+
+- **Exit codes**: `cortex-tms --help` and `cortex-tms --version` now correctly exit with code `0` (were incorrectly exiting `1`, breaking CI scripts and shell conditionals)
+- **Placeholder scanner**: `validate` no longer flags placeholder examples inside fenced code blocks or inline code spans as incomplete — prevents false positives in projects with documentation examples
+
+### Developer Experience
+
+- **ESLint v9**: Added `eslint.config.mjs` flat config — `npm run lint` now works out of the box
+- **CI workflows**: Added `fetch-depth: 0` to `tms-validate.yml` and `validate-reusable.yml` — ensures full git history is available for staleness detection in CI
+- **Code formatting**: Applied Prettier to all TypeScript/TSX source files
+
+### Documentation
+
+- **Website docs**: Fixed `.cortexrc` JSON examples — `version` field correctly shows `1.0.0` (config schema version, not CLI version); added clarifying note in CLI reference
+- **Website docs**: Replaced all `cortex-tms@3.1.0` install pins with `@latest` across 18 doc pages; removed stale v2.8 roadmap references
+- **NEXT-TASKS.md**: Archived completed v4.0 sprint; replaced with lean post-release plan
+
+---
+
 ## [4.0.0] - 2026-02-21
 
 **Theme**: Strategic Repositioning - Quality Governance over Token Optimization

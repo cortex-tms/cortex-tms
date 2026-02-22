@@ -1,10 +1,10 @@
-import React from 'react';
-import { Box, Text } from 'ink';
+import React from "react";
+import { Box, Text } from "ink";
 
 interface GovernanceHealthCardProps {
   score: number; // 0-100
-  validationStatus: 'healthy' | 'warnings' | 'errors' | 'unknown';
-  guardianStatus: 'compliant' | 'minor_issues' | 'major_violations' | 'unknown';
+  validationStatus: "healthy" | "warnings" | "errors" | "unknown";
+  guardianStatus: "compliant" | "minor_issues" | "major_violations" | "unknown";
   staleness: number; // number of stale docs
 }
 
@@ -19,22 +19,27 @@ export const GovernanceHealthCard: React.FC<GovernanceHealthCardProps> = ({
 }) => {
   // Determine color based on score
   const getScoreColor = (score: number): string => {
-    if (score >= 80) return 'green';
-    if (score >= 60) return 'yellow';
-    return 'red';
+    if (score >= 80) return "green";
+    if (score >= 60) return "yellow";
+    return "red";
   };
 
   // Get status emoji
   const getStatusEmoji = (): string => {
-    if (score >= 80) return '✅';
-    if (score >= 60) return '⚠️';
-    return '❌';
+    if (score >= 80) return "✅";
+    if (score >= 60) return "⚠️";
+    return "❌";
   };
 
   const scoreColor = getScoreColor(score);
 
   return (
-    <Box flexDirection="column" paddingY={1} borderStyle="round" borderColor={scoreColor}>
+    <Box
+      flexDirection="column"
+      paddingY={1}
+      borderStyle="round"
+      borderColor={scoreColor}
+    >
       <Box paddingX={2}>
         <Text bold color={scoreColor}>
           {getStatusEmoji()} GOVERNANCE HEALTH
@@ -53,19 +58,26 @@ export const GovernanceHealthCard: React.FC<GovernanceHealthCardProps> = ({
 
       <Box paddingX={2} paddingTop={1}>
         <Text dimColor>
-          Validation: <Text color={validationStatus === 'healthy' ? 'green' : 'yellow'}>{validationStatus}</Text>
+          Validation:{" "}
+          <Text color={validationStatus === "healthy" ? "green" : "yellow"}>
+            {validationStatus}
+          </Text>
         </Text>
       </Box>
 
       <Box paddingX={2}>
         <Text dimColor>
-          Guardian: <Text color={guardianStatus === 'compliant' ? 'green' : 'yellow'}>{guardianStatus}</Text>
+          Guardian:{" "}
+          <Text color={guardianStatus === "compliant" ? "green" : "yellow"}>
+            {guardianStatus}
+          </Text>
         </Text>
       </Box>
 
       <Box paddingX={2}>
         <Text dimColor>
-          Stale docs: <Text color={staleness === 0 ? 'green' : 'yellow'}>{staleness}</Text>
+          Stale docs:{" "}
+          <Text color={staleness === 0 ? "green" : "yellow"}>{staleness}</Text>
         </Text>
       </Box>
     </Box>

@@ -4,8 +4,8 @@
  * Provides git-based freshness checks for documentation files
  */
 
-import { execSync } from 'child_process';
-import { existsSync } from 'fs';
+import { execSync } from "child_process";
+import { existsSync } from "fs";
 
 export interface StalenessResult {
   isStale: boolean;
@@ -20,12 +20,15 @@ export interface StalenessResult {
  * Get the last commit timestamp for a file or directory
  * Returns epoch seconds or null if not found/error
  */
-export function getLastGitCommitEpochSeconds(pathSpec: string, cwd: string): number | null {
+export function getLastGitCommitEpochSeconds(
+  pathSpec: string,
+  cwd: string,
+): number | null {
   try {
     const result = execSync(`git log -1 --format=%ct -- "${pathSpec}"`, {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'], // Suppress stderr
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"], // Suppress stderr
     }).trim();
 
     if (!result) {
@@ -46,7 +49,7 @@ export function getLastGitCommitEpochSeconds(pathSpec: string, cwd: string): num
 export function countMeaningfulCommits(
   pathSpec: string,
   sinceEpoch: number,
-  cwd: string
+  cwd: string,
 ): number {
   try {
     // Get commits since timestamp, excluding merges
@@ -54,39 +57,42 @@ export function countMeaningfulCommits(
       `git log --no-merges --format=%H --since="${sinceEpoch}" -- "${pathSpec}"`,
       {
         cwd,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'ignore'],
-      }
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "ignore"],
+      },
     ).trim();
 
     if (!result) {
       return 0;
     }
 
-    const commits = result.split('\n').filter(Boolean);
+    const commits = result.split("\n").filter(Boolean);
 
     // Filter out commits that only touch test/config/lockfiles
     let meaningfulCount = 0;
     for (const commitHash of commits) {
-      const files = execSync(`git diff-tree --no-commit-id --name-only -r ${commitHash}`, {
-        cwd,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'ignore'],
-      })
+      const files = execSync(
+        `git diff-tree --no-commit-id --name-only -r ${commitHash}`,
+        {
+          cwd,
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "ignore"],
+        },
+      )
         .trim()
-        .split('\n')
+        .split("\n")
         .filter(Boolean);
 
       // Check if commit has at least one non-test/non-config file
       const hasMeaningfulFile = files.some(
         (file) =>
-          !file.includes('test') &&
-          !file.includes('.test.') &&
-          !file.includes('package-lock.json') &&
-          !file.includes('yarn.lock') &&
-          !file.includes('pnpm-lock.yaml') &&
-          !file.endsWith('.config.js') &&
-          !file.endsWith('.config.ts')
+          !file.includes("test") &&
+          !file.includes(".test.") &&
+          !file.includes("package-lock.json") &&
+          !file.includes("yarn.lock") &&
+          !file.includes("pnpm-lock.yaml") &&
+          !file.endsWith(".config.js") &&
+          !file.endsWith(".config.ts"),
       );
 
       if (hasMeaningfulFile) {
@@ -116,7 +122,7 @@ export function checkDocStaleness(
   watchPaths: string[],
   thresholdDays: number,
   minCommits: number,
-  cwd: string
+  cwd: string,
 ): StalenessResult {
   // Get doc last modified timestamp
   const docTimestamp = getLastGitCommitEpochSeconds(docPath, cwd);
@@ -128,7 +134,7 @@ export function checkDocStaleness(
       codeLastModified: null,
       daysSinceDocUpdate: null,
       meaningfulCommits: 0,
-      reason: 'Doc has no git history (may be new or untracked)',
+      reason: "Doc has no git history (may be new or untracked)",
     };
   }
 
@@ -148,7 +154,7 @@ export function checkDocStaleness(
       codeLastModified: null,
       daysSinceDocUpdate: null,
       meaningfulCommits: 0,
-      reason: 'No code changes found in watched paths',
+      reason: "No code changes found in watched paths",
     };
   }
 
@@ -164,14 +170,18 @@ export function checkDocStaleness(
       codeLastModified: mostRecentCodeTimestamp,
       daysSinceDocUpdate: 0,
       meaningfulCommits: 0,
-      reason: 'Doc is up to date (modified after code)',
+      reason: "Doc is up to date (modified after code)",
     };
   }
 
   // Count meaningful commits since doc was updated
   let totalMeaningfulCommits = 0;
   for (const watchPath of watchPaths) {
-    totalMeaningfulCommits += countMeaningfulCommits(watchPath, docTimestamp, cwd);
+    totalMeaningfulCommits += countMeaningfulCommits(
+      watchPath,
+      docTimestamp,
+      cwd,
+    );
   }
 
   // Check staleness conditions
@@ -180,7 +190,7 @@ export function checkDocStaleness(
 
   const isStale = exceedsTimeThreshold && exceedsCommitThreshold;
 
-  let reason = '';
+  let reason = "";
   if (isStale) {
     reason = `Doc is ${Math.round(daysSinceDocUpdate)} days older than code with ${totalMeaningfulCommits} meaningful commits`;
   } else if (exceedsTimeThreshold && !exceedsCommitThreshold) {

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text } from 'ink';
+import React from "react";
+import { Box, Text } from "ink";
 
 interface SprintProgressCardProps {
   sprintName: string;
@@ -23,10 +23,15 @@ export const SprintProgressCard: React.FC<SprintProgressCardProps> = ({
   const barWidth = 40;
   const filled = Math.round((progress / 100) * barWidth);
   const empty = barWidth - filled;
-  const progressBar = '█'.repeat(filled) + '░'.repeat(empty);
+  const progressBar = "█".repeat(filled) + "░".repeat(empty);
 
   return (
-    <Box flexDirection="column" paddingY={1} borderStyle="round" borderColor="cyan">
+    <Box
+      flexDirection="column"
+      paddingY={1}
+      borderStyle="round"
+      borderColor="cyan"
+    >
       <Box paddingX={2}>
         <Text bold color="cyan">
           🎯 SPRINT PROGRESS
@@ -41,7 +46,7 @@ export const SprintProgressCard: React.FC<SprintProgressCardProps> = ({
       <Box paddingX={2} paddingTop={1}>
         <Text color="green">{progressBar}</Text>
         <Text color="cyan" bold>
-          {' '}
+          {" "}
           {progress}%
         </Text>
       </Box>

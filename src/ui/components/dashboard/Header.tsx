@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Text, Newline } from 'ink';
+import React, { useState, useEffect } from "react";
+import { Box, Text, Newline } from "ink";
 
 interface HeaderProps {
   projectName: string;

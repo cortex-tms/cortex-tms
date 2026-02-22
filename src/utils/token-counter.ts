@@ -5,11 +5,11 @@
  * Uses simple character count heuristic for file size estimation.
  */
 
-import { readFile } from 'fs/promises';
-import { relative } from 'path';
-import { glob } from 'glob';
-import { minimatch } from 'minimatch';
-import { readTierTag } from './tier-tags.js';
+import { readFile } from "fs/promises";
+import { relative } from "path";
+import { glob } from "glob";
+import { minimatch } from "minimatch";
+import { readTierTag } from "./tier-tags.js";
 
 const CHARS_PER_TOKEN = 4;
 
@@ -18,7 +18,7 @@ const CHARS_PER_TOKEN = 4;
  */
 export interface FileTokenCount {
   path: string;
-  tier: 'HOT' | 'WARM' | 'COLD';
+  tier: "HOT" | "WARM" | "COLD";
   characters: number;
   tokens: number;
 }
@@ -53,48 +53,50 @@ export interface TokenStats {
  * HOT tier file patterns (always read)
  */
 const HOT_PATTERNS = [
-  'NEXT-TASKS.md',
-  'CLAUDE.md',
-  '.github/copilot-instructions.md',
+  "NEXT-TASKS.md",
+  "CLAUDE.md",
+  ".github/copilot-instructions.md",
 ];
 
 /**
  * WARM tier file patterns (read on demand)
  */
 const WARM_PATTERNS = [
-  'docs/core/**/*.md',
-  'ARCHITECTURE.md',
-  'PATTERNS.md',
-  'DOMAIN-LOGIC.md',
-  'DECISIONS.md',
-  'GLOSSARY.md',
-  'SCHEMA.md',
-  'TROUBLESHOOTING.md',
-  'FUTURE-ENHANCEMENTS.md',
-  'PROMPTS.md',
+  "docs/core/**/*.md",
+  "ARCHITECTURE.md",
+  "PATTERNS.md",
+  "DOMAIN-LOGIC.md",
+  "DECISIONS.md",
+  "GLOSSARY.md",
+  "SCHEMA.md",
+  "TROUBLESHOOTING.md",
+  "FUTURE-ENHANCEMENTS.md",
+  "PROMPTS.md",
 ];
 
 /**
  * COLD tier file patterns (archived, rarely read)
  */
-const COLD_PATTERNS = ['docs/archive/**/*.md'];
+const COLD_PATTERNS = ["docs/archive/**/*.md"];
 
 /**
  * Count characters in a file and return both content and character count
  */
-async function readFileWithCharCount(filePath: string): Promise<{ content: string; characters: number }> {
+async function readFileWithCharCount(
+  filePath: string,
+): Promise<{ content: string; characters: number }> {
   try {
-    const content = await readFile(filePath, 'utf-8');
+    const content = await readFile(filePath, "utf-8");
     return { content, characters: content.length };
   } catch {
-    return { content: '', characters: 0 };
+    return { content: "", characters: 0 };
   }
 }
 
 /**
  * Determine file tier based on tier tag or path patterns
  */
-function getFileTier(content: string, path: string): 'HOT' | 'WARM' | 'COLD' {
+function getFileTier(content: string, path: string): "HOT" | "WARM" | "COLD" {
   // First check for explicit tier tag
   const tierTag = readTierTag(content);
   if (tierTag) {
@@ -102,12 +104,12 @@ function getFileTier(content: string, path: string): 'HOT' | 'WARM' | 'COLD' {
   }
 
   // Fall back to path-based patterns (existing behavior)
-  if (HOT_PATTERNS.some(p => minimatch(path, p))) return 'HOT';
-  if (WARM_PATTERNS.some(p => minimatch(path, p))) return 'WARM';
-  if (COLD_PATTERNS.some(p => minimatch(path, p))) return 'COLD';
+  if (HOT_PATTERNS.some((p) => minimatch(path, p))) return "HOT";
+  if (WARM_PATTERNS.some((p) => minimatch(path, p))) return "WARM";
+  if (COLD_PATTERNS.some((p) => minimatch(path, p))) return "COLD";
 
   // Default to WARM for unclassified files
-  return 'WARM';
+  return "WARM";
 }
 
 /**
@@ -122,7 +124,7 @@ function estimateTokens(characters: number): number {
  */
 async function findTierFiles(
   cwd: string,
-  patterns: string[]
+  patterns: string[],
 ): Promise<string[]> {
   const allFiles: string[] = [];
 
@@ -131,7 +133,7 @@ async function findTierFiles(
       cwd,
       absolute: true,
       nodir: true,
-      ignore: ['**/node_modules/**', '**/.git/**'],
+      ignore: ["**/node_modules/**", "**/.git/**"],
     });
     allFiles.push(...matches);
   }
@@ -169,9 +171,9 @@ export async function analyzeTokenUsage(cwd: string): Promise<TokenStats> {
       tokens,
     };
 
-    if (tier === 'HOT') {
+    if (tier === "HOT") {
       hotFiles.push(fileCount);
-    } else if (tier === 'WARM') {
+    } else if (tier === "WARM") {
       warmFiles.push(fileCount);
     } else {
       coldFiles.push(fileCount);
@@ -231,7 +233,7 @@ export function formatTokens(tokens: number): string {
  */
 export function formatCost(cost: number): string {
   if (cost < 0.01) {
-    return '<$0.01';
+    return "<$0.01";
   }
   return `$${cost.toFixed(2)}`;
 }

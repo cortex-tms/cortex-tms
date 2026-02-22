@@ -5,16 +5,16 @@
  * Used for integration testing of command workflows.
  */
 
-import { spawn } from 'child_process';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { spawn } from "child_process";
+import { join } from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Path to the CLI entry point
-const CLI_PATH = join(__dirname, '../../../bin/cortex-tms.js');
+const CLI_PATH = join(__dirname, "../../../bin/cortex-tms.js");
 
 export interface CommandResult {
   exitCode: number;
@@ -35,38 +35,38 @@ export async function runCommand(
   command: string,
   args: string[] = [],
   cwd: string = process.cwd(),
-  timeout: number = 30000
+  timeout: number = 30000,
 ): Promise<CommandResult> {
   return new Promise((resolve, reject) => {
-    const child = spawn('node', [CLI_PATH, command, ...args], {
+    const child = spawn("node", [CLI_PATH, command, ...args], {
       cwd,
       env: {
         ...process.env,
         // Disable interactive prompts
-        CI: 'true',
+        CI: "true",
         // Disable colors for easier assertion
-        NO_COLOR: '1',
+        NO_COLOR: "1",
       },
       timeout,
     });
 
-    let stdout = '';
-    let stderr = '';
+    let stdout = "";
+    let stderr = "";
 
-    child.stdout.on('data', (data) => {
+    child.stdout.on("data", (data) => {
       stdout += data.toString();
     });
 
-    child.stderr.on('data', (data) => {
+    child.stderr.on("data", (data) => {
       stderr += data.toString();
     });
 
-    child.on('error', (error) => {
+    child.on("error", (error) => {
       clearTimeout(timeoutId);
       reject(error);
     });
 
-    child.on('close', (code) => {
+    child.on("close", (code) => {
       clearTimeout(timeoutId);
       resolve({
         exitCode: code ?? 1,
@@ -92,7 +92,7 @@ export async function runCommand(
  */
 export async function runCommandSequence(
   commands: Array<[string, string[]]>,
-  cwd: string
+  cwd: string,
 ): Promise<CommandResult[]> {
   const results: CommandResult[] = [];
 
@@ -116,8 +116,8 @@ export function expectSuccess(result: CommandResult): void {
   if (result.exitCode !== 0) {
     throw new Error(
       `Command failed with exit code ${result.exitCode}\n` +
-      `stdout: ${result.stdout}\n` +
-      `stderr: ${result.stderr}`
+        `stdout: ${result.stdout}\n` +
+        `stderr: ${result.stderr}`,
     );
   }
 }
@@ -129,7 +129,7 @@ export function expectFailure(result: CommandResult): void {
   if (result.exitCode === 0) {
     throw new Error(
       `Command succeeded but was expected to fail\n` +
-      `stdout: ${result.stdout}`
+        `stdout: ${result.stdout}`,
     );
   }
 }

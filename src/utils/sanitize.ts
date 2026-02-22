@@ -29,7 +29,7 @@ const API_KEY_PATTERNS = [
 /**
  * Redaction string used to replace sensitive data
  */
-const REDACTED = '[REDACTED_API_KEY]';
+const REDACTED = "[REDACTED_API_KEY]";
 
 /**
  * Sanitize a string by redacting API keys and other sensitive data
@@ -61,7 +61,7 @@ export function sanitizeApiKey(text: string): string {
  * @returns Sanitized error message
  */
 export function sanitizeError(error: Error | string): string {
-  const message = typeof error === 'string' ? error : error.message;
+  const message = typeof error === "string" ? error : error.message;
   return sanitizeApiKey(message);
 }
 
@@ -80,21 +80,21 @@ export function sanitizeObject<T>(obj: T): T {
   }
 
   // Handle strings
-  if (typeof obj === 'string') {
+  if (typeof obj === "string") {
     return sanitizeApiKey(obj) as T;
   }
 
   // Handle arrays
   if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeObject(item)) as T;
+    return obj.map((item) => sanitizeObject(item)) as T;
   }
 
   // Handle plain objects
-  if (typeof obj === 'object' && obj.constructor === Object) {
+  if (typeof obj === "object" && obj.constructor === Object) {
     const sanitized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
       // Redact common sensitive key names entirely
-      if (['apiKey', 'api_key', 'token', 'secret', 'password'].includes(key)) {
+      if (["apiKey", "api_key", "token", "secret", "password"].includes(key)) {
         sanitized[key] = REDACTED;
       } else {
         sanitized[key] = sanitizeObject(value);

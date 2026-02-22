@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text, Newline } from 'ink';
+import React from "react";
+import { Box, Text, Newline } from "ink";
 
 interface FileDistributionCardProps {
   hot: number;
@@ -19,7 +19,12 @@ export const FileDistributionCard: React.FC<FileDistributionCardProps> = ({
 
   return (
     <>
-      <Box flexDirection="column" borderStyle="single" borderColor="gray" paddingX={1}>
+      <Box
+        flexDirection="column"
+        borderStyle="single"
+        borderColor="gray"
+        paddingX={1}
+      >
         <Text bold>📁 FILE DISTRIBUTION</Text>
 
         <Newline />
@@ -33,8 +38,8 @@ export const FileDistributionCard: React.FC<FileDistributionCardProps> = ({
           </Box>
           <Text dimColor>({getPercentage(hot)}%)</Text>
           <Box>
-            <Text color="yellow">{'█'.repeat(getBarLength(hot))}</Text>
-            <Text dimColor>{'░'.repeat(20 - getBarLength(hot))}</Text>
+            <Text color="yellow">{"█".repeat(getBarLength(hot))}</Text>
+            <Text dimColor>{"░".repeat(20 - getBarLength(hot))}</Text>
           </Box>
         </Box>
 
@@ -42,15 +47,15 @@ export const FileDistributionCard: React.FC<FileDistributionCardProps> = ({
 
         <Box>
           <Box width={20}>
-            <Text color="blue">🌡️  WARM</Text>
+            <Text color="blue">🌡️ WARM</Text>
           </Box>
           <Box width={8}>
             <Text color="white">{warm}</Text>
           </Box>
           <Text dimColor>({getPercentage(warm)}%)</Text>
           <Box>
-            <Text color="blue">{'█'.repeat(getBarLength(warm))}</Text>
-            <Text dimColor>{'░'.repeat(20 - getBarLength(warm))}</Text>
+            <Text color="blue">{"█".repeat(getBarLength(warm))}</Text>
+            <Text dimColor>{"░".repeat(20 - getBarLength(warm))}</Text>
           </Box>
         </Box>
 
@@ -58,15 +63,15 @@ export const FileDistributionCard: React.FC<FileDistributionCardProps> = ({
 
         <Box>
           <Box width={20}>
-            <Text color="cyan">❄️  COLD</Text>
+            <Text color="cyan">❄️ COLD</Text>
           </Box>
           <Box width={8}>
             <Text color="white">{cold}</Text>
           </Box>
           <Text dimColor>({getPercentage(cold)}%)</Text>
           <Box>
-            <Text color="cyan">{'█'.repeat(getBarLength(cold))}</Text>
-            <Text dimColor>{'░'.repeat(20 - getBarLength(cold))}</Text>
+            <Text color="cyan">{"█".repeat(getBarLength(cold))}</Text>
+            <Text dimColor>{"░".repeat(20 - getBarLength(cold))}</Text>
           </Box>
         </Box>
       </Box>

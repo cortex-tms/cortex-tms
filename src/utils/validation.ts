@@ -5,10 +5,10 @@
  * Integrates with ValidationError for consistent error handling.
  */
 
-import { z } from 'zod';
-import { resolve, sep } from 'path';
-import { existsSync, statSync } from 'fs';
-import { ValidationError } from './errors.js';
+import { z } from "zod";
+import { resolve, sep } from "path";
+import { existsSync, statSync } from "fs";
+import { ValidationError } from "./errors.js";
 
 // ============================================================================
 // Common Schemas
@@ -49,7 +49,7 @@ export const autoTierOptionsSchema = z
       if (isNaN(num) || num < 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: '--hot must be a positive number',
+          message: "--hot must be a positive number",
         });
         return z.NEVER;
       }
@@ -60,7 +60,7 @@ export const autoTierOptionsSchema = z
       if (isNaN(num) || num < 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: '--warm must be a positive number',
+          message: "--warm must be a positive number",
         });
         return z.NEVER;
       }
@@ -71,35 +71,38 @@ export const autoTierOptionsSchema = z
       if (isNaN(num) || num < 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: '--cold must be a positive number',
+          message: "--cold must be a positive number",
         });
         return z.NEVER;
       }
       return num;
     }),
-    maxHot: z.string().optional().transform((val, ctx) => {
-      if (val === undefined) return undefined;
-      const num = parseInt(val, 10);
-      if (isNaN(num) || num < 1) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: '--max-hot must be a positive number (at least 1)',
-        });
-        return z.NEVER;
-      }
-      return num;
-    }),
+    maxHot: z
+      .string()
+      .optional()
+      .transform((val, ctx) => {
+        if (val === undefined) return undefined;
+        const num = parseInt(val, 10);
+        if (isNaN(num) || num < 1) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "--max-hot must be a positive number (at least 1)",
+          });
+          return z.NEVER;
+        }
+        return num;
+      }),
     dryRun: dryRunFlag,
     force: forceFlag,
     verbose: verboseFlag,
   })
   .refine((data) => data.hot <= data.warm, {
-    message: '--hot threshold must be ≤ --warm threshold',
-    path: ['hot'],
+    message: "--hot threshold must be ≤ --warm threshold",
+    path: ["hot"],
   })
   .refine((data) => data.warm <= data.cold, {
-    message: '--warm threshold must be ≤ --cold threshold',
-    path: ['warm'],
+    message: "--warm threshold must be ≤ --cold threshold",
+    path: ["warm"],
   });
 
 /**
@@ -109,9 +112,7 @@ export const initOptionsSchema = z.object({
   force: forceFlag,
   minimal: booleanFlag,
   verbose: verboseFlag,
-  scope: z
-    .enum(['nano', 'standard', 'enterprise', 'custom'])
-    .optional(),
+  scope: z.enum(["nano", "standard", "enterprise", "custom"]).optional(),
   dryRun: dryRunFlag,
 });
 
@@ -128,9 +129,7 @@ export const validateOptionsSchema = z.object({
  * Schema for review command options
  */
 export const reviewOptionsSchema = z.object({
-  provider: z
-    .enum(['openai', 'anthropic'])
-    .default('anthropic'),
+  provider: z.enum(["openai", "anthropic"]).default("anthropic"),
   model: z.string().optional(),
   apiKey: z.string().optional(),
   safe: booleanFlag,
@@ -157,9 +156,9 @@ export const migrateOptionsSchema = z
       return true;
     },
     {
-      message: '--force requires --apply',
-      path: ['force'],
-    }
+      message: "--force requires --apply",
+      path: ["force"],
+    },
   );
 
 /**
@@ -187,7 +186,7 @@ export const statusOptionsSchema = z.object({});
 export function validateOptions<T extends z.ZodTypeAny>(
   schema: T,
   options: unknown,
-  commandName: string
+  commandName: string,
 ): z.infer<T> {
   try {
     return schema.parse(options);
@@ -196,16 +195,19 @@ export function validateOptions<T extends z.ZodTypeAny>(
       // Format Zod errors into a clear message
       const issues = error.issues || [];
       const messages = issues.map((err) => {
-        const path = err.path && err.path.length > 0 ? `--${err.path.join('.')}` : 'options';
+        const path =
+          err.path && err.path.length > 0
+            ? `--${err.path.join(".")}`
+            : "options";
         return `${path}: ${err.message}`;
       });
 
       throw new ValidationError(
-        `Invalid ${commandName} command options${messages.length > 0 ? ':\n  ' + messages.join('\n  ') : ''}`,
+        `Invalid ${commandName} command options${messages.length > 0 ? ":\n  " + messages.join("\n  ") : ""}`,
         {
           command: commandName,
           errors: messages,
-        }
+        },
       );
     }
 
@@ -227,7 +229,7 @@ export function validateOptions<T extends z.ZodTypeAny>(
  */
 export function validateSafePath(
   filePath: string,
-  baseDir: string
+  baseDir: string,
 ): { isValid: boolean; resolvedPath?: string; error?: string } {
   // Normalize base directory to absolute path
   const normalizedBase = resolve(baseDir);
@@ -258,15 +260,12 @@ export function validateSafePath(
  * Validates a file path argument
  * Ensures file exists, is a regular file (not directory), and is within project bounds
  */
-export function validateFilePath(
-  filePath: string,
-  baseDir: string
-): string {
+export function validateFilePath(filePath: string, baseDir: string): string {
   // Check for path traversal
   const pathValidation = validateSafePath(filePath, baseDir);
 
   if (!pathValidation.isValid) {
-    throw new ValidationError(pathValidation.error || 'Invalid file path');
+    throw new ValidationError(pathValidation.error || "Invalid file path");
   }
 
   const resolvedPath = pathValidation.resolvedPath!;

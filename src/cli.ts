@@ -7,46 +7,46 @@
  * to individual command files in src/commands/
  */
 
-import { Command } from 'commander';
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import chalk from 'chalk';
-import { CLIError, ValidationError, formatError } from './utils/errors.js';
-import { sanitizeApiKey } from './utils/sanitize.js';
+import { Command } from "commander";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import chalk from "chalk";
+import { CLIError, ValidationError, formatError } from "./utils/errors.js";
+import { sanitizeApiKey } from "./utils/sanitize.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Read package.json for version info
 const packageJson = JSON.parse(
-  readFileSync(join(__dirname, '../package.json'), 'utf-8')
+  readFileSync(join(__dirname, "../package.json"), "utf-8"),
 );
 
 const program = new Command();
 
 // Configure CLI metadata
 program
-  .name('cortex-tms')
+  .name("cortex-tms")
   .description(
-    chalk.bold('🧠 Cortex TMS') +
-      '\n' +
-      chalk.gray('The Universal AI-Optimized Project Boilerplate\n') +
-      chalk.gray('Initialize your project with TMS documentation structure')
+    chalk.bold("🧠 Cortex TMS") +
+      "\n" +
+      chalk.gray("The Universal AI-Optimized Project Boilerplate\n") +
+      chalk.gray("Initialize your project with TMS documentation structure"),
   )
-  .version(packageJson.version, '-v, --version', 'Output the current version')
-  .helpOption('-h, --help', 'Display help for command');
+  .version(packageJson.version, "-v, --version", "Output the current version")
+  .helpOption("-h, --help", "Display help for command");
 
 // Register commands
-import { initCommand } from './commands/init.js';
-import { validateCommand } from './commands/validate.js';
-import { statusCommand } from './commands/status.js';
-import { migrateCommand } from './commands/migrate.js';
-import { promptCommand } from './commands/prompt.js';
-import { tutorialCommand } from './commands/tutorial.js';
-import { reviewCommand } from './commands/review.js';
-import { archiveCommand } from './commands/archive.js';
-import { dashboardCommand } from './commands/dashboard.js';
+import { initCommand } from "./commands/init.js";
+import { validateCommand } from "./commands/validate.js";
+import { statusCommand } from "./commands/status.js";
+import { migrateCommand } from "./commands/migrate.js";
+import { promptCommand } from "./commands/prompt.js";
+import { tutorialCommand } from "./commands/tutorial.js";
+import { reviewCommand } from "./commands/review.js";
+import { archiveCommand } from "./commands/archive.js";
+import { dashboardCommand } from "./commands/dashboard.js";
 
 program.addCommand(initCommand);
 program.addCommand(validateCommand);
@@ -59,24 +59,37 @@ program.addCommand(archiveCommand);
 program.addCommand(dashboardCommand);
 
 // Deprecated: auto-tier command (kept as alias for backwards compatibility)
-const autoTierDeprecated = new Command('auto-tier')
+const autoTierDeprecated = new Command("auto-tier")
   .description(chalk.yellow('⚠️  DEPRECATED: Use "cortex-tms archive" instead'))
-  .option('--dry-run', 'Preview what would be archived')
+  .option("--dry-run", "Preview what would be archived")
   .action(async (options) => {
-    console.log(chalk.yellow('\n⚠️  DEPRECATION WARNING'));
-    console.log(chalk.gray('  The "auto-tier" command is deprecated and will be removed in v5.0'));
-    console.log(chalk.gray('  Please use'), chalk.cyan('cortex-tms archive'), chalk.gray('instead\n'));
+    console.log(chalk.yellow("\n⚠️  DEPRECATION WARNING"));
+    console.log(
+      chalk.gray(
+        '  The "auto-tier" command is deprecated and will be removed in v5.0',
+      ),
+    );
+    console.log(
+      chalk.gray("  Please use"),
+      chalk.cyan("cortex-tms archive"),
+      chalk.gray("instead\n"),
+    );
 
     // Delegate to archive command
-    await archiveCommand.parseAsync(['node', 'cortex-tms', 'archive', ...(options.dryRun ? ['--dry-run'] : [])]);
+    await archiveCommand.parseAsync([
+      "node",
+      "cortex-tms",
+      "archive",
+      ...(options.dryRun ? ["--dry-run"] : []),
+    ]);
   });
 
 program.addCommand(autoTierDeprecated);
 
 // Handle unknown commands
-program.on('command:*', () => {
-  throw new ValidationError('Invalid command', {
-    command: program.args.join(' '),
+program.on("command:*", () => {
+  throw new ValidationError("Invalid command", {
+    command: program.args.join(" "),
     hint: 'Run "cortex-tms --help" to see available commands',
   });
 });
@@ -90,21 +103,25 @@ try {
 } catch (error) {
   // Handle CLIError instances with formatted output
   if (error instanceof CLIError) {
-    console.error(chalk.red('\n❌ Error:'), formatError(error));
+    console.error(chalk.red("\n❌ Error:"), formatError(error));
     process.exit(error.exitCode);
   }
 
   // Handle Commander errors (invalid usage, unknown options, etc.)
   if (error instanceof Error) {
-    if ('code' in error && typeof error.code === 'string') {
-      // Commander errors are already displayed, just exit
-      process.exit(1);
+    if ("code" in error && typeof error.code === "string") {
+      // Commander errors: use exitCode if provided (0 for help/version, 1 for invalid usage)
+      const exitCode =
+        "exitCode" in error && typeof error.exitCode === "number"
+          ? error.exitCode
+          : 1;
+      process.exit(exitCode);
     }
 
     // Other unexpected errors - display them (with sanitization)
-    if (!error.message.includes('(outputHelp)')) {
+    if (!error.message.includes("(outputHelp)")) {
       const sanitizedMessage = sanitizeApiKey(error.message);
-      console.error(chalk.red('\n❌ Error:'), sanitizedMessage);
+      console.error(chalk.red("\n❌ Error:"), sanitizedMessage);
     }
   }
 

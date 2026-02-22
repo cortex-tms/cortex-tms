@@ -5,7 +5,7 @@
  * The main CLI entry point (src/cli.ts) catches these errors and handles them appropriately.
  */
 
-import { sanitizeApiKey, sanitizeObject } from './sanitize.js';
+import { sanitizeApiKey, sanitizeObject } from "./sanitize.js";
 
 /**
  * Error context type for additional error information
@@ -90,13 +90,14 @@ export function formatError(error: Error): string {
       const contextLines = Object.entries(sanitizedContext)
         .map(([key, value]) => {
           // Stringify objects/arrays for readability
-          const formattedValue = typeof value === 'object' && value !== null
-            ? JSON.stringify(value)
-            : String(value);
+          const formattedValue =
+            typeof value === "object" && value !== null
+              ? JSON.stringify(value)
+              : String(value);
           return `   ${key}=${formattedValue}`;
         })
-        .join('\n');
-      message += '\n' + contextLines;
+        .join("\n");
+      message += "\n" + contextLines;
     }
 
     return message;

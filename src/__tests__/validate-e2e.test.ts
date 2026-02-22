@@ -8,20 +8,27 @@
  * - Configuration validation
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { join } from 'path';
-import { writeFile, unlink } from 'fs/promises';
-import { createTempDir, cleanupTempDir } from './utils/temp-dir.js';
-import { runCommand, expectSuccess, expectFailure } from './utils/cli-runner.js';
-import { populatePlaceholders, removeFirstSessionSetup } from './utils/populate-placeholders.js';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { join } from "path";
+import { writeFile, unlink } from "fs/promises";
+import { createTempDir, cleanupTempDir } from "./utils/temp-dir.js";
+import {
+  runCommand,
+  expectSuccess,
+  expectFailure,
+} from "./utils/cli-runner.js";
+import {
+  populatePlaceholders,
+  removeFirstSessionSetup,
+} from "./utils/populate-placeholders.js";
 
-describe('Validate E2E - Passing Projects', () => {
+describe("Validate E2E - Passing Projects", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
     // Initialize project first
-    await runCommand('init', ['--scope', 'standard', '--force'], tempDir);
+    await runCommand("init", ["--scope", "standard", "--force"], tempDir);
     // Populate placeholders to create a "complete" project
     await populatePlaceholders(tempDir);
     await removeFirstSessionSetup(tempDir);
@@ -31,42 +38,42 @@ describe('Validate E2E - Passing Projects', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should pass validation for properly initialized project', async () => {
-    const result = await runCommand('validate', [], tempDir);
+  it("should pass validation for properly initialized project", async () => {
+    const result = await runCommand("validate", [], tempDir);
 
     expectSuccess(result);
-    expect(result.stdout).toContain('Validation passed');
+    expect(result.stdout).toContain("Validation passed");
     expect(result.stdout).toMatch(/[✓✅]/);
   });
 
-  it('should show all checks passing in output', async () => {
-    const result = await runCommand('validate', [], tempDir);
+  it("should show all checks passing in output", async () => {
+    const result = await runCommand("validate", [], tempDir);
 
     expectSuccess(result);
 
     // Should mention mandatory files
-    expect(result.stdout).toContain('NEXT-TASKS.md');
-    expect(result.stdout).toContain('CLAUDE.md');
+    expect(result.stdout).toContain("NEXT-TASKS.md");
+    expect(result.stdout).toContain("CLAUDE.md");
 
     // Should show configuration check
     expect(result.stdout).toMatch(/configuration|config/);
   });
 
-  it('should pass strict validation for complete project', async () => {
-    const result = await runCommand('validate', ['--strict'], tempDir);
+  it("should pass strict validation for complete project", async () => {
+    const result = await runCommand("validate", ["--strict"], tempDir);
 
     expectSuccess(result);
-    expect(result.stdout).toContain('Validation passed');
+    expect(result.stdout).toContain("Validation passed");
   });
 });
 
-describe('Validate E2E - Failing Projects', () => {
+describe("Validate E2E - Failing Projects", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
     // Initialize project
-    await runCommand('init', ['--scope', 'standard', '--force'], tempDir);
+    await runCommand("init", ["--scope", "standard", "--force"], tempDir);
     // Populate placeholders so tests can then break specific things
     await populatePlaceholders(tempDir);
     await removeFirstSessionSetup(tempDir);
@@ -76,41 +83,41 @@ describe('Validate E2E - Failing Projects', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should detect missing NEXT-TASKS.md', async () => {
+  it("should detect missing NEXT-TASKS.md", async () => {
     // Remove mandatory file
-    await unlink(join(tempDir, 'NEXT-TASKS.md'));
+    await unlink(join(tempDir, "NEXT-TASKS.md"));
 
-    const result = await runCommand('validate', [], tempDir);
+    const result = await runCommand("validate", [], tempDir);
 
     expectFailure(result);
-    expect(result.stdout).toContain('NEXT-TASKS.md');
+    expect(result.stdout).toContain("NEXT-TASKS.md");
   });
 
-  it('should detect missing CLAUDE.md', async () => {
+  it("should detect missing CLAUDE.md", async () => {
     // Remove mandatory file
-    await unlink(join(tempDir, 'CLAUDE.md'));
+    await unlink(join(tempDir, "CLAUDE.md"));
 
-    const result = await runCommand('validate', [], tempDir);
+    const result = await runCommand("validate", [], tempDir);
 
     expectFailure(result);
-    expect(result.stdout).toContain('CLAUDE.md');
+    expect(result.stdout).toContain("CLAUDE.md");
   });
 
-  it('should detect missing .cortexrc configuration', async () => {
+  it("should detect missing .cortexrc configuration", async () => {
     // Remove configuration file
-    await unlink(join(tempDir, '.cortexrc'));
+    await unlink(join(tempDir, ".cortexrc"));
 
-    const result = await runCommand('validate', [], tempDir);
+    const result = await runCommand("validate", [], tempDir);
 
     expectFailure(result);
     expect(result.stdout).toMatch(/\.cortexrc|configuration/);
   });
 
-  it('should detect invalid .cortexrc format', async () => {
+  it("should detect invalid .cortexrc format", async () => {
     // Write invalid JSON
-    await writeFile(join(tempDir, '.cortexrc'), 'not valid json');
+    await writeFile(join(tempDir, ".cortexrc"), "not valid json");
 
-    const result = await runCommand('validate', [], tempDir);
+    const result = await runCommand("validate", [], tempDir);
 
     expectFailure(result);
     // Error may be in stdout or stderr
@@ -119,12 +126,12 @@ describe('Validate E2E - Failing Projects', () => {
   });
 });
 
-describe('Validate E2E - Strict Mode', () => {
+describe("Validate E2E - Strict Mode", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
-    await runCommand('init', ['--scope', 'standard', '--force'], tempDir);
+    await runCommand("init", ["--scope", "standard", "--force"], tempDir);
     // Populate placeholders for strict mode tests
     await populatePlaceholders(tempDir);
     await removeFirstSessionSetup(tempDir);
@@ -134,9 +141,9 @@ describe('Validate E2E - Strict Mode', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should perform additional checks in strict mode', async () => {
-    const normalResult = await runCommand('validate', [], tempDir);
-    const strictResult = await runCommand('validate', ['--strict'], tempDir);
+  it("should perform additional checks in strict mode", async () => {
+    const normalResult = await runCommand("validate", [], tempDir);
+    const strictResult = await runCommand("validate", ["--strict"], tempDir);
 
     expectSuccess(normalResult);
     expectSuccess(strictResult);
@@ -146,22 +153,22 @@ describe('Validate E2E - Strict Mode', () => {
     expect(strictResult.stdout).toBeTruthy();
   });
 
-  it('should fail strict mode for incomplete projects', async () => {
+  it("should fail strict mode for incomplete projects", async () => {
     // Remove optional file that strict mode might check
     // (Implementation dependent - may need adjustment)
-    const result = await runCommand('validate', ['--strict'], tempDir);
+    const result = await runCommand("validate", ["--strict"], tempDir);
 
     // Should pass for freshly initialized project
     expectSuccess(result);
   });
 });
 
-describe('Validate E2E - Archive Status', () => {
+describe("Validate E2E - Archive Status", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
-    await runCommand('init', ['--scope', 'standard', '--force'], tempDir);
+    await runCommand("init", ["--scope", "standard", "--force"], tempDir);
     // Populate placeholders
     await populatePlaceholders(tempDir);
     await removeFirstSessionSetup(tempDir);
@@ -171,15 +178,15 @@ describe('Validate E2E - Archive Status', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should check archive directory exists', async () => {
-    const result = await runCommand('validate', [], tempDir);
+  it("should check archive directory exists", async () => {
+    const result = await runCommand("validate", [], tempDir);
 
     expectSuccess(result);
     expect(result.stdout).toMatch(/[Aa]rchive/);
   });
 
-  it('should validate task list health', async () => {
-    const result = await runCommand('validate', [], tempDir);
+  it("should validate task list health", async () => {
+    const result = await runCommand("validate", [], tempDir);
 
     expectSuccess(result);
 
@@ -188,12 +195,12 @@ describe('Validate E2E - Archive Status', () => {
   });
 });
 
-describe('Validate E2E - Summary Output', () => {
+describe("Validate E2E - Summary Output", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
-    await runCommand('init', ['--scope', 'standard', '--force'], tempDir);
+    await runCommand("init", ["--scope", "standard", "--force"], tempDir);
     // Populate placeholders
     await populatePlaceholders(tempDir);
     await removeFirstSessionSetup(tempDir);
@@ -203,8 +210,8 @@ describe('Validate E2E - Summary Output', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should show summary with check counts', async () => {
-    const result = await runCommand('validate', [], tempDir);
+  it("should show summary with check counts", async () => {
+    const result = await runCommand("validate", [], tempDir);
 
     expectSuccess(result);
 
@@ -213,8 +220,8 @@ describe('Validate E2E - Summary Output', () => {
     expect(result.stdout).toMatch(/[Pp]assed/);
   });
 
-  it('should provide clear pass/fail indication', async () => {
-    const result = await runCommand('validate', [], tempDir);
+  it("should provide clear pass/fail indication", async () => {
+    const result = await runCommand("validate", [], tempDir);
 
     expectSuccess(result);
     expect(result.stdout).toMatch(/[✓✅]|passed/);

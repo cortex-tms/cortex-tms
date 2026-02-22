@@ -1,12 +1,12 @@
-import React from 'react';
-import { Box, Text } from 'ink';
+import React from "react";
+import { Box, Text } from "ink";
 
 interface FileSizeHealthItem {
   file: string;
   lines: number;
   limit: number;
   percent: number;
-  status: 'healthy' | 'warning' | 'over';
+  status: "healthy" | "warning" | "over";
 }
 
 interface FileSizeHealthCardProps {
@@ -25,24 +25,29 @@ export const FileSizeHealthCard: React.FC<FileSizeHealthCardProps> = ({
   const topFiles = files.slice(0, maxDisplay);
 
   // Count files over limit
-  const overLimitCount = files.filter((f) => f.status === 'over').length;
+  const overLimitCount = files.filter((f) => f.status === "over").length;
 
   // Status emoji and color
   const getStatusDisplay = (status: string) => {
     switch (status) {
-      case 'over':
-        return { emoji: '🔴', color: 'red' as const };
-      case 'warning':
-        return { emoji: '🟡', color: 'yellow' as const };
-      case 'healthy':
-        return { emoji: '🟢', color: 'green' as const };
+      case "over":
+        return { emoji: "🔴", color: "red" as const };
+      case "warning":
+        return { emoji: "🟡", color: "yellow" as const };
+      case "healthy":
+        return { emoji: "🟢", color: "green" as const };
       default:
-        return { emoji: '⚪', color: 'gray' as const };
+        return { emoji: "⚪", color: "gray" as const };
     }
   };
 
   return (
-    <Box flexDirection="column" paddingY={1} borderStyle="round" borderColor="yellow">
+    <Box
+      flexDirection="column"
+      paddingY={1}
+      borderStyle="round"
+      borderColor="yellow"
+    >
       <Box paddingX={2}>
         <Text bold color="yellow">
           📏 FILE SIZE HEALTH
@@ -62,7 +67,7 @@ export const FileSizeHealthCard: React.FC<FileSizeHealthCardProps> = ({
                 <Text>{emoji} </Text>
                 <Text color={color}>{file.file.padEnd(30)}</Text>
                 <Text dimColor>
-                  {' '}
+                  {" "}
                   {file.lines}/{file.limit} lines ({file.percent}%)
                 </Text>
               </Box>
@@ -72,7 +77,7 @@ export const FileSizeHealthCard: React.FC<FileSizeHealthCardProps> = ({
           {overLimitCount > 0 && (
             <Box paddingX={2} paddingTop={1}>
               <Text color="red" bold>
-                {overLimitCount} file{overLimitCount > 1 ? 's' : ''} over limit
+                {overLimitCount} file{overLimitCount > 1 ? "s" : ""} over limit
               </Text>
               <Text dimColor> • Run: </Text>
               <Text color="cyan">cortex-tms validate --fix</Text>

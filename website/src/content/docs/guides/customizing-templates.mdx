@@ -213,7 +213,7 @@ Edit `templates/standard/.cortexrc`:
 ```json
 {
   "scope": "standard",
-  "version": "2.6.0",
+  "version": "1.0.0",
   "organization": "{{COMPANY_NAME}}",
   "createdAt": "{{YEAR}}-{{MONTH}}-{{DAY}}",
   "customizations": {
@@ -327,7 +327,7 @@ Create `templates/finance/.cortexrc`:
 ```json
 {
   "scope": "finance",
-  "version": "2.6.0",
+  "version": "1.0.0",
   "organization": "{{COMPANY_NAME}}",
   "description": "Cortex TMS configured for financial software projects",
   "files": [
@@ -1156,7 +1156,7 @@ jobs:
           node-version: '20'
 
       - name: Install cortex-tms
-        run: npm install -g cortex-tms@3.1.0
+        run: npm install -g cortex-tms@latest
 
       - name: Test ${{ matrix.template }} template
         run: |

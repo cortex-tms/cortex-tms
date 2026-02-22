@@ -4,24 +4,40 @@
  * Upgrades TMS files to the current template version while preserving custom changes
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
-import ora from 'ora';
-import inquirer from 'inquirer';
-import { join, dirname } from 'path';
-import { existsSync } from 'fs';
-import { loadConfig, getScopePreset } from '../utils/config.js';
-import { getPackageVersion, extractVersion, getTemplatesDir, replacePlaceholders, injectVersionMetadata } from '../utils/templates.js';
-import { createBackup, listBackups, restoreBackup, formatBackupSize, getBackupSize } from '../utils/backup.js';
-import { migrateOptionsSchema, validateOptions, validateSafePath } from '../utils/validation.js';
-import { FileSystemError } from '../utils/errors.js';
-import fs from 'fs-extra';
-import { relative } from 'path';
+import { Command } from "commander";
+import chalk from "chalk";
+import ora from "ora";
+import inquirer from "inquirer";
+import { join, dirname } from "path";
+import { existsSync } from "fs";
+import { loadConfig, getScopePreset } from "../utils/config.js";
+import {
+  getPackageVersion,
+  extractVersion,
+  getTemplatesDir,
+  replacePlaceholders,
+  injectVersionMetadata,
+} from "../utils/templates.js";
+import {
+  createBackup,
+  listBackups,
+  restoreBackup,
+  formatBackupSize,
+  getBackupSize,
+} from "../utils/backup.js";
+import {
+  migrateOptionsSchema,
+  validateOptions,
+  validateSafePath,
+} from "../utils/validation.js";
+import { FileSystemError } from "../utils/errors.js";
+import fs from "fs-extra";
+import { relative } from "path";
 
 /**
  * Migration status for a single file
  */
-export type MigrationStatus = 'LATEST' | 'OUTDATED' | 'CUSTOMIZED' | 'MISSING';
+export type MigrationStatus = "LATEST" | "OUTDATED" | "CUSTOMIZED" | "MISSING";
 
 /**
  * File migration information
@@ -38,15 +54,18 @@ export interface FileMigration {
  * Create and configure the migrate command
  */
 export function createMigrateCommand(): Command {
-  const migrateCommand = new Command('migrate');
+  const migrateCommand = new Command("migrate");
 
   migrateCommand
-    .description('Upgrade TMS files to the current template version')
-    .option('-a, --apply', 'Apply automatic upgrades (creates backup first)')
-    .option('-r, --rollback', 'Restore files from a previous backup')
-    .option('-f, --force', 'Force upgrade even for customized files (requires --apply)')
-    .option('-v, --verbose', 'Show detailed output')
-    .option('-d, --dry-run', 'Preview changes without applying them')
+    .description("Upgrade TMS files to the current template version")
+    .option("-a, --apply", "Apply automatic upgrades (creates backup first)")
+    .option("-r, --rollback", "Restore files from a previous backup")
+    .option(
+      "-f, --force",
+      "Force upgrade even for customized files (requires --apply)",
+    )
+    .option("-v, --verbose", "Show detailed output")
+    .option("-d, --dry-run", "Preview changes without applying them")
     .action(async (options) => {
       await runMigrate(options);
     });
@@ -72,8 +91,14 @@ async function runMigrate(options: {
   const cwd = process.cwd();
 
   // Validate options using Zod schema
-  const validated = validateOptions(migrateOptionsSchema, options, 'migrate');
-  const { apply = false, rollback = false, force = false, verbose: _verbose = false, dryRun = false } = validated;
+  const validated = validateOptions(migrateOptionsSchema, options, "migrate");
+  const {
+    apply = false,
+    rollback = false,
+    force = false,
+    verbose: _verbose = false,
+    dryRun = false,
+  } = validated;
 
   // Handle rollback mode
   if (rollback) {
@@ -81,43 +106,41 @@ async function runMigrate(options: {
     return;
   }
 
-  console.log(chalk.bold.cyan('\n🔄 Cortex TMS Migration\n'));
+  console.log(chalk.bold.cyan("\n🔄 Cortex TMS Migration\n"));
 
   if (dryRun) {
-    console.log(chalk.yellow('🔍 DRY RUN MODE: No files will be modified.\n'));
+    console.log(chalk.yellow("🔍 DRY RUN MODE: No files will be modified.\n"));
   }
 
   // Step 1: Load configuration
-  const spinner = ora('Loading project configuration...').start();
+  const spinner = ora("Loading project configuration...").start();
   const config = await loadConfig(cwd);
 
   if (!config) {
-    spinner.fail('No .cortexrc found');
-    console.log(
-      chalk.gray('Run "cortex-tms init" to initialize.\n')
-    );
-    throw new Error('This directory is not a Cortex TMS project');
+    spinner.fail("No .cortexrc found");
+    console.log(chalk.gray('Run "cortex-tms init" to initialize.\n'));
+    throw new Error("This directory is not a Cortex TMS project");
   }
 
-  spinner.succeed('Configuration loaded');
+  spinner.succeed("Configuration loaded");
 
   // Step 2: Get file list from scope
   const preset = getScopePreset(config.scope);
   if (!preset) {
     console.log(
-      chalk.gray('\nValid scopes: nano, micro, standard, enterprise, custom')
+      chalk.gray("\nValid scopes: nano, micro, standard, enterprise, custom"),
     );
-    console.log(chalk.gray('Update your .cortexrc with a valid scope.\n'));
+    console.log(chalk.gray("Update your .cortexrc with a valid scope.\n"));
     throw new Error(`Unknown scope: ${config.scope}`);
   }
 
   const allFiles =
-    config.scope === 'custom' && config.metadata?.customFiles
+    config.scope === "custom" && config.metadata?.customFiles
       ? config.metadata.customFiles
       : [...preset.mandatoryFiles, ...preset.optionalFiles];
 
   // Step 3: Analyze each file
-  spinner.text = 'Analyzing files...';
+  spinner.text = "Analyzing files...";
   spinner.start();
 
   const targetVersion = getPackageVersion();
@@ -129,7 +152,7 @@ async function runMigrate(options: {
     if (!fileValidation.isValid) {
       throw new FileSystemError(
         `File path validation failed: ${fileValidation.error}`,
-        { filePath: file }
+        { filePath: file },
       );
     }
 
@@ -144,35 +167,41 @@ async function runMigrate(options: {
   printMigrationReport(migrations, targetVersion);
 
   // Step 5: Determine if migration is needed
-  const outdated = migrations.filter((m) => m.status === 'OUTDATED');
-  const customized = migrations.filter((m) => m.status === 'CUSTOMIZED');
-  const missing = migrations.filter((m) => m.status === 'MISSING');
+  const outdated = migrations.filter((m) => m.status === "OUTDATED");
+  const customized = migrations.filter((m) => m.status === "CUSTOMIZED");
+  const missing = migrations.filter((m) => m.status === "MISSING");
 
-  if (outdated.length === 0 && customized.length === 0 && missing.length === 0) {
+  if (
+    outdated.length === 0 &&
+    customized.length === 0 &&
+    missing.length === 0
+  ) {
     console.log(
-      chalk.green.bold('\n✨ All files are up to date! No migration needed.\n')
+      chalk.green.bold("\n✨ All files are up to date! No migration needed.\n"),
     );
     return;
   }
 
   // Step 6: Show summary and next steps
-  console.log(chalk.bold('\n📋 Migration Summary:\n'));
+  console.log(chalk.bold("\n📋 Migration Summary:\n"));
 
   if (outdated.length > 0) {
     console.log(
-      chalk.blue(`  ✓ ${outdated.length} file(s) can be safely upgraded`)
+      chalk.blue(`  ✓ ${outdated.length} file(s) can be safely upgraded`),
     );
   }
 
   if (customized.length > 0) {
     console.log(
-      chalk.yellow(`  ⚠ ${customized.length} file(s) have custom changes (manual review needed)`)
+      chalk.yellow(
+        `  ⚠ ${customized.length} file(s) have custom changes (manual review needed)`,
+      ),
     );
   }
 
   if (missing.length > 0) {
     console.log(
-      chalk.gray(`  ℹ ${missing.length} file(s) not installed (optional)`)
+      chalk.gray(`  ℹ ${missing.length} file(s) not installed (optional)`),
     );
   }
 
@@ -196,66 +225,64 @@ async function applyMigration(
   projectRoot: string,
   migrations: FileMigration[],
   targetVersion: string,
-  force: boolean
+  force: boolean,
 ): Promise<void> {
-  const outdated = migrations.filter((m) => m.status === 'OUTDATED');
-  const customized = migrations.filter((m) => m.status === 'CUSTOMIZED');
+  const outdated = migrations.filter((m) => m.status === "OUTDATED");
+  const customized = migrations.filter((m) => m.status === "CUSTOMIZED");
 
   // Determine which files to upgrade
   const filesToUpgrade = force ? [...outdated, ...customized] : outdated;
 
   if (filesToUpgrade.length === 0) {
-    console.log(chalk.yellow('\n⚠️  No files to upgrade.\n'));
+    console.log(chalk.yellow("\n⚠️  No files to upgrade.\n"));
     return;
   }
 
   // Show what will be upgraded
-  console.log(chalk.bold('\n🔄 Files to be upgraded:\n'));
+  console.log(chalk.bold("\n🔄 Files to be upgraded:\n"));
   filesToUpgrade.forEach((file) => {
-    const icon = file.status === 'CUSTOMIZED' ? '⚠️ ' : '✓';
+    const icon = file.status === "CUSTOMIZED" ? "⚠️ " : "✓";
     console.log(chalk.blue(`  ${icon} ${file.path}`));
   });
 
   if (!force && customized.length > 0) {
     console.log(
       chalk.yellow(
-        `\n⚠️  ${customized.length} CUSTOMIZED file(s) skipped. Use --force to upgrade them.\n`
-      )
+        `\n⚠️  ${customized.length} CUSTOMIZED file(s) skipped. Use --force to upgrade them.\n`,
+      ),
     );
   }
 
   // Create backup
-  console.log(chalk.bold('\n💾 Creating backup...\n'));
-  const spinner = ora('Backing up files...').start();
+  console.log(chalk.bold("\n💾 Creating backup...\n"));
+  const spinner = ora("Backing up files...").start();
 
   const filePaths = filesToUpgrade.map((m) => join(projectRoot, m.path));
   const backupResult = await createBackup(
     projectRoot,
     filePaths,
     `migrate to v${targetVersion}`,
-    targetVersion
+    targetVersion,
   );
 
   if (!backupResult.success) {
-    spinner.fail('Backup failed');
-    console.log(chalk.gray('\nMigration aborted to prevent data loss.'));
-    console.log(chalk.bold('\n💡 Troubleshooting:'));
-    console.log(chalk.gray('  • Check disk space: df -h'));
-    console.log(chalk.gray('  • Check permissions: ls -la .cortex/'));
-    console.log(chalk.gray('  • Ensure .cortex/ is not read-only\n'));
-    throw new Error(backupResult.error || 'Backup failed');
+    spinner.fail("Backup failed");
+    console.log(chalk.gray("\nMigration aborted to prevent data loss."));
+    console.log(chalk.bold("\n💡 Troubleshooting:"));
+    console.log(chalk.gray("  • Check disk space: df -h"));
+    console.log(chalk.gray("  • Check permissions: ls -la .cortex/"));
+    console.log(chalk.gray("  • Ensure .cortex/ is not read-only\n"));
+    throw new Error(backupResult.error || "Backup failed");
   }
 
   spinner.succeed(`Backup created: ${chalk.cyan(backupResult.backupPath)}`);
   console.log(
-    chalk.gray(
-      `   ${backupResult.filesBackedUp} file(s) backed up safely\n`
-    )
+    chalk.gray(`   ${backupResult.filesBackedUp} file(s) backed up safely\n`),
   );
 
   // Apply upgrades
-  console.log(chalk.bold('🚀 Applying upgrades...\n'));
-  const upgradeSpinner = ora('Updating files...').start();
+  console.log(chalk.bold("🚀 Applying upgrades...\n"));
+  const upgradeSpinner = ora("Updating files...").start();
 
   // Load config for placeholder replacements
   const config = await loadConfig(projectRoot);
@@ -269,7 +296,7 @@ async function applyMigration(
     if (!fileValidation.isValid) {
       throw new FileSystemError(
         `File path validation failed: ${fileValidation.error}`,
-        { filePath: migration.path }
+        { filePath: migration.path },
       );
     }
 
@@ -278,7 +305,7 @@ async function applyMigration(
     if (!templateValidation.isValid) {
       throw new FileSystemError(
         `Template path validation failed: ${templateValidation.error}`,
-        { templatePath: migration.path }
+        { templatePath: migration.path },
       );
     }
 
@@ -292,16 +319,17 @@ async function applyMigration(
 
     try {
       // Read template content
-      let content = await fs.readFile(templatePath, 'utf-8');
+      let content = await fs.readFile(templatePath, "utf-8");
 
       // Apply placeholder replacements (preserve user's project details)
       if (config?.metadata?.projectName) {
         const replacements = {
-          'Project Name': config.metadata.projectName,
-          'project-name': config.metadata.projectName
+          "Project Name": config.metadata.projectName,
+          "project-name": config.metadata.projectName
             .toLowerCase()
-            .replace(/[^a-z0-9-]/g, '-'),
-          'Description': config.metadata.description || `A project powered by Cortex TMS`,
+            .replace(/[^a-z0-9-]/g, "-"),
+          Description:
+            config.metadata.description || `A project powered by Cortex TMS`,
         };
         content = replacePlaceholders(content, replacements);
       }
@@ -313,45 +341,45 @@ async function applyMigration(
       await fs.ensureDir(dirname(filePath));
 
       // Write upgraded content to destination
-      await fs.writeFile(filePath, content, 'utf-8');
+      await fs.writeFile(filePath, content, "utf-8");
       upgradedCount++;
     } catch (error) {
       upgradeSpinner.warn(`Failed to upgrade ${migration.path}`);
       console.log(
         chalk.yellow(
-          `   ${error instanceof Error ? error.message : 'Unknown error'}`
-        )
+          `   ${error instanceof Error ? error.message : "Unknown error"}`,
+        ),
       );
     }
   }
 
   upgradeSpinner.succeed(
-    `Upgraded ${upgradedCount} file(s) to v${targetVersion}`
+    `Upgraded ${upgradedCount} file(s) to v${targetVersion}`,
   );
 
   // Success message
-  console.log(chalk.green.bold('\n✨ Migration complete!\n'));
-  console.log(chalk.gray('💡 Tip: Review changes with:'));
-  console.log(chalk.cyan('   git diff\n'));
-  console.log(chalk.gray('💡 To rollback, run:'));
-  console.log(chalk.cyan('   cortex-tms migrate --rollback\n'));
+  console.log(chalk.green.bold("\n✨ Migration complete!\n"));
+  console.log(chalk.gray("💡 Tip: Review changes with:"));
+  console.log(chalk.cyan("   git diff\n"));
+  console.log(chalk.gray("💡 To rollback, run:"));
+  console.log(chalk.cyan("   cortex-tms migrate --rollback\n"));
 }
 
 /**
  * Rollback to a previous backup
  */
 async function runRollback(projectRoot: string): Promise<void> {
-  console.log(chalk.bold.cyan('\n⏪ Cortex TMS Rollback\n'));
+  console.log(chalk.bold.cyan("\n⏪ Cortex TMS Rollback\n"));
 
   // List available backups
-  const spinner = ora('Searching for backups...').start();
+  const spinner = ora("Searching for backups...").start();
   const backups = await listBackups(projectRoot);
 
   if (backups.length === 0) {
-    spinner.fail('No backups found');
-    console.log(chalk.yellow('\n⚠️  No backup snapshots available.'));
-    console.log(chalk.gray('Backups are created automatically when using:'));
-    console.log(chalk.cyan('   cortex-tms migrate --apply\n'));
+    spinner.fail("No backups found");
+    console.log(chalk.yellow("\n⚠️  No backup snapshots available."));
+    console.log(chalk.gray("Backups are created automatically when using:"));
+    console.log(chalk.cyan("   cortex-tms migrate --apply\n"));
     return;
   }
 
@@ -360,7 +388,12 @@ async function runRollback(projectRoot: string): Promise<void> {
   // Format backup choices for inquirer
   const choices = await Promise.all(
     backups.slice(0, 5).map(async (backup) => {
-      const backupPath = join(projectRoot, '.cortex', 'backups', backup.timestamp);
+      const backupPath = join(
+        projectRoot,
+        ".cortex",
+        "backups",
+        backup.timestamp,
+      );
       const size = await getBackupSize(backupPath);
       const formattedSize = formatBackupSize(size);
       const fileCount = backup.files.length;
@@ -370,44 +403,46 @@ async function runRollback(projectRoot: string): Promise<void> {
         value: backup.timestamp,
         short: backup.timestamp,
       };
-    })
+    }),
   );
 
   // Add cancel option
   choices.push({
-    name: chalk.gray('Cancel'),
-    value: 'cancel',
-    short: 'Cancel',
+    name: chalk.gray("Cancel"),
+    value: "cancel",
+    short: "Cancel",
   });
 
   // Prompt user to select backup
   const { selectedBackup } = await inquirer.prompt([
     {
-      type: 'list',
-      name: 'selectedBackup',
-      message: 'Select a backup to restore:',
+      type: "list",
+      name: "selectedBackup",
+      message: "Select a backup to restore:",
       choices,
       pageSize: 10,
     },
   ]);
 
-  if (selectedBackup === 'cancel') {
-    console.log(chalk.gray('\n✓ Rollback cancelled.\n'));
+  if (selectedBackup === "cancel") {
+    console.log(chalk.gray("\n✓ Rollback cancelled.\n"));
     return;
   }
 
   // Get selected backup manifest
   const selectedManifest = backups.find((b) => b.timestamp === selectedBackup);
   if (!selectedManifest) {
-    console.log(chalk.red('\n❌ Error:'), 'Backup not found.');
-    console.log(chalk.gray('\n💡 To debug:'));
-    console.log(chalk.cyan('   ls -la .cortex/backups/'));
-    console.log(chalk.gray('\nIf backups are missing, they may have been deleted.\n'));
+    console.log(chalk.red("\n❌ Error:"), "Backup not found.");
+    console.log(chalk.gray("\n💡 To debug:"));
+    console.log(chalk.cyan("   ls -la .cortex/backups/"));
+    console.log(
+      chalk.gray("\nIf backups are missing, they may have been deleted.\n"),
+    );
     return;
   }
 
   // Show what will be restored
-  console.log(chalk.bold('\n📋 Files to be restored:\n'));
+  console.log(chalk.bold("\n📋 Files to be restored:\n"));
   selectedManifest.files.forEach((file) => {
     console.log(chalk.blue(`  ✓ ${file.relativePath}`));
   });
@@ -415,92 +450,123 @@ async function runRollback(projectRoot: string): Promise<void> {
   // Confirm restoration
   const { confirmed } = await inquirer.prompt([
     {
-      type: 'confirm',
-      name: 'confirmed',
-      message: chalk.yellow('This will overwrite current files. Continue?'),
+      type: "confirm",
+      name: "confirmed",
+      message: chalk.yellow("This will overwrite current files. Continue?"),
       default: false,
     },
   ]);
 
   if (!confirmed) {
-    console.log(chalk.gray('\n✓ Rollback cancelled.\n'));
+    console.log(chalk.gray("\n✓ Rollback cancelled.\n"));
     return;
   }
 
   // Perform rollback
-  console.log(chalk.bold('\n⏪ Restoring backup...\n'));
-  const restoreSpinner = ora('Restoring files...').start();
+  console.log(chalk.bold("\n⏪ Restoring backup...\n"));
+  const restoreSpinner = ora("Restoring files...").start();
 
   try {
-    const backupPath = join(projectRoot, '.cortex', 'backups', selectedBackup);
+    const backupPath = join(projectRoot, ".cortex", "backups", selectedBackup);
     const restoredCount = await restoreBackup(backupPath);
 
     restoreSpinner.succeed(`Restored ${restoredCount} file(s) from backup`);
 
     // Success message
-    console.log(chalk.green.bold('\n✨ Rollback complete!\n'));
-    console.log(chalk.gray('💡 Tip: Review restored files with:'));
-    console.log(chalk.cyan('   git diff\n'));
+    console.log(chalk.green.bold("\n✨ Rollback complete!\n"));
+    console.log(chalk.gray("💡 Tip: Review restored files with:"));
+    console.log(chalk.cyan("   git diff\n"));
   } catch (error) {
-    restoreSpinner.fail('Rollback failed');
-    console.log(chalk.red('\n❌ Error:'), error instanceof Error ? error.message : 'Unknown error');
-    console.log(chalk.yellow('\n⚠️  Files may be partially restored.'));
-    console.log(chalk.bold('\n🔧 Manual Recovery:'));
-    console.log(chalk.gray(`  1. Check backup: ls -la .cortex/backups/${selectedBackup}/`));
-    console.log(chalk.gray('  2. Manually copy files if needed:'));
-    console.log(chalk.cyan(`     cp .cortex/backups/${selectedBackup}/<file> ./`));
-    console.log(chalk.gray('  3. Verify restoration: git diff'));
-    console.log(chalk.gray('  4. If corrupted, restore from Git: git checkout HEAD -- <file>\n'));
-    throw new Error('Restoration failed');
+    restoreSpinner.fail("Rollback failed");
+    console.log(
+      chalk.red("\n❌ Error:"),
+      error instanceof Error ? error.message : "Unknown error",
+    );
+    console.log(chalk.yellow("\n⚠️  Files may be partially restored."));
+    console.log(chalk.bold("\n🔧 Manual Recovery:"));
+    console.log(
+      chalk.gray(
+        `  1. Check backup: ls -la .cortex/backups/${selectedBackup}/`,
+      ),
+    );
+    console.log(chalk.gray("  2. Manually copy files if needed:"));
+    console.log(
+      chalk.cyan(`     cp .cortex/backups/${selectedBackup}/<file> ./`),
+    );
+    console.log(chalk.gray("  3. Verify restoration: git diff"));
+    console.log(
+      chalk.gray(
+        "  4. If corrupted, restore from Git: git checkout HEAD -- <file>\n",
+      ),
+    );
+    throw new Error("Restoration failed");
   }
 }
 
 /**
  * Print next steps and guidance for manual migration
  */
-function printNextSteps(outdatedCount: number, customizedCount: number, applyAvailable: boolean): void {
-  console.log(chalk.bold('\n📋 Next Steps:\n'));
+function printNextSteps(
+  outdatedCount: number,
+  customizedCount: number,
+  applyAvailable: boolean,
+): void {
+  console.log(chalk.bold("\n📋 Next Steps:\n"));
 
   if (outdatedCount > 0) {
+    console.log(chalk.blue("  1. Review OUTDATED files marked above"));
     console.log(
-      chalk.blue('  1. Review OUTDATED files marked above')
-    );
-    console.log(
-      chalk.gray('     → These match the old template and can be safely upgraded')
+      chalk.gray(
+        "     → These match the old template and can be safely upgraded",
+      ),
     );
   }
 
   if (customizedCount > 0) {
     console.log(
-      chalk.yellow(`  ${outdatedCount > 0 ? '2' : '1'}. Review CUSTOMIZED files marked above`)
+      chalk.yellow(
+        `  ${outdatedCount > 0 ? "2" : "1"}. Review CUSTOMIZED files marked above`,
+      ),
     );
     console.log(
-      chalk.gray('     → These have custom changes - preserve your modifications')
+      chalk.gray(
+        "     → These have custom changes - preserve your modifications",
+      ),
     );
   }
 
   console.log(
-    chalk.gray(`  ${outdatedCount > 0 || customizedCount > 0 ? (outdatedCount > 0 && customizedCount > 0 ? '3' : '2') : '1'}. Check the latest templates at:`)
+    chalk.gray(
+      `  ${outdatedCount > 0 || customizedCount > 0 ? (outdatedCount > 0 && customizedCount > 0 ? "3" : "2") : "1"}. Check the latest templates at:`,
+    ),
   );
   console.log(
-    chalk.cyan('     https://github.com/cortex-tms/cortex-tms/tree/main/templates')
+    chalk.cyan(
+      "     https://github.com/cortex-tms/cortex-tms/tree/main/templates",
+    ),
   );
 
   if (applyAvailable && (outdatedCount > 0 || customizedCount > 0)) {
-    console.log(chalk.bold.cyan('\n🚀 Automatic Upgrade Available:\n'));
+    console.log(chalk.bold.cyan("\n🚀 Automatic Upgrade Available:\n"));
 
     if (outdatedCount > 0) {
-      console.log(chalk.blue('   cortex-tms migrate --apply'));
-      console.log(chalk.gray('   → Safely upgrade OUTDATED files (creates backup)\n'));
+      console.log(chalk.blue("   cortex-tms migrate --apply"));
+      console.log(
+        chalk.gray("   → Safely upgrade OUTDATED files (creates backup)\n"),
+      );
     }
 
     if (customizedCount > 0) {
-      console.log(chalk.yellow('   cortex-tms migrate --apply --force'));
-      console.log(chalk.gray('   → Upgrade ALL files including customized (use with caution)\n'));
+      console.log(chalk.yellow("   cortex-tms migrate --apply --force"));
+      console.log(
+        chalk.gray(
+          "   → Upgrade ALL files including customized (use with caution)\n",
+        ),
+      );
     }
   } else {
     console.log(
-      chalk.gray('   Or manually review and update files as needed.\n')
+      chalk.gray("   Or manually review and update files as needed.\n"),
     );
   }
 }
@@ -514,19 +580,21 @@ function printNextSteps(outdatedCount: number, customizedCount: number, applyAva
 async function analyzeFile(
   filePath: string,
   targetVersion: string,
-  projectRoot?: string
+  projectRoot?: string,
 ): Promise<FileMigration> {
   // Preserve relative path (not just basename) for correct template lookup
-  const relativePath = projectRoot ? relative(projectRoot, filePath) : (filePath.split('/').pop() || filePath);
+  const relativePath = projectRoot
+    ? relative(projectRoot, filePath)
+    : filePath.split("/").pop() || filePath;
 
   // Check if file exists
   if (!existsSync(filePath)) {
     return {
       path: relativePath,
-      status: 'MISSING',
+      status: "MISSING",
       currentVersion: null,
       targetVersion,
-      reason: 'File not installed',
+      reason: "File not installed",
     };
   }
 
@@ -537,10 +605,10 @@ async function analyzeFile(
   if (!currentVersion) {
     return {
       path: relativePath,
-      status: 'CUSTOMIZED',
+      status: "CUSTOMIZED",
       currentVersion: null,
       targetVersion,
-      reason: 'Pre-versioned file (needs manual review)',
+      reason: "Pre-versioned file (needs manual review)",
     };
   }
 
@@ -548,7 +616,7 @@ async function analyzeFile(
   if (currentVersion === targetVersion) {
     return {
       path: relativePath,
-      status: 'LATEST',
+      status: "LATEST",
       currentVersion,
       targetVersion,
     };
@@ -559,10 +627,12 @@ async function analyzeFile(
 
   return {
     path: relativePath,
-    status: isCustomized ? 'CUSTOMIZED' : 'OUTDATED',
+    status: isCustomized ? "CUSTOMIZED" : "OUTDATED",
     currentVersion,
     targetVersion,
-    reason: isCustomized ? 'File has custom changes' : 'Template update available',
+    reason: isCustomized
+      ? "File has custom changes"
+      : "Template update available",
   };
 }
 
@@ -571,7 +641,10 @@ async function analyzeFile(
  * @param filePath - Absolute path to the user's file
  * @param relativePath - Relative path from project root (preserves directory structure)
  */
-async function checkIfCustomized(filePath: string, relativePath: string): Promise<boolean> {
+async function checkIfCustomized(
+  filePath: string,
+  relativePath: string,
+): Promise<boolean> {
   try {
     const templatesDir = getTemplatesDir();
 
@@ -590,13 +663,16 @@ async function checkIfCustomized(filePath: string, relativePath: string): Promis
     }
 
     // Read both files
-    const userContent = await fs.readFile(filePath, 'utf-8');
-    const templateContent = await fs.readFile(templatePath, 'utf-8');
+    const userContent = await fs.readFile(filePath, "utf-8");
+    const templateContent = await fs.readFile(templatePath, "utf-8");
 
     // Strip version metadata and placeholders for comparison
     const stripMetadata = (content: string) =>
       content
-        .replace(/<!-- @cortex-tms-version [\d.]+(?:-[a-zA-Z0-9.]+)? -->\n?/g, '')
+        .replace(
+          /<!-- @cortex-tms-version [\d.]+(?:-[a-zA-Z0-9.]+)? -->\n?/g,
+          "",
+        )
         .trim();
 
     const userStripped = stripMetadata(userContent);
@@ -604,7 +680,7 @@ async function checkIfCustomized(filePath: string, relativePath: string): Promis
 
     // If content matches template, it's not customized
     return userStripped !== templateStripped;
-  } catch (error) {
+  } catch {
     // If we can't determine, assume customized (safer)
     return true;
   }
@@ -615,9 +691,11 @@ async function checkIfCustomized(filePath: string, relativePath: string): Promis
  */
 function printMigrationReport(
   migrations: FileMigration[],
-  targetVersion: string
+  targetVersion: string,
 ): void {
-  console.log(chalk.bold(`\n📊 Migration Report (Target: v${targetVersion}):\n`));
+  console.log(
+    chalk.bold(`\n📊 Migration Report (Target: v${targetVersion}):\n`),
+  );
 
   // Group by status
   const byStatus: Record<MigrationStatus, FileMigration[]> = {
@@ -634,25 +712,32 @@ function printMigrationReport(
     MigrationStatus,
     { icon: string; color: typeof chalk.green; label: string }
   > = {
-    LATEST: { icon: '✅', color: chalk.green, label: 'UP TO DATE' },
-    OUTDATED: { icon: '🔄', color: chalk.blue, label: 'OUTDATED' },
-    CUSTOMIZED: { icon: '⚠️ ', color: chalk.yellow, label: 'CUSTOMIZED' },
-    MISSING: { icon: 'ℹ️ ', color: chalk.gray, label: 'NOT INSTALLED' },
+    LATEST: { icon: "✅", color: chalk.green, label: "UP TO DATE" },
+    OUTDATED: { icon: "🔄", color: chalk.blue, label: "OUTDATED" },
+    CUSTOMIZED: { icon: "⚠️ ", color: chalk.yellow, label: "CUSTOMIZED" },
+    MISSING: { icon: "ℹ️ ", color: chalk.gray, label: "NOT INSTALLED" },
   };
 
   // Print each status group
-  for (const status of ['LATEST', 'OUTDATED', 'CUSTOMIZED', 'MISSING'] as MigrationStatus[]) {
+  for (const status of [
+    "LATEST",
+    "OUTDATED",
+    "CUSTOMIZED",
+    "MISSING",
+  ] as MigrationStatus[]) {
     const items = byStatus[status];
     if (items.length === 0) continue;
 
     const config = statusConfig[status];
-    console.log(config.color.bold(`${config.icon} ${config.label} (${items.length}):`));
+    console.log(
+      config.color.bold(`${config.icon} ${config.label} (${items.length}):`),
+    );
 
     items.forEach((item) => {
       const versionText = item.currentVersion
         ? chalk.gray(` v${item.currentVersion} → v${item.targetVersion}`)
-        : '';
-      const reasonText = item.reason ? chalk.gray(` - ${item.reason}`) : '';
+        : "";
+      const reasonText = item.reason ? chalk.gray(` - ${item.reason}`) : "";
       console.log(`  ${config.color(item.path)}${versionText}${reasonText}`);
     });
 

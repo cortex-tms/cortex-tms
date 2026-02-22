@@ -5,15 +5,15 @@
  * replacing placeholders with user-provided values.
  */
 
-import fs from 'fs-extra';
-import { join, relative } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import chalk from 'chalk';
-import type { TemplateFile } from '../types/cli.js';
-import { getScopePreset } from './config.js';
-import { validateSafePath } from './validation.js';
-import { FileSystemError } from './errors.js';
+import fs from "fs-extra";
+import { join, relative } from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import chalk from "chalk";
+import type { TemplateFile } from "../types/cli.js";
+import { getScopePreset } from "./config.js";
+import { validateSafePath } from "./validation.js";
+import { FileSystemError } from "./errors.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,8 +22,8 @@ const __dirname = dirname(__filename);
  * Get the current package version from package.json
  */
 export function getPackageVersion(): string {
-  const packageJsonPath = join(__dirname, '../../package.json');
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+  const packageJsonPath = join(__dirname, "../../package.json");
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
   return packageJson.version;
 }
 
@@ -37,9 +37,12 @@ export function getPackageVersion(): string {
  * @param version - Version string (e.g., "2.3.0")
  * @returns Content with version metadata appended
  */
-export function injectVersionMetadata(content: string, version: string): string {
+export function injectVersionMetadata(
+  content: string,
+  version: string,
+): string {
   // Ensure content ends with newline
-  const normalizedContent = content.endsWith('\n') ? content : content + '\n';
+  const normalizedContent = content.endsWith("\n") ? content : content + "\n";
 
   // Append version comment
   return `${normalizedContent}\n<!-- @cortex-tms-version ${version} -->\n`;
@@ -57,12 +60,14 @@ export function injectVersionMetadata(content: string, version: string): string 
  */
 export async function extractVersion(filePath: string): Promise<string | null> {
   try {
-    const content = await fs.readFile(filePath, 'utf-8');
+    const content = await fs.readFile(filePath, "utf-8");
     // Support full semver including prerelease tags (beta, alpha, rc, etc.)
     // Matches: 2.6.0, 2.6.0-beta.1, 2.6.0-alpha.3, 2.6.0-rc.2
-    const match = content.match(/<!-- @cortex-tms-version (\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?) -->/);
+    const match = content.match(
+      /<!-- @cortex-tms-version (\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?) -->/,
+    );
     return match?.[1] ?? null;
-  } catch (error) {
+  } catch {
     // File doesn't exist or can't be read
     return null;
   }
@@ -71,7 +76,7 @@ export async function extractVersion(filePath: string): Promise<string | null> {
 /**
  * File change status for impact analysis
  */
-export type FileStatus = 'CREATE' | 'UPDATE' | 'SKIP' | 'CONFLICT';
+export type FileStatus = "CREATE" | "UPDATE" | "SKIP" | "CONFLICT";
 
 /**
  * File change information for dry-run mode
@@ -87,7 +92,7 @@ export interface FileChange {
  */
 export function getTemplatesDir(): string {
   // From src/utils/templates.ts -> go up to root, then into templates/
-  return join(__dirname, '../../templates');
+  return join(__dirname, "../../templates");
 }
 
 /**
@@ -104,7 +109,7 @@ export function getTemplatesDir(): string {
  */
 export function replacePlaceholders(
   content: string,
-  replacements: Record<string, string>
+  replacements: Record<string, string>,
 ): string {
   let result = content;
 
@@ -129,18 +134,18 @@ export async function processTemplate(
   sourcePath: string,
   destPath: string,
   replacements: Record<string, string>,
-  options: { injectVersion?: boolean } = {}
+  options: { injectVersion?: boolean } = {},
 ): Promise<void> {
   const { injectVersion = true } = options;
 
   // Read template content
-  const content = await fs.readFile(sourcePath, 'utf-8');
+  const content = await fs.readFile(sourcePath, "utf-8");
 
   // Replace placeholders
   let processed = replacePlaceholders(content, replacements);
 
   // Inject version metadata for markdown files
-  if (injectVersion && destPath.endsWith('.md')) {
+  if (injectVersion && destPath.endsWith(".md")) {
     const version = getPackageVersion();
     processed = injectVersionMetadata(processed, version);
   }
@@ -149,7 +154,7 @@ export async function processTemplate(
   await fs.ensureDir(dirname(destPath));
 
   // Write processed content
-  await fs.writeFile(destPath, processed, 'utf-8');
+  await fs.writeFile(destPath, processed, "utf-8");
 }
 
 /**
@@ -159,7 +164,7 @@ export async function processTemplate(
  * @returns Array of TemplateFile objects with metadata
  */
 export async function getTemplateFiles(
-  templatesDir: string
+  templatesDir: string,
 ): Promise<TemplateFile[]> {
   const files: TemplateFile[] = [];
 
@@ -177,19 +182,19 @@ export async function getTemplateFiles(
         const relativePath = relative(baseDir, fullPath);
 
         // Determine category based on path
-        let category: TemplateFile['category'] = 'core';
-        if (relativePath.startsWith('.github')) {
-          category = 'workflow';
-        } else if (relativePath.startsWith('examples')) {
-          category = 'example';
+        let category: TemplateFile["category"] = "core";
+        if (relativePath.startsWith(".github")) {
+          category = "workflow";
+        } else if (relativePath.startsWith("examples")) {
+          category = "example";
         }
 
         // Check if file has placeholders (simple heuristic)
-        const content = await fs.readFile(fullPath, 'utf-8');
+        const content = await fs.readFile(fullPath, "utf-8");
         const hasPlaceholders =
-          content.includes('[Project Name]') ||
-          content.includes('[project-name]') ||
-          content.includes('[Description]');
+          content.includes("[Project Name]") ||
+          content.includes("[project-name]") ||
+          content.includes("[Description]");
 
         files.push({
           source: fullPath,
@@ -219,19 +224,24 @@ export async function copyTemplates(
   replacements: Record<string, string>,
   options: {
     overwrite?: boolean;
-    scope?: 'nano' | 'standard' | 'enterprise' | 'custom';
+    scope?: "nano" | "standard" | "enterprise" | "custom";
     customFiles?: string[]; // Only used when scope is 'custom'
     dryRun?: boolean; // Preview changes without writing
-  } = {}
+  } = {},
 ): Promise<{ copied: number; skipped: number; changes?: FileChange[] }> {
-  const { overwrite = false, scope = 'standard', customFiles, dryRun = false } = options;
+  const {
+    overwrite = false,
+    scope = "standard",
+    customFiles,
+    dryRun = false,
+  } = options;
 
   const allFiles = await getTemplateFiles(templatesDir);
 
   let allowedFiles: string[];
 
   // Handle custom scope with explicit file list
-  if (scope === 'custom' && customFiles) {
+  if (scope === "custom" && customFiles) {
     allowedFiles = customFiles;
   } else {
     // Get scope preset to determine which files to copy
@@ -248,7 +258,7 @@ export async function copyTemplates(
   // Filter files based on scope - match against full destination path
   const filesToCopy = allFiles.filter((f) => {
     // Always exclude examples directory
-    if (f.category === 'example') {
+    if (f.category === "example") {
       return false;
     }
 
@@ -266,7 +276,7 @@ export async function copyTemplates(
     if (!sourceValidation.isValid) {
       throw new FileSystemError(
         `Template path validation failed: ${sourceValidation.error}`,
-        { templatePath: file.source }
+        { templatePath: file.source },
       );
     }
 
@@ -275,7 +285,7 @@ export async function copyTemplates(
     if (!destValidation.isValid) {
       throw new FileSystemError(
         `Destination path validation failed: ${destValidation.error}`,
-        { destinationPath: file.destination }
+        { destinationPath: file.destination },
       );
     }
 
@@ -287,17 +297,20 @@ export async function copyTemplates(
       if (!exists) {
         changes.push({
           path: file.destination,
-          status: 'CREATE',
+          status: "CREATE",
         });
         copied++;
       } else if (overwrite) {
         // Check if content would actually change
-        const existingContent = await fs.readFile(destPath, 'utf-8');
-        const templateContent = await fs.readFile(file.source, 'utf-8');
-        let processedContent = replacePlaceholders(templateContent, replacements);
+        const existingContent = await fs.readFile(destPath, "utf-8");
+        const templateContent = await fs.readFile(file.source, "utf-8");
+        let processedContent = replacePlaceholders(
+          templateContent,
+          replacements,
+        );
 
         // Inject version for markdown files (same as processTemplate)
-        if (destPath.endsWith('.md')) {
+        if (destPath.endsWith(".md")) {
           const version = getPackageVersion();
           processedContent = injectVersionMetadata(processedContent, version);
         }
@@ -305,23 +318,23 @@ export async function copyTemplates(
         if (existingContent !== processedContent) {
           changes.push({
             path: file.destination,
-            status: 'UPDATE',
-            reason: 'Content differs from template',
+            status: "UPDATE",
+            reason: "Content differs from template",
           });
           copied++;
         } else {
           changes.push({
             path: file.destination,
-            status: 'SKIP',
-            reason: 'Already up to date',
+            status: "SKIP",
+            reason: "Already up to date",
           });
           skipped++;
         }
       } else {
         changes.push({
           path: file.destination,
-          status: 'CONFLICT',
-          reason: 'File exists (use --force to overwrite)',
+          status: "CONFLICT",
+          reason: "File exists (use --force to overwrite)",
         });
         skipped++;
       }
@@ -351,7 +364,7 @@ export async function copyTemplates(
  * Print a formatted impact report showing planned changes
  */
 function printImpactReport(changes: FileChange[]): void {
-  console.log(chalk.bold('\n📋 IMPACT ANALYSIS:\n'));
+  console.log(chalk.bold("\n📋 IMPACT ANALYSIS:\n"));
 
   // Group changes by status
   const byStatus: Record<FileStatus, FileChange[]> = {
@@ -370,21 +383,28 @@ function printImpactReport(changes: FileChange[]): void {
     FileStatus,
     { icon: string; color: typeof chalk.green; label: string }
   > = {
-    CREATE: { icon: '✨', color: chalk.green, label: 'CREATE' },
-    UPDATE: { icon: '🔄', color: chalk.blue, label: 'UPDATE' },
-    CONFLICT: { icon: '⚠️ ', color: chalk.yellow, label: 'CONFLICT' },
-    SKIP: { icon: '⏭️ ', color: chalk.gray, label: 'SKIP' },
+    CREATE: { icon: "✨", color: chalk.green, label: "CREATE" },
+    UPDATE: { icon: "🔄", color: chalk.blue, label: "UPDATE" },
+    CONFLICT: { icon: "⚠️ ", color: chalk.yellow, label: "CONFLICT" },
+    SKIP: { icon: "⏭️ ", color: chalk.gray, label: "SKIP" },
   };
 
-  for (const status of ['CREATE', 'UPDATE', 'CONFLICT', 'SKIP'] as FileStatus[]) {
+  for (const status of [
+    "CREATE",
+    "UPDATE",
+    "CONFLICT",
+    "SKIP",
+  ] as FileStatus[]) {
     const items = byStatus[status];
     if (items.length === 0) continue;
 
     const config = statusConfig[status];
-    console.log(config.color.bold(`${config.icon} ${config.label} (${items.length}):`));
+    console.log(
+      config.color.bold(`${config.icon} ${config.label} (${items.length}):`),
+    );
 
     items.forEach((item) => {
-      const reasonText = item.reason ? chalk.gray(` - ${item.reason}`) : '';
+      const reasonText = item.reason ? chalk.gray(` - ${item.reason}`) : "";
       console.log(`  ${config.color(item.path)}${reasonText}`);
     });
 
@@ -397,24 +417,24 @@ function printImpactReport(changes: FileChange[]): void {
 
   if (conflicts > 0) {
     console.log(
-      chalk.yellow.bold('⚠️  WARNING:'),
+      chalk.yellow.bold("⚠️  WARNING:"),
       chalk.yellow(
-        `${conflicts} file(s) will be skipped due to conflicts. Use --force to overwrite.`
-      )
+        `${conflicts} file(s) will be skipped due to conflicts. Use --force to overwrite.`,
+      ),
     );
   }
 
   if (updates > 0) {
     console.log(
-      chalk.blue.bold('ℹ️  INFO:'),
+      chalk.blue.bold("ℹ️  INFO:"),
       chalk.blue(
-        `${updates} file(s) will be updated with new template content. Review changes carefully.`
-      )
+        `${updates} file(s) will be updated with new template content. Review changes carefully.`,
+      ),
     );
   }
 
   console.log(
-    chalk.gray('\n💡 Tip: Run without --dry-run to apply these changes.')
+    chalk.gray("\n💡 Tip: Run without --dry-run to apply these changes."),
   );
 }
 
@@ -427,18 +447,18 @@ function printImpactReport(changes: FileChange[]): void {
  */
 export function generateReplacements(
   projectName: string,
-  description?: string
+  description?: string,
 ): Record<string, string> {
   // Generate kebab-case version
   const kebabName = projectName
     .toLowerCase()
-    .replace(/[^a-z0-9-]/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 
   return {
-    'Project Name': projectName,
-    'project-name': kebabName,
+    "Project Name": projectName,
+    "project-name": kebabName,
     Description: description || `A project powered by Cortex TMS`,
   };
 }

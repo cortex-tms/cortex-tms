@@ -4,9 +4,9 @@
  * Interactive onboarding walkthrough teaching the Cortex Way
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
-import inquirer from 'inquirer';
+import { Command } from "commander";
+import chalk from "chalk";
+import inquirer from "inquirer";
 
 /**
  * Tutorial lesson structure
@@ -22,10 +22,10 @@ interface Lesson {
  * Create and configure the tutorial command
  */
 export function createTutorialCommand(): Command {
-  const tutorialCommand = new Command('tutorial');
+  const tutorialCommand = new Command("tutorial");
 
   tutorialCommand
-    .description('Interactive walkthrough of Cortex TMS features')
+    .description("Interactive walkthrough of Cortex TMS features")
     .action(async () => {
       await runTutorial();
     });
@@ -42,175 +42,181 @@ export const tutorialCommand = createTutorialCommand();
  * Main tutorial logic
  */
 async function runTutorial(): Promise<void> {
-  console.log(chalk.bold.cyan('\n🎓 Welcome to Cortex TMS Tutorial\n'));
-  console.log(chalk.gray('This interactive guide will teach you the "Cortex Way"'));
-  console.log(chalk.gray('Press Enter to continue through lessons, or select Exit to quit.\n'));
+  console.log(chalk.bold.cyan("\n🎓 Welcome to Cortex TMS Tutorial\n"));
+  console.log(
+    chalk.gray('This interactive guide will teach you the "Cortex Way"'),
+  );
+  console.log(
+    chalk.gray(
+      "Press Enter to continue through lessons, or select Exit to quit.\n",
+    ),
+  );
 
   const lessons: Lesson[] = [
     {
-      title: '📊 Lesson 1: The Project Dashboard',
+      title: "📊 Lesson 1: The Project Dashboard",
       content: [
-        'Every Cortex TMS project has a visual dashboard showing:',
-        '  • Current scope (Nano/Standard/Enterprise)',
-        '  • Active tasks from NEXT-TASKS.md',
-        '  • Validation health status',
-        '  • Quick statistics at a glance',
-        '',
+        "Every Cortex TMS project has a visual dashboard showing:",
+        "  • Current scope (Nano/Standard/Enterprise)",
+        "  • Active tasks from NEXT-TASKS.md",
+        "  • Validation health status",
+        "  • Quick statistics at a glance",
+        "",
         'Think of this as your "Project Cockpit" - everything you need to know in one command.',
       ],
-      command: 'cortex-tms status',
-      tip: 'Run this command whenever you return to a project to get oriented.',
+      command: "cortex-tms status",
+      tip: "Run this command whenever you return to a project to get oriented.",
     },
     {
-      title: '🤖 Lesson 2: AI Agent Activation',
+      title: "🤖 Lesson 2: AI Agent Activation",
       content: [
         'Cortex TMS includes the "Essential 7" prompt library:',
-        '  • init-session - Start with context',
-        '  • feature - Implement with architectural anchors',
-        '  • debug - Troubleshoot systematically',
-        '  • review - Code review against patterns',
-        '  • refactor - Structural improvements',
-        '  • decision - Architecture decision records',
-        '  • finish - Execute maintenance protocol',
-        '',
-        'Each prompt is project-aware, referencing YOUR docs.',
-        'Prompts auto-copy to clipboard for instant paste!',
+        "  • init-session - Start with context",
+        "  • feature - Implement with architectural anchors",
+        "  • debug - Troubleshoot systematically",
+        "  • review - Code review against patterns",
+        "  • refactor - Structural improvements",
+        "  • decision - Architecture decision records",
+        "  • finish - Execute maintenance protocol",
+        "",
+        "Each prompt is project-aware, referencing YOUR docs.",
+        "Prompts auto-copy to clipboard for instant paste!",
       ],
-      command: 'cortex-tms prompt init-session',
-      tip: 'Customize prompts by editing PROMPTS.md in your project root.',
+      command: "cortex-tms prompt init-session",
+      tip: "Customize prompts by editing PROMPTS.md in your project root.",
     },
     {
-      title: '🔄 Lesson 3: Zero-Drift Governance',
+      title: "🔄 Lesson 3: Zero-Drift Governance",
       content: [
-        'Version drift is the #1 cause of documentation errors.',
-        'Cortex TMS eliminates this with automated version sync.',
-        '',
-        'How it works:',
-        '  1. Update package.json version (the Single Source of Truth)',
-        '  2. Run the sync script',
-        '  3. All docs automatically updated',
-        '',
-        'CI validates sync on every PR - drift cannot merge!',
+        "Version drift is the #1 cause of documentation errors.",
+        "Cortex TMS eliminates this with automated version sync.",
+        "",
+        "How it works:",
+        "  1. Update package.json version (the Single Source of Truth)",
+        "  2. Run the sync script",
+        "  3. All docs automatically updated",
+        "",
+        "CI validates sync on every PR - drift cannot merge!",
       ],
-      command: 'pnpm run docs:sync',
-      tip: 'If CI blocks your PR, run docs:sync locally and commit the changes.',
+      command: "pnpm run docs:sync",
+      tip: "If CI blocks your PR, run docs:sync locally and commit the changes.",
     },
     {
-      title: '✅ Lesson 4: Project Health & The Archive Protocol',
+      title: "✅ Lesson 4: Project Health & The Archive Protocol",
       content: [
-        'The validate command checks project health:',
-        '  • Mandatory files exist',
-        '  • No placeholder text (e.g., [YOUR_PROJECT])',
-        '  • Configuration is valid',
-        '  • Archive status is healthy',
-        '',
-        'The Archive Protocol (you just experienced this!):',
-        '  • CI blocks PRs if >10 completed tasks in NEXT-TASKS.md',
-        '  • This forces regular archival to docs/archive/',
-        '  • Keeps NEXT-TASKS.md focused on current work',
-        '  • Prevents technical debt accumulation',
-        '',
-        'This is governance that enforces itself!',
+        "The validate command checks project health:",
+        "  • Mandatory files exist",
+        "  • No placeholder text (e.g., [YOUR_PROJECT])",
+        "  • Configuration is valid",
+        "  • Archive status is healthy",
+        "",
+        "The Archive Protocol (you just experienced this!):",
+        "  • CI blocks PRs if >10 completed tasks in NEXT-TASKS.md",
+        "  • This forces regular archival to docs/archive/",
+        "  • Keeps NEXT-TASKS.md focused on current work",
+        "  • Prevents technical debt accumulation",
+        "",
+        "This is governance that enforces itself!",
       ],
-      command: 'cortex-tms validate --strict',
-      tip: 'Run validate before commits to catch issues early.',
+      command: "cortex-tms validate --strict",
+      tip: "Run validate before commits to catch issues early.",
     },
     {
-      title: '🛡️ Lesson 5: Error Handling & Validation',
+      title: "🛡️ Lesson 5: Error Handling & Validation",
       content: [
-        'New in v3.2: Cortex TMS provides clear, actionable error messages.',
-        'All commands now use:',
-        '  • Type-safe validation (Zod schemas)',
-        '  • Helpful error messages with suggestions',
-        '  • No process crashes - clean exits with proper cleanup',
-        '',
-        'Try this invalid command to see it in action:',
-        '  cortex-tms init --scope invalid',
-        '',
-        'You\'ll see:',
+        "New in v3.2: Cortex TMS provides clear, actionable error messages.",
+        "All commands now use:",
+        "  • Type-safe validation (Zod schemas)",
+        "  • Helpful error messages with suggestions",
+        "  • No process crashes - clean exits with proper cleanup",
+        "",
+        "Try this invalid command to see it in action:",
+        "  cortex-tms init --scope invalid",
+        "",
+        "You'll see:",
         '  ❌ Invalid scope: "invalid"',
-        '     Expected one of: nano, standard, enterprise, custom',
-        '',
-        'Benefits:',
-        '  • Know exactly what went wrong',
-        '  • Clear guidance on how to fix it',
-        '  • No cryptic stack traces in production',
+        "     Expected one of: nano, standard, enterprise, custom",
+        "",
+        "Benefits:",
+        "  • Know exactly what went wrong",
+        "  • Clear guidance on how to fix it",
+        "  • No cryptic stack traces in production",
       ],
-      command: 'cortex-tms init --scope invalid',
-      tip: 'All validation errors now include helpful context - no more guessing what went wrong!',
+      command: "cortex-tms init --scope invalid",
+      tip: "All validation errors now include helpful context - no more guessing what went wrong!",
     },
     {
-      title: '🔒 Lesson 6: Guardian Code Review',
+      title: "🔒 Lesson 6: Guardian Code Review",
       content: [
-        'Guardian uses AI to enforce your project patterns and rules.',
-        'It validates code against PATTERNS.md and domain logic.',
-        '',
-        'Setup (optional - requires Anthropic API key):',
+        "Guardian uses AI to enforce your project patterns and rules.",
+        "It validates code against PATTERNS.md and domain logic.",
+        "",
+        "Setup (optional - requires Anthropic API key):",
         '  export ANTHROPIC_API_KEY="your-key-here"',
-        '',
-        'Usage:',
-        '  cortex-tms review src/file.ts          # Full analysis',
-        '  cortex-tms review src/file.ts --safe   # High-confidence only',
-        '',
-        'What Guardian checks:',
-        '  • Pattern compliance (from PATTERNS.md)',
-        '  • Domain logic consistency',
-        '  • Semantic violations (not just syntax)',
-        '',
-        'New in v3.2: API keys are automatically sanitized in all output!',
-        'Your credentials are safe in logs, errors, and console output.',
+        "",
+        "Usage:",
+        "  cortex-tms review src/file.ts          # Full analysis",
+        "  cortex-tms review src/file.ts --safe   # High-confidence only",
+        "",
+        "What Guardian checks:",
+        "  • Pattern compliance (from PATTERNS.md)",
+        "  • Domain logic consistency",
+        "  • Semantic violations (not just syntax)",
+        "",
+        "New in v3.2: API keys are automatically sanitized in all output!",
+        "Your credentials are safe in logs, errors, and console output.",
       ],
-      command: 'cortex-tms review --help',
-      tip: 'Use --safe mode for production CI/CD to avoid false positives.',
+      command: "cortex-tms review --help",
+      tip: "Use --safe mode for production CI/CD to avoid false positives.",
     },
     {
-      title: '🚀 Lesson 7: Safe Template Evolution',
+      title: "🚀 Lesson 7: Safe Template Evolution",
       content: [
-        'Templates evolve, but your customizations matter.',
-        'The Safe-Fail Migration Engine has 3 components:',
-        '',
-        '1. Backup Engine (automatic snapshots)',
-        '   • Timestamped backups in .cortex/backups/',
-        '   • Created BEFORE any changes',
-        '   • Manifest tracks what/why',
-        '',
-        '2. Apply Logic (smart upgrades)',
-        '   • Auto-upgrades OUTDATED files',
-        '   • Skips CUSTOMIZED files (unless --force)',
-        '   • Clear status reporting',
-        '',
-        '3. Rollback Command (one-click recovery)',
-        '   • Interactive backup selection',
-        '   • Preview before restore',
-        '   • Confirmation required',
-        '',
-        'Upgrade fearlessly - recovery is one command away!',
+        "Templates evolve, but your customizations matter.",
+        "The Safe-Fail Migration Engine has 3 components:",
+        "",
+        "1. Backup Engine (automatic snapshots)",
+        "   • Timestamped backups in .cortex/backups/",
+        "   • Created BEFORE any changes",
+        "   • Manifest tracks what/why",
+        "",
+        "2. Apply Logic (smart upgrades)",
+        "   • Auto-upgrades OUTDATED files",
+        "   • Skips CUSTOMIZED files (unless --force)",
+        "   • Clear status reporting",
+        "",
+        "3. Rollback Command (one-click recovery)",
+        "   • Interactive backup selection",
+        "   • Preview before restore",
+        "   • Confirmation required",
+        "",
+        "Upgrade fearlessly - recovery is one command away!",
       ],
-      command: 'cortex-tms migrate',
-      tip: 'Always run migrate (no flags) first to see what needs updating.',
+      command: "cortex-tms migrate",
+      tip: "Always run migrate (no flags) first to see what needs updating.",
     },
     {
-      title: '✨ Lesson 8: AI-Powered Bootstrapping',
+      title: "✨ Lesson 8: AI-Powered Bootstrapping",
       content: [
         'After running "cortex-tms init", documentation files contain placeholders.',
-        'Instead of manually filling them, let YOUR AI agent do it!',
-        '',
-        'How it works:',
-        '  1. Run: cortex-tms prompt bootstrap',
-        '  2. Paste the prompt into your AI agent (Claude Code, Copilot, Cursor)',
-        '  3. AI analyzes your codebase and populates docs as DRAFTS',
-        '  4. Review and refine the AI-generated content',
-        '  5. Remove <!-- AI-DRAFT --> markers once accepted',
-        '',
-        'The validator detects completion status:',
-        '  • [placeholder] text → Incomplete (error)',
-        '  • <!-- AI-DRAFT --> markers → Draft (warning)',
-        '  • No markers → Complete and reviewed (success)',
-        '',
-        'Zero-cost onboarding in under 10 minutes!',
+        "Instead of manually filling them, let YOUR AI agent do it!",
+        "",
+        "How it works:",
+        "  1. Run: cortex-tms prompt bootstrap",
+        "  2. Paste the prompt into your AI agent (Claude Code, Copilot, Cursor)",
+        "  3. AI analyzes your codebase and populates docs as DRAFTS",
+        "  4. Review and refine the AI-generated content",
+        "  5. Remove <!-- AI-DRAFT --> markers once accepted",
+        "",
+        "The validator detects completion status:",
+        "  • [placeholder] text → Incomplete (error)",
+        "  • <!-- AI-DRAFT --> markers → Draft (warning)",
+        "  • No markers → Complete and reviewed (success)",
+        "",
+        "Zero-cost onboarding in under 10 minutes!",
       ],
-      command: 'cortex-tms prompt bootstrap',
-      tip: 'Works with any AI agent - Claude Code, GitHub Copilot, Cursor, or Windsurf.',
+      command: "cortex-tms prompt bootstrap",
+      tip: "Works with any AI agent - Claude Code, GitHub Copilot, Cursor, or Windsurf.",
     },
   ];
 
@@ -226,14 +232,16 @@ async function runTutorial(): Promise<void> {
     // Display lesson
     console.clear();
     console.log(chalk.bold.cyan(`\n${lesson.title}\n`));
-    console.log(chalk.gray(`Lesson ${currentLesson + 1} of ${lessons.length}\n`));
+    console.log(
+      chalk.gray(`Lesson ${currentLesson + 1} of ${lessons.length}\n`),
+    );
 
     lesson.content.forEach((line) => {
-      if (line === '') {
+      if (line === "") {
         console.log();
-      } else if (line.startsWith('  •')) {
+      } else if (line.startsWith("  •")) {
         console.log(chalk.blue(line));
-      } else if (line.startsWith('  ')) {
+      } else if (line.startsWith("  ")) {
         console.log(chalk.gray(line));
       } else {
         console.log(chalk.white(line));
@@ -241,7 +249,7 @@ async function runTutorial(): Promise<void> {
     });
 
     if (lesson.command) {
-      console.log(chalk.bold.yellow('\n💻 Try this command:\n'));
+      console.log(chalk.bold.yellow("\n💻 Try this command:\n"));
       console.log(chalk.cyan(`   ${lesson.command}\n`));
     }
 
@@ -253,33 +261,37 @@ async function runTutorial(): Promise<void> {
     const isLast = currentLesson === lessons.length - 1;
     const choices = isLast
       ? [
-          { name: chalk.green('✓ Finish Tutorial'), value: 'next' },
-          { name: chalk.gray('← Previous Lesson'), value: 'prev' },
-          { name: chalk.red('Exit Tutorial'), value: 'exit' },
+          { name: chalk.green("✓ Finish Tutorial"), value: "next" },
+          { name: chalk.gray("← Previous Lesson"), value: "prev" },
+          { name: chalk.red("Exit Tutorial"), value: "exit" },
         ]
       : [
-          { name: chalk.green('→ Next Lesson'), value: 'next' },
+          { name: chalk.green("→ Next Lesson"), value: "next" },
           ...(currentLesson > 0
-            ? [{ name: chalk.gray('← Previous Lesson'), value: 'prev' }]
+            ? [{ name: chalk.gray("← Previous Lesson"), value: "prev" }]
             : []),
-          { name: chalk.red('Exit Tutorial'), value: 'exit' },
+          { name: chalk.red("Exit Tutorial"), value: "exit" },
         ];
 
     const { action } = await inquirer.prompt([
       {
-        type: 'list',
-        name: 'action',
-        message: 'What would you like to do?',
+        type: "list",
+        name: "action",
+        message: "What would you like to do?",
         choices,
       },
     ]);
 
-    if (action === 'exit') {
-      console.log(chalk.gray('\n✓ Tutorial exited. Run "cortex-tms tutorial" anytime to continue.\n'));
+    if (action === "exit") {
+      console.log(
+        chalk.gray(
+          '\n✓ Tutorial exited. Run "cortex-tms tutorial" anytime to continue.\n',
+        ),
+      );
       return;
-    } else if (action === 'prev') {
+    } else if (action === "prev") {
       currentLesson = Math.max(0, currentLesson - 1);
-    } else if (action === 'next') {
+    } else if (action === "next") {
       if (isLast) {
         break; // Exit tutorial naturally
       } else {
@@ -290,27 +302,41 @@ async function runTutorial(): Promise<void> {
 
   // Tutorial complete
   console.clear();
-  console.log(chalk.bold.green('\n🎉 Tutorial Complete!\n'));
-  console.log(chalk.white('You now know the Cortex Way:'));
-  console.log(chalk.blue('  • Dashboard: cortex-tms status'));
-  console.log(chalk.blue('  • AI Activation: cortex-tms prompt'));
-  console.log(chalk.blue('  • Version Sync: pnpm run docs:sync'));
-  console.log(chalk.blue('  • Health Check: cortex-tms validate'));
-  console.log(chalk.blue('  • Error Handling: Clear, actionable messages (v3.2)'));
-  console.log(chalk.blue('  • Guardian: cortex-tms review (AI code review)'));
-  console.log(chalk.blue('  • Migration: cortex-tms migrate'));
-  console.log(chalk.blue('  • Bootstrap: cortex-tms prompt bootstrap'));
+  console.log(chalk.bold.green("\n🎉 Tutorial Complete!\n"));
+  console.log(chalk.white("You now know the Cortex Way:"));
+  console.log(chalk.blue("  • Dashboard: cortex-tms status"));
+  console.log(chalk.blue("  • AI Activation: cortex-tms prompt"));
+  console.log(chalk.blue("  • Version Sync: pnpm run docs:sync"));
+  console.log(chalk.blue("  • Health Check: cortex-tms validate"));
+  console.log(
+    chalk.blue("  • Error Handling: Clear, actionable messages (v3.2)"),
+  );
+  console.log(chalk.blue("  • Guardian: cortex-tms review (AI code review)"));
+  console.log(chalk.blue("  • Migration: cortex-tms migrate"));
+  console.log(chalk.blue("  • Bootstrap: cortex-tms prompt bootstrap"));
   console.log();
-  console.log(chalk.gray('💡 Next Steps:'));
-  console.log(chalk.cyan('   1. Run "cortex-tms status" to see your project dashboard'));
-  console.log(chalk.cyan('   2. Run "cortex-tms prompt bootstrap" to populate docs with AI'));
-  console.log(chalk.cyan('   3. Run "cortex-tms prompt init-session" to start coding'));
+  console.log(chalk.gray("💡 Next Steps:"));
+  console.log(
+    chalk.cyan('   1. Run "cortex-tms status" to see your project dashboard'),
+  );
+  console.log(
+    chalk.cyan(
+      '   2. Run "cortex-tms prompt bootstrap" to populate docs with AI',
+    ),
+  );
+  console.log(
+    chalk.cyan('   3. Run "cortex-tms prompt init-session" to start coding'),
+  );
   console.log();
-  console.log(chalk.gray('📚 For more details, see:'));
-  console.log(chalk.gray('   • CLAUDE.md (agent workflow)'));
-  console.log(chalk.gray('   • docs/core/PATTERNS.md (coding standards)'));
-  console.log(chalk.gray('   • docs/core/SECURITY.md (security practices - NEW in v3.2)'));
-  console.log(chalk.gray('   • docs/guides/SECURITY-TESTING.md (testing guide - NEW)'));
+  console.log(chalk.gray("📚 For more details, see:"));
+  console.log(chalk.gray("   • CLAUDE.md (agent workflow)"));
+  console.log(chalk.gray("   • docs/core/PATTERNS.md (coding standards)"));
+  console.log(
+    chalk.gray("   • docs/core/SECURITY.md (security practices - NEW in v3.2)"),
+  );
+  console.log(
+    chalk.gray("   • docs/guides/SECURITY-TESTING.md (testing guide - NEW)"),
+  );
   console.log();
-  console.log(chalk.bold.cyan('Happy coding! 🚀\n'));
+  console.log(chalk.bold.cyan("Happy coding! 🚀\n"));
 }

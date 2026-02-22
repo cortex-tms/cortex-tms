@@ -2,14 +2,14 @@
  * Stats Collector - Gathers TMS project statistics
  */
 
-import fs from 'fs-extra';
-import path from 'path';
-import { glob } from 'glob';
-import { minimatch } from 'minimatch';
-import { parseSprintInfo, calculateProgress } from './status.js';
-import { validateFileSizes, DEFAULT_LINE_LIMITS } from './validator.js';
-import { SAFE_MODE_THRESHOLD } from '../types/guardian.js';
-import { checkDocStaleness, type StalenessResult } from './git-staleness.js';
+import fs from "fs-extra";
+import path from "path";
+import { glob } from "glob";
+import { minimatch } from "minimatch";
+import { parseSprintInfo, calculateProgress } from "./status.js";
+import { validateFileSizes, DEFAULT_LINE_LIMITS } from "./validator.js";
+import { SAFE_MODE_THRESHOLD } from "../types/guardian.js";
+import { checkDocStaleness, type StalenessResult } from "./git-staleness.js";
 
 export interface TMSStats {
   files: {
@@ -20,7 +20,7 @@ export interface TMSStats {
   };
   hotFiles: string[]; // List of actual HOT file paths
   validation: {
-    status: 'healthy' | 'warnings' | 'errors' | 'unknown';
+    status: "healthy" | "warnings" | "errors" | "unknown";
     violations: number;
     lastChecked: Date | null;
   };
@@ -38,10 +38,10 @@ export interface TMSStats {
     lines: number;
     limit: number;
     percent: number;
-    status: 'healthy' | 'warning' | 'over';
+    status: "healthy" | "warning" | "over";
   }>;
   guardian?: {
-    status: 'compliant' | 'minor_issues' | 'major_violations' | 'unknown';
+    status: "compliant" | "minor_issues" | "major_violations" | "unknown";
     violationCount: number;
     highConfidenceCount: number;
     lastChecked: Date | null;
@@ -67,17 +67,19 @@ export interface CollectStatsOptions {
  * Extract tier from file content (@cortex-tier HOT/WARM/COLD)
  * Performance optimization: Only reads first 4KB since tier tags appear at file top
  */
-function extractTierFromFile(filePath: string): 'HOT' | 'WARM' | 'COLD' | null {
+function extractTierFromFile(filePath: string): "HOT" | "WARM" | "COLD" | null {
   try {
     // Only read first 4KB - tier tags are typically in the file header
-    const fd = fs.openSync(filePath, 'r');
+    const fd = fs.openSync(filePath, "r");
     const buffer = Buffer.alloc(4096);
     const bytesRead = fs.readSync(fd, buffer, 0, 4096, 0);
     fs.closeSync(fd);
 
-    const content = buffer.toString('utf-8', 0, bytesRead);
+    const content = buffer.toString("utf-8", 0, bytesRead);
     const tierMatch = content.match(/@cortex-tier\s+(HOT|WARM|COLD)/i);
-    return tierMatch && tierMatch[1] ? (tierMatch[1].toUpperCase() as 'HOT' | 'WARM' | 'COLD') : null;
+    return tierMatch && tierMatch[1]
+      ? (tierMatch[1].toUpperCase() as "HOT" | "WARM" | "COLD")
+      : null;
   } catch {
     return null;
   }
@@ -86,43 +88,46 @@ function extractTierFromFile(filePath: string): 'HOT' | 'WARM' | 'COLD' | null {
 /**
  * Determine tier based on file location (fallback if no explicit tier tag)
  */
-function inferTierFromPath(filePath: string): 'HOT' | 'WARM' | 'COLD' {
+function inferTierFromPath(filePath: string): "HOT" | "WARM" | "COLD" {
   const normalized = filePath.toLowerCase();
 
   // HOT patterns (active development files) - lowercase to match normalized path
   const hotPatterns = [
-    '**/next-tasks.md',
-    '**/todo.md',
-    '**/claude.md',
-    '**/.github/copilot-instructions.md',
-    '**/wip*.md',
+    "**/next-tasks.md",
+    "**/todo.md",
+    "**/claude.md",
+    "**/.github/copilot-instructions.md",
+    "**/wip*.md",
   ];
 
   // WARM patterns (reference documentation) - lowercase to match normalized path
   const warmPatterns = [
-    '**/docs/**/*.md',
-    '**/architecture.md',
-    '**/patterns.md',
-    '**/decisions.md',
-    '**/glossary.md',
-    '**/readme.md',
+    "**/docs/**/*.md",
+    "**/architecture.md",
+    "**/patterns.md",
+    "**/decisions.md",
+    "**/glossary.md",
+    "**/readme.md",
   ];
 
   // COLD patterns (archives) - lowercase to match normalized path
   const coldPatterns = [
-    '**/archive/**',
-    '**/archived/**',
-    '**/*-archive.md',
-    '**/*-deprecated.md',
+    "**/archive/**",
+    "**/archived/**",
+    "**/*-archive.md",
+    "**/*-deprecated.md",
   ];
 
   // Check patterns in order (COLD first to catch archives before other matches)
-  if (coldPatterns.some(pattern => minimatch(normalized, pattern))) return 'COLD';
-  if (hotPatterns.some(pattern => minimatch(normalized, pattern))) return 'HOT';
-  if (warmPatterns.some(pattern => minimatch(normalized, pattern))) return 'WARM';
+  if (coldPatterns.some((pattern) => minimatch(normalized, pattern)))
+    return "COLD";
+  if (hotPatterns.some((pattern) => minimatch(normalized, pattern)))
+    return "HOT";
+  if (warmPatterns.some((pattern) => minimatch(normalized, pattern)))
+    return "WARM";
 
   // Default to WARM for docs
-  return 'WARM';
+  return "WARM";
 }
 
 /**
@@ -133,13 +138,13 @@ function inferTierFromPath(filePath: string): 'HOT' | 'WARM' | 'COLD' {
  */
 export async function collectTMSStats(
   cwd: string = process.cwd(),
-  options?: CollectStatsOptions
+  options?: CollectStatsOptions,
 ): Promise<TMSStats> {
   const stats: TMSStats = {
     files: { hot: 0, warm: 0, cold: 0, total: 0 },
     hotFiles: [],
     validation: {
-      status: 'unknown',
+      status: "unknown",
       violations: 0,
       lastChecked: null,
     },
@@ -151,10 +156,10 @@ export async function collectTMSStats(
 
   // Check if TMS is initialized
   const tmsIndicators = [
-    'CLAUDE.md',
-    'NEXT-TASKS.md',
-    'docs/core/PATTERNS.md',
-    '.github/copilot-instructions.md',
+    "CLAUDE.md",
+    "NEXT-TASKS.md",
+    "docs/core/PATTERNS.md",
+    ".github/copilot-instructions.md",
   ];
 
   for (const indicator of tmsIndicators) {
@@ -169,16 +174,16 @@ export async function collectTMSStats(
   }
 
   // Find all markdown files (exclude templates, examples, and build artifacts)
-  const markdownFiles = await glob('**/*.md', {
+  const markdownFiles = await glob("**/*.md", {
     cwd,
     ignore: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/build/**',
-      '**/.git/**',
-      '**/templates/**',      // Exclude template files
-      '**/examples/**',       // Exclude example projects
-      '**/website/**',        // Exclude website content (if it's a docs site)
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.git/**",
+      "**/templates/**", // Exclude template files
+      "**/examples/**", // Exclude example projects
+      "**/website/**", // Exclude website content (if it's a docs site)
     ],
     absolute: true,
   });
@@ -186,7 +191,7 @@ export async function collectTMSStats(
   // Performance check: warn about very large projects (unless silent)
   if (markdownFiles.length > 1000 && !options?.silent) {
     console.warn(
-      `⚠️  Large project detected (${markdownFiles.length} markdown files). This may take a moment...`
+      `⚠️  Large project detected (${markdownFiles.length} markdown files). This may take a moment...`,
     );
   }
 
@@ -195,20 +200,20 @@ export async function collectTMSStats(
     const tier = extractTierFromFile(file) || inferTierFromPath(file);
 
     stats.files.total++;
-    if (tier === 'HOT') {
+    if (tier === "HOT") {
       stats.files.hot++;
       // Store relative path for display
       const relativePath = path.relative(cwd, file);
       stats.hotFiles.push(relativePath);
-    } else if (tier === 'WARM') {
+    } else if (tier === "WARM") {
       stats.files.warm++;
-    } else if (tier === 'COLD') {
+    } else if (tier === "COLD") {
       stats.files.cold++;
     }
   }
 
   // Check for validation results (if user has run validate recently)
-  const validationCache = path.join(cwd, '.cortex', 'validation-cache.json');
+  const validationCache = path.join(cwd, ".cortex", "validation-cache.json");
   if (fs.existsSync(validationCache)) {
     try {
       const cache = fs.readJSONSync(validationCache);
@@ -218,11 +223,11 @@ export async function collectTMSStats(
       // Determine status based on severity
       // Future: cache.severity could distinguish 'errors' vs 'warnings'
       if (cache.violations === 0) {
-        stats.validation.status = 'healthy';
-      } else if (cache.severity === 'error' || cache.violations > 10) {
-        stats.validation.status = 'errors';
+        stats.validation.status = "healthy";
+      } else if (cache.severity === "error" || cache.violations > 10) {
+        stats.validation.status = "errors";
       } else {
-        stats.validation.status = 'warnings';
+        stats.validation.status = "warnings";
       }
     } catch {
       // Ignore cache read errors
@@ -230,10 +235,10 @@ export async function collectTMSStats(
   }
 
   // Collect sprint information (v3.3.0)
-  const nextTasksPath = path.join(cwd, 'NEXT-TASKS.md');
+  const nextTasksPath = path.join(cwd, "NEXT-TASKS.md");
   if (fs.existsSync(nextTasksPath)) {
     try {
-      const tasksContent = fs.readFileSync(nextTasksPath, 'utf-8');
+      const tasksContent = fs.readFileSync(nextTasksPath, "utf-8");
       const sprintInfo = parseSprintInfo(tasksContent);
 
       if (sprintInfo) {
@@ -256,16 +261,18 @@ export async function collectTMSStats(
   try {
     const fileSizeChecks = await validateFileSizes(cwd, DEFAULT_LINE_LIMITS);
     stats.fileSizeHealth = fileSizeChecks
-      .filter((check) => check.file && fs.existsSync(path.join(cwd, check.file)))
+      .filter(
+        (check) => check.file && fs.existsSync(path.join(cwd, check.file)),
+      )
       .map((check) => {
         const match = check.details?.match(/(\d+)\/(\d+) lines/);
         const lines = match && match[1] ? parseInt(match[1], 10) : 0;
         const limit = match && match[2] ? parseInt(match[2], 10) : 0;
         const percent = limit > 0 ? Math.round((lines / limit) * 100) : 0;
 
-        let status: 'healthy' | 'warning' | 'over' = 'healthy';
-        if (percent > 100) status = 'over';
-        else if (percent >= 80) status = 'warning';
+        let status: "healthy" | "warning" | "over" = "healthy";
+        if (percent > 100) status = "over";
+        else if (percent >= 80) status = "warning";
 
         return {
           file: check.file!,
@@ -281,16 +288,16 @@ export async function collectTMSStats(
   }
 
   // Collect Guardian status (v3.3.0)
-  const guardianCache = path.join(cwd, '.cortex', 'guardian-cache.json');
+  const guardianCache = path.join(cwd, ".cortex", "guardian-cache.json");
   if (fs.existsSync(guardianCache)) {
     try {
       const cache = fs.readJSONSync(guardianCache);
       const highConfidenceViolations = (cache.violations || []).filter(
-        (v: any) => (v.confidence ?? 1.0) >= SAFE_MODE_THRESHOLD
+        (v: any) => (v.confidence ?? 1.0) >= SAFE_MODE_THRESHOLD,
       );
 
       stats.guardian = {
-        status: cache.status || 'unknown',
+        status: cache.status || "unknown",
         violationCount: cache.violationCount || 0,
         highConfidenceCount: highConfidenceViolations.length,
         lastChecked: cache.timestamp ? new Date(cache.timestamp) : null,
@@ -303,11 +310,14 @@ export async function collectTMSStats(
   // Collect staleness data (v4.0.0)
   try {
     const governanceDocs = [
-      { path: 'docs/core/PATTERNS.md', watchPaths: ['src/'] },
-      { path: 'docs/core/ARCHITECTURE.md', watchPaths: ['src/', 'infrastructure/'] },
-      { path: 'docs/core/DOMAIN-LOGIC.md', watchPaths: ['src/'] },
-      { path: 'docs/core/GIT-STANDARDS.md', watchPaths: ['.github/', 'src/'] },
-      { path: 'CLAUDE.md', watchPaths: ['src/', 'docs/'] },
+      { path: "docs/core/PATTERNS.md", watchPaths: ["src/"] },
+      {
+        path: "docs/core/ARCHITECTURE.md",
+        watchPaths: ["src/", "infrastructure/"],
+      },
+      { path: "docs/core/DOMAIN-LOGIC.md", watchPaths: ["src/"] },
+      { path: "docs/core/GIT-STANDARDS.md", watchPaths: [".github/", "src/"] },
+      { path: "CLAUDE.md", watchPaths: ["src/", "docs/"] },
     ];
 
     const stalenessResults: Array<{
@@ -322,7 +332,13 @@ export async function collectTMSStats(
     for (const doc of governanceDocs) {
       const fullPath = path.join(cwd, doc.path);
       if (fs.existsSync(fullPath)) {
-        const result = checkDocStaleness(doc.path, doc.watchPaths, thresholdDays, minCommits, cwd);
+        const result = checkDocStaleness(
+          doc.path,
+          doc.watchPaths,
+          thresholdDays,
+          minCommits,
+          cwd,
+        );
         stalenessResults.push({ path: doc.path, result });
       }
     }
@@ -344,7 +360,10 @@ export async function collectTMSStats(
       stats.staleness = {
         staleDocsCount: staleFiles.length,
         totalChecked: stalenessResults.length,
-        freshnessPercent: ((stalenessResults.length - staleFiles.length) / stalenessResults.length) * 100,
+        freshnessPercent:
+          ((stalenessResults.length - staleFiles.length) /
+            stalenessResults.length) *
+          100,
         oldestDocDays: oldestDocDays > 0 ? oldestDocDays : null,
         staleFiles,
       };

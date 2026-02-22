@@ -5,11 +5,11 @@
  * for the dashboard view.
  */
 
-import { readFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join } from 'path';
-import type { CortexConfig } from '../types/cli.js';
-import { loadConfig } from './config.js';
+import { readFile } from "fs/promises";
+import { existsSync } from "fs";
+import { join } from "path";
+import type { CortexConfig } from "../types/cli.js";
+import { loadConfig } from "./config.js";
 
 /**
  * Information about the current sprint
@@ -52,19 +52,20 @@ export function parseSprintInfo(content: string): SprintInfo | null {
     return null;
   }
 
-  const sprintName = sprintMatch[1]?.trim() || '';
+  const sprintName = sprintMatch[1]?.trim() || "";
 
   // Match description: **Why this matters**: With automation and...
   const descMatch = content.match(/\*\*Why this matters\*\*:\s*(.+?)(?:\n|$)/i);
-  const description = descMatch?.[1]?.trim() || '';
+  const description = descMatch?.[1]?.trim() || "";
 
   // Count tasks in the table by status emoji
   // Match lines like: | **Task Name** - Description | [TMS-XXX] | 2h | 🔴 HIGH | ✅ Done |
-  const taskLines = content.match(/\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/g) || [];
+  const taskLines =
+    content.match(/\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/g) || [];
 
   // Skip header rows (contain "Task", "Ref", etc.)
   const dataRows = taskLines.filter(
-    (line) => !line.includes('Task') && !line.includes('---')
+    (line) => !line.includes("Task") && !line.includes("---"),
   );
 
   let completedTasks = 0;
@@ -72,11 +73,11 @@ export function parseSprintInfo(content: string): SprintInfo | null {
   let todoTasks = 0;
 
   for (const row of dataRows) {
-    if (row.includes('✅ Done')) {
+    if (row.includes("✅ Done")) {
       completedTasks++;
-    } else if (row.includes('🔄 In Progress')) {
+    } else if (row.includes("🔄 In Progress")) {
       inProgressTasks++;
-    } else if (row.includes('⬜ Todo')) {
+    } else if (row.includes("⬜ Todo")) {
       todoTasks++;
     }
   }
@@ -139,15 +140,15 @@ export async function getProjectStatus(cwd: string): Promise<ProjectStatus> {
     // Config not found or invalid - continue with defaults
   }
 
-  const projectName = config?.metadata?.projectName || 'Unknown Project';
-  const scope = config?.scope || 'unknown';
+  const projectName = config?.metadata?.projectName || "Unknown Project";
+  const scope = config?.scope || "unknown";
 
   // Parse sprint from NEXT-TASKS.md
   let sprint: SprintInfo | null = null;
-  const tasksPath = join(cwd, 'NEXT-TASKS.md');
+  const tasksPath = join(cwd, "NEXT-TASKS.md");
   if (existsSync(tasksPath)) {
     try {
-      const tasksContent = await readFile(tasksPath, 'utf-8');
+      const tasksContent = await readFile(tasksPath, "utf-8");
       sprint = parseSprintInfo(tasksContent);
     } catch {
       // Failed to read or parse tasks file
@@ -156,10 +157,10 @@ export async function getProjectStatus(cwd: string): Promise<ProjectStatus> {
 
   // Count backlog items from FUTURE-ENHANCEMENTS.md
   let backlogSize = 0;
-  const backlogPath = join(cwd, 'FUTURE-ENHANCEMENTS.md');
+  const backlogPath = join(cwd, "FUTURE-ENHANCEMENTS.md");
   if (existsSync(backlogPath)) {
     try {
-      const backlogContent = await readFile(backlogPath, 'utf-8');
+      const backlogContent = await readFile(backlogPath, "utf-8");
       backlogSize = countBacklogItems(backlogContent);
     } catch {
       // Failed to read or parse backlog file

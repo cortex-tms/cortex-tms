@@ -5,20 +5,20 @@
  * health summary, and backlog size.
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
-import ora from 'ora';
-import { getProjectStatus, calculateProgress } from '../utils/status.js';
-import { validateProject } from '../utils/validator.js';
+import { Command } from "commander";
+import chalk from "chalk";
+import ora from "ora";
+import { getProjectStatus, calculateProgress } from "../utils/status.js";
+import { validateProject } from "../utils/validator.js";
 
 /**
  * Create and configure the status command
  */
 export function createStatusCommand(): Command {
-  const statusCommand = new Command('status');
+  const statusCommand = new Command("status");
 
   statusCommand
-    .description('Show project health dashboard and sprint progress')
+    .description("Show project health dashboard and sprint progress")
     .action(async () => {
       await runStatus();
     });
@@ -32,87 +32,110 @@ export function createStatusCommand(): Command {
 async function runStatus(): Promise<void> {
   const cwd = process.cwd();
 
-  console.log(chalk.bold.cyan('\n📊 Cortex TMS Status Dashboard\n'));
+  console.log(chalk.bold.cyan("\n📊 Cortex TMS Status Dashboard\n"));
 
   // Gather status information
-  const spinner = ora('Gathering project information...').start();
+  const spinner = ora("Gathering project information...").start();
 
   try {
     const status = await getProjectStatus(cwd);
     const validation = await validateProject(cwd, { strict: false });
 
-    spinner.succeed('Project information loaded');
+    spinner.succeed("Project information loaded");
 
     // Project Identity Section
-    console.log(chalk.bold('\n🏷️  Project Identity'));
-    console.log(`  ${chalk.cyan('Name:')} ${status.projectName}`);
+    console.log(chalk.bold("\n🏷️  Project Identity"));
+    console.log(`  ${chalk.cyan("Name:")} ${status.projectName}`);
     console.log(
-      `  ${chalk.cyan('Scope:')} ${formatScope(status.scope)} ${getScopeEmoji(status.scope)}`
+      `  ${chalk.cyan("Scope:")} ${formatScope(status.scope)} ${getScopeEmoji(status.scope)}`,
     );
     if (status.config) {
-      console.log(`  ${chalk.cyan('TMS Version:')} ${status.config.version}`);
+      console.log(`  ${chalk.cyan("TMS Version:")} ${status.config.version}`);
     }
 
     // Health Section
-    console.log(chalk.bold('\n💚 Project Health'));
-    const healthEmoji = validation.passed ? '✅' : '⚠️';
-    const healthText = validation.passed ? chalk.green('Healthy') : chalk.yellow('Issues Found');
+    console.log(chalk.bold("\n💚 Project Health"));
+    const healthEmoji = validation.passed ? "✅" : "⚠️";
+    const healthText = validation.passed
+      ? chalk.green("Healthy")
+      : chalk.yellow("Issues Found");
     console.log(`  ${healthEmoji} ${healthText}`);
     console.log(
-      `  ${chalk.cyan('Checks:')} ${validation.summary.passed}/${validation.summary.total} passed`
+      `  ${chalk.cyan("Checks:")} ${validation.summary.passed}/${validation.summary.total} passed`,
     );
     if (validation.summary.warnings > 0) {
-      console.log(`  ${chalk.yellow('⚠')} ${validation.summary.warnings} warnings`);
+      console.log(
+        `  ${chalk.yellow("⚠")} ${validation.summary.warnings} warnings`,
+      );
     }
     if (validation.summary.errors > 0) {
-      console.log(`  ${chalk.red('✗')} ${validation.summary.errors} errors`);
+      console.log(`  ${chalk.red("✗")} ${validation.summary.errors} errors`);
     }
 
     // Sprint Section
     if (status.sprint) {
-      console.log(chalk.bold('\n🎯 Current Sprint'));
-      console.log(`  ${chalk.cyan('Name:')} ${status.sprint.name}`);
+      console.log(chalk.bold("\n🎯 Current Sprint"));
+      console.log(`  ${chalk.cyan("Name:")} ${status.sprint.name}`);
       if (status.sprint.description) {
-        console.log(`  ${chalk.cyan('Focus:')} ${status.sprint.description}`);
+        console.log(`  ${chalk.cyan("Focus:")} ${status.sprint.description}`);
       }
 
       const progress = calculateProgress(status.sprint);
       const progressBar = createProgressBar(progress, 20);
-      const progressColor = progress === 100 ? chalk.green : progress >= 50 ? chalk.yellow : chalk.gray;
+      const progressColor =
+        progress === 100
+          ? chalk.green
+          : progress >= 50
+            ? chalk.yellow
+            : chalk.gray;
 
-      console.log(`  ${chalk.cyan('Progress:')} ${progressBar} ${progressColor(`${progress}%`)}`);
       console.log(
-        `  ${chalk.cyan('Tasks:')} ${status.sprint.completedTasks} done, ${status.sprint.inProgressTasks} in progress, ${status.sprint.todoTasks} todo`
+        `  ${chalk.cyan("Progress:")} ${progressBar} ${progressColor(`${progress}%`)}`,
+      );
+      console.log(
+        `  ${chalk.cyan("Tasks:")} ${status.sprint.completedTasks} done, ${status.sprint.inProgressTasks} in progress, ${status.sprint.todoTasks} todo`,
       );
     } else {
-      console.log(chalk.bold('\n🎯 Current Sprint'));
-      console.log(chalk.gray('  No active sprint found in NEXT-TASKS.md'));
+      console.log(chalk.bold("\n🎯 Current Sprint"));
+      console.log(chalk.gray("  No active sprint found in NEXT-TASKS.md"));
     }
 
     // Backlog Section
-    console.log(chalk.bold('\n📋 Backlog'));
+    console.log(chalk.bold("\n📋 Backlog"));
     if (status.backlogSize > 0) {
-      console.log(`  ${chalk.cyan('Future Enhancements:')} ${status.backlogSize} items pending`);
+      console.log(
+        `  ${chalk.cyan("Future Enhancements:")} ${status.backlogSize} items pending`,
+      );
     } else {
-      console.log(chalk.gray('  No backlog items found in FUTURE-ENHANCEMENTS.md'));
+      console.log(
+        chalk.gray("  No backlog items found in FUTURE-ENHANCEMENTS.md"),
+      );
     }
 
     // Quick Actions
-    console.log(chalk.bold('\n⚡ Quick Actions'));
-    console.log(chalk.gray('  Run'), chalk.cyan('cortex-tms validate'), chalk.gray('for detailed health checks'));
-    console.log(chalk.gray('  Edit'), chalk.cyan('NEXT-TASKS.md'), chalk.gray('to update sprint tasks'));
+    console.log(chalk.bold("\n⚡ Quick Actions"));
+    console.log(
+      chalk.gray("  Run"),
+      chalk.cyan("cortex-tms validate"),
+      chalk.gray("for detailed health checks"),
+    );
+    console.log(
+      chalk.gray("  Edit"),
+      chalk.cyan("NEXT-TASKS.md"),
+      chalk.gray("to update sprint tasks"),
+    );
     if (validation.summary.warnings > 0 || validation.summary.errors > 0) {
       console.log(
-        chalk.gray('  Run'),
-        chalk.cyan('cortex-tms validate --fix'),
-        chalk.gray('to auto-fix issues')
+        chalk.gray("  Run"),
+        chalk.cyan("cortex-tms validate --fix"),
+        chalk.gray("to auto-fix issues"),
       );
     }
 
     console.log(); // Add trailing newline
   } catch (error) {
-    spinner.fail('Failed to gather project information');
-    throw error instanceof Error ? error : new Error('Unknown error');
+    spinner.fail("Failed to gather project information");
+    throw error instanceof Error ? error : new Error("Unknown error");
   }
 }
 
@@ -128,14 +151,14 @@ function formatScope(scope: string): string {
  */
 function getScopeEmoji(scope: string): string {
   switch (scope.toLowerCase()) {
-    case 'nano':
-      return '🔬';
-    case 'standard':
-      return '📦';
-    case 'enterprise':
-      return '🏢';
+    case "nano":
+      return "🔬";
+    case "standard":
+      return "📦";
+    case "enterprise":
+      return "🏢";
     default:
-      return '❓';
+      return "❓";
   }
 }
 
@@ -150,9 +173,10 @@ function createProgressBar(progress: number, width: number): string {
   const filled = Math.round((progress / 100) * width);
   const empty = width - filled;
 
-  const filledColor = progress === 100 ? chalk.green : progress >= 50 ? chalk.yellow : chalk.gray;
+  const filledColor =
+    progress === 100 ? chalk.green : progress >= 50 ? chalk.yellow : chalk.gray;
 
-  return `[${filledColor('█'.repeat(filled))}${chalk.gray('░'.repeat(empty))}]`;
+  return `[${filledColor("█".repeat(filled))}${chalk.gray("░".repeat(empty))}]`;
 }
 
 // Export the command instance

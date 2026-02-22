@@ -5,16 +5,16 @@
  * documentation standards (Rule 4, placeholder completion, etc.)
  */
 
-import { readFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join, basename } from 'path';
+import { readFile } from "fs/promises";
+import { existsSync } from "fs";
+import { join, basename } from "path";
 import type {
   ValidationCheck,
   ValidationResult,
   LineLimits,
   MandatoryFile,
   ProjectScope,
-} from '../types/cli.js';
+} from "../types/cli.js";
 import {
   loadConfig,
   mergeConfig,
@@ -22,33 +22,33 @@ import {
   saveConfig,
   createConfigFromScope,
   getScopePreset,
-} from './config.js';
-import { getTemplatesDir, processTemplate } from './templates.js';
-import { checkDocStaleness, isShallowClone } from './git-staleness.js';
+} from "./config.js";
+import { getTemplatesDir, processTemplate } from "./templates.js";
+import { checkDocStaleness, isShallowClone } from "./git-staleness.js";
 
 /**
  * Default line limits for TMS files (Rule 4)
  * These limits ensure AI agents can efficiently process documentation
  */
 export const DEFAULT_LINE_LIMITS: LineLimits = {
-  'NEXT-TASKS.md': 200, // HOT - Current sprint only
-  'FUTURE-ENHANCEMENTS.md': 500, // PLANNING - Backlog
-  'ARCHITECTURE.md': 500, // WARM - System design
-  'PATTERNS.md': 650, // WARM - Code patterns (reference manual with index)
-  'DOMAIN-LOGIC.md': 400, // WARM - Business rules (includes Maintenance Protocol)
-  'DECISIONS.md': 400, // WARM - ADRs
-  'GLOSSARY.md': 200, // WARM - Terminology
-  'SCHEMA.md': 600, // WARM - Data models
-  'TROUBLESHOOTING.md': 400, // WARM - Common issues
+  "NEXT-TASKS.md": 200, // HOT - Current sprint only
+  "FUTURE-ENHANCEMENTS.md": 500, // PLANNING - Backlog
+  "ARCHITECTURE.md": 500, // WARM - System design
+  "PATTERNS.md": 650, // WARM - Code patterns (reference manual with index)
+  "DOMAIN-LOGIC.md": 400, // WARM - Business rules (includes Maintenance Protocol)
+  "DECISIONS.md": 400, // WARM - ADRs
+  "GLOSSARY.md": 200, // WARM - Terminology
+  "SCHEMA.md": 600, // WARM - Data models
+  "TROUBLESHOOTING.md": 400, // WARM - Common issues
 };
 
 /**
  * Mandatory files that must exist in a TMS project
  */
 export const MANDATORY_FILES: MandatoryFile[] = [
-  'NEXT-TASKS.md',
-  '.github/copilot-instructions.md',
-  'CLAUDE.md',
+  "NEXT-TASKS.md",
+  ".github/copilot-instructions.md",
+  "CLAUDE.md",
 ];
 
 /**
@@ -67,22 +67,37 @@ const PLACEHOLDER_PATTERN = /\[([A-Z][a-zA-Z\s]+)\](?!\()/g;
  */
 async function countLines(filePath: string): Promise<number> {
   try {
-    const content = await readFile(filePath, 'utf-8');
-    return content.split('\n').length;
+    const content = await readFile(filePath, "utf-8");
+    return content.split("\n").length;
   } catch {
     return 0;
   }
 }
 
 /**
+ * Strip fenced code blocks and inline code spans from markdown content.
+ * Prevents placeholder regex from matching examples shown inside code formatting.
+ */
+function stripCodeFromMarkdown(content: string): string {
+  // Remove fenced code blocks (``` ... ``` or ~~~ ... ~~~)
+  let stripped = content.replace(/^(`{3,}|~{3,})[\s\S]*?\1$/gm, "");
+  // Remove inline code spans (` ... `)
+  stripped = stripped.replace(/`[^`\n]+`/g, "");
+  return stripped;
+}
+
+/**
  * Scan file for unreplaced placeholders
  */
 async function scanForPlaceholders(
-  filePath: string
+  filePath: string,
 ): Promise<{ found: boolean; placeholders: string[] }> {
   try {
-    const content = await readFile(filePath, 'utf-8');
-    const matches = content.match(PLACEHOLDER_PATTERN);
+    const content = await readFile(filePath, "utf-8");
+    // Strip code blocks/spans before scanning to avoid false positives
+    // from placeholder examples shown in documentation
+    const scannable = stripCodeFromMarkdown(content);
+    const matches = scannable.match(PLACEHOLDER_PATTERN);
 
     if (matches) {
       return {
@@ -102,10 +117,10 @@ async function scanForPlaceholders(
  * These indicate content populated by AI that needs human review
  */
 async function scanForAIDrafts(
-  filePath: string
+  filePath: string,
 ): Promise<{ found: boolean; count: number }> {
   try {
-    const content = await readFile(filePath, 'utf-8');
+    const content = await readFile(filePath, "utf-8");
     const matches = content.match(/<!--\s*AI-DRAFT.*?-->/gi);
 
     if (matches) {
@@ -126,7 +141,7 @@ async function scanForAIDrafts(
  */
 async function countCompletedTasks(filePath: string): Promise<number> {
   try {
-    const content = await readFile(filePath, 'utf-8');
+    const content = await readFile(filePath, "utf-8");
     // Match table rows with ✅ Done status
     const doneMatches = content.match(/\|\s*✅\s*(Done|Complete)\s*\|/gi);
     return doneMatches ? doneMatches.length : 0;
@@ -139,7 +154,7 @@ async function countCompletedTasks(filePath: string): Promise<number> {
  * Check if docs/archive/ directory exists
  */
 function hasArchiveDirectory(cwd: string): boolean {
-  return existsSync(join(cwd, 'docs/archive'));
+  return existsSync(join(cwd, "docs/archive"));
 }
 
 /**
@@ -153,8 +168,8 @@ async function fixMissingFile(cwd: string, file: string): Promise<void> {
   // Use project directory name as default project name
   const projectName = basename(cwd);
   const replacements = {
-    'Project Name': projectName,
-    'project-name': projectName.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
+    "Project Name": projectName,
+    "project-name": projectName.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
     Description: `A project powered by Cortex TMS`,
   };
 
@@ -166,7 +181,7 @@ async function fixMissingFile(cwd: string, file: string): Promise<void> {
  */
 export async function validateFileSizes(
   cwd: string,
-  limits: LineLimits = DEFAULT_LINE_LIMITS
+  limits: LineLimits = DEFAULT_LINE_LIMITS,
 ): Promise<ValidationCheck[]> {
   const checks: ValidationCheck[] = [];
 
@@ -183,7 +198,7 @@ export async function validateFileSizes(
       checks.push({
         name: `File Size: ${filename}`,
         passed: false,
-        level: 'warning',
+        level: "warning",
         message: `${filename} exceeds recommended line limit`,
         details: `Current: ${lineCount} lines | Limit: ${limit} lines | Overage: ${lineCount - limit} lines`,
         file: filename,
@@ -192,7 +207,7 @@ export async function validateFileSizes(
       checks.push({
         name: `File Size: ${filename}`,
         passed: true,
-        level: 'info',
+        level: "info",
         message: `${filename} is within size limits`,
         details: `${lineCount}/${limit} lines`,
         file: filename,
@@ -229,7 +244,7 @@ function getMandatoryFilesForScope(scope?: string): MandatoryFile[] {
  */
 export function validateMandatoryFiles(
   cwd: string,
-  scope?: string
+  scope?: string,
 ): ValidationCheck[] {
   const checks: ValidationCheck[] = [];
   const mandatoryFiles = getMandatoryFilesForScope(scope);
@@ -241,7 +256,7 @@ export function validateMandatoryFiles(
     checks.push({
       name: `Mandatory File: ${file}`,
       passed: exists,
-      level: exists ? 'info' : 'error',
+      level: exists ? "info" : "error",
       message: exists
         ? `${file} exists`
         : `${file} is missing (required for TMS)`,
@@ -261,16 +276,16 @@ export function validateMandatoryFiles(
  */
 async function fixMissingConfig(cwd: string): Promise<void> {
   // Try to detect scope from existing files
-  const hasGlossary = existsSync(join(cwd, 'docs/core/GLOSSARY.md'));
-  const hasSchema = existsSync(join(cwd, 'docs/core/SCHEMA.md'));
-  const hasArchitecture = existsSync(join(cwd, 'docs/core/ARCHITECTURE.md'));
+  const hasGlossary = existsSync(join(cwd, "docs/core/GLOSSARY.md"));
+  const hasSchema = existsSync(join(cwd, "docs/core/SCHEMA.md"));
+  const hasArchitecture = existsSync(join(cwd, "docs/core/ARCHITECTURE.md"));
 
-  let scope: 'nano' | 'standard' | 'enterprise' = 'standard';
+  let scope: "nano" | "standard" | "enterprise" = "standard";
 
   if (hasGlossary || hasSchema) {
-    scope = 'enterprise';
+    scope = "enterprise";
   } else if (!hasArchitecture) {
-    scope = 'nano';
+    scope = "nano";
   }
 
   const projectName = basename(cwd);
@@ -282,18 +297,18 @@ async function fixMissingConfig(cwd: string): Promise<void> {
  * Validate .cortexrc configuration exists
  */
 export function validateConfig(cwd: string): ValidationCheck[] {
-  const configPath = join(cwd, '.cortexrc');
+  const configPath = join(cwd, ".cortexrc");
   const exists = existsSync(configPath);
 
   return [
     {
-      name: 'Configuration File',
+      name: "Configuration File",
       passed: exists,
-      level: exists ? 'info' : 'error',
+      level: exists ? "info" : "error",
       message: exists
-        ? '.cortexrc configuration exists'
-        : '.cortexrc is missing (required for TMS validation)',
-      file: '.cortexrc',
+        ? ".cortexrc configuration exists"
+        : ".cortexrc is missing (required for TMS validation)",
+      file: ".cortexrc",
       ...(!exists && {
         fix: fixMissingConfig,
       }),
@@ -306,19 +321,19 @@ export function validateConfig(cwd: string): ValidationCheck[] {
  */
 export async function validatePlaceholders(
   cwd: string,
-  ignoreFiles: string[] = []
+  ignoreFiles: string[] = [],
 ): Promise<ValidationCheck[]> {
   const checks: ValidationCheck[] = [];
 
   // Files to scan for placeholders and AI-DRAFT markers
   const filesToScan = [
-    'README.md',
-    'NEXT-TASKS.md',
-    'CLAUDE.md',
-    'FUTURE-ENHANCEMENTS.md',
-    'docs/core/ARCHITECTURE.md',
-    'docs/core/PATTERNS.md',
-    'docs/core/DOMAIN-LOGIC.md',
+    "README.md",
+    "NEXT-TASKS.md",
+    "CLAUDE.md",
+    "FUTURE-ENHANCEMENTS.md",
+    "docs/core/ARCHITECTURE.md",
+    "docs/core/PATTERNS.md",
+    "docs/core/DOMAIN-LOGIC.md",
   ];
 
   for (const file of filesToScan) {
@@ -344,9 +359,9 @@ export async function validatePlaceholders(
       checks.push({
         name: `Completion: ${file}`,
         passed: false,
-        level: 'error',
+        level: "error",
         message: `${file} is incomplete (contains placeholder text)`,
-        details: `Found: ${placeholderResult.placeholders.join(', ')}\n💡 Run 'cortex-tms prompt bootstrap' with your AI agent to populate this file.`,
+        details: `Found: ${placeholderResult.placeholders.join(", ")}\n💡 Run 'cortex-tms prompt bootstrap' with your AI agent to populate this file.`,
         file,
       });
     }
@@ -355,9 +370,9 @@ export async function validatePlaceholders(
       checks.push({
         name: `Completion: ${file}`,
         passed: true, // Not a hard failure - content exists
-        level: 'warning',
+        level: "warning",
         message: `${file} contains AI-generated drafts (needs human review)`,
-        details: `${draftResult.count} draft section${draftResult.count > 1 ? 's' : ''} marked with <!-- AI-DRAFT -->\n💡 Review the AI-generated content and remove the <!-- AI-DRAFT --> markers once accepted.`,
+        details: `${draftResult.count} draft section${draftResult.count > 1 ? "s" : ""} marked with <!-- AI-DRAFT -->\n💡 Review the AI-generated content and remove the <!-- AI-DRAFT --> markers once accepted.`,
         file,
       });
     }
@@ -366,7 +381,7 @@ export async function validatePlaceholders(
       checks.push({
         name: `Completion: ${file}`,
         passed: true,
-        level: 'info',
+        level: "info",
         message: `${file} is complete and reviewed`,
         file,
       });
@@ -379,10 +394,12 @@ export async function validatePlaceholders(
 /**
  * Validate archive status (too many completed tasks not archived)
  */
-export async function validateArchiveStatus(cwd: string): Promise<ValidationCheck[]> {
+export async function validateArchiveStatus(
+  cwd: string,
+): Promise<ValidationCheck[]> {
   const checks: ValidationCheck[] = [];
 
-  const nextTasksPath = join(cwd, 'NEXT-TASKS.md');
+  const nextTasksPath = join(cwd, "NEXT-TASKS.md");
 
   if (!existsSync(nextTasksPath)) {
     return checks; // Skip if file doesn't exist
@@ -393,40 +410,40 @@ export async function validateArchiveStatus(cwd: string): Promise<ValidationChec
 
   if (completedCount > 10) {
     checks.push({
-      name: 'Archive Status',
+      name: "Archive Status",
       passed: false,
-      level: 'warning',
-      message: 'Too many completed tasks in NEXT-TASKS.md',
+      level: "warning",
+      message: "Too many completed tasks in NEXT-TASKS.md",
       details: `${completedCount} completed tasks should be archived to docs/archive/`,
-      file: 'NEXT-TASKS.md',
+      file: "NEXT-TASKS.md",
     });
   } else if (completedCount > 5) {
     checks.push({
-      name: 'Archive Status',
+      name: "Archive Status",
       passed: true,
-      level: 'info',
-      message: 'Consider archiving completed tasks soon',
+      level: "info",
+      message: "Consider archiving completed tasks soon",
       details: `${completedCount} completed tasks in NEXT-TASKS.md`,
-      file: 'NEXT-TASKS.md',
+      file: "NEXT-TASKS.md",
     });
   } else {
     checks.push({
-      name: 'Archive Status',
+      name: "Archive Status",
       passed: true,
-      level: 'info',
-      message: 'Active task list is healthy',
+      level: "info",
+      message: "Active task list is healthy",
       details: `${completedCount} completed tasks`,
-      file: 'NEXT-TASKS.md',
+      file: "NEXT-TASKS.md",
     });
   }
 
   if (!hasArchive && completedCount > 0) {
     checks.push({
-      name: 'Archive Directory',
+      name: "Archive Directory",
       passed: false,
-      level: 'warning',
-      message: 'No archive directory found',
-      details: 'Create docs/archive/ to store completed sprint history',
+      level: "warning",
+      message: "No archive directory found",
+      details: "Create docs/archive/ to store completed sprint history",
     });
   }
 
@@ -438,7 +455,7 @@ export async function validateArchiveStatus(cwd: string): Promise<ValidationChec
  */
 async function validateDocStaleness(
   cwd: string,
-  config: any
+  config: any,
 ): Promise<ValidationCheck[]> {
   const checks: ValidationCheck[] = [];
 
@@ -455,20 +472,20 @@ async function validateDocStaleness(
   // Check for shallow clone
   if (isShallowClone(cwd)) {
     checks.push({
-      name: 'Staleness Detection',
+      name: "Staleness Detection",
       passed: true,
-      level: 'warning',
-      message: 'Shallow clone detected - staleness check skipped',
-      details: 'Run with fetch-depth: 0 in CI to enable staleness detection',
+      level: "warning",
+      message: "Shallow clone detected - staleness check skipped",
+      details: "Run with fetch-depth: 0 in CI to enable staleness detection",
     });
     return checks;
   }
 
   // Default doc-to-path mappings
   const defaultDocs = stalenessConfig.docs || {
-    'docs/core/PATTERNS.md': ['src/'],
-    'docs/core/ARCHITECTURE.md': ['src/', 'infrastructure/'],
-    'docs/core/DOMAIN-LOGIC.md': ['src/'],
+    "docs/core/PATTERNS.md": ["src/"],
+    "docs/core/ARCHITECTURE.md": ["src/", "infrastructure/"],
+    "docs/core/DOMAIN-LOGIC.md": ["src/"],
   };
 
   // Check each configured doc
@@ -486,24 +503,27 @@ async function validateDocStaleness(
       watchPaths as string[],
       thresholdDays,
       minCommits,
-      cwd
+      cwd,
     );
 
     if (result.isStale) {
       checks.push({
-        name: 'Doc Staleness',
+        name: "Doc Staleness",
         passed: false,
-        level: 'warning',
+        level: "warning",
         message: `${basename(docPath)} may be outdated`,
-        details: `${result.reason}\n  Code: ${result.codeLastModified ? new Date(result.codeLastModified * 1000).toISOString().split('T')[0] : 'N/A'}\n  Doc:  ${result.docLastModified ? new Date(result.docLastModified * 1000).toISOString().split('T')[0] : 'N/A'}\n\n  Note: Staleness v1 uses git timestamps (temporal comparison only)\n  Review ${docPath} to ensure it reflects current codebase`,
+        details: `${result.reason}\n  Code: ${result.codeLastModified ? new Date(result.codeLastModified * 1000).toISOString().split("T")[0] : "N/A"}\n  Doc:  ${result.docLastModified ? new Date(result.docLastModified * 1000).toISOString().split("T")[0] : "N/A"}\n\n  Note: Staleness v1 uses git timestamps (temporal comparison only)\n  Review ${docPath} to ensure it reflects current codebase`,
         file: docPath,
       });
-    } else if (result.daysSinceDocUpdate !== null && result.daysSinceDocUpdate > 0) {
+    } else if (
+      result.daysSinceDocUpdate !== null &&
+      result.daysSinceDocUpdate > 0
+    ) {
       // Not stale, but show info if there's been activity
       checks.push({
-        name: 'Doc Freshness',
+        name: "Doc Freshness",
         passed: true,
-        level: 'info',
+        level: "info",
         message: `${basename(docPath)} is current`,
         details: result.reason,
         file: docPath,
@@ -514,10 +534,10 @@ async function validateDocStaleness(
   // If no checks were added, add a success check
   if (checks.length === 0) {
     checks.push({
-      name: 'Doc Staleness',
+      name: "Doc Staleness",
       passed: true,
-      level: 'info',
-      message: 'All governance docs are current',
+      level: "info",
+      message: "All governance docs are current",
       details: `Checked with ${thresholdDays} day threshold, ${minCommits} commit minimum`,
     });
   }
@@ -530,7 +550,7 @@ async function validateDocStaleness(
  */
 export async function validateProject(
   cwd: string,
-  options: { strict?: boolean; limits?: LineLimits } = {}
+  options: { strict?: boolean; limits?: LineLimits } = {},
 ): Promise<ValidationResult> {
   const { strict = false } = options;
 
@@ -545,15 +565,21 @@ export async function validateProject(
   const ignoreFiles = config.validation?.ignoreFiles || [];
 
   // Run all checks in parallel
-  const [fileSizeChecks, mandatoryChecks, configChecks, placeholderChecks, archiveChecks, stalenessChecks] =
-    await Promise.all([
-      validateFileSizes(cwd, limits),
-      Promise.resolve(validateMandatoryFiles(cwd, config.scope)),
-      Promise.resolve(validateConfig(cwd)),
-      validatePlaceholders(cwd, ignoreFiles),
-      validateArchiveStatus(cwd),
-      validateDocStaleness(cwd, config),
-    ]);
+  const [
+    fileSizeChecks,
+    mandatoryChecks,
+    configChecks,
+    placeholderChecks,
+    archiveChecks,
+    stalenessChecks,
+  ] = await Promise.all([
+    validateFileSizes(cwd, limits),
+    Promise.resolve(validateMandatoryFiles(cwd, config.scope)),
+    Promise.resolve(validateConfig(cwd)),
+    validatePlaceholders(cwd, ignoreFiles),
+    validateArchiveStatus(cwd),
+    validateDocStaleness(cwd, config),
+  ]);
 
   const checks = [
     ...mandatoryChecks,
@@ -568,8 +594,8 @@ export async function validateProject(
   const summary = {
     total: checks.length,
     passed: checks.filter((c) => c.passed).length,
-    warnings: checks.filter((c) => c.level === 'warning').length,
-    errors: checks.filter((c) => c.level === 'error').length,
+    warnings: checks.filter((c) => c.level === "warning").length,
+    errors: checks.filter((c) => c.level === "error").length,
   };
 
   // Determine overall pass/fail

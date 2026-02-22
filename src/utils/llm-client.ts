@@ -4,8 +4,8 @@
  * Supports OpenAI and Anthropic APIs for Guardian code review
  */
 
-import type { GuardianResult } from '../types/guardian.js';
-import { sanitizeError } from './sanitize.js';
+import type { GuardianResult } from "../types/guardian.js";
+import { sanitizeError } from "./sanitize.js";
 
 // Default timeout for API requests (30 seconds)
 const DEFAULT_API_TIMEOUT_MS = 30000;
@@ -17,11 +17,11 @@ const DEFAULT_MAX_DELAY_MS = 10000; // 10 seconds
 const DEFAULT_BACKOFF_MULTIPLIER = 2;
 
 export interface LLMConfig {
-  provider: 'openai' | 'anthropic';
+  provider: "openai" | "anthropic";
   apiKey: string;
   model?: string;
   timeoutMs?: number;
-  responseFormat?: 'text' | 'json';
+  responseFormat?: "text" | "json";
   retryConfig?: {
     maxRetries?: number;
     initialDelayMs?: number;
@@ -31,7 +31,7 @@ export interface LLMConfig {
 }
 
 export interface LLMMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
@@ -48,7 +48,7 @@ export interface LLMResponse {
  * Sleep for specified milliseconds (for retry delays)
  */
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -68,31 +68,37 @@ function isRetryableError(error: Error): boolean {
   const errorMessage = error.message.toLowerCase();
 
   // Network errors (timeout, connection issues)
-  if (errorMessage.includes('timeout') ||
-      errorMessage.includes('network') ||
-      errorMessage.includes('econnrefused') ||
-      errorMessage.includes('enotfound')) {
+  if (
+    errorMessage.includes("timeout") ||
+    errorMessage.includes("network") ||
+    errorMessage.includes("econnrefused") ||
+    errorMessage.includes("enotfound")
+  ) {
     return true;
   }
 
   // Rate limit errors (429)
-  if (errorMessage.includes('429') || errorMessage.includes('rate limit')) {
+  if (errorMessage.includes("429") || errorMessage.includes("rate limit")) {
     return true;
   }
 
   // Server errors (5xx)
-  if (errorMessage.includes('500') ||
-      errorMessage.includes('502') ||
-      errorMessage.includes('503') ||
-      errorMessage.includes('504')) {
+  if (
+    errorMessage.includes("500") ||
+    errorMessage.includes("502") ||
+    errorMessage.includes("503") ||
+    errorMessage.includes("504")
+  ) {
     return true;
   }
 
   // Authentication and client errors are not retryable
-  if (errorMessage.includes('401') ||
-      errorMessage.includes('403') ||
-      errorMessage.includes('400') ||
-      errorMessage.includes('404')) {
+  if (
+    errorMessage.includes("401") ||
+    errorMessage.includes("403") ||
+    errorMessage.includes("400") ||
+    errorMessage.includes("404")
+  ) {
     return false;
   }
 
@@ -105,21 +111,23 @@ function isRetryableError(error: Error): boolean {
  */
 export async function callLLM(
   config: LLMConfig,
-  messages: LLMMessage[]
+  messages: LLMMessage[],
 ): Promise<LLMResponse> {
   const maxRetries = config.retryConfig?.maxRetries ?? DEFAULT_MAX_RETRIES;
-  const initialDelayMs = config.retryConfig?.initialDelayMs ?? DEFAULT_INITIAL_DELAY_MS;
+  const initialDelayMs =
+    config.retryConfig?.initialDelayMs ?? DEFAULT_INITIAL_DELAY_MS;
   const maxDelayMs = config.retryConfig?.maxDelayMs ?? DEFAULT_MAX_DELAY_MS;
-  const backoffMultiplier = config.retryConfig?.backoffMultiplier ?? DEFAULT_BACKOFF_MULTIPLIER;
+  const backoffMultiplier =
+    config.retryConfig?.backoffMultiplier ?? DEFAULT_BACKOFF_MULTIPLIER;
 
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       // Make the actual API call
-      if (config.provider === 'openai') {
+      if (config.provider === "openai") {
         return await callOpenAI(config, messages);
-      } else if (config.provider === 'anthropic') {
+      } else if (config.provider === "anthropic") {
         return await callAnthropic(config, messages);
       }
 
@@ -135,7 +143,7 @@ export async function callLLM(
       // Calculate delay with exponential backoff
       const delay = Math.min(
         initialDelayMs * Math.pow(backoffMultiplier, attempt),
-        maxDelayMs
+        maxDelayMs,
       );
 
       // Log retry attempt (can be useful for debugging)
@@ -146,7 +154,7 @@ export async function callLLM(
   }
 
   // This should never be reached due to throw in loop, but TypeScript needs it
-  throw lastError || new Error('Unknown error in LLM API call');
+  throw lastError || new Error("Unknown error in LLM API call");
 }
 
 interface OpenAIResponse {
@@ -167,9 +175,9 @@ interface OpenAIResponse {
  */
 async function callOpenAI(
   config: LLMConfig,
-  messages: LLMMessage[]
+  messages: LLMMessage[],
 ): Promise<LLMResponse> {
-  const model = config.model || 'gpt-4-turbo-preview';
+  const model = config.model || "gpt-4-turbo-preview";
   const timeoutMs = config.timeoutMs || DEFAULT_API_TIMEOUT_MS;
 
   // Setup timeout with AbortController
@@ -184,15 +192,15 @@ async function callOpenAI(
     };
 
     // Add JSON mode for OpenAI if requested
-    if (config.responseFormat === 'json') {
-      requestBody.response_format = { type: 'json_object' };
+    if (config.responseFormat === "json") {
+      requestBody.response_format = { type: "json_object" };
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${config.apiKey}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.apiKey}`,
       },
       body: JSON.stringify(requestBody),
       signal: controller.signal,
@@ -206,10 +214,10 @@ async function callOpenAI(
       throw new Error(`OpenAI API error: ${response.status} ${sanitizedError}`);
     }
 
-    const data = await response.json() as OpenAIResponse;
+    const data = (await response.json()) as OpenAIResponse;
 
     if (!data.choices?.[0]?.message?.content) {
-      throw new Error('Invalid OpenAI response: missing content');
+      throw new Error("Invalid OpenAI response: missing content");
     }
 
     return {
@@ -222,7 +230,7 @@ async function callOpenAI(
     };
   } catch (error) {
     clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
+    if (error instanceof Error && error.name === "AbortError") {
       throw new Error(`OpenAI API request timeout after ${timeoutMs}ms`);
     }
     throw error;
@@ -244,34 +252,35 @@ interface AnthropicResponse {
  */
 async function callAnthropic(
   config: LLMConfig,
-  messages: LLMMessage[]
+  messages: LLMMessage[],
 ): Promise<LLMResponse> {
-  const model = config.model || 'claude-sonnet-4-5-20250929';
+  const model = config.model || "claude-sonnet-4-5-20250929";
   const timeoutMs = config.timeoutMs || DEFAULT_API_TIMEOUT_MS;
 
   // Convert messages to Anthropic format (system message separate)
-  let systemMessage = messages.find(m => m.role === 'system')?.content || '';
+  let systemMessage = messages.find((m) => m.role === "system")?.content || "";
 
   // For JSON mode, append JSON format instruction to system message
-  if (config.responseFormat === 'json') {
-    systemMessage += '\n\nIMPORTANT: You MUST respond with valid JSON only. Do not include any text before or after the JSON. The response must be parseable by JSON.parse().';
+  if (config.responseFormat === "json") {
+    systemMessage +=
+      "\n\nIMPORTANT: You MUST respond with valid JSON only. Do not include any text before or after the JSON. The response must be parseable by JSON.parse().";
   }
 
   const conversationMessages = messages
-    .filter(m => m.role !== 'system')
-    .map(m => ({ role: m.role, content: m.content }));
+    .filter((m) => m.role !== "system")
+    .map((m) => ({ role: m.role, content: m.content }));
 
   // Setup timeout with AbortController
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': config.apiKey,
-        'anthropic-version': '2023-06-01',
+        "Content-Type": "application/json",
+        "x-api-key": config.apiKey,
+        "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
         model,
@@ -288,13 +297,15 @@ async function callAnthropic(
     if (!response.ok) {
       const error = await response.text();
       const sanitizedError = sanitizeError(error);
-      throw new Error(`Anthropic API error: ${response.status} ${sanitizedError}`);
+      throw new Error(
+        `Anthropic API error: ${response.status} ${sanitizedError}`,
+      );
     }
 
-    const data = await response.json() as AnthropicResponse;
+    const data = (await response.json()) as AnthropicResponse;
 
     if (!data.content?.[0]?.text) {
-      throw new Error('Invalid Anthropic response: missing content');
+      throw new Error("Invalid Anthropic response: missing content");
     }
 
     return {
@@ -307,7 +318,7 @@ async function callAnthropic(
     };
   } catch (error) {
     clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
+    if (error instanceof Error && error.name === "AbortError") {
       throw new Error(`Anthropic API request timeout after ${timeoutMs}ms`);
     }
     throw error;
@@ -326,12 +337,12 @@ export function parseGuardianJSON(content: string): GuardianResult | null {
   try {
     // Strip markdown code blocks if present (some LLMs wrap JSON even when instructed not to)
     let jsonStr = content.trim();
-    if (jsonStr.startsWith('```json')) {
+    if (jsonStr.startsWith("```json")) {
       jsonStr = jsonStr.slice(7);
-    } else if (jsonStr.startsWith('```')) {
+    } else if (jsonStr.startsWith("```")) {
       jsonStr = jsonStr.slice(3);
     }
-    if (jsonStr.endsWith('```')) {
+    if (jsonStr.endsWith("```")) {
       jsonStr = jsonStr.slice(0, -3);
     }
     jsonStr = jsonStr.trim();
@@ -339,7 +350,7 @@ export function parseGuardianJSON(content: string): GuardianResult | null {
     const parsed = JSON.parse(jsonStr);
 
     // Validate required fields
-    if (!parsed.summary?.status || typeof parsed.summary.message !== 'string') {
+    if (!parsed.summary?.status || typeof parsed.summary.message !== "string") {
       return null;
     }
 
@@ -352,7 +363,7 @@ export function parseGuardianJSON(content: string): GuardianResult | null {
     }
 
     // Validate status enum
-    const validStatuses = ['compliant', 'minor_issues', 'major_violations'];
+    const validStatuses = ["compliant", "minor_issues", "major_violations"];
     if (!validStatuses.includes(parsed.summary.status)) {
       return null;
     }
@@ -360,17 +371,21 @@ export function parseGuardianJSON(content: string): GuardianResult | null {
     // Validate violations structure
     for (const v of parsed.violations) {
       if (
-        typeof v.pattern !== 'string' ||
-        typeof v.issue !== 'string' ||
-        typeof v.recommendation !== 'string' ||
-        (v.severity !== 'minor' && v.severity !== 'major')
+        typeof v.pattern !== "string" ||
+        typeof v.issue !== "string" ||
+        typeof v.recommendation !== "string" ||
+        (v.severity !== "minor" && v.severity !== "major")
       ) {
         return null;
       }
 
       // Validate optional confidence field (0-1 range)
       if (v.confidence !== undefined) {
-        if (typeof v.confidence !== 'number' || v.confidence < 0 || v.confidence > 1) {
+        if (
+          typeof v.confidence !== "number" ||
+          v.confidence < 0 ||
+          v.confidence > 1
+        ) {
           return null;
         }
       }
@@ -385,7 +400,7 @@ export function parseGuardianJSON(content: string): GuardianResult | null {
 /**
  * Get API key from environment or prompt user
  */
-export function getApiKey(provider: 'openai' | 'anthropic'): string | null {
-  const envVar = provider === 'openai' ? 'OPENAI_API_KEY' : 'ANTHROPIC_API_KEY';
+export function getApiKey(provider: "openai" | "anthropic"): string | null {
+  const envVar = provider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY";
   return process.env[envVar] || null;
 }

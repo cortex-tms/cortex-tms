@@ -1,11 +1,11 @@
-import React from 'react';
-import { Box, Text } from 'ink';
+import React from "react";
+import { Box, Text } from "ink";
 
 interface NotConfiguredCardProps {
   title: string;
   message: string;
   icon?: string;
-  color?: 'gray' | 'yellow' | 'cyan';
+  color?: "gray" | "yellow" | "cyan";
 }
 
 /**
@@ -14,11 +14,16 @@ interface NotConfiguredCardProps {
 export const NotConfiguredCard: React.FC<NotConfiguredCardProps> = ({
   title,
   message,
-  icon = '⚙️ ',
-  color = 'gray',
+  icon = "⚙️ ",
+  color = "gray",
 }) => {
   return (
-    <Box flexDirection="column" paddingY={1} borderStyle="round" borderColor={color}>
+    <Box
+      flexDirection="column"
+      paddingY={1}
+      borderStyle="round"
+      borderColor={color}
+    >
       <Box paddingX={2}>
         <Text bold color={color}>
           {icon} {title}

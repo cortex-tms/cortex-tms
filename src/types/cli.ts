@@ -20,11 +20,11 @@ export interface InitPromptAnswers {
  * Template categories that can be selected during init
  */
 export type TemplateSelection =
-  | 'all'
-  | 'minimal'
-  | 'core-docs'
-  | 'workflow-files'
-  | 'example-app';
+  | "all"
+  | "minimal"
+  | "core-docs"
+  | "workflow-files"
+  | "example-app";
 
 /**
  * Configuration for project detection
@@ -32,7 +32,7 @@ export type TemplateSelection =
 export interface ProjectContext {
   isGitRepo: boolean;
   hasPackageJson: boolean;
-  packageManager: 'npm' | 'pnpm' | 'yarn' | 'bun' | 'unknown';
+  packageManager: "npm" | "pnpm" | "yarn" | "bun" | "unknown";
   existingFiles: string[];
 }
 
@@ -43,7 +43,7 @@ export interface TemplateFile {
   source: string; // Path in templates/ directory
   destination: string; // Path in user's project
   hasPlaceholders: boolean; // Whether file contains [Project Name] etc.
-  category: 'core' | 'workflow' | 'example';
+  category: "core" | "workflow" | "example";
 }
 
 /**
@@ -72,7 +72,7 @@ export interface CliConfig {
 export interface ValidationCheck {
   name: string;
   passed: boolean;
-  level: 'info' | 'warning' | 'error';
+  level: "info" | "warning" | "error";
   message: string;
   details?: string;
   file?: string;
@@ -99,15 +99,15 @@ export interface ValidationResult {
  * File size limits for TMS files (Rule 4)
  */
 export interface LineLimits {
-  'NEXT-TASKS.md': number;
-  'FUTURE-ENHANCEMENTS.md': number;
-  'ARCHITECTURE.md': number;
-  'PATTERNS.md': number;
-  'DOMAIN-LOGIC.md': number;
-  'DECISIONS.md': number;
-  'GLOSSARY.md': number;
-  'SCHEMA.md': number;
-  'TROUBLESHOOTING.md': number;
+  "NEXT-TASKS.md": number;
+  "FUTURE-ENHANCEMENTS.md": number;
+  "ARCHITECTURE.md": number;
+  "PATTERNS.md": number;
+  "DOMAIN-LOGIC.md": number;
+  "DECISIONS.md": number;
+  "GLOSSARY.md": number;
+  "SCHEMA.md": number;
+  "TROUBLESHOOTING.md": number;
   [key: string]: number; // Allow custom files
 }
 
@@ -115,9 +115,9 @@ export interface LineLimits {
  * Mandatory files that must exist in a TMS project
  */
 export type MandatoryFile =
-  | 'NEXT-TASKS.md'
-  | '.github/copilot-instructions.md'
-  | 'CLAUDE.md';
+  | "NEXT-TASKS.md"
+  | ".github/copilot-instructions.md"
+  | "CLAUDE.md";
 
 /**
  * Options for the validate command
@@ -131,7 +131,7 @@ export interface ValidateCommandOptions {
 /**
  * Project scope - determines which templates are included
  */
-export type ProjectScope = 'nano' | 'standard' | 'enterprise' | 'custom';
+export type ProjectScope = "nano" | "standard" | "enterprise" | "custom";
 
 /**
  * Cortex TMS project configuration (.cortexrc)

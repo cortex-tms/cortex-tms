@@ -4,27 +4,24 @@
  * Tests the Guardian review command with mocked LLM calls
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { join } from 'path';
-import { writeFileSync, mkdirSync } from 'fs';
-import {
-  createTempDir,
-  cleanupTempDir,
-} from './utils/temp-dir.js';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { join } from "path";
+import { writeFileSync, mkdirSync } from "fs";
+import { createTempDir, cleanupTempDir } from "./utils/temp-dir.js";
 
 // Mock the LLM client
-vi.mock('../utils/llm-client.js', async () => {
-  const actual = await vi.importActual('../utils/llm-client.js');
+vi.mock("../utils/llm-client.js", async () => {
+  const actual = await vi.importActual("../utils/llm-client.js");
   return {
     ...actual,
     callLLM: vi.fn(async () => ({
       content: JSON.stringify({
         summary: {
-          status: 'compliant',
-          message: 'Code is compliant with all patterns',
+          status: "compliant",
+          message: "Code is compliant with all patterns",
         },
         violations: [],
-        positiveObservations: ['Good code structure'],
+        positiveObservations: ["Good code structure"],
       }),
       usage: {
         promptTokens: 1000,
@@ -32,36 +29,36 @@ vi.mock('../utils/llm-client.js', async () => {
         totalTokens: 1100,
       },
     })),
-    getApiKey: vi.fn(() => 'mock-api-key'),
+    getApiKey: vi.fn(() => "mock-api-key"),
   };
 });
 
-describe('Review Command - File Validation', () => {
+describe("Review Command - File Validation", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
 
     // Create TMS structure
-    const docsDir = join(tempDir, 'docs/core');
+    const docsDir = join(tempDir, "docs/core");
     mkdirSync(docsDir, { recursive: true });
 
     // Create PATTERNS.md
     writeFileSync(
-      join(docsDir, 'PATTERNS.md'),
-      '# Patterns\n\n## Pattern 1\nUse consistent naming.'
+      join(docsDir, "PATTERNS.md"),
+      "# Patterns\n\n## Pattern 1\nUse consistent naming.",
     );
 
     // Create DOMAIN-LOGIC.md
     writeFileSync(
-      join(docsDir, 'DOMAIN-LOGIC.md'),
-      '# Domain Logic\n\n## Rule 1\nValidate all inputs.'
+      join(docsDir, "DOMAIN-LOGIC.md"),
+      "# Domain Logic\n\n## Rule 1\nValidate all inputs.",
     );
 
     // Create test file to review
     writeFileSync(
-      join(tempDir, 'test.ts'),
-      'function add(a: number, b: number) { return a + b; }'
+      join(tempDir, "test.ts"),
+      "function add(a: number, b: number) { return a + b; }",
     );
   });
 
@@ -70,56 +67,56 @@ describe('Review Command - File Validation', () => {
     vi.clearAllMocks();
   });
 
-  it('should detect missing PATTERNS.md', async () => {
+  it("should detect missing PATTERNS.md", async () => {
     const tempDir2 = await createTempDir();
-    writeFileSync(join(tempDir2, 'test.ts'), 'code');
+    writeFileSync(join(tempDir2, "test.ts"), "code");
 
     // Import here to use mocked modules
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir2, 'test.ts', {
-      provider: 'anthropic',
+    const result = await runReviewForTest(tempDir2, "test.ts", {
+      provider: "anthropic",
     });
 
     expect(result.success).toBe(false);
-    expect(result.error).toContain('PATTERNS.md not found');
+    expect(result.error).toContain("PATTERNS.md not found");
 
     await cleanupTempDir(tempDir2);
   });
 
-  it('should detect non-existent file to review', async () => {
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+  it("should detect non-existent file to review", async () => {
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'nonexistent.ts', {
-      provider: 'anthropic',
+    const result = await runReviewForTest(tempDir, "nonexistent.ts", {
+      provider: "anthropic",
     });
 
     expect(result.success).toBe(false);
-    expect(result.error).toContain('File not found');
+    expect(result.error).toContain("File not found");
   });
 
-  it('should successfully review file when all requirements met', async () => {
-    const { runReviewForTest } = await import('./utils/review-runner.js');
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should successfully review file when all requirements met", async () => {
+    const { runReviewForTest } = await import("./utils/review-runner.js");
+    const { callLLM } = await import("../utils/llm-client.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
     });
 
     expect(result.success).toBe(true);
-    expect(result.output).toContain('Compliant');
-    expect(result.output).toContain('Good code structure');
+    expect(result.output).toContain("Compliant");
+    expect(result.output).toContain("Good code structure");
     expect(callLLM).toHaveBeenCalledOnce();
   });
 
-  it('should pass file content to LLM', async () => {
-    const { runReviewForTest } = await import('./utils/review-runner.js');
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should pass file content to LLM", async () => {
+    const { runReviewForTest } = await import("./utils/review-runner.js");
+    const { callLLM } = await import("../utils/llm-client.js");
 
-    await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
     });
 
     const callArgs = (callLLM as ReturnType<typeof vi.fn>).mock.calls[0];
@@ -127,90 +124,90 @@ describe('Review Command - File Validation', () => {
 
     // Should have system and user messages
     expect(messages).toHaveLength(2);
-    expect(messages[0].role).toBe('system');
-    expect(messages[1].role).toBe('user');
+    expect(messages[0].role).toBe("system");
+    expect(messages[1].role).toBe("user");
 
     // User message should contain the code
-    expect(messages[1].content).toContain('function add');
+    expect(messages[1].content).toContain("function add");
   });
 
-  it('should include PATTERNS.md in system prompt', async () => {
-    const { runReviewForTest } = await import('./utils/review-runner.js');
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should include PATTERNS.md in system prompt", async () => {
+    const { runReviewForTest } = await import("./utils/review-runner.js");
+    const { callLLM } = await import("../utils/llm-client.js");
 
-    await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
     });
 
     const callArgs = (callLLM as ReturnType<typeof vi.fn>).mock.calls[0];
     const systemMessage = callArgs[1][0].content;
 
-    expect(systemMessage).toContain('PATTERNS.md');
-    expect(systemMessage).toContain('Pattern 1');
-    expect(systemMessage).toContain('consistent naming');
+    expect(systemMessage).toContain("PATTERNS.md");
+    expect(systemMessage).toContain("Pattern 1");
+    expect(systemMessage).toContain("consistent naming");
   });
 
-  it('should include DOMAIN-LOGIC.md in system prompt when present', async () => {
-    const { runReviewForTest } = await import('./utils/review-runner.js');
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should include DOMAIN-LOGIC.md in system prompt when present", async () => {
+    const { runReviewForTest } = await import("./utils/review-runner.js");
+    const { callLLM } = await import("../utils/llm-client.js");
 
-    await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
     });
 
     const callArgs = (callLLM as ReturnType<typeof vi.fn>).mock.calls[0];
     const systemMessage = callArgs[1][0].content;
 
-    expect(systemMessage).toContain('DOMAIN-LOGIC.md');
-    expect(systemMessage).toContain('Rule 1');
-    expect(systemMessage).toContain('Validate all inputs');
+    expect(systemMessage).toContain("DOMAIN-LOGIC.md");
+    expect(systemMessage).toContain("Rule 1");
+    expect(systemMessage).toContain("Validate all inputs");
   });
 
-  it('should use specified provider', async () => {
-    const { runReviewForTest } = await import('./utils/review-runner.js');
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should use specified provider", async () => {
+    const { runReviewForTest } = await import("./utils/review-runner.js");
+    const { callLLM } = await import("../utils/llm-client.js");
 
-    await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'openai',
-      apiKey: 'test-key',
+    await runReviewForTest(tempDir, "test.ts", {
+      provider: "openai",
+      apiKey: "test-key",
     });
 
     const callArgs = (callLLM as ReturnType<typeof vi.fn>).mock.calls[0];
     const config = callArgs[0];
 
-    expect(config.provider).toBe('openai');
+    expect(config.provider).toBe("openai");
   });
 
-  it('should use custom model when specified', async () => {
-    const { runReviewForTest } = await import('./utils/review-runner.js');
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should use custom model when specified", async () => {
+    const { runReviewForTest } = await import("./utils/review-runner.js");
+    const { callLLM } = await import("../utils/llm-client.js");
 
-    await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
-      model: 'claude-opus-4-5-20251101',
+    await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
+      model: "claude-opus-4-5-20251101",
     });
 
     const callArgs = (callLLM as ReturnType<typeof vi.fn>).mock.calls[0];
     const config = callArgs[0];
 
-    expect(config.model).toBe('claude-opus-4-5-20251101');
+    expect(config.model).toBe("claude-opus-4-5-20251101");
   });
 });
 
-describe('Review Command - Error Handling', () => {
+describe("Review Command - Error Handling", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
 
     // Create minimal TMS structure
-    const docsDir = join(tempDir, 'docs/core');
+    const docsDir = join(tempDir, "docs/core");
     mkdirSync(docsDir, { recursive: true });
-    writeFileSync(join(docsDir, 'PATTERNS.md'), '# Patterns');
-    writeFileSync(join(tempDir, 'test.ts'), 'code');
+    writeFileSync(join(docsDir, "PATTERNS.md"), "# Patterns");
+    writeFileSync(join(tempDir, "test.ts"), "code");
   });
 
   afterEach(async () => {
@@ -218,35 +215,35 @@ describe('Review Command - Error Handling', () => {
     vi.clearAllMocks();
   });
 
-  it('should handle LLM API errors gracefully', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should handle LLM API errors gracefully", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
     (callLLM as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
-      new Error('API rate limit exceeded')
+      new Error("API rate limit exceeded"),
     );
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
     });
 
     expect(result.success).toBe(false);
-    expect(result.error).toContain('rate limit');
+    expect(result.error).toContain("rate limit");
   });
 });
 
-describe('Review Command - Safe Mode', () => {
+describe("Review Command - Safe Mode", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
 
     // Create minimal TMS structure
-    const docsDir = join(tempDir, 'docs/core');
+    const docsDir = join(tempDir, "docs/core");
     mkdirSync(docsDir, { recursive: true });
-    writeFileSync(join(docsDir, 'PATTERNS.md'), '# Patterns');
-    writeFileSync(join(tempDir, 'test.ts'), 'code');
+    writeFileSync(join(docsDir, "PATTERNS.md"), "# Patterns");
+    writeFileSync(join(tempDir, "test.ts"), "code");
   });
 
   afterEach(async () => {
@@ -254,76 +251,76 @@ describe('Review Command - Safe Mode', () => {
     vi.clearAllMocks();
   });
 
-  it('should filter violations below 70% confidence in safe mode', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should filter violations below 70% confidence in safe mode", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
 
     // Mock response with mixed confidence violations
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
         summary: {
-          status: 'minor_issues',
-          message: 'Found 3 violations',
+          status: "minor_issues",
+          message: "Found 3 violations",
         },
         violations: [
           {
-            pattern: 'Pattern 1',
-            issue: 'High confidence issue',
-            recommendation: 'Fix it',
-            severity: 'major',
+            pattern: "Pattern 1",
+            issue: "High confidence issue",
+            recommendation: "Fix it",
+            severity: "major",
             confidence: 0.9,
           },
           {
-            pattern: 'Pattern 2',
-            issue: 'Medium confidence issue',
-            recommendation: 'Consider fixing',
-            severity: 'minor',
+            pattern: "Pattern 2",
+            issue: "Medium confidence issue",
+            recommendation: "Consider fixing",
+            severity: "minor",
             confidence: 0.6,
           },
           {
-            pattern: 'Pattern 3',
-            issue: 'Low confidence issue',
-            recommendation: 'Maybe fix',
-            severity: 'minor',
+            pattern: "Pattern 3",
+            issue: "Low confidence issue",
+            recommendation: "Maybe fix",
+            severity: "minor",
             confidence: 0.4,
           },
         ],
-        positiveObservations: ['Good code structure'],
+        positiveObservations: ["Good code structure"],
       }),
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
       safe: true,
     });
 
     expect(result.success).toBe(true);
     // Should only show the high confidence violation
-    expect(result.output).toContain('Pattern 1');
-    expect(result.output).toContain('High confidence issue');
+    expect(result.output).toContain("Pattern 1");
+    expect(result.output).toContain("High confidence issue");
     // Should not show low/medium confidence violations
-    expect(result.output).not.toContain('Pattern 2');
-    expect(result.output).not.toContain('Pattern 3');
+    expect(result.output).not.toContain("Pattern 2");
+    expect(result.output).not.toContain("Pattern 3");
   });
 
-  it('should display confidence percentages when present', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should display confidence percentages when present", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
 
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
         summary: {
-          status: 'minor_issues',
-          message: 'Found 1 violation',
+          status: "minor_issues",
+          message: "Found 1 violation",
         },
         violations: [
           {
-            pattern: 'Pattern 1',
-            issue: 'Issue',
-            recommendation: 'Fix',
-            severity: 'major',
+            pattern: "Pattern 1",
+            issue: "Issue",
+            recommendation: "Fix",
+            severity: "major",
             confidence: 0.85,
           },
         ],
@@ -332,78 +329,78 @@ describe('Review Command - Safe Mode', () => {
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
     });
 
     expect(result.success).toBe(true);
-    expect(result.output).toContain('Confidence: 85%');
+    expect(result.output).toContain("Confidence: 85%");
   });
 
-  it('should update summary when all violations filtered in safe mode', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should update summary when all violations filtered in safe mode", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
 
     // Mock response with only low confidence violations
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
         summary: {
-          status: 'minor_issues',
-          message: 'Found 2 violations',
+          status: "minor_issues",
+          message: "Found 2 violations",
         },
         violations: [
           {
-            pattern: 'Pattern 1',
-            issue: 'Low confidence issue',
-            recommendation: 'Maybe fix',
-            severity: 'minor',
+            pattern: "Pattern 1",
+            issue: "Low confidence issue",
+            recommendation: "Maybe fix",
+            severity: "minor",
             confidence: 0.5,
           },
           {
-            pattern: 'Pattern 2',
-            issue: 'Another low confidence',
-            recommendation: 'Consider',
-            severity: 'minor',
+            pattern: "Pattern 2",
+            issue: "Another low confidence",
+            recommendation: "Consider",
+            severity: "minor",
             confidence: 0.6,
           },
         ],
-        positiveObservations: ['Good structure'],
+        positiveObservations: ["Good structure"],
       }),
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
       safe: true,
     });
 
     expect(result.success).toBe(true);
-    expect(result.output).toContain('Compliant');
-    expect(result.output).toContain('No high-confidence violations found');
-    expect(result.output).toContain('filtered 2 low-confidence issues');
+    expect(result.output).toContain("Compliant");
+    expect(result.output).toContain("No high-confidence violations found");
+    expect(result.output).toContain("filtered 2 low-confidence issues");
   });
 
-  it('should work without confidence field (backwards compatibility)', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should work without confidence field (backwards compatibility)", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
 
     // Mock response without confidence field (defaults to 1.0)
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
         summary: {
-          status: 'minor_issues',
-          message: 'Found 1 violation',
+          status: "minor_issues",
+          message: "Found 1 violation",
         },
         violations: [
           {
-            pattern: 'Pattern 1',
-            issue: 'Issue without confidence',
-            recommendation: 'Fix',
-            severity: 'major',
+            pattern: "Pattern 1",
+            issue: "Issue without confidence",
+            recommendation: "Fix",
+            severity: "major",
           },
         ],
         positiveObservations: [],
@@ -411,36 +408,36 @@ describe('Review Command - Safe Mode', () => {
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
       safe: true,
     });
 
     expect(result.success).toBe(true);
     // Should still show violation (defaults to 100% confidence)
-    expect(result.output).toContain('Pattern 1');
+    expect(result.output).toContain("Pattern 1");
   });
 
-  it('should include violations at exact threshold boundary (0.7)', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
-    const { SAFE_MODE_THRESHOLD } = await import('../types/guardian.js');
+  it("should include violations at exact threshold boundary (0.7)", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
+    const { SAFE_MODE_THRESHOLD } = await import("../types/guardian.js");
 
     // Mock response with violation exactly at threshold
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
         summary: {
-          status: 'minor_issues',
-          message: 'Found 1 violation',
+          status: "minor_issues",
+          message: "Found 1 violation",
         },
         violations: [
           {
-            pattern: 'Pattern 1',
-            issue: 'Boundary case',
-            recommendation: 'Fix',
-            severity: 'minor',
+            pattern: "Pattern 1",
+            issue: "Boundary case",
+            recommendation: "Fix",
+            severity: "minor",
             confidence: SAFE_MODE_THRESHOLD, // Exactly 0.7
           },
         ],
@@ -449,33 +446,33 @@ describe('Review Command - Safe Mode', () => {
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
       safe: true,
     });
 
     expect(result.success).toBe(true);
     // Should include violation at exact threshold (>= not just >)
-    expect(result.output).toContain('Pattern 1');
-    expect(result.output).toContain('Boundary case');
-    expect(result.output).toContain('Confidence: 70%');
+    expect(result.output).toContain("Pattern 1");
+    expect(result.output).toContain("Boundary case");
+    expect(result.output).toContain("Confidence: 70%");
   });
 });
 
-describe('Review Command - JSON Output', () => {
+describe("Review Command - JSON Output", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
 
     // Create minimal TMS structure
-    const docsDir = join(tempDir, 'docs/core');
+    const docsDir = join(tempDir, "docs/core");
     mkdirSync(docsDir, { recursive: true });
-    writeFileSync(join(docsDir, 'PATTERNS.md'), '# Patterns');
-    writeFileSync(join(tempDir, 'test.ts'), 'code');
+    writeFileSync(join(docsDir, "PATTERNS.md"), "# Patterns");
+    writeFileSync(join(tempDir, "test.ts"), "code");
   });
 
   afterEach(async () => {
@@ -483,26 +480,26 @@ describe('Review Command - JSON Output', () => {
     vi.clearAllMocks();
   });
 
-  it('should output raw JSON when --output-json flag is used', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should output raw JSON when --output-json flag is used", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
 
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
         summary: {
-          status: 'compliant',
-          message: 'All good',
+          status: "compliant",
+          message: "All good",
         },
         violations: [],
-        positiveObservations: ['Good structure'],
+        positiveObservations: ["Good structure"],
       }),
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
       outputJson: true,
     });
 
@@ -510,28 +507,28 @@ describe('Review Command - JSON Output', () => {
 
     // Output should be valid JSON
     const parsed = JSON.parse(result.output);
-    expect(parsed).toHaveProperty('summary');
-    expect(parsed).toHaveProperty('violations');
-    expect(parsed).toHaveProperty('positiveObservations');
-    expect(parsed.summary.status).toBe('compliant');
+    expect(parsed).toHaveProperty("summary");
+    expect(parsed).toHaveProperty("violations");
+    expect(parsed).toHaveProperty("positiveObservations");
+    expect(parsed.summary.status).toBe("compliant");
   });
 
-  it('should output JSON with violations', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should output JSON with violations", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
 
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
         summary: {
-          status: 'major_violations',
-          message: 'Found issues',
+          status: "major_violations",
+          message: "Found issues",
         },
         violations: [
           {
-            pattern: 'Pattern 1',
+            pattern: "Pattern 1",
             line: 10,
-            issue: 'Test issue',
-            recommendation: 'Fix it',
-            severity: 'major',
+            issue: "Test issue",
+            recommendation: "Fix it",
+            severity: "major",
             confidence: 0.95,
           },
         ],
@@ -540,45 +537,45 @@ describe('Review Command - JSON Output', () => {
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
       outputJson: true,
     });
 
     expect(result.success).toBe(true);
 
     const parsed = JSON.parse(result.output);
-    expect(parsed.summary.status).toBe('major_violations');
+    expect(parsed.summary.status).toBe("major_violations");
     expect(parsed.violations).toHaveLength(1);
-    expect(parsed.violations[0].pattern).toBe('Pattern 1');
+    expect(parsed.violations[0].pattern).toBe("Pattern 1");
     expect(parsed.violations[0].confidence).toBe(0.95);
   });
 
-  it('should apply Safe Mode filtering in JSON output', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should apply Safe Mode filtering in JSON output", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
 
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
         summary: {
-          status: 'minor_issues',
-          message: 'Found 2 issues',
+          status: "minor_issues",
+          message: "Found 2 issues",
         },
         violations: [
           {
-            pattern: 'Pattern 1',
-            issue: 'High confidence',
-            recommendation: 'Fix',
-            severity: 'major',
+            pattern: "Pattern 1",
+            issue: "High confidence",
+            recommendation: "Fix",
+            severity: "major",
             confidence: 0.9,
           },
           {
-            pattern: 'Pattern 2',
-            issue: 'Low confidence',
-            recommendation: 'Maybe fix',
-            severity: 'minor',
+            pattern: "Pattern 2",
+            issue: "Low confidence",
+            recommendation: "Maybe fix",
+            severity: "minor",
             confidence: 0.5,
           },
         ],
@@ -587,11 +584,11 @@ describe('Review Command - JSON Output', () => {
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
       outputJson: true,
       safe: true,
     });
@@ -601,37 +598,37 @@ describe('Review Command - JSON Output', () => {
     const parsed = JSON.parse(result.output);
     // Should only have high-confidence violation
     expect(parsed.violations).toHaveLength(1);
-    expect(parsed.violations[0].pattern).toBe('Pattern 1');
+    expect(parsed.violations[0].pattern).toBe("Pattern 1");
     expect(parsed.violations[0].confidence).toBe(0.9);
   });
 
-  it('should not include UI text in JSON mode', async () => {
-    const { callLLM } = await import('../utils/llm-client.js');
+  it("should not include UI text in JSON mode", async () => {
+    const { callLLM } = await import("../utils/llm-client.js");
 
     (callLLM as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       content: JSON.stringify({
-        summary: { status: 'compliant', message: 'Good' },
+        summary: { status: "compliant", message: "Good" },
         violations: [],
         positiveObservations: [],
       }),
       usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
     });
 
-    const { runReviewForTest } = await import('./utils/review-runner.js');
+    const { runReviewForTest } = await import("./utils/review-runner.js");
 
-    const result = await runReviewForTest(tempDir, 'test.ts', {
-      provider: 'anthropic',
-      apiKey: 'test-key',
+    const result = await runReviewForTest(tempDir, "test.ts", {
+      provider: "anthropic",
+      apiKey: "test-key",
       outputJson: true,
     });
 
     expect(result.success).toBe(true);
 
     // Should not contain UI elements
-    expect(result.output).not.toContain('🛡️');
-    expect(result.output).not.toContain('Guardian Code Review');
-    expect(result.output).not.toContain('Analysis Complete');
-    expect(result.output).not.toContain('Tokens:');
+    expect(result.output).not.toContain("🛡️");
+    expect(result.output).not.toContain("Guardian Code Review");
+    expect(result.output).not.toContain("Analysis Complete");
+    expect(result.output).not.toContain("Tokens:");
 
     // Should be valid JSON
     expect(() => JSON.parse(result.output)).not.toThrow();

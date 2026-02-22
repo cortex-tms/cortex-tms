@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text } from 'ink';
+import React from "react";
+import { Box, Text } from "ink";
 
 interface CostSavingsCardProps {
   monthlyCost: number;
@@ -29,19 +29,24 @@ export const CostSavingsCard: React.FC<CostSavingsCardProps> = ({
 
   // Format cost
   const formatCost = (cost: number): string => {
-    if (cost < 0.01) return '<$0.01';
+    if (cost < 0.01) return "<$0.01";
     return `$${cost.toFixed(2)}`;
   };
 
   // Friendly model name
   const modelDisplay = model
-    .replace('claude-', 'Claude ')
-    .replace('sonnet-', 'Sonnet ')
-    .replace('opus-', 'Opus ')
-    .replace('haiku-', 'Haiku ');
+    .replace("claude-", "Claude ")
+    .replace("sonnet-", "Sonnet ")
+    .replace("opus-", "Opus ")
+    .replace("haiku-", "Haiku ");
 
   return (
-    <Box flexDirection="column" paddingY={1} borderStyle="round" borderColor="green">
+    <Box
+      flexDirection="column"
+      paddingY={1}
+      borderStyle="round"
+      borderColor="green"
+    >
       <Box paddingX={2}>
         <Text bold color="green">
           💰 MONTHLY SAVINGS (ESTIMATED)
@@ -64,8 +69,8 @@ export const CostSavingsCard: React.FC<CostSavingsCardProps> = ({
 
       <Box paddingX={2}>
         <Text dimColor>
-          Tokens avoided: {formatTokens(tokensAvoided)} ({percentReduction.toFixed(0)}%
-          reduction)
+          Tokens avoided: {formatTokens(tokensAvoided)} (
+          {percentReduction.toFixed(0)}% reduction)
         </Text>
       </Box>
     </Box>

@@ -4,7 +4,7 @@
  * Ensures all CLI command options are properly validated with clear error messages
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 import {
   autoTierOptionsSchema,
   initOptionsSchema,
@@ -15,16 +15,16 @@ import {
   statusOptionsSchema,
   validateOptions,
   validateSafePath,
-} from '../utils/validation.js';
-import { ValidationError } from '../utils/errors.js';
+} from "../utils/validation.js";
+import { ValidationError } from "../utils/errors.js";
 
-describe('Zod Input Validation', () => {
-  describe('autoTierOptionsSchema', () => {
-    it('should validate valid auto-tier options', () => {
+describe("Zod Input Validation", () => {
+  describe("autoTierOptionsSchema", () => {
+    it("should validate valid auto-tier options", () => {
       const result = autoTierOptionsSchema.parse({
-        hot: '7',
-        warm: '30',
-        cold: '90',
+        hot: "7",
+        warm: "30",
+        cold: "90",
         dryRun: true,
         force: false,
         verbose: true,
@@ -38,51 +38,51 @@ describe('Zod Input Validation', () => {
       expect(result.verbose).toBe(true);
     });
 
-    it('should reject negative numbers for hot', () => {
+    it("should reject negative numbers for hot", () => {
       expect(() =>
         autoTierOptionsSchema.parse({
-          hot: '-5',
-          warm: '30',
-          cold: '90',
-        })
+          hot: "-5",
+          warm: "30",
+          cold: "90",
+        }),
       ).toThrow();
     });
 
-    it('should reject non-numeric hot value', () => {
+    it("should reject non-numeric hot value", () => {
       expect(() =>
         autoTierOptionsSchema.parse({
-          hot: 'invalid',
-          warm: '30',
-          cold: '90',
-        })
+          hot: "invalid",
+          warm: "30",
+          cold: "90",
+        }),
       ).toThrow();
     });
 
-    it('should reject when hot > warm', () => {
+    it("should reject when hot > warm", () => {
       expect(() =>
         autoTierOptionsSchema.parse({
-          hot: '40',
-          warm: '30',
-          cold: '90',
-        })
-      ).toThrow('--hot threshold must be ≤ --warm threshold');
+          hot: "40",
+          warm: "30",
+          cold: "90",
+        }),
+      ).toThrow("--hot threshold must be ≤ --warm threshold");
     });
 
-    it('should reject when warm > cold', () => {
+    it("should reject when warm > cold", () => {
       expect(() =>
         autoTierOptionsSchema.parse({
-          hot: '7',
-          warm: '100',
-          cold: '90',
-        })
-      ).toThrow('--warm threshold must be ≤ --cold threshold');
+          hot: "7",
+          warm: "100",
+          cold: "90",
+        }),
+      ).toThrow("--warm threshold must be ≤ --cold threshold");
     });
 
-    it('should accept when hot = warm = cold', () => {
+    it("should accept when hot = warm = cold", () => {
       const result = autoTierOptionsSchema.parse({
-        hot: '30',
-        warm: '30',
-        cold: '30',
+        hot: "30",
+        warm: "30",
+        cold: "30",
       });
 
       expect(result.hot).toBe(30);
@@ -91,25 +91,25 @@ describe('Zod Input Validation', () => {
     });
   });
 
-  describe('initOptionsSchema', () => {
-    it('should validate valid init options', () => {
+  describe("initOptionsSchema", () => {
+    it("should validate valid init options", () => {
       const result = initOptionsSchema.parse({
         force: true,
         minimal: false,
         verbose: true,
-        scope: 'standard',
+        scope: "standard",
         dryRun: false,
       });
 
       expect(result.force).toBe(true);
       expect(result.minimal).toBe(false);
       expect(result.verbose).toBe(true);
-      expect(result.scope).toBe('standard');
+      expect(result.scope).toBe("standard");
       expect(result.dryRun).toBe(false);
     });
 
-    it('should accept valid scope values', () => {
-      const scopes = ['nano', 'standard', 'enterprise', 'custom'];
+    it("should accept valid scope values", () => {
+      const scopes = ["nano", "standard", "enterprise", "custom"];
 
       scopes.forEach((scope) => {
         const result = initOptionsSchema.parse({ scope });
@@ -117,12 +117,12 @@ describe('Zod Input Validation', () => {
       });
     });
 
-    it('should accept undefined scope', () => {
+    it("should accept undefined scope", () => {
       const result = initOptionsSchema.parse({});
       expect(result.scope).toBeUndefined();
     });
 
-    it('should accept all flags as optional', () => {
+    it("should accept all flags as optional", () => {
       const result = initOptionsSchema.parse({});
       expect(result.force).toBeUndefined();
       expect(result.minimal).toBeUndefined();
@@ -131,8 +131,8 @@ describe('Zod Input Validation', () => {
     });
   });
 
-  describe('validateOptionsSchema', () => {
-    it('should validate valid validate options', () => {
+  describe("validateOptionsSchema", () => {
+    it("should validate valid validate options", () => {
       const result = validateOptionsSchema.parse({
         strict: true,
         verbose: false,
@@ -144,7 +144,7 @@ describe('Zod Input Validation', () => {
       expect(result.fix).toBe(true);
     });
 
-    it('should accept all flags as optional', () => {
+    it("should accept all flags as optional", () => {
       const result = validateOptionsSchema.parse({});
       expect(result.strict).toBeUndefined();
       expect(result.verbose).toBeUndefined();
@@ -152,42 +152,42 @@ describe('Zod Input Validation', () => {
     });
   });
 
-  describe('reviewOptionsSchema', () => {
-    it('should validate valid review options', () => {
+  describe("reviewOptionsSchema", () => {
+    it("should validate valid review options", () => {
       const result = reviewOptionsSchema.parse({
-        provider: 'anthropic',
-        model: 'claude-3-5-sonnet-20241022',
-        apiKey: 'sk-test-key',
+        provider: "anthropic",
+        model: "claude-3-5-sonnet-20241022",
+        apiKey: "sk-test-key",
         safe: true,
         outputJson: false,
       });
 
-      expect(result.provider).toBe('anthropic');
-      expect(result.model).toBe('claude-3-5-sonnet-20241022');
-      expect(result.apiKey).toBe('sk-test-key');
+      expect(result.provider).toBe("anthropic");
+      expect(result.model).toBe("claude-3-5-sonnet-20241022");
+      expect(result.apiKey).toBe("sk-test-key");
       expect(result.safe).toBe(true);
       expect(result.outputJson).toBe(false);
     });
 
-    it('should default to anthropic provider', () => {
+    it("should default to anthropic provider", () => {
       const result = reviewOptionsSchema.parse({});
-      expect(result.provider).toBe('anthropic');
+      expect(result.provider).toBe("anthropic");
     });
 
-    it('should accept openai provider', () => {
-      const result = reviewOptionsSchema.parse({ provider: 'openai' });
-      expect(result.provider).toBe('openai');
+    it("should accept openai provider", () => {
+      const result = reviewOptionsSchema.parse({ provider: "openai" });
+      expect(result.provider).toBe("openai");
     });
 
-    it('should reject invalid provider', () => {
+    it("should reject invalid provider", () => {
       expect(() =>
-        reviewOptionsSchema.parse({ provider: 'invalid' })
+        reviewOptionsSchema.parse({ provider: "invalid" }),
       ).toThrow();
     });
   });
 
-  describe('migrateOptionsSchema', () => {
-    it('should validate valid migrate options', () => {
+  describe("migrateOptionsSchema", () => {
+    it("should validate valid migrate options", () => {
       const result = migrateOptionsSchema.parse({
         apply: true,
         rollback: false,
@@ -203,16 +203,16 @@ describe('Zod Input Validation', () => {
       expect(result.dryRun).toBe(false);
     });
 
-    it('should reject force without apply', () => {
+    it("should reject force without apply", () => {
       expect(() =>
         migrateOptionsSchema.parse({
           force: true,
           apply: false,
-        })
-      ).toThrow('--force requires --apply');
+        }),
+      ).toThrow("--force requires --apply");
     });
 
-    it('should accept force with apply', () => {
+    it("should accept force with apply", () => {
       const result = migrateOptionsSchema.parse({
         force: true,
         apply: true,
@@ -223,8 +223,8 @@ describe('Zod Input Validation', () => {
     });
   });
 
-  describe('promptOptionsSchema', () => {
-    it('should validate valid prompt options', () => {
+  describe("promptOptionsSchema", () => {
+    it("should validate valid prompt options", () => {
       const result = promptOptionsSchema.parse({
         list: true,
         copy: false,
@@ -234,196 +234,187 @@ describe('Zod Input Validation', () => {
       expect(result.copy).toBe(false);
     });
 
-    it('should default copy to true', () => {
+    it("should default copy to true", () => {
       const result = promptOptionsSchema.parse({});
       expect(result.copy).toBe(true);
     });
   });
 
-  describe('statusOptionsSchema', () => {
-    it('should parse empty options (v4.0: status has no options)', () => {
+  describe("statusOptionsSchema", () => {
+    it("should parse empty options (v4.0: status has no options)", () => {
       const result = statusOptionsSchema.parse({});
       expect(result).toEqual({});
     });
 
-    it('should ignore unknown properties (schema is empty in v4.0)', () => {
-      const result = statusOptionsSchema.parse({ tokens: true, model: 'gpt-4' });
+    it("should ignore unknown properties (schema is empty in v4.0)", () => {
+      const result = statusOptionsSchema.parse({
+        tokens: true,
+        model: "gpt-4",
+      });
       // Empty schema ignores all properties
       expect(result).toEqual({});
     });
   });
 
-  describe('validateOptions helper', () => {
-    it('should parse valid options', () => {
+  describe("validateOptions helper", () => {
+    it("should parse valid options", () => {
       const result = validateOptions(
         validateOptionsSchema,
         { strict: true },
-        'test-command'
+        "test-command",
       );
 
       expect(result.strict).toBe(true);
     });
 
-    it('should throw ValidationError on invalid options', () => {
+    it("should throw ValidationError on invalid options", () => {
       expect(() =>
         validateOptions(
           autoTierOptionsSchema,
-          { hot: 'invalid', warm: '30', cold: '90' },
-          'auto-tier'
-        )
+          { hot: "invalid", warm: "30", cold: "90" },
+          "auto-tier",
+        ),
       ).toThrow(ValidationError);
     });
 
-    it('should include command name in error message', () => {
+    it("should include command name in error message", () => {
       try {
         validateOptions(
           autoTierOptionsSchema,
-          { hot: 'invalid', warm: '30', cold: '90' },
-          'auto-tier'
+          { hot: "invalid", warm: "30", cold: "90" },
+          "auto-tier",
         );
       } catch (error) {
         expect(error).toBeInstanceOf(ValidationError);
-        expect((error as Error).message).toContain('auto-tier');
+        expect((error as Error).message).toContain("auto-tier");
       }
     });
   });
 
-  describe('validateSafePath', () => {
-    it('should accept safe paths', () => {
-      const result = validateSafePath('src/commands/init.ts', '/home/user/project');
-      expect(result.isValid).toBe(true);
-      expect(result.resolvedPath).toContain('src/commands/init.ts');
-    });
-
-    it('should reject path traversal attempts', () => {
+  describe("validateSafePath", () => {
+    it("should accept safe paths", () => {
       const result = validateSafePath(
-        '../../etc/passwd',
-        '/home/user/project'
-      );
-      expect(result.isValid).toBe(false);
-      expect(result.error).toContain('Path traversal detected');
-    });
-
-    it('should accept relative paths within project', () => {
-      const result = validateSafePath(
-        './src/commands/init.ts',
-        '/home/user/project'
+        "src/commands/init.ts",
+        "/home/user/project",
       );
       expect(result.isValid).toBe(true);
+      expect(result.resolvedPath).toContain("src/commands/init.ts");
     });
 
-    it('should reject absolute paths outside project', () => {
-      const result = validateSafePath(
-        '/etc/passwd',
-        '/home/user/project'
-      );
+    it("should reject path traversal attempts", () => {
+      const result = validateSafePath("../../etc/passwd", "/home/user/project");
       expect(result.isValid).toBe(false);
-      expect(result.error).toContain('Path traversal detected');
+      expect(result.error).toContain("Path traversal detected");
     });
 
-    it('should prevent sibling directory traversal', () => {
+    it("should accept relative paths within project", () => {
+      const result = validateSafePath(
+        "./src/commands/init.ts",
+        "/home/user/project",
+      );
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should reject absolute paths outside project", () => {
+      const result = validateSafePath("/etc/passwd", "/home/user/project");
+      expect(result.isValid).toBe(false);
+      expect(result.error).toContain("Path traversal detected");
+    });
+
+    it("should prevent sibling directory traversal", () => {
       // Prevent /home/user/project vs /home/user/project2 edge case
       const result = validateSafePath(
-        '../project2/malicious.txt',
-        '/home/user/project'
+        "../project2/malicious.txt",
+        "/home/user/project",
       );
       expect(result.isValid).toBe(false);
-      expect(result.error).toContain('Path traversal detected');
+      expect(result.error).toContain("Path traversal detected");
     });
 
-    it('should accept paths at base directory level', () => {
+    it("should accept paths at base directory level", () => {
+      const result = validateSafePath("README.md", "/home/user/project");
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should accept nested directory paths", () => {
       const result = validateSafePath(
-        'README.md',
-        '/home/user/project'
+        "docs/core/PATTERNS.md",
+        "/home/user/project",
       );
       expect(result.isValid).toBe(true);
     });
 
-    it('should accept nested directory paths', () => {
-      const result = validateSafePath(
-        'docs/core/PATTERNS.md',
-        '/home/user/project'
-      );
-      expect(result.isValid).toBe(true);
-    });
-
-    it('should handle encoded characters safely', () => {
+    it("should handle encoded characters safely", () => {
       // URL-encoded sequences are not decoded by path.resolve()
       // The OS will reject malformed paths, so we accept them here
       // and let filesystem operations fail if needed
       const result = validateSafePath(
-        'docs/file%20name.txt', // URL-encoded space
-        '/home/user/project'
+        "docs/file%20name.txt", // URL-encoded space
+        "/home/user/project",
       );
       // Path is within project, even if malformed - OS will reject if invalid
       expect(result.isValid).toBe(true);
     });
 
-    it('should handle deep nested paths safely', () => {
+    it("should handle deep nested paths safely", () => {
       const result = validateSafePath(
-        'a/b/c/d/e/f/g/file.txt',
-        '/home/user/project'
+        "a/b/c/d/e/f/g/file.txt",
+        "/home/user/project",
       );
       expect(result.isValid).toBe(true);
     });
 
-    it('should reject traversal in middle of path', () => {
+    it("should reject traversal in middle of path", () => {
       const result = validateSafePath(
-        'docs/../../etc/passwd',
-        '/home/user/project'
+        "docs/../../etc/passwd",
+        "/home/user/project",
       );
       expect(result.isValid).toBe(false);
-      expect(result.error).toContain('Path traversal detected');
+      expect(result.error).toContain("Path traversal detected");
     });
   });
 
-  describe('Template Path Security', () => {
-    it('should validate template source paths', () => {
+  describe("Template Path Security", () => {
+    it("should validate template source paths", () => {
       // Simulates template files within templates directory
-      const templatesDir = '/home/user/project/templates';
+      const templatesDir = "/home/user/project/templates";
 
-      const validTemplate = validateSafePath(
-        'NEXT-TASKS.md',
-        templatesDir
-      );
+      const validTemplate = validateSafePath("NEXT-TASKS.md", templatesDir);
       expect(validTemplate.isValid).toBe(true);
 
       const maliciousTemplate = validateSafePath(
-        '../../etc/passwd',
-        templatesDir
+        "../../etc/passwd",
+        templatesDir,
       );
       expect(maliciousTemplate.isValid).toBe(false);
     });
 
-    it('should validate template destination paths', () => {
+    it("should validate template destination paths", () => {
       // Simulates copying to project directory
-      const projectDir = '/home/user/project';
+      const projectDir = "/home/user/project";
 
-      const validDest = validateSafePath(
-        'docs/core/PATTERNS.md',
-        projectDir
-      );
+      const validDest = validateSafePath("docs/core/PATTERNS.md", projectDir);
       expect(validDest.isValid).toBe(true);
 
       const maliciousDest = validateSafePath(
-        '../../.ssh/authorized_keys',
-        projectDir
+        "../../.ssh/authorized_keys",
+        projectDir,
       );
       expect(maliciousDest.isValid).toBe(false);
     });
 
-    it('should handle .github directory paths safely', () => {
+    it("should handle .github directory paths safely", () => {
       const result = validateSafePath(
-        '.github/copilot-instructions.md',
-        '/home/user/project'
+        ".github/copilot-instructions.md",
+        "/home/user/project",
       );
       expect(result.isValid).toBe(true);
     });
 
-    it('should reject attempts to write to parent .git directory', () => {
+    it("should reject attempts to write to parent .git directory", () => {
       const result = validateSafePath(
-        '../.git/hooks/pre-commit',
-        '/home/user/project'
+        "../.git/hooks/pre-commit",
+        "/home/user/project",
       );
       expect(result.isValid).toBe(false);
     });
