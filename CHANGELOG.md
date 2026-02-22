@@ -98,6 +98,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `src/__tests__/git-staleness.test.ts` (NEW - 10 tests)
   - All staleness utilities tested with real git operations
 
+#### Interactive Terminal Dashboard (`cortex-tms dashboard`)
+- **Feature**: Real-time terminal UI for project governance health
+- **Built With**: React + Ink (runs in the terminal, no browser required)
+- **Views** (navigate with `1`, `2`, `3` keys):
+  - **Overview**: Governance health score, staleness status, sprint progress
+  - **Files**: HOT files list, file tier distribution, file size health
+  - **Health**: Validation status, Guardian violation summary
+- **Cards**:
+  - `GovernanceHealthCard` — composite score (0–100) based on validation + guardian + staleness
+  - `StalenessCard` — git-based freshness: stale doc count, total checked, oldest doc age
+  - `SprintProgressCard` — visual sprint progress bar with done/in-progress/todo counts
+  - `HotFilesCard` — list of HOT-tier files in current sprint context
+  - `FileDistributionCard` — HOT/WARM/COLD tier breakdown
+  - `ValidationCard` — last-checked timestamp, violation count
+  - `GuardianStatusCard` — guardian status with high-confidence violation count
+  - `NotConfiguredCard` — graceful fallback when optional features not set up
+- **Live Mode**: `cortex-tms dashboard --live` refreshes every 5 seconds
+- **Integration**: Reads real staleness data from `collectTMSStats()` (same pipeline as `validate`)
+- **Usage**:
+  ```bash
+  cortex-tms dashboard          # One-shot view
+  cortex-tms dashboard --live   # Auto-refresh every 5s
+  ```
+- **Files**:
+  - `src/commands/dashboard.ts`
+  - `src/ui/index.tsx`
+  - `src/ui/components/Dashboard.tsx`
+  - `src/ui/components/dashboard/` (8 card components + TabBar + ViewContainer)
+- **Tests**: `src/__tests__/utils/stats-collector.test.ts` — staleness fields in TMSStats
+
 #### Archive Command (Task Management)
 - **Feature**: `cortex-tms archive` command for managing completed tasks
 - **Purpose**: Replaces deprecated `auto-tier` with focused task archival
