@@ -7,7 +7,6 @@ import path from 'path';
 import { glob } from 'glob';
 import { minimatch } from 'minimatch';
 import { parseSprintInfo, calculateProgress } from './status.js';
-import { analyzeTokenUsage, calculateCostEstimates, type ModelName } from './token-counter.js';
 import { validateFileSizes, DEFAULT_LINE_LIMITS } from './validator.js';
 import { SAFE_MODE_THRESHOLD } from '../types/guardian.js';
 import { checkDocStaleness, type StalenessResult } from './git-staleness.js';
@@ -29,17 +28,10 @@ export interface TMSStats {
     name: string;
     hasTMS: boolean;
   };
-  // New additions for v3.3.0
   sprint?: {
     name: string;
     progress: number;
     tasks: { done: number; inProgress: number; todo: number };
-  };
-  savings?: {
-    monthlyCost: number;
-    tokensAvoided: number;
-    percentReduction: number;
-    model: string;
   };
   fileSizeHealth?: Array<{
     file: string;
@@ -257,24 +249,6 @@ export async function collectTMSStats(
       }
     } catch {
       // Ignore sprint parsing errors
-    }
-  }
-
-  // Collect cost savings data (v3.3.0)
-  if (!options?.silent) {
-    try {
-      const tokenStats = await analyzeTokenUsage(cwd);
-      const model: ModelName = 'claude-sonnet-4.5'; // Default model for calculations
-      const costEstimate = calculateCostEstimates(tokenStats.hot.totalTokens, model);
-
-      stats.savings = {
-        monthlyCost: costEstimate.perMonth,
-        tokensAvoided: tokenStats.savings.tokensAvoided,
-        percentReduction: tokenStats.savings.percentReduction,
-        model,
-      };
-    } catch {
-      // Token analysis can be slow/fail - don't block dashboard
     }
   }
 
