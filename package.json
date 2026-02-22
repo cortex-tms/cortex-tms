@@ -4,8 +4,8 @@
   "description": "Documentation scaffolder and governance platform for AI coding agents",
   "type": "module",
   "bin": {
-    "cortex-tms": "./bin/cortex-tms.js",
-    "cortex": "./bin/cortex.js"
+    "cortex-tms": "bin/cortex-tms.js",
+    "cortex": "bin/cortex.js"
   },
   "files": [
     "bin/",
@@ -67,7 +67,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cortex-tms/cortex-tms.git"
+    "url": "git+https://github.com/cortex-tms/cortex-tms.git"
   },
   "bugs": {
     "url": "https://github.com/cortex-tms/cortex-tms/issues"
