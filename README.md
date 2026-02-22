@@ -24,7 +24,7 @@
 
 Cortex TMS scaffolds and validates governance documentation for AI coding agents. As AI models get more powerful and autonomous, they need clear, current governance docs to stay aligned with your project standards.
 
-**The Challenge**: Modern AI agents (Claude Opus 4.6, GPT-4, etc.) handle large context windows and can work autonomously—but without governance, they drift from your standards, overengineer solutions, and write inconsistent code.
+**The Challenge**: Modern AI agents handle large context windows and can work autonomously—but without governance, they drift from your standards, overengineer solutions, and write inconsistent code.
 
 **The Solution**: Cortex TMS provides:
 - 📋 **Documentation scaffolding** - Templates for PATTERNS.md, ARCHITECTURE.md, CLAUDE.md
@@ -90,7 +90,7 @@ cortex-tms validate
 
 ### ❌ What Cortex Does NOT Do
 
-- **Not a token optimizer** - Modern models (200K+ contexts) make this less relevant
+- **Not a token optimizer** - Validates documentation health, not context size
 - **Not code enforcement** - Validates DOCUMENTATION health, not code directly
 - **Not a replacement for code review** - Complements human review, doesn't replace it
 - **Not semantic analysis (yet)** - Staleness v1 uses timestamps, not AI-powered diff analysis
@@ -307,7 +307,7 @@ jobs:
 
 **🎯 Strategic Repositioning**: Quality governance over token optimization
 
-**Context**: Modern AI models (GPT-4, Claude Opus 4.6) now handle large contexts (200K+ tokens). The bottleneck shifted from "can AI see enough?" to "will AI stay aligned with project standards?"
+**Context**: Modern AI models handle large contexts and improved reasoning. The bottleneck shifted from "can AI see enough?" to "will AI stay aligned with project standards?"
 
 ### New Features
 
@@ -430,7 +430,7 @@ MIT - See [LICENSE](LICENSE) for details
 
 ## Status
 
-**Version**: 4.0.0 (In Development)
+**Version**: 4.0.0
 **Last Updated**: 2026-02-21
 **Current Sprint**: v4.0 - "Quality Governance & Staleness Detection"
 

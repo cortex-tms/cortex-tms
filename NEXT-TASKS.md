@@ -435,12 +435,15 @@ v4.0.0 establishes Cortex TMS as **a governance validation layer for AI agents**
 - Incremental doc updates (only touched sections)
 - Governance packs (Node/Python/etc presets)
 - Optional context profiles (non-destructive, if demand is real)
+- **AGENTS.md template** — multi-agent governance source-of-truth for teams using Claude Code + Copilot + Cursor simultaneously. Defines shared rules once; per-agent files (CLAUDE.md, copilot-instructions.md) derive from it. Fits existing template system with minimal changes.
 
 **Future** (v4.2+):
 
 - MCP Server - Expose governance to any AI tool
 - Multi-tool config generation
-- Skills integration
+- **Skills integration** — Claude Code skill scaffolding (e.g. `/cortex-validate`, `/cortex-review`). Narrow audience (Claude Code only), low adoption-barrier impact. Worth building once governance framework is proven and skills are a mainstream pattern.
+
+> Note: AGENTS.md (governance config) and Skills (runtime shortcuts) are distinct concepts. Do not conflate when building.
 ```
 
 **Acceptance Criteria**:

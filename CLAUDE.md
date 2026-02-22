@@ -238,4 +238,4 @@ Week 3: Sprint complete, ready to release
         → Now NPM package is 2.7.0
 ```
 
-<!-- @cortex-tms-version 2.6.0 -->
+<!-- @cortex-tms-version 4.0.0 -->
