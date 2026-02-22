@@ -93,6 +93,14 @@ cortex-tms --version       # Show current version
 
     [View review documentation](/reference/cli/review/)
   </Card>
+
+  <Card title="dashboard" icon="laptop">
+    **Interactive terminal dashboard**
+
+    Real-time governance health UI with tab navigation — file tiers, staleness, sprint progress, and validation in one view.
+
+    [View dashboard documentation](/reference/cli/dashboard/)
+  </Card>
 </CardGrid>
 
 ---
@@ -114,7 +122,8 @@ All commands support these global options:
 |---------|---------|--------------|
 | `init` | Initialize TMS in project | `cortex-tms init` |
 | `validate` | Check project health | `cortex-tms validate --strict` |
-| `status` | View project dashboard | `cortex-tms status` |
+| `status` | Text health summary | `cortex-tms status` |
+| `dashboard` | Interactive terminal UI | `cortex-tms dashboard --live` |
 | `auto-tier` | Auto-assign tiers via git history | `cortex-tms auto-tier --dry-run` |
 | `migrate` | Upgrade templates | `cortex-tms migrate --apply` |
 | `prompt` | Get AI prompts | `cortex-tms prompt init-session` |

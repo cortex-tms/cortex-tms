@@ -151,17 +151,27 @@ cortex-tms validate --strict # Strict mode (warnings = errors)
 
 ### `cortex-tms status`
 
-Project cockpit with health dashboard and sprint progress.
+Text summary of project health and sprint progress.
 
 ```bash
-cortex-tms status  # Visual dashboard with progress bars
+cortex-tms status  # Health summary with progress bars
 ```
 
-Shows:
-- Project identity (name, scope, TMS version)
-- Health status (validation checks passed/failed)
-- Sprint progress (current tasks, completion %)
-- Backlog size (future enhancements)
+Shows: project identity, validation status, sprint progress, backlog size.
+
+### `cortex-tms dashboard` ✨ New in v4.0
+
+Full-screen interactive terminal UI for governance health monitoring.
+
+```bash
+cortex-tms dashboard        # Interactive dashboard (navigate with 1/2/3 keys)
+cortex-tms dashboard --live # Auto-refresh every 5 seconds
+```
+
+**Three views** (switch with number keys):
+- **1 — Overview**: Governance health score (0–100), staleness status, sprint progress
+- **2 — Files**: HOT files list, HOT/WARM/COLD distribution, file size health
+- **3 — Health**: Validation status, Guardian violation summary
 
 ### `cortex-tms archive`
 

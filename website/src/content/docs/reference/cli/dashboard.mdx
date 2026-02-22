@@ -1,0 +1,182 @@
+---
+title: cortex-tms dashboard
+description: Interactive terminal dashboard for real-time governance health monitoring
+---
+
+import { Tabs, TabItem, Aside, Steps } from '@astrojs/starlight/components';
+
+The `cortex-tms dashboard` command launches a full-screen interactive terminal UI showing real-time governance health for your TMS project — file tiers, staleness, sprint progress, validation status, and Guardian results in one place.
+
+## Synopsis
+
+```bash
+cortex-tms dashboard [options]
+```
+
+## Description
+
+The dashboard is built with **React + Ink** — it runs entirely in your terminal, no browser required. Navigate between three views using the `1`, `2`, `3` keys and quit with `q` or `Ctrl+C`.
+
+<Aside type="tip" title="Live Mode">
+Run `cortex-tms dashboard --live` to auto-refresh every 5 seconds — ideal for keeping a governance health pane open while you work.
+</Aside>
+
+---
+
+## Options
+
+### `--live`
+
+Enable auto-refresh. The dashboard re-runs `collectTMSStats()` every 5 seconds and updates all cards.
+
+```bash
+cortex-tms dashboard --live
+```
+
+### `--cwd <path>`
+
+Run the dashboard against a different project directory instead of the current working directory.
+
+```bash
+cortex-tms dashboard --cwd /path/to/project
+```
+
+---
+
+## Views
+
+Navigate with number keys:
+
+| Key | View | What you see |
+|-----|------|-------------|
+| `1` | Overview | Governance score, staleness, sprint progress |
+| `2` | Files | HOT files list, tier distribution, file size health |
+| `3` | Health | Validation status, Guardian violations |
+| `q` | — | Quit the dashboard |
+
+---
+
+## Cards
+
+### Overview View
+
+#### Governance Health Score
+A composite 0–100 score calculated from validation status, Guardian results, and staleness data.
+
+| Deduction | Reason |
+|-----------|--------|
+| −40 pts | Validation errors |
+| −20 pts | Validation warnings |
+| −30 pts | Guardian major violations |
+| −15 pts | Guardian minor issues |
+
+Color coding: 🟢 green (≥80) · 🟡 yellow (≥60) · 🔴 red (<60)
+
+#### Staleness Card
+Shows git-based doc freshness when staleness detection is configured.
+
+- **Stale docs** — count of docs flagged as outdated
+- **Total checked** — how many governance docs were scanned
+- **Freshness %** — percentage of docs still current
+- **Oldest doc** — days since the least-recently-updated doc was touched
+
+> Only shown when staleness data is available (requires full git history).
+
+#### Sprint Progress Card
+Reads your `NEXT-TASKS.md` sprint header and task markers:
+
+- Sprint name and focus area
+- Visual progress bar
+- Done / In Progress / Todo task counts
+
+Shows a "Not Configured" card if no sprint is detected in `NEXT-TASKS.md`.
+
+---
+
+### Files View
+
+#### HOT Files Card
+Lists all files currently tagged as HOT tier — the files your AI agents will always read.
+
+#### File Distribution Card
+Bar chart breakdown of HOT / WARM / COLD file counts across your project.
+
+#### File Size Health Card
+Highlights any docs that are approaching or exceeding line limits (Rule 4). Only shown when oversized files are detected.
+
+---
+
+### Health View
+
+#### Validation Card
+Mirrors the output of `cortex-tms validate`:
+
+- **Status** — Healthy / Warnings / Errors / Unknown
+- **Violation count** — number of issues found
+- **Last checked** — relative timestamp of last validation run
+
+#### Guardian Status Card
+Shows the result of the last `cortex-tms review` run:
+
+- **Status** — No violations / Minor issues / Major violations / Unknown
+- **Total violations** — full count
+- **High-confidence violations** — filtered to ≥70% confidence
+- **Last checked** — relative timestamp
+
+---
+
+## Examples
+
+<Tabs>
+  <TabItem label="One-shot">
+```bash
+# Open the dashboard and browse manually
+cortex-tms dashboard
+```
+  </TabItem>
+  <TabItem label="Live mode">
+```bash
+# Auto-refresh every 5 seconds
+cortex-tms dashboard --live
+```
+  </TabItem>
+  <TabItem label="Different project">
+```bash
+# Dashboard for a project in another directory
+cortex-tms dashboard --cwd ~/projects/my-api
+```
+  </TabItem>
+</Tabs>
+
+---
+
+## Keyboard Controls
+
+| Key | Action |
+|-----|--------|
+| `1` | Switch to Overview view |
+| `2` | Switch to Files view |
+| `3` | Switch to Health view |
+| `q` | Quit |
+| `Ctrl+C` | Force quit |
+
+---
+
+## How It Works
+
+The dashboard calls the same `collectTMSStats()` pipeline used by `cortex-tms validate` and `cortex-tms status`. All data is read from:
+
+- `.cortexrc` — project configuration
+- `NEXT-TASKS.md` — sprint detection
+- Git history — staleness detection (requires `fetch-depth: 0` in CI)
+- Last validation/review results — validation and Guardian cards
+
+No external API calls are made. All data is local.
+
+---
+
+## Related Commands
+
+- [`cortex-tms validate`](/reference/cli/validate/) — run health checks (feeds the Health view)
+- [`cortex-tms status`](/reference/cli/status/) — text-only health summary (no interactive UI)
+- [`cortex-tms review`](/reference/cli/review/) — Guardian pattern review (feeds the Guardian card)

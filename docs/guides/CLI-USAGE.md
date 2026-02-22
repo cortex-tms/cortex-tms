@@ -315,6 +315,90 @@ $ npx cortex-tms status
 
 ---
 
+### `dashboard` Command ✨ New in v4.0
+
+Full-screen interactive terminal UI for real-time governance health monitoring. Built with React + Ink — runs entirely in your terminal with tab navigation between three views.
+
+#### Usage
+
+```bash
+cortex-tms dashboard [options]
+```
+
+#### Options
+
+| Option | Description |
+|--------|-------------|
+| `--live` | Auto-refresh every 5 seconds |
+| `--cwd <path>` | Run against a different project directory |
+
+#### Keyboard Controls
+
+| Key | Action |
+|-----|--------|
+| `1` | Switch to Overview view |
+| `2` | Switch to Files view |
+| `3` | Switch to Health view |
+| `q` / `Ctrl+C` | Quit |
+
+#### Views & Cards
+
+**1 — Overview**
+- **Governance Health Score** (0–100): Composite score from validation + Guardian + staleness
+- **Staleness Card**: Stale doc count, freshness %, oldest doc age (git-based)
+- **Sprint Progress Card**: Sprint name, visual progress bar, task counts
+
+**2 — Files**
+- **HOT Files Card**: All HOT-tier files in the current project
+- **File Distribution Card**: HOT / WARM / COLD counts
+- **File Size Health Card**: Docs approaching or exceeding Rule 4 limits
+
+**3 — Health**
+- **Validation Card**: Status, violation count, last-checked timestamp
+- **Guardian Status Card**: Major/minor violation summary, high-confidence count
+
+#### Example
+
+```bash
+$ cortex-tms dashboard
+```
+
+```
+ Cortex TMS Dashboard          1. Overview  [2. Files]  3. Health
+
+ ┌─ GOVERNANCE HEALTH ────────────────────────────────┐
+ │ 🟢 Score: 85/100                                   │
+ │ Validation: Healthy  Guardian: No violations       │
+ └────────────────────────────────────────────────────┘
+
+ ┌─ DOC STALENESS ────────────────────────────────────┐
+ │ ✅ All docs fresh  (0/5 stale)  Freshness: 100%    │
+ └────────────────────────────────────────────────────┘
+
+ ┌─ SPRINT PROGRESS ──────────────────────────────────┐
+ │ 🎯 v4.0 - Quality Governance                       │
+ │ [████████████████░░░░] 80%                         │
+ │ ✅ 8 done  🔄 1 in progress  📋 1 todo             │
+ └────────────────────────────────────────────────────┘
+```
+
+#### When to Use
+
+**Live monitoring**: Keep open in a terminal pane while coding — `--live` updates automatically
+
+**Sprint reviews**: Visual overview of governance health and sprint completion
+
+**Debugging**: Quickly spot which view (Files / Health) shows an issue
+
+#### Notes
+
+- Read-only: no files are modified
+- Uses the same data pipeline as `cortex-tms validate` and `cortex-tms status`
+- Staleness card only shown when git history is available (`fetch-depth: 0`)
+- File Size Health card only shown when oversized docs are detected
+
+---
+
 ### `auto-tier` Command
 
 Analyze git commit history and file patterns to automatically suggest and apply HOT/WARM/COLD tier assignments to documentation files. Uses a scoring system to prioritize high-value docs while capping HOT files to prevent context bloat.
