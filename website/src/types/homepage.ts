@@ -100,3 +100,38 @@ export type GuardianShowcaseEntry = CollectionEntry<'homepage'> & {
     features: string[]
   }
 }
+
+export type DashboardShowcaseEntry = CollectionEntry<'homepage'> & {
+  data: {
+    type: 'dashboard-showcase'
+    title: string
+    subtitle: string
+    description: string
+    liveBadge: string
+    docsLink: string
+    docsLinkText: string
+    benefits: { value: string; valueStyle: 'gradient' | 'live'; title: string; caption: string }[]
+  }
+}
+
+export type DashboardPreviewEntry = CollectionEntry<'homepage'> & {
+  data: {
+    type: 'dashboard-preview'
+    project: string
+    time: string
+    overview: {
+      health: { score: number; rows: { key: string; value: string; color: string }[] }
+      freshness: { percentage: number; rows: { key: string; value: string; color: string }[] }
+      sprint: { name: string; percentage: number; done: number; inProgress: number; todo: number }
+    }
+    files: {
+      activeFiles: { count: number; list: string[]; footer: string }
+      distribution: { tier: 'HOT' | 'WARM' | 'COLD'; count: number; percentage: number }[]
+      sizeHealth: { emoji: string; name: string; lines: number; maxLines: number }[]
+    }
+    health: {
+      validation: { status: string; lastChecked: string }
+      guardian: { status: string; lastReview: string; command: string }
+    }
+  }
+}

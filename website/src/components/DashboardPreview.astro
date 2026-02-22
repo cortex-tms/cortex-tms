@@ -1,9 +1,37 @@
 ---
 /**
- * DashboardPreview - Visual preview of cortex-tms dashboard terminal UI
- * Matches the website's glass design system and mimics the actual terminal output.
+ * DashboardPreview — data-driven terminal UI preview.
+ * Content lives in src/content/homepage/dashboard-preview.md
  */
+import { getCollection } from 'astro:content'
+import type { DashboardPreviewEntry } from '../types/homepage'
 import './DashboardPreview.css'
+
+const entries = await getCollection('homepage')
+const entry = entries.find(
+  (e): e is DashboardPreviewEntry => e.data.type === 'dashboard-preview'
+)
+if (!entry) throw new Error('Missing dashboard-preview content entry')
+
+const { project, time, overview, files, health } = entry.data
+
+// Block bar helpers — 40 chars for progress bars, 20 for distribution bars
+function bar(pct: number, total = 40) {
+  const n = Math.round((pct / 100) * total)
+  return { filled: '█'.repeat(n), empty: '█'.repeat(total - n) }
+}
+function distBar(count: number, total = 20) {
+  return { filled: '█'.repeat(Math.min(count, total)), empty: '█'.repeat(Math.max(0, total - count)) }
+}
+
+const freshBar  = bar(overview.freshness.percentage)
+const sprintBar = bar(overview.sprint.percentage)
+
+const tierMeta: Record<string, { icon: string; color: string; label: string }> = {
+  HOT:  { icon: '🔥', color: 'yellow', label: '🔥 HOT' },
+  WARM: { icon: '',   color: 'blue',   label: '~ WARM' },
+  COLD: { icon: '❄️', color: 'cyan',   label: '❄️ COLD' },
+}
 ---
 
 <div class='dashboard-preview'>
@@ -21,386 +49,153 @@ import './DashboardPreview.css'
     </div>
 
     <div class='dp-meta-row'>
-      <div class='dp-project'>Project: <span>cortex-tms</span></div>
-      <div class='dp-time'>2:47:35 PM</div>
+      <div class='dp-project'>Project: <span>{project}</span></div>
+      <div class='dp-time'>{time}</div>
     </div>
 
-    <div
-      class='dp-tabs'
-      role='tablist'
-    >
-      <button
-        class='dp-tab dp-tab-active'
-        data-view='overview'
-        role='tab'
-        aria-selected='true'
-      >
-        <span class='dp-tab-bracket'>[</span>1. Overview<span
-          class='dp-tab-bracket'>]</span
-        >
+    <div class='dp-tabs' role='tablist'>
+      <button class='dp-tab dp-tab-active' data-view='overview' role='tab' aria-selected='true'>
+        <span class='dp-tab-bracket'>[</span>1. Overview<span class='dp-tab-bracket'>]</span>
       </button>
-      <button
-        class='dp-tab'
-        data-view='files'
-        role='tab'
-        aria-selected='false'
-      >
-        <span
-          class='dp-tab-bracket'
-          style='opacity: 0.4;'
-          >[</span
-        >2. Files<span
-          class='dp-tab-bracket'
-          style='opacity: 0.4;'
-          >]</span
-        >
+      <button class='dp-tab' data-view='files' role='tab' aria-selected='false'>
+        <span class='dp-tab-bracket' style='opacity: 0.4;'>[</span>2. Files<span class='dp-tab-bracket' style='opacity: 0.4;'>]</span>
       </button>
-      <button
-        class='dp-tab'
-        data-view='health'
-        role='tab'
-        aria-selected='false'
-      >
-        <span
-          class='dp-tab-bracket'
-          style='opacity: 0.4;'
-          >[</span
-        >3. Health<span
-          class='dp-tab-bracket'
-          style='opacity: 0.4;'
-          >]</span
-        >
+      <button class='dp-tab' data-view='health' role='tab' aria-selected='false'>
+        <span class='dp-tab-bracket' style='opacity: 0.4;'>[</span>3. Health<span class='dp-tab-bracket' style='opacity: 0.4;'>]</span>
       </button>
     </div>
 
     <div class='dp-views'>
-      <div
-        class='dp-view dp-view-active'
-        id='dp-view-overview'
-      >
+
+      {/* ── Overview ── */}
+      <div class='dp-view dp-view-active' id='dp-view-overview'>
         <div class='dp-grid-2'>
           <fieldset class='dp-card'>
             <legend class='dp-card-title green'>✅ GOVERNANCE HEALTH</legend>
-            <div class='dp-score'>
-              92<span class='dp-score-denom'>/100</span>
-            </div>
+            <div class='dp-score'>{overview.health.score}<span class='dp-score-denom'>/100</span></div>
             <div class='dp-score-label'>overall quality score</div>
-
             <div class='dp-card-rows'>
-              <div class='dp-row'>
-                <span class='dp-row-key'>Validation:</span>
-                <span class='dp-row-val green'>healthy</span>
-              </div>
-              <div class='dp-row'>
-                <span class='dp-row-key'>Guardian:</span>
-                <span class='dp-row-val green'>compliant</span>
-              </div>
-              <div class='dp-row'>
-                <span class='dp-row-key'>Stale docs:</span>
-                <span class='dp-row-val yellow'>1</span>
-              </div>
+              {overview.health.rows.map((row) => (
+                <div class='dp-row'>
+                  <span class='dp-row-key'>{row.key}:</span>
+                  <span class={`dp-row-val ${row.color}`}>{row.value}</span>
+                </div>
+              ))}
             </div>
           </fieldset>
 
           <fieldset class='dp-card'>
-            <legend class='dp-card-title cyan'
-              >📅 DOCUMENTATION FRESHNESS</legend
-            >
+            <legend class='dp-card-title cyan'>📅 DOCUMENTATION FRESHNESS</legend>
             <div class='dp-block-bar'>
-              <span class='dp-block-filled'
-                >██████████████████████████████████████</span
-              ><span class='dp-block-empty'>██</span>
+              <span class='dp-block-filled'>{freshBar.filled}</span><span class='dp-block-empty'>{freshBar.empty}</span>
             </div>
-            <div class='dp-freshness-pct'>95%</div>
-
+            <div class='dp-freshness-pct'>{overview.freshness.percentage}%</div>
             <div class='dp-card-rows'>
-              <div class='dp-row'>
-                <span class='dp-row-key'>Fresh docs:</span>
-                <span class='dp-row-val white'>19/20</span>
-              </div>
-              <div class='dp-row'>
-                <span class='dp-row-key'>Oldest:</span>
-                <span class='dp-row-val white'>23 days</span>
-              </div>
-              <div class='dp-row'>
-                <span class='dp-row-key'>Status:</span>
-                <span class='dp-row-val white'>1 need review</span>
-              </div>
+              {overview.freshness.rows.map((row) => (
+                <div class='dp-row'>
+                  <span class='dp-row-key'>{row.key}:</span>
+                  <span class={`dp-row-val ${row.color}`}>{row.value}</span>
+                </div>
+              ))}
             </div>
           </fieldset>
         </div>
 
         <fieldset class='dp-card dp-card-full'>
           <legend class='dp-card-title cyan'>🎯 SPRINT PROGRESS</legend>
-          <div
-            class='dp-row'
-            style='margin-bottom: 0.75rem;'
-          >
+          <div class='dp-row' style='margin-bottom: 0.75rem;'>
             <span class='dp-row-key'>Current:</span>
-            <span class='white'
-              >v4.0.0 - Quality Governance & Staleness Detection</span
-            >
+            <span class='white'>{overview.sprint.name}</span>
           </div>
-
           <div class='dp-progress-wrapper'>
             <div class='dp-block-bar'>
-              <span class='dp-block-filled'
-                >████████████████████████████████████</span
-              ><span class='dp-block-empty'>████</span>
+              <span class='dp-block-filled'>{sprintBar.filled}</span><span class='dp-block-empty'>{sprintBar.empty}</span>
             </div>
-            <span class='dp-progress-pct white'>90%</span>
+            <span class='dp-progress-pct white'>{overview.sprint.percentage}%</span>
           </div>
-
           <div class='dp-sprint-stats'>
-            <span class='green'>✅ Done: 9</span>
+            <span class='green'>✅ Done: {overview.sprint.done}</span>
             <span class='dp-divider'>│</span>
-            <span class='cyan'>🔄 In Progress: 1</span>
+            <span class='cyan'>🔄 In Progress: {overview.sprint.inProgress}</span>
             <span class='dp-divider'>│</span>
-            <span class='dp-dim'>📋 Todo: 0</span>
+            <span class='dp-dim'>📋 Todo: {overview.sprint.todo}</span>
           </div>
         </fieldset>
       </div>
 
-      <div
-        class='dp-view'
-        id='dp-view-files'
-      >
-        <!-- HotFilesCard: title is "🔥 ACTIVE FILES (n)", bullet list, footer note -->
+      {/* ── Files ── */}
+      <div class='dp-view' id='dp-view-files'>
         <fieldset class='dp-card dp-card-full'>
-          <legend class='dp-card-title yellow'>🔥 ACTIVE FILES (6)</legend>
+          <legend class='dp-card-title yellow'>🔥 ACTIVE FILES ({files.activeFiles.count})</legend>
           <div class='dp-file-list'>
-            <div class='dp-file'><span class='dp-bullet'>•</span>CLAUDE.md</div>
-            <div class='dp-file'>
-              <span class='dp-bullet'>•</span>NEXT-TASKS.md
-            </div>
-            <div class='dp-file'>
-              <span class='dp-bullet'>•</span>docs/core/PATTERNS.md
-            </div>
-            <div class='dp-file'>
-              <span class='dp-bullet'>•</span>docs/core/ARCHITECTURE.md
-            </div>
-            <div class='dp-file'>
-              <span class='dp-bullet'>•</span>CHANGELOG.md
-            </div>
+            {files.activeFiles.list.map((f) => (
+              <div class='dp-file'><span class='dp-bullet'>•</span>{f}</div>
+            ))}
           </div>
-          <div class='dp-card-footer'>
-            These files are always loaded by AI assistants
-          </div>
+          <div class='dp-card-footer'>{files.activeFiles.footer}</div>
         </fieldset>
 
-        <!-- FileDistributionCard: title "📁 FILE DISTRIBUTION", bar chart -->
         <fieldset class='dp-card dp-card-full'>
           <legend class='dp-card-title'>📁 FILE DISTRIBUTION</legend>
-          <div class='dp-dist-row'>
-            <span class='dp-dist-label yellow'>🔥 HOT</span>
-            <span class='dp-dist-count'>6</span>
-            <span class='dp-dist-pct dp-dim'>(27%)</span>
-            <div class='dp-dist-bar-text'>
-              <span class='yellow'>██████</span><span class='dp-bar-empty'
-                >██████████████</span
-              >
-            </div>
-          </div>
-          <div class='dp-dist-row'>
-            <span class='dp-dist-label blue'>~ WARM</span>
-            <span class='dp-dist-count'>12</span>
-            <span class='dp-dist-pct dp-dim'>(55%)</span>
-            <div class='dp-dist-bar-text'>
-              <span class='blue'>████████████</span><span class='dp-bar-empty'
-                >████████</span
-              >
-            </div>
-          </div>
-          <div class='dp-dist-row'>
-            <span class='dp-dist-label cyan'>❄️ COLD</span>
-            <span class='dp-dist-count'>4</span>
-            <span class='dp-dist-pct dp-dim'>(18%)</span>
-            <div class='dp-dist-bar-text'>
-              <span class='cyan'>████</span><span class='dp-bar-empty'
-                >████████████████</span
-              >
-            </div>
-          </div>
+          {files.distribution.map((tier) => {
+            const meta = tierMeta[tier.tier]
+            const b = distBar(tier.count)
+            return (
+              <div class='dp-dist-row'>
+                <span class={`dp-dist-label ${meta.color}`}>{meta.label}</span>
+                <span class='dp-dist-count'>{tier.count}</span>
+                <span class='dp-dist-pct dp-dim'>({tier.percentage}%)</span>
+                <div class='dp-dist-bar-text'>
+                  <span class={meta.color}>{b.filled}</span><span class='dp-bar-empty'>{b.empty}</span>
+                </div>
+              </div>
+            )
+          })}
         </fieldset>
 
-        <!-- FileSizeHealthCard: title "📏 FILE SIZE HEALTH" -->
         <fieldset class='dp-card dp-card-full dp-card-yellow'>
           <legend class='dp-card-title yellow'>📏 FILE SIZE HEALTH</legend>
-          <div class='dp-size-row'>
-            <span class='dp-size-emoji'>🟡</span>
-            <span class='dp-size-file yellow'>NEXT-TASKS.md</span>
-            <span class='dp-dim'>172/200 lines (86%)</span>
-          </div>
-          <div class='dp-size-row'>
-            <span class='dp-size-emoji'>🟢</span>
-            <span class='dp-size-file green'>docs/core/PATTERNS.md</span>
-            <span class='dp-dim'>98/200 lines (49%)</span>
-          </div>
+          {files.sizeHealth.map((f) => {
+            const pct = Math.round((f.lines / f.maxLines) * 100)
+            const color = pct >= 80 ? 'yellow' : 'green'
+            return (
+              <div class='dp-size-row'>
+                <span class='dp-size-emoji'>{f.emoji}</span>
+                <span class={`dp-size-file ${color}`}>{f.name}</span>
+                <span class='dp-dim'>{f.lines}/{f.maxLines} lines ({pct}%)</span>
+              </div>
+            )
+          })}
         </fieldset>
       </div>
 
-      <div
-        class='dp-view'
-        id='dp-view-health'
-      >
-        <!-- ValidationCard: title "■ VALIDATION STATUS" -->
+      {/* ── Health ── */}
+      <div class='dp-view' id='dp-view-health'>
         <fieldset class='dp-card dp-card-full dp-card-green'>
           <legend class='dp-card-title green'>■ VALIDATION STATUS</legend>
-          <div class='dp-health-status green'>✅ HEALTHY</div>
-          <div class='dp-dim dp-health-meta'>Last checked: 2m ago</div>
+          <div class='dp-health-status green'>✅ {health.validation.status}</div>
+          <div class='dp-dim dp-health-meta'>Last checked: {health.validation.lastChecked}</div>
         </fieldset>
 
-        <!-- GuardianStatusCard: title "■ GUARDIAN CODE REVIEW" -->
         <fieldset class='dp-card dp-card-full dp-card-green'>
           <legend class='dp-card-title green'>■ GUARDIAN CODE REVIEW</legend>
-          <div class='dp-health-status green'>✅ All Clear</div>
-          <div class='dp-dim dp-health-meta'>Last review: 5 minutes ago</div>
+          <div class='dp-health-status green'>✅ {health.guardian.status}</div>
+          <div class='dp-dim dp-health-meta'>Last review: {health.guardian.lastReview}</div>
           <div class='dp-health-meta dp-dim'>
-            Run: <span class='cyan'>cortex-tms review &lt;file&gt;</span>
+            Run: <span class='cyan'>{health.guardian.command}</span>
           </div>
         </fieldset>
       </div>
+
     </div>{/* /.dp-views */}
 
     <div class='dp-footer'>
-      <div>
-        Tab: Switch view &nbsp;•&nbsp; 1/2/3: Jump to view &nbsp;•&nbsp; q: Quit
-      </div>
+      <div>Tab: Switch view &nbsp;•&nbsp; 1/2/3: Jump to view &nbsp;•&nbsp; q: Quit</div>
       <div>Use <code>--live</code> for auto-refresh (5s interval)</div>
     </div>
   </div>
 </div>
 
 <script>
-  function initDashboardPreview(preview: Element) {
-    const tabs = preview.querySelectorAll<HTMLButtonElement>('.dp-tab')
-    const views = preview.querySelectorAll<HTMLElement>('.dp-view')
-    const viewsContainer = preview.querySelector<HTMLElement>('.dp-views')
-    const mobileQuery = window.matchMedia('(max-width: 600px)')
-
-    let tabIndex = 0
-    let userInteracted = false
-    let cycleTimer: ReturnType<typeof setInterval> | null = null
-    let observer: IntersectionObserver | null = null
-
-    function isMobile() {
-      return mobileQuery.matches
-    }
-
-    function stopAutoCycle() {
-      if (cycleTimer) {
-        clearInterval(cycleTimer)
-        cycleTimer = null
-      }
-    }
-
-    function updateViewsHeight() {
-      if (!viewsContainer || views.length === 0) return
-
-      if (isMobile()) {
-        viewsContainer.style.height = ''
-        return
-      }
-
-      let maxHeight = 0
-      views.forEach((view) => {
-        maxHeight = Math.max(maxHeight, view.scrollHeight)
-      })
-
-      if (maxHeight > 0) {
-        viewsContainer.style.height = `${maxHeight}px`
-      }
-    }
-
-    function switchTo(index: number) {
-      const tab = tabs[index]
-      const target = tab.dataset.view
-
-      tabs.forEach((t) => {
-        t.classList.remove('dp-tab-active')
-        t.setAttribute('aria-selected', 'false')
-        t.querySelectorAll<HTMLElement>('.dp-tab-bracket').forEach(
-          (b) => (b.style.opacity = '0.4'),
-        )
-      })
-      views.forEach((v) => v.classList.remove('dp-view-active'))
-
-      tab.classList.add('dp-tab-active')
-      tab.setAttribute('aria-selected', 'true')
-      tab
-        .querySelectorAll<HTMLElement>('.dp-tab-bracket')
-        .forEach((b) => (b.style.opacity = '1'))
-
-      const view = preview.querySelector<HTMLElement>(`#dp-view-${target}`)
-      if (view) view.classList.add('dp-view-active')
-
-      tabIndex = index
-    }
-
-    // Measure after layout, and again after fonts/load settle.
-    requestAnimationFrame(() => {
-      updateViewsHeight()
-      requestAnimationFrame(updateViewsHeight)
-    })
-
-    window.addEventListener('resize', () => {
-      updateViewsHeight()
-      if (isMobile()) {
-        stopAutoCycle()
-      }
-    })
-    window.addEventListener('load', updateViewsHeight)
-    mobileQuery.addEventListener('change', () => {
-      updateViewsHeight()
-      if (isMobile()) {
-        stopAutoCycle()
-      }
-    })
-
-    // Click: take control and stop auto-cycle
-    tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => {
-        userInteracted = true
-        stopAutoCycle()
-        switchTo(i)
-      })
-    })
-
-    // Auto-cycle when scrolled into view, pause when out of view
-    observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (isMobile()) {
-            stopAutoCycle()
-            return
-          }
-
-          if (entry.isIntersecting && !userInteracted && !cycleTimer) {
-            cycleTimer = setInterval(() => {
-              switchTo((tabIndex + 1) % tabs.length)
-            }, 3000)
-          } else if (!entry.isIntersecting && cycleTimer) {
-            stopAutoCycle()
-          }
-        })
-      },
-      { threshold: 0.4 },
-    )
-
-    if (!isMobile()) {
-      observer.observe(preview)
-    }
-  }
-
-  function init() {
-    document
-      .querySelectorAll('.dashboard-preview')
-      .forEach(initDashboardPreview)
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init)
-  } else {
-    init()
-  }
+  import './DashboardPreview'
 </script>

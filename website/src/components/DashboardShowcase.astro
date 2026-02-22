@@ -1,32 +1,33 @@
 ---
 /**
  * DashboardShowcase — homepage section highlighting the cortex-tms dashboard command.
- * Two-column layout: copy left, DashboardPreview right, benefit cards full-width below.
+ * Content lives in src/content/homepage/dashboard-showcase.md
  */
+import { getCollection } from 'astro:content'
+import type { DashboardShowcaseEntry } from '../types/homepage'
 import DashboardPreview from './DashboardPreview.astro'
+
+const entries = await getCollection('homepage')
+const entry = entries.find(
+  (e): e is DashboardShowcaseEntry => e.data.type === 'dashboard-showcase'
+)
+if (!entry) throw new Error('Missing dashboard-showcase content entry')
+
+const { title, subtitle, description, liveBadge, docsLink, docsLinkText, benefits } = entry.data
 ---
 
 <div class='dashboard-showcase'>
   {/* Left column: copy */}
   <div class='ds-copy'>
-    <h3 class='ds-headline'>One command.<br />Complete visibility.</h3>
-    <p class='ds-description'>
-      The Cortex TMS dashboard gives you a real-time terminal UI showing
-      governance health, documentation freshness, and sprint progress — all
-      without leaving your terminal.
-    </p>
+    <h3 class='ds-headline'>{title}<br />{subtitle}</h3>
+    <p class='ds-description'>{description}</p>
 
     <div class='ds-live-badge'>
       <span class='ds-live-dot'></span>
-      <code>--live</code> mode: auto-refreshes every 5 seconds
+      <code>{liveBadge}</code>
     </div>
 
-    <a
-      href='/reference/cli/dashboard/'
-      class='ds-link'
-    >
-      Explore the Dashboard docs →
-    </a>
+    <a href={docsLink} class='ds-link'>{docsLinkText} →</a>
   </div>
 
   {/* Right column: DashboardPreview with ambient glow */}
@@ -35,29 +36,17 @@ import DashboardPreview from './DashboardPreview.astro'
     <DashboardPreview />
   </div>
 
-  {/* Full-width row: 3 benefit cards */}
+  {/* Full-width row: benefit cards */}
   <div class='ds-benefits'>
-    <div class='ds-benefit'>
-      <div class='ds-benefit-value ds-gradient-text'>92/100</div>
-      <div class='ds-benefit-title'>Governance Health</div>
-      <div class='ds-benefit-caption'>
-        Spot compliance gaps before they become tech debt
+    {benefits.map((b) => (
+      <div class='ds-benefit'>
+        <div class={`ds-benefit-value ${b.valueStyle === 'gradient' ? 'ds-gradient-text' : 'ds-live-value'}`}>
+          {b.valueStyle === 'live' ? <code>{b.value}</code> : b.value}
+        </div>
+        <div class='ds-benefit-title'>{b.title}</div>
+        <div class='ds-benefit-caption'>{b.caption}</div>
       </div>
-    </div>
-    <div class='ds-benefit'>
-      <div class='ds-benefit-value ds-gradient-text'>95%</div>
-      <div class='ds-benefit-title'>Documentation Freshness</div>
-      <div class='ds-benefit-caption'>
-        Know exactly which docs need attention and when
-      </div>
-    </div>
-    <div class='ds-benefit'>
-      <div class='ds-benefit-value ds-live-value'><code>--live</code></div>
-      <div class='ds-benefit-title'>Real-Time Monitoring</div>
-      <div class='ds-benefit-caption'>
-        Auto-refreshing terminal dashboard for continuous insight
-      </div>
-    </div>
+    ))}
   </div>
 </div>
 
