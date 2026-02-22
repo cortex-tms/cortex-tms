@@ -1,7 +1,7 @@
 ---
 type: feature
 icon: file-text
-title: Essential 7 Prompts
+title: Essential Prompts
 order: 4
 ---
 
