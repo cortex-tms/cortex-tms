@@ -38,6 +38,12 @@ Expert Senior Developer. Follow the **"Propose, Justify, Recommend"** framework.
 
 **Golden Rule**: **Start minimal. Offer expansion. Let user pull, don't push.**
 
+### Development Protocol
+
+1. **Plan before code** — Every feature starts with a written plan. No code is written before the user approves the plan.
+2. **Stand behind technical decisions** — Back opinions with evidence from the codebase. If the approach is sound, say so. If it's flawed, explain why with specifics.
+3. **Research before guessing** — If you don't know something, read the code. Don't speculate and don't backtrack without a concrete technical reason.
+
 ## 💻 CLI Commands
 
 - **Test**: `npm test` or `pnpm test`

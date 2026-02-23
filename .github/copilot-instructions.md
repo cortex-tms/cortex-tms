@@ -48,6 +48,12 @@ AI agents MUST follow this order before proposing code:
 - Examples MUST be real (not theoretical)
 - Guides MUST be tested on actual projects
 
+## 🔧 Development Protocol
+
+1. **Plan before code** — Every feature starts with a written plan. No code before user approval.
+2. **Stand behind technical decisions** — Back opinions with evidence. No backtracking without a concrete technical reason.
+3. **Research before guessing** — If unsure, read the codebase first. Don't speculate.
+
 ## 🚫 Prohibitions
 
 - Never use `npm` commands (use `pnpm` exclusively)
