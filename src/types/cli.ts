@@ -126,6 +126,7 @@ export interface ValidateCommandOptions {
   fix?: boolean; // Auto-fix issues where possible
   strict?: boolean; // Treat warnings as errors
   verbose?: boolean; // Show detailed output
+  skipStaleness?: boolean; // Skip staleness detection checks
 }
 
 /**
@@ -176,6 +177,16 @@ export interface CortexConfig {
     docs?: {
       [docPath: string]: string[];
     };
+  };
+
+  /** Git hooks configuration */
+  hooks?: {
+    /** Hook mode: 'default' runs validate, 'strict' treats warnings as errors */
+    mode?: "default" | "strict";
+    /** Skip staleness checks in the hook (faster commits) */
+    skipStaleness?: boolean;
+    /** Pinned cortex-tms version for npx fallback */
+    version?: string;
   };
 
   /** Metadata */

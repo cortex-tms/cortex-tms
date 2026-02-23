@@ -17,7 +17,7 @@ This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TAS
 
 | Task                              | Description                                                                                          | Effort | Priority |
 | :-------------------------------- | :--------------------------------------------------------------------------------------------------- | :----- | :------- |
-| **Git Hook Integration**          | `cortex-tms hooks install` - pre-commit validates doc health                                         | 3-4h   | 🔴 P0    |
+| ~~**Git Hook Integration**~~      | ~~Shipped in v4.1~~ → `cortex-tms hooks install`                                                    | ✅      | ✅ Done   |
 | **Staleness Detection v2**        | Robust git-history staleness checks (shallow clone handling, better messages, fewer false positives) | 4-5h   | 🟡 P1    |
 | **Incremental Updates**           | AI updates only affected doc sections, not full regeneration                                         | 5-6h   | 🟡 P1    |
 | **CI Templates (More Providers)** | Ready-to-copy CI snippets for GitHub/GitLab/Bitbucket; strict enforcement by default                 | 2h     | 🟡 P1    |
