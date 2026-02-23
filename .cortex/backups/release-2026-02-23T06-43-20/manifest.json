@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-02-23T06-43-20",
+  "reason": "Atomic release",
+  "files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "README.md",
+    "CHANGELOG.md",
+    "NEXT-TASKS.md"
+  ],
+  "originalBranch": "main"
+}

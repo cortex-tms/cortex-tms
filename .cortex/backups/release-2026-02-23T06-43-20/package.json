@@ -1,6 +1,6 @@
 {
   "name": "cortex-tms",
-  "version": "4.0.2",
+  "version": "4.0.1",
   "description": "Documentation scaffolder and governance platform for AI coding agents",
   "type": "module",
   "bin": {
