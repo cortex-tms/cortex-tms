@@ -222,6 +222,20 @@ Interactive walkthrough teaching the Cortex Way.
 cortex-tms tutorial  # 5-lesson guided tour (~15 minutes)
 ```
 
+### `cortex-tms hooks`
+
+Manage git hooks for automatic documentation validation. Installs a pre-commit hook that runs `cortex-tms validate` before every commit.
+
+```bash
+cortex-tms hooks install              # Install pre-commit hook (default mode)
+cortex-tms hooks install --strict     # Warnings also block commits
+cortex-tms hooks install --skip-staleness  # Skip staleness checks (faster)
+cortex-tms hooks status               # Show current hook configuration
+cortex-tms hooks uninstall            # Remove the hook
+```
+
+**Safety**: Never overwrites foreign hooks. Only manages hooks with its own marker. Requires `.cortexrc` (run `cortex-tms init` first).
+
 ---
 
 ## Documentation Structure

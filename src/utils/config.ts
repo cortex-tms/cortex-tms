@@ -203,6 +203,8 @@ export function mergeConfig(
         ...(userConfig.validation?.ignoreFiles || []),
       ],
     },
+    ...(userConfig.staleness && { staleness: userConfig.staleness }),
+    ...(userConfig.hooks && { hooks: userConfig.hooks }),
     ...(userConfig.metadata && { metadata: userConfig.metadata }),
   };
 }

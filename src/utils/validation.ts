@@ -123,6 +123,7 @@ export const validateOptionsSchema = z.object({
   strict: booleanFlag,
   verbose: verboseFlag,
   fix: booleanFlag,
+  skipStaleness: booleanFlag,
 });
 
 /**

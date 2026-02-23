@@ -550,9 +550,9 @@ async function validateDocStaleness(
  */
 export async function validateProject(
   cwd: string,
-  options: { strict?: boolean; limits?: LineLimits } = {},
+  options: { strict?: boolean; skipStaleness?: boolean; limits?: LineLimits } = {},
 ): Promise<ValidationResult> {
-  const { strict = false } = options;
+  const { strict = false, skipStaleness = false } = options;
 
   // Load configuration (if exists)
   const userConfig = await loadConfig(cwd);
@@ -578,7 +578,9 @@ export async function validateProject(
     Promise.resolve(validateConfig(cwd)),
     validatePlaceholders(cwd, ignoreFiles),
     validateArchiveStatus(cwd),
-    validateDocStaleness(cwd, config),
+    skipStaleness
+      ? Promise.resolve([])
+      : validateDocStaleness(cwd, config),
   ]);
 
   const checks = [

@@ -82,6 +82,10 @@ export function createValidateCommand(): Command {
       "-f, --fix",
       "Auto-fix issues where possible (e.g., recreate missing files)",
     )
+    .option(
+      "--skip-staleness",
+      "Skip staleness detection checks (faster validation)",
+    )
     .action(async (options: ValidateCommandOptions) => {
       await runValidate(options);
     });
@@ -106,6 +110,7 @@ async function runValidate(options: ValidateCommandOptions): Promise<void> {
   try {
     const result = await validateProject(cwd, {
       strict: options.strict || false,
+      skipStaleness: options.skipStaleness || false,
     });
 
     spinner.stop();
@@ -150,6 +155,7 @@ async function runValidate(options: ValidateCommandOptions): Promise<void> {
         const revalidateSpinner = ora("Re-validating...").start();
         const updatedResult = await validateProject(cwd, {
           strict: options.strict || false,
+          skipStaleness: options.skipStaleness || false,
         });
         revalidateSpinner.stop();
 
