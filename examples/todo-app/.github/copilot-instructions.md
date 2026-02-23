@@ -29,4 +29,4 @@ AI agents MUST follow this order before proposing code:
 - [ ] Tests added/updated and passing.
 - [ ] No `console.log` statements remaining.
 
-<!-- @cortex-tms-version 3.0.0 -->
+<!-- @cortex-tms-version 4.0.2 -->

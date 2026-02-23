@@ -126,4 +126,4 @@
 **Last Updated**: 2026-01-28
 **Applies To**: Next.js 16 + React 19 implementation
 
-<!-- @cortex-tms-version 3.0.0 -->
+<!-- @cortex-tms-version 4.0.2 -->

@@ -60,4 +60,4 @@ This `.cortex/` directory structure is part of **Cortex TMS v3.0.0**.
 
 **Note**: This directory is committed to version control for this reference implementation. In production projects, you may choose to gitignore `.cortex/backups/` to avoid committing backup snapshots.
 
-<!-- @cortex-tms-version 3.0.0 -->
+<!-- @cortex-tms-version 4.0.2 -->

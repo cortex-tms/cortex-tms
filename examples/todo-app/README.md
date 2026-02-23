@@ -142,7 +142,7 @@ app/page.tsx (State Management)
 Every file includes:
 - **Quick Context** for AI agents (30-second summary)
 - **Mental Model** (the "why" before the "how")
-- **Version Tags** (`<!-- @cortex-tms-version 3.2.0 -->`)
+- **Version Tags** (`<!-- @cortex-tms-version 4.0.2 -->`)
 
 **Why?** AI agents understand context faster = fewer hallucinations.
 
@@ -393,4 +393,4 @@ Built with:
 npx cortex-tms init
 ```
 
-<!-- @cortex-tms-version 3.2.0 -->
+<!-- @cortex-tms-version 4.0.2 -->
