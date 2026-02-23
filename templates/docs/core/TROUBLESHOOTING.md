@@ -324,4 +324,4 @@ When you encounter a new gotcha:
 **AI Agent Note**: [What to verify]
 ```
 
-<!-- @cortex-tms-version 4.0.1 -->
+<!-- @cortex-tms-version 4.0.2 -->

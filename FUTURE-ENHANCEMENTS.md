@@ -372,4 +372,4 @@ This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TAS
 
 **See**: `NEXT-TASKS.md` for active sprint | `docs/archive/` for completed work
 
-<!-- @cortex-tms-version 4.0.1 -->
+<!-- @cortex-tms-version 4.0.2 -->
