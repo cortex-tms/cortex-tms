@@ -5,6 +5,24 @@ All notable changes to Cortex TMS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.2] - 2026-02-23
+
+**Theme**: Release process hardening
+
+### Bug Fixes
+
+- **Release rollback**: Fixed critical bug where `git reset --hard HEAD` ran on any failure including Phase 1, wiping all uncommitted changes. Now only runs if Phase 2+ was reached
+- **Version drift**: All `@cortex-tms-version` tags synced to match `package.json` on every commit and publish
+
+### Release Process
+
+- **Quality gates**: `release.js` preflight now blocks on 6 mandatory checks before touching the version: version tag sync, tests, lint, build, CLI sanity, and `validate --strict`
+- **Pre-commit guard**: Husky pre-commit hook blocks commits where version tags are out of sync
+- **Publish guard**: `prepublishOnly` runs `docs:check` — publish fails if version drift is detected
+- **npm version hook**: `sync-project.js` runs automatically on every `npm version` call
+
+---
+
 ## [4.0.1] - 2026-02-22
 
 **Theme**: Post-release bug fixes from GPT-5.2 audit
