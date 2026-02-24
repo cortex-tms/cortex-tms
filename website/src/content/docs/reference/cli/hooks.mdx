@@ -1,0 +1,183 @@
+---
+title: cortex-tms hooks
+description: Install and manage git pre-commit hooks for automatic documentation validation
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The `cortex-tms hooks` command installs a git pre-commit hook that runs `cortex-tms validate` automatically before every commit — catching documentation problems before they enter your history.
+
+<Aside type="note" title="Availability">
+  `cortex-tms hooks` is available in **v4.1+**. If the command is not recognized, update your installation:
+
+  ```bash
+  npm update -g cortex-tms   # global install
+  # or
+  npx cortex-tms@next hooks install   # use @next until v4.1 is published
+  ```
+</Aside>
+
+## Synopsis
+
+```bash
+cortex-tms hooks <subcommand> [options]
+```
+
+**Subcommands**: `install`, `uninstall`, `status`
+
+---
+
+## Subcommands
+
+### `hooks install`
+
+Installs a pre-commit hook in the current git repository.
+
+```bash
+cortex-tms hooks install [options]
+```
+
+**What it does**:
+1. Verifies `.cortexrc` exists (requires `cortex-tms init` to have been run)
+2. Resolves the git hooks directory via `git rev-parse --git-path hooks`
+3. Refuses to overwrite any hook it didn't create (safe by default)
+4. Writes a `pre-commit` script that runs `cortex-tms validate` before each commit
+
+**Binary resolution** — the installed hook tries three locations in order:
+1. `./node_modules/.bin/cortex-tms` (local project install)
+2. `cortex-tms` on `$PATH` (global install)
+3. `npx cortex-tms@<version>` (automatic fallback — no install required)
+
+#### Options
+
+| Option | Description |
+|--------|-------------|
+| `-s, --strict` | Treat warnings as errors — commit is blocked if any warning is found |
+| `--skip-staleness` | Skip staleness detection in the hook (faster, avoids git log calls) |
+| `--cortex-version <version>` | Pin a specific version for the `npx` fallback (defaults to current CLI version) |
+
+#### Output
+
+```
+✅ Pre-commit hook installed!
+   Path:    /your/repo/.git/hooks/pre-commit
+   Mode:    default
+   Version: 4.1.0
+```
+
+---
+
+### `hooks uninstall`
+
+Removes the cortex-tms pre-commit hook.
+
+```bash
+cortex-tms hooks uninstall
+```
+
+**Safety**: Only removes hooks that cortex-tms installed. If the hook was created by another tool (husky, lefthook, etc.), the command refuses to delete it and exits with code 1.
+
+---
+
+### `hooks status`
+
+Shows the current hook configuration.
+
+```bash
+cortex-tms hooks status
+```
+
+**Output includes**:
+- Whether a hook is installed
+- Whether cortex-tms manages it
+- Hook path, mode (default/strict), and pinned version
+
+**Example output**:
+
+```
+🔗 Git Hook Status
+
+  ✓ Pre-commit hook installed (managed by cortex-tms)
+  Path:    /your/repo/.git/hooks/pre-commit
+  Mode:    strict
+  Version: 4.1.0
+```
+
+---
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Error — no `.cortexrc`, not a git repo, or foreign hook detected |
+
+---
+
+## Examples
+
+### Basic install (default mode)
+
+```bash
+# Validate docs on every commit; warnings don't block
+cortex-tms hooks install
+```
+
+### Strict mode — warnings block commits
+
+```bash
+cortex-tms hooks install --strict
+```
+
+Useful for CI-adjacent workflows or teams enforcing zero-warning policy.
+
+### Speed-optimized for large repositories
+
+```bash
+# Skip staleness detection (avoids git log calls on every commit)
+cortex-tms hooks install --skip-staleness
+```
+
+### Pin a specific version for team consistency
+
+```bash
+cortex-tms hooks install --cortex-version 4.1.0
+```
+
+All team members get the same validation behavior from the `npx` fallback regardless of their globally installed version.
+
+### Check what's installed
+
+```bash
+cortex-tms hooks status
+```
+
+### Remove the hook
+
+```bash
+cortex-tms hooks uninstall
+```
+
+### CI usage — validate without a hook
+
+The hook is for local development. In CI, call validate directly:
+
+```yaml
+- name: Validate documentation
+  run: npx cortex-tms@latest validate --strict
+```
+
+---
+
+## Notes
+
+- **Requires `.cortexrc`**: Run `cortex-tms init` before installing hooks.
+- **Git worktrees**: Hooks are installed into the correct hooks directory for the active worktree via `git rev-parse --git-path hooks`.
+- **Husky / lefthook compatibility**: If you already use a hook manager, add `cortex-tms validate` to your existing pre-commit script rather than using this command.
+
+---
+
+## Related
+
+- [cortex-tms validate](/reference/cli/validate/) — the command the hook runs
+- [cortex-tms init](/reference/cli/init/) — required before installing hooks

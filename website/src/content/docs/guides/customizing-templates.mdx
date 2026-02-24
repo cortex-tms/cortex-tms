@@ -23,6 +23,12 @@ Cortex TMS ships with sensible defaults (Standard, Nano, Enterprise), but organi
 
 ## Part 1: Understanding Template Structure
 
+<Aside type="caution" title="Aspirational Guide">
+  This guide describes a **proposed** template override and custom-scope system — not the current implementation. In the actual package, all templates share a single flat `templates/` directory and scope selection (nano / standard / enterprise) is handled in code, not via per-scope subdirectories. The `{{MOUSTACHE}}` placeholder syntax shown below is also aspirational; today's templates use bracket-style markers.
+
+  Use this guide as a design reference for where the template system is heading, or open an issue to track implementation progress.
+</Aside>
+
 ### Template Anatomy
 
 Cortex TMS templates are stored in the package under `templates/` directory:
@@ -32,6 +38,7 @@ Cortex TMS templates are stored in the package under `templates/` directory:
   - standard/
     - CLAUDE.md
     - NEXT-TASKS.md
+    - AGENTS.md
     - docs/
       - core/
         - PATTERNS.md
@@ -51,6 +58,16 @@ Cortex TMS templates are stored in the package under `templates/` directory:
   - enterprise/
   - custom/
 </FileTree>
+
+**Key template files**:
+
+| File | Purpose | Tier |
+|------|---------|------|
+| `CLAUDE.md` | Agent persona, CLI commands, and workflow config | **HOT** (Always Read) |
+| `NEXT-TASKS.md` | Active sprint and current focus | **HOT** (Always Read) |
+| `AGENTS.md` | Multi-agent governance — defines roles and capabilities when multiple AI agents collaborate on the same project | **WARM** (Read on Demand) |
+| `docs/core/PATTERNS.md` | Canonical code examples (Do/Don't) | **WARM** (Read on Demand) |
+| `docs/core/ARCHITECTURE.md` | System design and tech stack | **WARM** (Read on Demand) |
 
 Each scope defines:
 - Which files to include

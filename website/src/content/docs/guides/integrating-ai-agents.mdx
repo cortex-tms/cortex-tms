@@ -378,6 +378,46 @@ You can configure Claude to work alongside other AI agents:
   Use Copilot for speed, Claude for correctness. Copilot autocompletes faster, but Claude understands broader context.
 </Aside>
 
+### AGENTS.md — Multi-Agent Governance File
+
+When you use **multiple AI agents** on the same project (Claude Code + Copilot + Cursor, or multiple Claude instances), `AGENTS.md` provides a shared governance layer that all agents read.
+
+Generate it with:
+
+```bash
+# New projects (v4.1+): included automatically with standard/enterprise scope
+cortex-tms init
+
+# Existing projects initialized before v4.1: add it manually or run migrate
+cortex-tms migrate --apply   # picks up new template files for your scope
+```
+
+`AGENTS.md` defines which agents are active and what each one is responsible for:
+
+```markdown
+# Agent Capabilities Matrix
+
+| Capability            | Claude Code | Copilot | Cursor |
+|-----------------------|-------------|---------|--------|
+| Code review           | ✅ Primary  | ✅      | ✅     |
+| Architecture decisions| ✅ Primary  | ❌      | ⚠️     |
+| Inline autocomplete   | ❌          | ✅ Primary | ✅  |
+| Multi-file refactoring| ✅ Primary  | ❌      | ✅     |
+| Documentation updates | ✅ Primary  | ❌      | ⚠️     |
+
+## Coordination Rules
+
+- Claude Code has final authority on architecture (see docs/core/DECISIONS.md)
+- Copilot handles inline suggestions; Claude handles feature-level implementation
+- Both agents must follow patterns in docs/core/PATTERNS.md
+```
+
+This prevents agents from stepping on each other's work and gives each one a clear lane.
+
+<Aside type="note">
+  `AGENTS.md` is read on demand — it's **WARM** tier in the HOT/WARM/COLD system. AI agents reference it when taking on multi-agent coordination tasks, not on every session start.
+</Aside>
+
 ---
 
 ## Part 2: GitHub Copilot Integration

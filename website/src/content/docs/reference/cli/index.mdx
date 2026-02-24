@@ -101,6 +101,14 @@ cortex-tms --version       # Show current version
 
     [View dashboard documentation](/reference/cli/dashboard/)
   </Card>
+
+  <Card title="hooks" icon="setting">
+    **Manage git hooks**
+
+    Install pre-commit hooks for automatic documentation validation before every commit.
+
+    [View hooks documentation](/reference/cli/hooks/)
+  </Card>
 </CardGrid>
 
 ---
@@ -129,6 +137,7 @@ All commands support these global options:
 | `prompt` | Get AI prompts | `cortex-tms prompt init-session` |
 | `review` | Validate code against patterns | `cortex-tms review src/file.ts` |
 | `tutorial` | Learn Cortex TMS | `cortex-tms tutorial` |
+| `hooks` | Git hook management (v4.1+) | `cortex-tms hooks install` |
 
 ---
 
@@ -246,6 +255,7 @@ Explore individual command documentation:
 - [cortex-tms prompt](/reference/cli/prompt/) - Prompt library usage
 - [cortex-tms review](/reference/cli/review/) - Guardian pattern validation
 - [cortex-tms tutorial](/reference/cli/tutorial/) - Interactive learning
+- [cortex-tms hooks](/reference/cli/hooks/) - Git hook management
 
 <Aside type="tip" title="Quick Help">
   Run any command with `--help` for detailed usage:

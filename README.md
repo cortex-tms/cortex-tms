@@ -253,6 +253,7 @@ cortex-tms hooks uninstall            # Remove the hook
 | `docs/core/GIT-STANDARDS.md`      | Git & PM conventions                   | **WARM** (Read on Demand) |
 | `docs/core/DECISIONS.md`          | Architecture Decision Records          | **WARM** (Read on Demand) |
 | `docs/core/GLOSSARY.md`           | Project terminology                    | **WARM** (Read on Demand) |
+| `AGENTS.md`                       | Multi-agent governance (optional)      | **WARM** (Read on Demand) |
 | `docs/archive/`                   | Historical changelogs                  | **COLD** (Ignore)         |
 
 **HOT/WARM/COLD System**: Organizes docs by access frequency (not token optimization). Helps AI find what's relevant for each task.
@@ -426,16 +427,16 @@ See [CHANGELOG.md](CHANGELOG.md) for full version history.
 
 ## Roadmap
 
-**v4.0** (Current - Feb 2026):
+**v4.0** (Released - Feb 2026):
 - ✅ Staleness detection (git-based, v1)
 - ✅ Archive command
 - ✅ Validation-first positioning
 - ✅ Token claims removed
 
-**v4.1** (Planned - Mar 2026):
-- 🔄 Git hooks integration (`cortex-tms hooks install`)
-- 🔄 Staleness v2 (improved heuristics, fewer false positives)
-- 🔄 Incremental doc updates
+**v4.1** (In Progress - Mar 2026):
+- ✅ Git hooks integration (`cortex-tms hooks install`)
+- ✅ AGENTS.md multi-agent governance template
+- 🔄 Governance packs (Node / Python / Go presets)
 
 **v4.2+** (Future):
 - 📋 MCP Server (expose docs to any AI tool)
