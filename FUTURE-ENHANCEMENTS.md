@@ -2,7 +2,7 @@
 
 This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TASKS.md` when they become active.
 
-**Last Updated**: 2026-02-21 (During v4.0.0 Strategic Repositioning)
+**Last Updated**: 2026-02-24 (v4.1 status sync)
 **Source**: Benchmark findings + audit recommendations + community feedback
 
 ---
@@ -12,7 +12,7 @@ This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TAS
 ### Phase 5: Organic Sync (v4.1 - High Priority)
 
 **Timeline**: March 2026 (12-16h estimated)
-**Status**: ⏸️ Planned
+**Status**: 🔄 Partially Complete (hooks shipped in v4.1; staleness v2 + incremental updates pending)
 **Theme**: Automate documentation maintenance to prevent context rot
 
 | Task                              | Description                                                                                          | Effort | Priority |
@@ -336,16 +336,17 @@ This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TAS
 
 ### Remaining High-Value Opportunities
 
-**Category A: Definition of Done for v4.0 (do not claim complete until shipped)**
+**Category A: Definition of Done for v4.0 (shipped Feb 2026)**
 
-- [ ] Token/cost/"Green Governance" claims removed across docs + website
-- [ ] CLI no longer exposes token counting UX (`status --tokens` removed)
-- [ ] Staleness detection + strict CI enforcement works (or fails with actionable guidance)
-- [ ] Deprecation path for `auto-tier` is documented and tested
+- [x] Token/cost/"Green Governance" claims removed across docs + website
+- [x] CLI no longer exposes token counting UX (`status --tokens` removed)
+- [x] Staleness detection + strict CI enforcement works (or fails with actionable guidance)
+- [x] Deprecation path for `auto-tier` is documented and tested
 
 **Category B: Next Priorities (v4.1-4.2)**
 
-- Organic Sync (git hooks, staleness improvements)
+- ~~Organic Sync — git hooks~~ ✅ shipped v4.1
+- Organic Sync — staleness v2 improvements still pending
 - Agent Ecosystem (multi-tool support, MCP server)
 - Migration Assistant (brownfield automation)
 
