@@ -8,7 +8,7 @@
  *
  * Philosophy:
  *   - Code changes to main: WALL (hard block)
- *   - Doc changes to main: DOOR (warning + guidance)
+ *   - Doc changes to main: WALL (hard block)
  *   - Emergency bypass: LOGGED (audit trail)
  *
  * Usage:
@@ -169,11 +169,11 @@ class GitGuardian {
   }
 
   /**
-   * Warn about doc commits to main (allow but guide)
+   * Block doc commits to main (same wall as code commits)
    */
   warnDocCommit() {
     console.log('');
-    this.warn('⚠️  WARNING: Direct Documentation Commits to main');
+    this.error('❌ ERROR: Direct Documentation Commits to main are PROHIBITED');
     console.log('');
     this.detail(`   Affected Files (${this.docFiles.length}):`);
 
@@ -186,17 +186,23 @@ class GitGuardian {
     }
 
     console.log('');
-    this.info('   💡 BEST PRACTICE:');
-    this.detail('   For structured releases, use:');
-    this.detail('   → pnpm run release (automatic version bump + docs sync)');
+    this.info('   💡 TO FIX:');
+    this.detail('   1. Create a branch:');
+    this.detail('      git checkout -b docs/description');
     console.log('');
-    this.detail('   For quick hotfixes, create a branch:');
-    this.detail('   → git checkout -b docs/hotfix-description');
+    this.detail('   2. Commit your changes:');
+    this.detail('      git commit -m "docs(scope): subject"');
     console.log('');
-    this.success('   ✓ Allowing commit (docs-only)');
+    this.detail('   3. Merge when ready:');
+    this.detail('      git checkout main');
+    this.detail('      git merge docs/description --no-ff');
+    console.log('');
+    this.warn('   ⚠️  Emergency Bypass (use with caution):');
+    this.detail('      BYPASS_GUARDIAN=true git commit -m "your message"');
+    this.detail('      Note: Bypass will be logged to .guardian-bypass.log');
     console.log('');
 
-    // Allow commit (exit 0)
+    process.exit(1);
   }
 
   /**
