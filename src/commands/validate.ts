@@ -237,6 +237,17 @@ async function runValidate(options: ValidateCommandOptions): Promise<void> {
       });
     }
 
+    const recommendedChecks = result.checks.filter((c) =>
+      c.name.startsWith("Recommended:"),
+    );
+
+    if (recommendedChecks.length > 0) {
+      console.log(chalk.bold("\n💡 Recommendations"));
+      recommendedChecks.forEach((check) => {
+        console.log(formatCheck(check, options.verbose || false));
+      });
+    }
+
     // Display summary
     console.log(chalk.bold("\n📊 Summary\n"));
 

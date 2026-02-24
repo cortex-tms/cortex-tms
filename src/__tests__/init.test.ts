@@ -56,7 +56,7 @@ describe("Init Command - Scope Filtering", () => {
     );
   });
 
-  it('should copy exactly 9 files when scope is "standard"', async () => {
+  it('should copy exactly 11 files when scope is "standard"', async () => {
     const templatesDir = getTemplatesDir();
     const replacements = generateReplacements("test-project");
 
@@ -65,7 +65,7 @@ describe("Init Command - Scope Filtering", () => {
       overwrite: true,
     });
 
-    expect(result.copied).toBe(10);
+    expect(result.copied).toBe(11); // +1 for AGENTS.md added in v4.1
     expect(result.skipped).toBe(0);
 
     // Verify mandatory files
@@ -86,7 +86,7 @@ describe("Init Command - Scope Filtering", () => {
     expect(await fileExists(join(tempDir, "docs/core/PATTERNS.md"))).toBe(true);
   });
 
-  it('should copy exactly 12 files when scope is "enterprise"', async () => {
+  it('should copy exactly 13 files when scope is "enterprise"', async () => {
     const templatesDir = getTemplatesDir();
     const replacements = generateReplacements("test-project");
 
@@ -95,7 +95,7 @@ describe("Init Command - Scope Filtering", () => {
       overwrite: true,
     });
 
-    expect(result.copied).toBe(12);
+    expect(result.copied).toBe(13); // +1 for AGENTS.md added in v4.1
     expect(result.skipped).toBe(0);
 
     // Verify enterprise-specific files

@@ -40,6 +40,7 @@ export const DEFAULT_LINE_LIMITS: LineLimits = {
   "GLOSSARY.md": 200, // WARM - Terminology
   "SCHEMA.md": 600, // WARM - Data models
   "TROUBLESHOOTING.md": 400, // WARM - Common issues
+  "AGENTS.md": 300, // WARM - Multi-agent governance registry
 };
 
 /**
@@ -546,6 +547,38 @@ async function validateDocStaleness(
 }
 
 /**
+ * Check for recommended (but not mandatory) files based on project scope.
+ *
+ * Uses passed:true + level:"info" so the check:
+ * - Never reduces the "Passed: X" summary count
+ * - Never fails strict mode (strict only elevates warnings/errors)
+ * - Still appears in validate output via the Recommendations display section
+ */
+function validateRecommendedFiles(
+  cwd: string,
+  scope?: string,
+): ValidationCheck[] {
+  const checks: ValidationCheck[] = [];
+
+  if (scope === "standard" || scope === "enterprise") {
+    const agentsPath = join(cwd, "AGENTS.md");
+    if (!existsSync(agentsPath)) {
+      checks.push({
+        name: "Recommended: AGENTS.md",
+        passed: true,
+        level: "info",
+        message: "AGENTS.md not found — recommended for multi-agent projects",
+        details:
+          "Run cortex-tms init or create AGENTS.md to define agent roles and boundaries.",
+        file: "AGENTS.md",
+      });
+    }
+  }
+
+  return checks;
+}
+
+/**
  * Run all validation checks
  */
 export async function validateProject(
@@ -583,6 +616,8 @@ export async function validateProject(
       : validateDocStaleness(cwd, config),
   ]);
 
+  const recommendedChecks = validateRecommendedFiles(cwd, config.scope);
+
   const checks = [
     ...mandatoryChecks,
     ...configChecks,
@@ -590,6 +625,7 @@ export async function validateProject(
     ...placeholderChecks,
     ...archiveChecks,
     ...stalenessChecks,
+    ...recommendedChecks,
   ];
 
   // Calculate summary

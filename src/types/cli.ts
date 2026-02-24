@@ -108,6 +108,7 @@ export interface LineLimits {
   "GLOSSARY.md": number;
   "SCHEMA.md": number;
   "TROUBLESHOOTING.md": number;
+  "AGENTS.md": number;
   [key: string]: number; // Allow custom files
 }
 

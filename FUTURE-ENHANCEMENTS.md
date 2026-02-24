@@ -45,6 +45,7 @@ This is the **living backlog** for Cortex TMS. Tasks move from here to `NEXT-TAS
 
 | Task                   | Description                                                                              | Effort | Priority |
 | :--------------------- | :--------------------------------------------------------------------------------------- | :----- | :------- |
+| ~~**AGENTS.md Template**~~ | ~~Multi-agent governance source-of-truth~~ → shipped in v4.1 sprint                 | ✅      | ✅ Done   |
 | **Multi-Tool Config**  | `cortex-tms init` generates CLAUDE.md + .cursorrules + .windsurfrules from single source | 6-8h   | 🟡 P1    |
 | **MCP Server**         | Expose docs as MCP resources for any AI tool                                             | 8-10h  | 🟡 P1    |
 | **Skills Integration** | Runtime agent hooks and custom skills support                                            | 4-6h   | 🟢 P2    |

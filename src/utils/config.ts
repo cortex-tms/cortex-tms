@@ -33,6 +33,7 @@ const DEFAULT_LINE_LIMITS: LineLimits = {
   "GLOSSARY.md": 200,
   "SCHEMA.md": 600,
   "TROUBLESHOOTING.md": 400,
+  "AGENTS.md": 300, // Multi-agent governance registry
 };
 
 /**
@@ -79,6 +80,7 @@ export const SCOPE_PRESETS: ScopePreset[] = [
     optionalFiles: [
       "PROMPTS.md",
       "FUTURE-ENHANCEMENTS.md",
+      "AGENTS.md",
       "docs/core/ARCHITECTURE.md",
       "docs/core/PATTERNS.md",
       "docs/core/DOMAIN-LOGIC.md",
@@ -99,6 +101,7 @@ export const SCOPE_PRESETS: ScopePreset[] = [
     optionalFiles: [
       "PROMPTS.md",
       "FUTURE-ENHANCEMENTS.md",
+      "AGENTS.md",
       "docs/core/ARCHITECTURE.md",
       "docs/core/PATTERNS.md",
       "docs/core/DOMAIN-LOGIC.md",
@@ -117,6 +120,7 @@ export const SCOPE_PRESETS: ScopePreset[] = [
       "GLOSSARY.md": 400,
       "SCHEMA.md": 1000,
       "TROUBLESHOOTING.md": 600,
+      "AGENTS.md": 300,
     },
   },
   {
