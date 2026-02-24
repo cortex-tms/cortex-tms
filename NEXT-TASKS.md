@@ -1,37 +1,27 @@
-# NEXT: v4.1 Sprint — Git Hooks, AGENTS.md, Governance Packs
+# NEXT: v4.1 Sprint — Governance Packs
 
 **Last Updated**: 2026-02-24
-**Status**: 🚧 In Progress — AGENTS.md Template
+**Status**: 🔜 Up Next — Governance Packs
 **Current Version**: 4.0.2 (published 2026-02-23)
 
-Sprint archive: `docs/archive/v4.0-sprint.md`
-Implementation plan: `docs/plans/agents-md-plan.md`
+Sprint archive: `docs/archive/v4.1-sprint.md`
 
 ---
 
-## ✅ Complete: Git Hook Integration
-
-~~Git hooks integration (`cortex-tms hooks install`)~~ — shipped in v4.1 sprint.
-
----
-
-## 🏃 Active: AGENTS.md Template (P0)
-
-| # | Task | Status |
-|:--|:-----|:-------|
-| 1 | Create `templates/AGENTS.md` (governance template) | ✅ Done |
-| 2 | Add `"AGENTS.md"` to `LineLimits` interface (`src/types/cli.ts`) | ✅ Done |
-| 3 | Add to `standard`/`enterprise` scope presets + line limit (`src/utils/config.ts`) | ✅ Done |
-| 4 | Add `validateRecommendedFiles` + wire into `validateProject` (`src/utils/validator.ts`) | ✅ Done |
-| 5 | Add `💡 Recommendations` display section (`src/commands/validate.ts`) | ✅ Done |
-| 6 | Write tests — `src/__tests__/agents.test.ts` (14 tests, 354 passing total) | ✅ Done |
-| 7 | Update `FUTURE-ENHANCEMENTS.md` + full verification (build + lint + test + validate) | ✅ Done |
-
-## 🗺️ Roadmap: v4.1 (March 2026)
+## ✅ Shipped This Sprint
 
 - ~~Git hooks integration (`cortex-tms hooks install`)~~ ✅
 - ~~AGENTS.md template (multi-agent governance source-of-truth)~~ ✅
-- Governance packs (Node / Python / Go presets)
+
+---
+
+## 🔜 Next: Governance Packs (P0)
+
+`cortex-tms init --preset node` (and `python`, `go`) — opinionated
+template presets per ecosystem that pre-fill patterns, domain logic,
+and conventions for common tech stacks.
+
+> No tasks defined yet — plan first.
 
 ## 🗺️ Roadmap: v4.2+
 
