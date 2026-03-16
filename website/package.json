@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
-    "@astrojs/rss": "^4.0.15",
-    "@astrojs/starlight": "^0.37.5",
+    "@astrojs/rss": "^4.0.17",
+    "@astrojs/starlight": "^0.38.1",
     "@fontsource-variable/noto-sans": "5.1.1",
     "@fontsource-variable/noto-serif": "5.1.1",
     "@fontsource/noto-sans-mono": "5.1.0",
