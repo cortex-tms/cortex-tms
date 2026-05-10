@@ -1,6 +1,6 @@
 # Security Testing Guide
 
-**Last Updated**: 2026-01-31 (v3.2.0 Security Hardening)
+**Last Updated**: 2026-05-10 (v4.1.0)
 
 This guide explains how to run security tests and checks for Cortex TMS. Use this to verify security patterns are upheld during development and before releases.
 

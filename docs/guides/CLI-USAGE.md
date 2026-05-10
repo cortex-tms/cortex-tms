@@ -556,21 +556,6 @@ npx cortex-tms auto-tier --hot 3 --warm 7
 npx cortex-tms auto-tier --hot 21 --warm 90
 ```
 
-#### Integration with Token Counter
-
-Auto-tier tags are automatically respected by `cortex-tms status --tokens`:
-
-```bash
-# Apply tier tags
-npx cortex-tms auto-tier
-
-# See token distribution by tier
-npx cortex-tms status --tokens
-# HOT files: ~70,000 tokens (always in context)
-# WARM files: ~12,000 tokens (on-demand)
-# COLD files: Excluded from analysis
-```
-
 #### Important Notes
 
 **Requirements**:
@@ -581,7 +566,7 @@ npx cortex-tms status --tokens
 **Limitations**:
 - Only processes Markdown (`.md`) files
 - Untracked files (not in git history) are skipped entirely
-- Tier tags override path-based patterns from token counter
+- Tier tags override path-based patterns from staleness detection
 - Running auto-tier and committing updates file recency (by design)
 - HOT cap applies to auto-assigned files (existing explicit tags are respected)
 

@@ -106,7 +106,7 @@ This multi-domain strategy follows the pattern used by successful open-source pr
 
 ## 🏗️ Repository Structure
 
-**Current** (as of v2.6.0):
+**Current** (as of v4.1.0):
 ```
 GitHub Organization: cortex-tms
 └── cortex-tms/cortex-tms (public)
@@ -132,11 +132,10 @@ GitHub Organization: cortex-tms
 
 **Package Name**: `cortex-tms`
 **Registry**: https://www.npmjs.com/package/cortex-tms
-**Current Version**: 2.6.0 (stable)
+**Current Version**: 4.1.0 (stable)
 
 **Distribution Tags**:
-- `latest`: 2.6.0
-- `beta`: 2.6.0-beta.1
+- `latest`: 4.1.0
 
 **Install Command**:
 ```bash
@@ -188,7 +187,7 @@ npm install -g cortex-tms@latest
 
 ## 🔄 CI/CD Pipeline
 
-**Current** (v2.6.0):
+**Current** (v4.1.0):
 ```
 GitHub Actions:
 ├── .github/workflows/tms-validate.yml

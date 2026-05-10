@@ -51,10 +51,10 @@ As of February 2026:
 
 Our community helps shape the roadmap! Popular ideas (measured by 👍 reactions) get prioritized.
 
-**Current Focus (v3.2.0)**:
-- ✅ Security hardening (AUDIT-1 to AUDIT-6)
-- ✅ Production-ready test suite
-- 🚀 Ready for release
+**Current Focus (v4.1.0)**:
+- ✅ Governance Packs (`--preset node`) shipped
+- ✅ 371 tests passing
+- 🚀 v4.1.0 released
 
 **Upcoming**:
 - Governance Packs (`cortex-tms init --preset node` — node shipped; python/go planned)

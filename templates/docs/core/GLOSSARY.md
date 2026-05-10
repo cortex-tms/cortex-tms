@@ -35,7 +35,7 @@ This file defines project-specific terminology, acronyms, and domain language to
 
 ### [Concept 1: e.g., "Tiered Memory System"]
 **What it is**: [High-level explanation - e.g., "A documentation organization pattern that categorizes files by access frequency"]
-**Why it matters**: [Business/technical value - e.g., "Reduces AI agent context window waste by 60%"]
+**Why it matters**: [Business/technical value - e.g., "Keeps AI agents focused on the files that matter for each task"]
 **Key Components**:
 - **[Sub-concept A]**: [Definition]
 - **[Sub-concept B]**: [Definition]

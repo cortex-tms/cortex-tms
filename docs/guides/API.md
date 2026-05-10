@@ -1,7 +1,7 @@
 # Cortex TMS API Documentation
 
-**Version**: 3.2.0
-**Last Updated**: 2026-01-31
+**Version**: 4.1.0
+**Last Updated**: 2026-05-10
 
 This document covers both the **CLI API** (for users and automation) and **Developer API** (for embedding Cortex TMS in tools and Skills).
 
@@ -106,17 +106,12 @@ cortex-tms validate --fix
 
 ### `cortex-tms status`
 
-Project dashboard with health metrics, sprint progress, and token analysis.
+Project dashboard with health metrics and sprint progress.
 
 **Usage**:
 ```bash
 cortex-tms status [options]
 ```
-
-**Options**:
-- `--tokens` - Show HOT/WARM/COLD token breakdown
-- `-m, --model <model>` - Model for cost calculation (default: `claude-sonnet-4.5`)
-  - Allowed values: `claude-sonnet-4.5`, `claude-opus-4.5`, `gpt-4-turbo`, `gpt-4`, `gpt-4o`
 
 **Exit Codes**:
 - `0` - Always succeeds (status is informational)
@@ -125,19 +120,11 @@ cortex-tms status [options]
 - Scope and health status
 - Active tasks from NEXT-TASKS.md
 - Validation status
-- Token analysis (with `--tokens` flag)
 
 **Examples**:
 ```bash
-# Basic dashboard
+# Project dashboard
 cortex-tms status
-
-# Token analysis with cost breakdown
-cortex-tms status --tokens
-
-# Cost comparison across models
-cortex-tms status --tokens -m claude-sonnet-4.5
-cortex-tms status --tokens -m gpt-4-turbo
 ```
 
 ---
