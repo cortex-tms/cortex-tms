@@ -139,7 +139,7 @@ describe("copyTemplates with preset", () => {
     expect(exists).toBe(true);
   });
 
-  it("produces no unresolved bracket placeholders in written files", async () => {
+  it("known template placeholders are fully replaced in all written files", async () => {
     const templatesDir = getTemplatesDir();
     const replacements = generateReplacements("my-node-app", "A Node.js project");
 
@@ -161,15 +161,42 @@ describe("copyTemplates with preset", () => {
     }
     await walk(tempDir);
 
-    // Check none contain unresolved [Placeholder] patterns
-    // (known replacements: [Project Name], [project-name], [Description])
-    const knownUnresolved: string[] = [];
+    // Verify the 3 known template placeholders are all resolved
+    const unresolvedKnown: string[] = [];
     for (const file of markdownFiles) {
       const content = await readFile(file, "utf-8");
       const matches = content.match(/\[Project Name\]|\[project-name\]|\[Description\]/g);
-      if (matches) knownUnresolved.push(...matches.map((m) => `${file}: ${m}`));
+      if (matches) unresolvedKnown.push(...matches.map((m) => `${file}: ${m}`));
     }
-    expect(knownUnresolved).toHaveLength(0);
+    expect(unresolvedKnown).toHaveLength(0);
+  });
+
+  it("preset-overridden agent files contain no unresolved [e.g., ...] hints", async () => {
+    const templatesDir = getTemplatesDir();
+    const replacements = generateReplacements("my-node-app", "A Node.js project");
+
+    await copyTemplates(templatesDir, tempDir, replacements, {
+      scope: "standard",
+      overwrite: true,
+      preset: "node",
+    });
+
+    // Agent-facing files overridden by the node preset should not contain
+    // generic [e.g., ...] hints — those belong in base templates only
+    const agentFiles = [
+      join(tempDir, ".github/copilot-instructions.md"),
+      join(tempDir, "AGENTS.md"),
+      join(tempDir, "CLAUDE.md"),
+    ];
+
+    for (const file of agentFiles) {
+      const exists = await fs.pathExists(file);
+      if (!exists) continue;
+      const content = await readFile(file, "utf-8");
+      // [e.g., ...] patterns indicate unfilled generic hints from the base template
+      const egs = content.match(/\[e\.g\.,/g);
+      expect(egs, `Found [e.g., hints in ${file} — preset should pre-fill these`).toBeNull();
+    }
   });
 });
 

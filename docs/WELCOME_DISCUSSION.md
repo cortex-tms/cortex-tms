@@ -59,7 +59,7 @@ We're currently preparing for **v3.2.0 release** with:
 - ✅ Comprehensive E2E testing
 
 **Upcoming:**
-- Governance Packs (`cortex-tms init --preset node/python/go`)
+- Governance Packs (`cortex-tms init --preset node` — node shipped; python/go planned)
 - MCP Server — expose governance rules to any AI tool at runtime
 - Claude Code skills scaffolding (`/cortex-validate`, `/cortex-review`)
 

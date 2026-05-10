@@ -127,10 +127,16 @@ npx cortex-tms@latest archive --dry-run
 Scaffold TMS documentation structure with interactive scope selection.
 
 ```bash
-cortex-tms init                    # Interactive mode
-cortex-tms init --scope standard   # Non-interactive
-cortex-tms init --dry-run          # Preview changes
+cortex-tms init                          # Interactive mode
+cortex-tms init --scope standard         # Non-interactive
+cortex-tms init --preset node            # Node.js governance pack
+cortex-tms init --preset node --scope standard --force  # CI-friendly
+cortex-tms init --dry-run                # Preview changes
 ```
+
+**Governance packs** (`--preset`) fill template content with ecosystem-specific
+patterns, conventions, and idioms. Independent of `--scope` (which controls the
+file set). Available presets: `node`.
 
 ### `cortex-tms validate`
 
