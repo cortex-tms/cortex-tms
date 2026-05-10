@@ -5,6 +5,50 @@ All notable changes to Cortex TMS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2026-05-10
+
+**Theme**: Governance Packs — ecosystem-specific content for AI coding agents
+
+### New Features
+
+#### Governance Packs — `cortex-tms init --preset node`
+- **Feature**: `--preset <preset>` flag on `init` fills governance template content with ecosystem-specific patterns, conventions, and idioms
+- **Scope independence**: `--preset` controls content; `--scope` controls the file set — fully composable (`--preset node --scope nano`, `--preset node --scope standard`, etc.)
+- **Node.js pack**: Pre-fills six agent-facing files with Node-specific content:
+  - `docs/core/PATTERNS.md` — async/await, error handling, module structure, test patterns (Jest/Vitest), env var conventions
+  - `docs/core/DOMAIN-LOGIC.md` — Node idioms, event loop, streaming, middleware, package manager conventions
+  - `docs/core/ARCHITECTURE.md` — common Node layouts (API service, CLI, monorepo), dependency conventions
+  - `CLAUDE.md` — agent instructions with Node stack section pre-filled
+  - `AGENTS.md` — multi-agent governance with Node-specific prohibitions (no raw env reads, no `console.log` in production)
+  - `.github/copilot-instructions.md` — agent rules with Node stack section, no generic `[e.g., ...]` hints
+- **Preset resolution**: per-file fallback — preset override → base template. Partial presets are valid; unoverridden files use base templates
+- **`.cortexrc` storage**: `metadata.preset` records the preset used at init time for future tooling (migrate, status)
+- **Walker exclusion**: `templates/presets/` is excluded from base template discovery — preset files are never treated as base destinations
+- **CI-friendly**: `cortex-tms init --preset node --scope standard --force` is fully non-interactive
+
+### Infrastructure
+
+- **pnpm v11 build approval**: `pnpm-workspace.yaml` now explicitly sets `allowBuilds` for `esbuild` and `sharp` — required by pnpm v11's build-script security model
+
+### Documentation
+
+- **README**: `cortex-tms init` section updated with `--preset` examples and explanation
+- **Website CLI reference** (`/reference/cli/init`): Full `--preset` option documented, lists all six Node-overridden files
+- **Community docs**: Roadmap wording updated — `node` preset shipped, `python/go` planned; removed stale v3.3 roadmap references
+
+### Tests
+
+- **17 new preset tests** across unit and E2E:
+  - `getPresetDir()` path correctness
+  - `resolveTemplateSource()` — preset override, base fallback, no-preset passthrough
+  - `getTemplateFiles()` walker excludes `presets/`
+  - Zod schema rejects unknown presets
+  - `copyTemplates()` with preset: override applied, fallback used, known placeholders resolved
+  - Agent files contain no unresolved `[e.g., ...]` hints after preset init
+  - E2E: `--preset node --scope standard`, `--minimal`, `--scope nano` (both code paths), `--dry-run`, `.cortexrc` metadata, invalid preset rejection
+
+---
+
 ## [4.0.2] - 2026-02-23
 
 **Theme**: Release process hardening
