@@ -58,12 +58,10 @@ We're currently preparing for **v3.2.0 release** with:
 - ✅ Production-ready test suite (100% pass rate)
 - ✅ Comprehensive E2E testing
 
-**Upcoming in v3.3+:**
-- Auto-Tier performance improvements
-- Guardian GitHub Action & PR Bot
-- Custom templates architecture
-- MCP Server integration
-- Advanced token analytics
+**Upcoming:**
+- Governance Packs (`cortex-tms init --preset node/python/go`)
+- MCP Server — expose governance rules to any AI tool at runtime
+- Claude Code skills scaffolding (`/cortex-validate`, `/cortex-review`)
 
 Vote on features you want in [Ideas](https://github.com/cortex-tms/cortex-tms/discussions/categories/ideas)!
 
