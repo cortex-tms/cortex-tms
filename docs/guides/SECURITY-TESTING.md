@@ -830,8 +830,8 @@ describe('MyCommand E2E', () => {
 
 ---
 
-**Version**: 3.2.0
-**Last Updated**: 2026-01-31
+**Version**: 4.1.0
+**Last Updated**: 2026-05-10
 **Maintained By**: Cortex TMS Contributors
 
 <!-- @cortex-tms-version 4.0.2 -->

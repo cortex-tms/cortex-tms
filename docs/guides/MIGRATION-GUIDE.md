@@ -6,6 +6,45 @@ This guide covers two scenarios:
 
 ---
 
+## Upgrading to v4.1.0
+
+### Overview
+
+v4.1.0 adds Governance Packs (`--preset node`) and removes deprecated token-optimization features. No breaking changes to existing CLI usage or `.cortexrc` config.
+
+### What Changed
+
+**New**:
+- `cortex-tms init --preset node` — Node.js governance pack pre-fills template content
+- `metadata.preset` field added to `.cortexrc` (optional, only written when `--preset` is used)
+
+**Removed** (already removed in v4.0.0, confirmed gone in v4.1.0):
+- `cortex-tms status --tokens` flag
+- Token counter utility and cost analysis UI components
+
+### Migration Steps
+
+1. **Update package**:
+   ```bash
+   npm install -g cortex-tms@latest
+   ```
+
+2. **Run validation** to confirm your project is healthy:
+   ```bash
+   cortex-tms validate --strict
+   ```
+
+3. **Optionally adopt a preset** on reinit (new projects only — does not affect existing files):
+   ```bash
+   cortex-tms init --preset node --force
+   ```
+
+### Breaking Changes
+
+**None**. v4.1.0 is backward-compatible with v4.0.x and v3.x projects.
+
+---
+
 ## Upgrading to v3.2.0
 
 ### Overview
