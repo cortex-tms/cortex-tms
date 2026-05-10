@@ -114,6 +114,7 @@ export const initOptionsSchema = z.object({
   verbose: verboseFlag,
   scope: z.enum(["nano", "standard", "enterprise", "custom"]).optional(),
   dryRun: dryRunFlag,
+  preset: z.enum(["node"]).optional(),
 });
 
 /**

@@ -42,6 +42,10 @@ export function createInitCommand(): Command {
       "Specify scope for non-interactive mode (nano|standard|enterprise|custom)",
     )
     .option("-d, --dry-run", "Preview changes without writing to disk")
+    .option(
+      "-p, --preset <preset>",
+      "Governance pack preset for ecosystem-specific content (node)",
+    )
     .action(async (options: InitCommandOptions) => {
       await runInit(options);
     });
@@ -210,6 +214,7 @@ async function runInit(options: InitCommandOptions): Promise<void> {
       scope: answers.scope,
       dryRun: validated.dryRun ?? false,
       ...(answers.customFiles && { customFiles: answers.customFiles }),
+      ...(validated.preset && { preset: validated.preset }),
     });
 
     copySpinner.succeed(
@@ -263,6 +268,9 @@ async function runInit(options: InitCommandOptions): Promise<void> {
           answers.projectName,
           answers.customFiles,
         );
+        if (validated.preset && config.metadata) {
+          config.metadata.preset = validated.preset;
+        }
         await saveConfig(cwd, config);
         configSpinner.succeed("Configuration saved");
       } catch (error) {

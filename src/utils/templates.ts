@@ -96,6 +96,35 @@ export function getTemplatesDir(): string {
 }
 
 /**
+ * Get the absolute path to a governance preset directory
+ */
+export function getPresetDir(preset: string): string {
+  return join(__dirname, "../../templates/presets", preset);
+}
+
+/**
+ * Resolve the source path for a template file, preferring preset override.
+ * Returns the preset file path if it exists, otherwise the base template path.
+ */
+export async function resolveTemplateSource(
+  baseSource: string,
+  destination: string,
+  preset?: string,
+): Promise<string> {
+  if (!preset) return baseSource;
+
+  const presetDir = getPresetDir(preset);
+  const presetSource = join(presetDir, destination);
+
+  try {
+    await fs.access(presetSource);
+    return presetSource;
+  } catch {
+    return baseSource;
+  }
+}
+
+/**
  * Replace placeholders in template content
  *
  * Supported placeholders:
@@ -175,6 +204,8 @@ export async function getTemplateFiles(
       const fullPath = join(dir, entry.name);
 
       if (entry.isDirectory()) {
+        // Skip presets/ — those are resolved separately, not base destinations
+        if (entry.name === "presets" && dir === baseDir) continue;
         // Recursively walk subdirectories
         await walk(fullPath, baseDir);
       } else if (entry.isFile()) {
@@ -227,6 +258,7 @@ export async function copyTemplates(
     scope?: "nano" | "standard" | "enterprise" | "custom";
     customFiles?: string[]; // Only used when scope is 'custom'
     dryRun?: boolean; // Preview changes without writing
+    preset?: string; // Governance preset for ecosystem-specific content
   } = {},
 ): Promise<{ copied: number; skipped: number; changes?: FileChange[] }> {
   const {
@@ -234,6 +266,7 @@ export async function copyTemplates(
     scope = "standard",
     customFiles,
     dryRun = false,
+    preset,
   } = options;
 
   const allFiles = await getTemplateFiles(templatesDir);
@@ -271,8 +304,15 @@ export async function copyTemplates(
   const changes: FileChange[] = [];
 
   for (const file of filesToCopy) {
+    // Resolve source: preset override takes precedence over base template
+    const resolvedSource = await resolveTemplateSource(
+      file.source,
+      file.destination,
+      preset,
+    );
+
     // Validate source path stays within templates directory (defense in depth)
-    const sourceValidation = validateSafePath(file.source, templatesDir);
+    const sourceValidation = validateSafePath(resolvedSource, templatesDir);
     if (!sourceValidation.isValid) {
       throw new FileSystemError(
         `Template path validation failed: ${sourceValidation.error}`,
@@ -303,7 +343,7 @@ export async function copyTemplates(
       } else if (overwrite) {
         // Check if content would actually change
         const existingContent = await fs.readFile(destPath, "utf-8");
-        const templateContent = await fs.readFile(file.source, "utf-8");
+        const templateContent = await fs.readFile(resolvedSource, "utf-8");
         let processedContent = replacePlaceholders(
           templateContent,
           replacements,
@@ -347,7 +387,7 @@ export async function copyTemplates(
       }
 
       // Process template with placeholder replacement
-      await processTemplate(file.source, destPath, replacements);
+      await processTemplate(resolvedSource, destPath, replacements);
       copied++;
     }
   }

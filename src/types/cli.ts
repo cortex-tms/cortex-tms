@@ -47,6 +47,12 @@ export interface TemplateFile {
 }
 
 /**
+ * Governance preset — controls ecosystem-specific content inside templates.
+ * Independent of scope (which controls the file set).
+ */
+export type GovernancePreset = "node";
+
+/**
  * Options for the init command
  */
 export interface InitCommandOptions {
@@ -55,6 +61,7 @@ export interface InitCommandOptions {
   verbose?: boolean; // Show detailed output
   scope?: ProjectScope; // Specify scope for non-interactive mode
   dryRun?: boolean; // Preview changes without writing to disk
+  preset?: GovernancePreset; // Ecosystem-specific content preset
 }
 
 /**
@@ -200,6 +207,8 @@ export interface CortexConfig {
     description?: string;
     /** Custom file list (only for custom scope) */
     customFiles?: string[];
+    /** Governance preset used at init time */
+    preset?: GovernancePreset;
   };
 }
 
