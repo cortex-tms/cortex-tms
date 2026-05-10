@@ -40,4 +40,4 @@ both Python/Go packs and MCP content priorities.
 
 ---
 
-<!-- @cortex-tms-version 4.0.2 -->
+<!-- @cortex-tms-version 4.1.0 -->

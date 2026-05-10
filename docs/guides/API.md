@@ -900,4 +900,4 @@ class FileSystemError extends CLIError {
 - **Documentation**: [cortex-tms.org](https://cortex-tms.org/)
 - **Security**: See [SECURITY.md](../core/SECURITY.md) for vulnerability reporting
 
-<!-- @cortex-tms-version 4.0.2 -->
+<!-- @cortex-tms-version 4.1.0 -->

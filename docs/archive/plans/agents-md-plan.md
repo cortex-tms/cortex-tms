@@ -272,4 +272,4 @@ Remove the `AGENTS.md template` entry under Phase 6 (Agent Ecosystem) to avoid d
 
 ---
 
-<!-- @cortex-tms-version 4.0.2 -->
+<!-- @cortex-tms-version 4.1.0 -->
