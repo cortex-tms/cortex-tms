@@ -8,56 +8,85 @@ Sprint archive: `docs/archive/v4.1-sprint.md`
 
 ---
 
-## 🔴 Gate Task (blocks all integration work)
+## ✅ Closed Gate
 
-### TMS-421 — Dogfood ai-planner on Cortex TMS (P0)
+### TMS-421 — Dogfood ai-planner on Cortex TMS (Done)
 
-**Goal**: Run 5 real ai-planner tasks against Cortex TMS before building any integration features.
-No Cortex integration features until this completes and produces findings.
+**Closed**: 2026-05-11
+**Findings**: `ai-planner/projects/cortex-tms/TMS-421-FINDINGS.md`
+
+5 tasks executed against cortex-tms with Sonnet 4.6 (~$0.585 total). Autonomous
+clean rate 2/5; scope drift caught by human review on 2/5; one false-negative
+verify on 1/5. Runner infrastructure hardened during the run (verify includes
+`build`, credential scrub, `max_verify_retries`, strict int validation).
+
+**First justified integration feature**: review outcome tracking in
+`runs.jsonl` (TMS-422 below). Model routing, AI_RULES markers, digest
+generation, harness export, and `context_provider` remain blocked until
+Phase 2 review tooling ships.
+
+---
+
+## 🔴 Phase 2 — Review Gap (P0)
+
+### TMS-422 — Review outcome tracking in ai-planner (P0)
+
+**Goal**: Close the gap between runner verification and human review. TASK-001
+and TASK-004 both passed `install + build + test` and both should not have
+been committed; the system currently has no way to record that distinction.
 
 **Done when**:
-- ai-planner project config exists for cortex-tms ✅
-- verify_sequence: [install, test] confirmed ✅
-- 5 task files written and run ✅
-- 3+ tasks reach `review` or `done`
-- Findings report written covering all 5 runs (template below)
-- First justified integration feature identified (or confirmed unnecessary)
+- `runs.jsonl` gains a `phase: review` entry per task with fields:
+  `model_commit_hash`, `final_commit_hash`, `review_outcome`
+  (`accept` | `revert+rewrite` | `reject`), `review_notes`
+- CLI command writes the review entry (no manual JSON editing)
+- Existing 5 TMS-421 runs are back-filled with review entries
+- README documents the review workflow
 
-**Findings report — track per task**:
-```
-task_id | complexity | input_tokens | output_tokens | cost_usd
-json_retry_count | verification_result | human_review_result
-notes: convention miss / over-edit / insufficient context / good
-```
+**Lives in**: ai-planner (`runner/`, `projects/cortex-tms/logs/`)
 
-**Decision gate after 5 runs**:
-- Complexity-1 passes cleanly → test Kimi/Haiku replay
-- Sonnet fails simple tasks → fix task/context/runner before cheaper models
-- Install dominates runtime → add dependency cache or setup_sequence
-- JSON retries happen → improve output contract before adding agents
-- Human review catches real issues → add Codex reviewer (Phase 3)
+---
 
-**Phase 2 model config shape** (do not implement before findings):
-```yaml
-models:
-  default: sonnet
-  profiles:
-    sonnet:
-      provider: anthropic
-      id: claude-sonnet-4-6
-      input_per_million: 3.00
-      output_per_million: 15.00
-    fast:
-      provider: openai_compatible
-      id: <fast-model-id>
-      base_url: <provider-base-url>
-      api_key_env: FAST_MODEL_API_KEY
-  routing:
-    complexity_1: sonnet
-    complexity_2: sonnet
-```
+### TMS-423 — Fix flaky E2E tests (parallel temp-dir contention) (P0)
 
-**Blocks**: AI_RULES markers, digest generation, harness export, context_provider contract, model routing refactor.
+**Goal**: cortex-tms E2E suite shows intermittent failures from parallel test
+runs sharing temp directories. TASK-002's first verify attempt failed for this
+reason, not the model. Fix in cortex-tms so `max_verify_retries: 0` can be the
+default.
+
+**Done when**:
+- Failing E2E paths identified and isolated to per-test temp dirs
+- Suite runs green 10x consecutively under `vitest --reporter=verbose`
+- `max_verify_retries` lowered to 0 in `ai-planner/projects/cortex-tms/project.yaml`
+
+---
+
+### TMS-424 — Per-project `verify_env` support in ai-planner (P1)
+
+**Goal**: Generalise the credential-strip fix. Some tests need explicit env
+opt-outs (`CORTEX_SKIP_LLM_TESTS=1`) rather than blanket scrubbing.
+
+**Done when**:
+- `project.yaml` accepts `verify_env: { KEY: value }` block
+- `step_8_verify` merges `verify_env` into the scrubbed subprocess env
+- cortex-tms project config uses it where appropriate
+- Schema validation rejects non-string values
+
+**Lives in**: ai-planner (`runner/`)
+
+---
+
+### TMS-425 — Add accurate CLI-USAGE sections for missing commands (P1)
+
+**Goal**: This is what TASK-004 was supposed to deliver before the model
+invented content against a wrong-context prompt. Audit CLI commands missing
+`CLI-USAGE` sections in their docs and add accurate ones, verified against
+actual `--help` output.
+
+**Done when**:
+- Audit table lists every CLI command and whether its doc has a CLI-USAGE section
+- Missing sections added with examples verified against real CLI output
+- No invented flags, no fabricated examples — every snippet runs
 
 ---
 
