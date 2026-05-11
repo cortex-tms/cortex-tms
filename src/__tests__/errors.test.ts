@@ -150,4 +150,25 @@ describe("formatError", () => {
     expect(formatted).toContain("enabled=true");
     expect(formatted).toContain('config={"debug":true,"level":"info"}');
   });
+
+  it("should redact an OpenAI-style API key embedded in the error message", () => {
+    const rawKey = "sk-abc123def456ghi789";
+    const error = new CLIError(
+      `Authentication failed with key ${rawKey}, please check your credentials`
+    );
+    const formatted = formatError(error);
+    expect(formatted).not.toContain(rawKey);
+    expect(formatted).toContain("[REDACTED_API_KEY]");
+  });
+
+  it("should redact an API key value present in the error context object", () => {
+    const rawKey = "sk-ant-api03-xyz789abc";
+    const error = new CLIError("Authentication failed", 1, {
+      apiKey: rawKey,
+      service: "anthropic",
+    });
+    const formatted = formatError(error);
+    expect(formatted).not.toContain(rawKey);
+    expect(formatted).toContain("apiKey=[REDACTED_API_KEY]");
+  });
 });
