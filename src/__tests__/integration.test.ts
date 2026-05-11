@@ -89,6 +89,29 @@ describe("Integration Tests - Command Workflows", () => {
     });
   });
 
+  describe("Prompt Command", () => {
+    it("should list available prompts after init with standard scope", async () => {
+      // Initialize project with standard scope so PROMPTS.md is present
+      const initResult = await runCommand(
+        "init",
+        ["--scope", "standard", "--force"],
+        tempDir,
+      );
+      expect(initResult.exitCode).toBe(0);
+
+      // Run prompt --list against the initialized project
+      const promptListResult = await runCommand(
+        "prompt",
+        ["--list"],
+        tempDir,
+      );
+
+      expect(promptListResult.exitCode).toBe(0);
+      expect(promptListResult.stdout).toContain("Available Prompts:");
+      expect(promptListResult.stdout).toContain("init-session");
+    });
+  });
+
   describe("Error Recovery and Rollback", () => {
     it("should handle init on existing project gracefully", async () => {
       // First init
