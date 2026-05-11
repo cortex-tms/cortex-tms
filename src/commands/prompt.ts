@@ -10,6 +10,7 @@ import inquirer from "inquirer";
 import clipboard from "clipboardy";
 import { getProjectPrompts, getPrompt } from "../utils/prompt-parser.js";
 import { promptOptionsSchema, validateOptions } from "../utils/validation.js";
+import { ValidationError } from "../utils/errors.js";
 
 /**
  * Create and configure the prompt command
@@ -88,16 +89,9 @@ async function runPromptCommand(
       const content = await getPrompt(cwd, promptName);
 
       if (!content) {
-        console.log(
-          chalk.red("\n❌ Error:"),
-          `Prompt "${promptName}" not found`,
+        throw new ValidationError(
+          `Prompt "${promptName}" not found. Run \`cortex-tms prompt --list\` to see available prompts.`,
         );
-        console.log(
-          chalk.gray("\nRun"),
-          chalk.cyan("cortex-tms prompt --list"),
-          chalk.gray("to see available prompts.\n"),
-        );
-        return;
       }
 
       await displayPrompt(promptName, content, options.copy);
@@ -148,7 +142,7 @@ async function runPromptCommand(
       );
       console.log(chalk.gray('Run "cortex-tms init" to initialize.\n'));
     } else {
-      // Re-throw other errors
+      // Re-throw other errors (including ValidationError)
       throw error instanceof Error ? error : new Error("Unknown error");
     }
   }
