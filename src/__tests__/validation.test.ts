@@ -221,6 +221,50 @@ describe("Zod Input Validation", () => {
       expect(result.force).toBe(true);
       expect(result.apply).toBe(true);
     });
+
+    it("should reject both --apply and --rollback as mutually exclusive", () => {
+      expect(() =>
+        migrateOptionsSchema.parse({
+          apply: true,
+          rollback: true,
+        }),
+      ).toThrow("--apply and --rollback are mutually exclusive");
+    });
+
+    it("should accept --apply alone", () => {
+      const result = migrateOptionsSchema.parse({ apply: true });
+      expect(result.apply).toBe(true);
+      expect(result.rollback).toBeUndefined();
+    });
+
+    it("should accept --rollback alone", () => {
+      const result = migrateOptionsSchema.parse({ rollback: true });
+      expect(result.rollback).toBe(true);
+      expect(result.apply).toBeUndefined();
+    });
+
+    it("should surface mutually-exclusive error through validateOptions as ValidationError", () => {
+      expect(() =>
+        validateOptions(
+          migrateOptionsSchema,
+          { apply: true, rollback: true },
+          "migrate",
+        ),
+      ).toThrow(ValidationError);
+
+      try {
+        validateOptions(
+          migrateOptionsSchema,
+          { apply: true, rollback: true },
+          "migrate",
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(ValidationError);
+        expect((error as Error).message).toContain(
+          "--apply and --rollback are mutually exclusive",
+        );
+      }
+    });
   });
 
   describe("promptOptionsSchema", () => {

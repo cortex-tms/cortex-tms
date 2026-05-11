@@ -151,6 +151,19 @@ export const migrateOptionsSchema = z
   })
   .refine(
     (data) => {
+      // apply and rollback are mutually exclusive
+      if (data.apply && data.rollback) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "--apply and --rollback are mutually exclusive",
+      path: ["apply"],
+    },
+  )
+  .refine(
+    (data) => {
       // Force requires apply
       if (data.force && !data.apply) {
         return false;
