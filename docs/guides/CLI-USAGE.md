@@ -15,7 +15,8 @@ The Cortex TMS CLI is a command-line tool for initializing and validating AI-opt
    - [init](#init-command)
    - [validate](#validate-command)
    - [status](#status-command)
-   - [auto-tier](#auto-tier-command)
+   - [dashboard](#dashboard-command)
+   - [auto-tier](#auto-tier-command) *(deprecated — use `archive` instead)*
 4. [VS Code Snippets](#vs-code-snippets)
 5. [Project Scopes](#project-scopes)
 6. [Configuration (.cortexrc)](#configuration)
@@ -399,7 +400,9 @@ $ cortex-tms dashboard
 
 ---
 
-### `auto-tier` Command
+### `auto-tier` Command *(Deprecated — use `archive` instead)*
+
+> **⚠️ Deprecated**: Use the `archive` command going forward.
 
 Analyze git commit history and file patterns to automatically suggest and apply HOT/WARM/COLD tier assignments to documentation files. Uses a scoring system to prioritize high-value docs while capping HOT files to prevent context bloat.
 
@@ -813,7 +816,7 @@ cp node_modules/cortex-tms/templates/vscode/tms.code-snippets .vscode/
 Or from the GitHub repository:
 ```bash
 curl -o .vscode/tms.code-snippets \
-  https://raw.githubusercontent.com/yourusername/cortex-tms/main/templates/vscode/tms.code-snippets
+  https://raw.githubusercontent.com/cortex-tms/cortex-tms/main/templates/vscode/tms.code-snippets
 ```
 
 ### Benefits
@@ -1026,7 +1029,7 @@ Next Steps:
   2. Update docs/core/ with your project details
   3. Customize .github/copilot-instructions.md for AI rules
 
-📚 Learn more: https://github.com/yourusername/cortex-tms
+📚 Learn more: https://github.com/cortex-tms/cortex-tms
 ```
 
 ### Example 2: Validating Before PR
@@ -1158,7 +1161,7 @@ npx cortex-tms init --force
 
 **Solution**:
 ```bash
-# Verify Node.js version (requires >=18)
+# Verify Node.js version (requires >=18.0.0)
 node --version
 
 # Use npx instead of direct command
@@ -1192,8 +1195,8 @@ npm install -g cortex-tms
 
 ## Support
 
-- **Issues**: https://github.com/yourusername/cortex-tms/issues
-- **Documentation**: https://github.com/yourusername/cortex-tms
+- **Issues**: https://github.com/cortex-tms/cortex-tms/issues
+- **Documentation**: https://github.com/cortex-tms/cortex-tms
 - **Version**: Run `cortex-tms --version`
 
 ---
