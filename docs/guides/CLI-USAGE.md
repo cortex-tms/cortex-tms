@@ -15,7 +15,14 @@ The Cortex TMS CLI is a command-line tool for initializing and validating AI-opt
    - [init](#init-command)
    - [validate](#validate-command)
    - [status](#status-command)
-   - [auto-tier](#auto-tier-command)
+   - [dashboard](#dashboard-command)
+   - [migrate](#migrate-command)
+   - [prompt](#prompt-command)
+   - [tutorial](#tutorial-command)
+   - [review](#review-command)
+   - [archive](#archive-command)
+   - [hooks](#hooks-command)
+   - [auto-tier](#auto-tier-command) *(deprecated)*
 4. [VS Code Snippets](#vs-code-snippets)
 5. [Project Scopes](#project-scopes)
 6. [Configuration (.cortexrc)](#configuration)
@@ -682,6 +689,276 @@ Auto-tier is designed around the ["Lost in the Middle"](https://arxiv.org/abs/23
 - **Git history** provides an objective signal for file relevance
 
 By keeping recently-modified files in the HOT tier (beginning of context), auto-tier optimizes AI agent performance based on actual usage patterns.
+
+---
+
+### `migrate` Command
+
+Upgrade TMS documentation files to the current template version. Compares your installed files against the shipped templates and applies or previews updates.
+
+#### Usage
+
+```bash
+cortex-tms migrate [options]
+```
+
+#### Options
+
+| Option | Alias | Description |
+|--------|-------|-------------|
+| `--apply` | `-a` | Apply automatic upgrades (creates a backup first) |
+| `--rollback` | `-r` | Restore files from a previous backup |
+| `--force` | `-f` | Force upgrade even for customized files (requires `--apply`) |
+| `--verbose` | `-v` | Show detailed output |
+| `--dry-run` | `-d` | Preview changes without applying them |
+
+#### Examples
+
+**Preview what would change**
+```bash
+npx cortex-tms migrate --dry-run
+# Shows which files differ from current templates without modifying anything
+```
+
+**Apply upgrades (with automatic backup)**
+```bash
+npx cortex-tms migrate --apply
+# Creates a backup, then overwrites outdated template files
+```
+
+**Force-upgrade customized files**
+```bash
+npx cortex-tms migrate --apply --force
+# Overwrites files even if they contain local edits — use with care
+```
+
+**Roll back after a bad migration**
+```bash
+npx cortex-tms migrate --rollback
+# Restores files from the backup created by the most recent --apply run
+```
+
+---
+
+### `prompt` Command
+
+Access project-aware AI prompt templates. Templates are populated with your project's name and scope from `.cortexrc` before display.
+
+#### Usage
+
+```bash
+cortex-tms prompt [options] [name]
+```
+
+#### Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `name` | Prompt name to display (e.g., `init-session`, `feature`) |
+
+#### Options
+
+| Option | Alias | Description |
+|--------|-------|-------------|
+| `--list` | `-l` | List all available prompts |
+| `--no-copy` | | Do not copy to clipboard — print to stdout only |
+
+#### Examples
+
+**List available prompts**
+```bash
+npx cortex-tms prompt --list
+# Prints a table of all prompt names and descriptions
+```
+
+**Display a prompt (copies to clipboard)**
+```bash
+npx cortex-tms prompt init-session
+# Prints the prompt and copies it to your clipboard
+```
+
+**Print without copying to clipboard**
+```bash
+npx cortex-tms prompt feature --no-copy
+# Outputs the prompt to stdout only — useful in scripts or CI
+```
+
+---
+
+### `tutorial` Command
+
+Launch an interactive walkthrough of Cortex TMS features. Steps through key concepts — project scopes, validation, tiering — with live examples in your terminal.
+
+#### Usage
+
+```bash
+cortex-tms tutorial
+```
+
+No options. The tutorial is fully interactive; follow the on-screen prompts.
+
+---
+
+### `review` Command
+
+Guardian: analyze a source file against your project's documented patterns (from `docs/core/PATTERNS.md`). Calls an LLM provider and reports violations with confidence scores.
+
+#### Usage
+
+```bash
+cortex-tms review [options] <file>
+```
+
+#### Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `<file>` | Path to the file to review (required) |
+
+#### Options
+
+| Option | Alias | Description |
+|--------|-------|-------------|
+| `--provider <provider>` | `-p` | LLM provider: `anthropic` or `openai` (default: `anthropic`) |
+| `--model <model>` | `-m` | Model name (default: `claude-3-5-sonnet-20241022` for Anthropic, `gpt-4-turbo-preview` for OpenAI) |
+| `--api-key <key>` | | API key — alternative to the `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` environment variable |
+| `--safe` | | Safe Mode: only show violations with ≥ 70% confidence |
+| `--output-json` | | Output raw JSON instead of formatted text (for programmatic use) |
+
+#### Environment Variables
+
+| Variable | Used when |
+|----------|-----------|
+| `ANTHROPIC_API_KEY` | `--provider anthropic` (default) |
+| `OPENAI_API_KEY` | `--provider openai` |
+
+#### Examples
+
+**Review a file against project patterns**
+```bash
+npx cortex-tms review src/auth/login.ts
+# Prints violations found in login.ts relative to PATTERNS.md
+```
+
+**High-confidence violations only**
+```bash
+npx cortex-tms review src/auth/login.ts --safe
+# Only shows findings with >= 70% confidence
+```
+
+**Use OpenAI instead of Anthropic**
+```bash
+npx cortex-tms review src/auth/login.ts --provider openai
+# Requires OPENAI_API_KEY to be set
+```
+
+**Machine-readable output**
+```bash
+npx cortex-tms review src/auth/login.ts --output-json
+# Emits raw JSON — pipe to jq or store in CI artifacts
+```
+
+---
+
+### `archive` Command
+
+Move completed tasks and stale content from `NEXT-TASKS.md` into `docs/archive/`. Keeps the active task list short and AI-readable.
+
+#### Usage
+
+```bash
+cortex-tms archive [options]
+```
+
+#### Options
+
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Preview what would be archived without making changes |
+
+#### Examples
+
+**Preview what would be archived**
+```bash
+npx cortex-tms archive --dry-run
+# Lists completed tasks detected in NEXT-TASKS.md — no files modified
+```
+
+**Archive completed tasks**
+```bash
+npx cortex-tms archive
+# Moves completed items to docs/archive/ and trims NEXT-TASKS.md
+```
+
+---
+
+### `hooks` Command
+
+Manage git hooks for automatic documentation validation. The installed pre-commit hook runs `cortex-tms validate` (and optionally syncs version tags) before each commit.
+
+#### Usage
+
+```bash
+cortex-tms hooks <subcommand> [options]
+```
+
+#### Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `install` | Install a pre-commit hook |
+| `uninstall` | Remove the cortex-tms pre-commit hook |
+| `status` | Show current git hook configuration |
+
+---
+
+#### `hooks install`
+
+```bash
+cortex-tms hooks install [options]
+```
+
+| Option | Alias | Description |
+|--------|-------|-------------|
+| `--strict` | `-s` | Treat warnings as errors (blocks the commit on any warning) |
+| `--skip-staleness` | | Skip staleness detection in the hook (faster commits) |
+| `--cortex-version <version>` | | Pin a specific cortex-tms version for the `npx` fallback |
+
+**Examples**
+
+```bash
+# Install with default settings
+npx cortex-tms hooks install
+
+# Install in strict mode (warnings block commits)
+npx cortex-tms hooks install --strict
+
+# Install, skipping staleness checks for speed
+npx cortex-tms hooks install --skip-staleness
+
+# Pin to a specific version
+npx cortex-tms hooks install --cortex-version 4.1.0
+```
+
+---
+
+#### `hooks uninstall`
+
+Remove the cortex-tms pre-commit hook from `.git/hooks/pre-commit`.
+
+```bash
+npx cortex-tms hooks uninstall
+```
+
+---
+
+#### `hooks status`
+
+Show whether the cortex-tms pre-commit hook is installed and its current configuration.
+
+```bash
+npx cortex-tms hooks status
+```
 
 ---
 
