@@ -1,7 +1,7 @@
 # NEXT: v4.2 Sprint — Governance Pack Expansion
 
 **Last Updated**: 2026-05-12
-**Status**: 🟡 Active — TMS-425 queued, Phase 2 P0s closed
+**Status**: ✅ Phase 2 complete — all P0/P1 tasks closed
 **Current Version**: 4.1.0 (published 2026-05-10)
 
 Sprint archive: `docs/archive/v4.1-sprint.md`
@@ -9,6 +9,18 @@ Sprint archive: `docs/archive/v4.1-sprint.md`
 ---
 
 ## ✅ Closed
+
+### TMS-425 — Add accurate CLI-USAGE sections for missing commands (Done)
+
+**Closed**: 2026-05-12
+Audited all 11 CLI commands. Six were missing sections in
+`docs/guides/CLI-USAGE.md`: `migrate`, `prompt`, `tutorial`, `review`,
+`archive`, `hooks`. Added Usage, Options tables, and verified Examples for
+each. All flags cross-checked against real `--help` output — no invented
+content. ToC updated with all commands; `auto-tier` marked deprecated.
+371 tests passing.
+
+---
 
 ### TMS-424 — Per-project `verify_env` support in ai-planner (Done)
 
@@ -58,22 +70,6 @@ verify on 1/5. Runner infrastructure hardened during the run (verify includes
 `runs.jsonl` (TMS-422 below). Model routing, AI_RULES markers, digest
 generation, harness export, and `context_provider` remain blocked until
 Phase 2 review tooling ships.
-
----
-
-## 🟡 Phase 2 — P1 Remaining
-
-### TMS-425 — Add accurate CLI-USAGE sections for missing commands (P1)
-
-**Goal**: This is what TASK-004 was supposed to deliver before the model
-invented content against a wrong-context prompt. Audit CLI commands missing
-`CLI-USAGE` sections in their docs and add accurate ones, verified against
-actual `--help` output.
-
-**Done when**:
-- Audit table lists every CLI command and whether its doc has a CLI-USAGE section
-- Missing sections added with examples verified against real CLI output
-- No invented flags, no fabricated examples — every snippet runs
 
 ---
 
