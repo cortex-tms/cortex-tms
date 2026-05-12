@@ -47,16 +47,19 @@ been committed; the system currently has no way to record that distinction.
 
 ---
 
-### TMS-423 — Fix flaky E2E tests (parallel temp-dir contention) (P0)
+### TMS-423 — Prevent live Guardian accuracy tests from running in normal verify flows (P0)
 
-**Goal**: cortex-tms E2E suite shows intermittent failures from parallel test
-runs sharing temp directories. TASK-002's first verify attempt failed for this
-reason, not the model. Fix in cortex-tms so `max_verify_retries: 0` can be the
-default.
+**Goal**: `guardian-accuracy.test.ts` makes up to 24 live Anthropic API calls
+whenever `ANTHROPIC_API_KEY` is present, blowing the verify timeout. The earlier
+"parallel temp-dir contention" diagnosis was wrong — `createTempDir()` uses
+`mkdtemp()` so no collision is possible. The real cause was the live LLM path
+in `beforeAll`. Add an explicit `CORTEX_SKIP_LLM_TESTS=1` guard so the
+expensive path skips in CI/harness environments regardless of key presence.
 
 **Done when**:
-- Failing E2E paths identified and isolated to per-test temp dirs
-- Suite runs green 10x consecutively under `vitest --reporter=verbose`
+- `guardian-accuracy.test.ts` `beforeAll` checks `CORTEX_SKIP_LLM_TESTS=1`
+  before `ANTHROPIC_API_KEY` — returns early if set
+- `CORTEX_SKIP_LLM_TESTS=1 pnpm test` runs green 10x consecutively
 - `max_verify_retries` lowered to 0 in `ai-planner/projects/cortex-tms/project.yaml`
 
 ---

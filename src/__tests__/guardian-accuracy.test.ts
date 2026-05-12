@@ -560,6 +560,10 @@ describe("Guardian Accuracy Validation", () => {
 
   // Run Guardian on all test cases
   beforeAll(async () => {
+    if (process.env.CORTEX_SKIP_LLM_TESTS === "1") {
+      console.warn("⏭️  CORTEX_SKIP_LLM_TESTS=1 — skipping accuracy validation");
+      return;
+    }
     // Check if API key is available
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
