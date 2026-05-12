@@ -16,8 +16,11 @@ Sprint archive: `docs/archive/v4.1-sprint.md`
 Audited all 11 CLI commands. Six were missing sections in
 `docs/guides/CLI-USAGE.md`: `migrate`, `prompt`, `tutorial`, `review`,
 `archive`, `hooks`. Added Usage, Options tables, and verified Examples for
-each. All flags cross-checked against real `--help` output — no invented
-content. ToC updated with all commands; `auto-tier` marked deprecated.
+each. All flags cross-checked against real `--help` output.
+Also corrected pre-existing issues caught during audit: collapsed stale
+`auto-tier` docs (removed 7 non-existent flags, now matches real `--help`
+with only `--dry-run`); replaced 4 `yourusername` placeholder GitHub URLs
+with `cortex-tms/cortex-tms`. ToC updated with all commands.
 371 tests passing.
 
 ---
