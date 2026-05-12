@@ -406,9 +406,9 @@ $ cortex-tms dashboard
 
 ---
 
-### `auto-tier` Command
+### `auto-tier` Command *(Deprecated — use `archive` instead)*
 
-Analyze git commit history and file patterns to automatically suggest and apply HOT/WARM/COLD tier assignments to documentation files. Uses a scoring system to prioritize high-value docs while capping HOT files to prevent context bloat.
+> **Deprecated**: Use `cortex-tms archive` instead. This command is retained for backwards compatibility only.
 
 #### Usage
 
@@ -418,277 +418,16 @@ cortex-tms auto-tier [options]
 
 #### Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--hot <days>` | Files modified within N days get recency bonus in scoring | `7` |
-| `--warm <days>` | Files modified within N days → WARM tier | `30` |
-| `--cold <days>` | Files older than N days → COLD tier | `90` |
-| `--max-hot <count>` | Maximum number of HOT files (prevents context bloat) | `10` |
-| `--dry-run`, `-d` | Preview tier suggestions without applying changes | `false` |
-| `--force`, `-f` | Overwrite existing tier tags (default: respect explicit tags) | `false` |
-| `--verbose`, `-v` | Show detailed reasons for each tier assignment | `false` |
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Preview what would be archived without making changes |
 
-#### How It Works
+#### Example
 
-Auto-tier uses a scoring system to intelligently prioritize files:
-
-1. **Scans Repository**: Finds all `*.md` files (excluding `**/node_modules/**`, `.git/**`, `**/dist/**`)
-2. **Checks Git History**: Uses `git log --follow` to find last commit date (skips untracked files)
-3. **Calculates Scores**: Assigns points based on file value and recency
-4. **Applies Cap**: Limits HOT tier to top-scoring files (default: 10 files)
-5. **Adds Tags**: Inserts `<!-- @cortex-tms-tier HOT/WARM/COLD -->` comments
-
-**Scoring System** (higher score = higher priority for HOT):
-- **+100 points**: Canonical HOT files (highest priority - see list below)
-- **+40 points**: Documentation files (`docs/` directory)
-- **+10 points**: Core reference docs (`docs/core/` directory)
-- **+15 points**: Recently modified (≤ 7 days by default)
-- **-60 points**: Archive files (`docs/archive/` → always COLD)
-
-**Tier Assignment Priority** (with strict maxHotFiles cap):
-1. **Sort by score**: All files ranked by score (canonical = 100, docs/core/ + recent = 65, etc.)
-2. **Apply cap**: Top N files (default: 10) become HOT, regardless of category
-3. **Canonical priority**: Canonical files have highest scores (100), so they naturally fill HOT slots first
-4. **Strict cap**: Total HOT files never exceeds --max-hot (includes canonical files)
-5. **Directory conventions**: Non-HOT files use directory rules: `docs/guides/` → WARM, `examples/` → COLD
-6. **Time-based fallback**: Unclassified files use modification time
-7. **Explicit tags**: Existing tags respected unless `--force` used (except canonical files)
-
-#### Exit Codes
-
-- `0` - Command completed successfully
-- `1` - Error (not a git repository, invalid options, git command failed)
-
-#### Examples
-
-**Dry Run (Preview Changes)**
 ```bash
 npx cortex-tms auto-tier --dry-run
-
-# Output:
-# 🔄 Git-Based Auto-Tiering
-# 🔍 DRY RUN MODE: No files will be modified.
-#
-# ✔ Analyzed 131 files
-#
-# 📊 Tier Suggestions:
-# 🔥 HOT (10 files)
-#   ✨ docs/core/GLOSSARY.md
-#   ✨ docs/core/PATTERNS.md
-#   ✨ .github/copilot-instructions.md
-#   ✨ CLAUDE.md
-#   ✨ NEXT-TASKS.md
-#   ✨ docs/core/ARCHITECTURE.md
-#   ... and 4 more
-#
-# 📚 WARM (68 files)
-#   ✨ docs/core/INFRASTRUCTURE.md
-#   ✨ docs/guides/CLI-USAGE.md
-#   ... and 66 more
-#
-# ❄️  COLD (37 files)
-#   ✨ examples/todo-app/README.md
-#   ... and 36 more
-#
-# 📈 Summary:
-#   ✨ CREATE: 115 new tier tags
-#   🔄 UPDATE: 0 tier changes
+# Preview what archive would move, without modifying files
 ```
-
-**Apply Tier Tags**
-```bash
-npx cortex-tms auto-tier
-
-# Analyzes git history and adds tier tags to files
-# Skips files that already have tier tags (unless --force)
-```
-
-**Custom Thresholds**
-```bash
-# Stricter: Only last 3 days are HOT
-npx cortex-tms auto-tier --hot 3 --warm 14 --cold 60
-
-# More lenient: Last 2 weeks are HOT
-npx cortex-tms auto-tier --hot 14 --warm 60 --cold 180
-```
-
-**Force Update Existing Tags**
-```bash
-# Overwrite all tier tags based on current git state
-npx cortex-tms auto-tier --force
-```
-
-**Custom HOT Cap**
-```bash
-# Allow more HOT files for larger context windows
-npx cortex-tms auto-tier --max-hot 15
-
-# Strict cap for smaller projects
-npx cortex-tms auto-tier --max-hot 5
-```
-
-**Verbose Output**
-```bash
-npx cortex-tms auto-tier --dry-run --verbose
-
-# Shows detailed reasons for each file:
-# ✨ README.md
-#     Modified 1 days ago
-```
-
-#### When to Use
-
-**Initial Setup**: Tag all files after adopting TMS
-```bash
-npx cortex-tms auto-tier
-```
-
-**Weekly/Monthly Maintenance**: Update tiers as work shifts
-```bash
-# Run at start of each sprint
-npx cortex-tms auto-tier --force
-```
-
-**Before Major AI Sessions**: Ensure AI sees most relevant context
-```bash
-npx cortex-tms auto-tier --dry-run  # Check what's HOT
-```
-
-**Custom Workflows**: Adjust for your project's rhythm
-```bash
-# Fast-paced project: shorter HOT window
-npx cortex-tms auto-tier --hot 3 --warm 7
-
-# Slow-paced project: longer HOT window
-npx cortex-tms auto-tier --hot 21 --warm 90
-```
-
-#### Important Notes
-
-**Requirements**:
-- ✅ Must be run in a git repository (`.git` directory required)
-- ✅ Git must be installed and in PATH
-- ✅ Files must be committed to git for accurate history
-
-**Limitations**:
-- Only processes Markdown (`.md`) files
-- Untracked files (not in git history) are skipped entirely
-- Tier tags override path-based patterns from staleness detection
-- Running auto-tier and committing updates file recency (by design)
-- HOT cap applies to auto-assigned files (existing explicit tags are respected)
-
-**Performance**:
-- Typical: ~300ms for 111 files (cortex-tms repo)
-- Large repos (500+ files): 1-2 seconds
-- Performance scales linearly with file count
-
-**Edge Cases**:
-- **Renamed files**: `git log --follow` tracks across renames
-- **Submodules**: Analyzes within submodule context
-- **Binary files**: Skipped (only Markdown processed)
-- **Empty repository**: All files marked HOT (no history)
-- **Subdirectories**: Currently must run from repo root
-
-#### Best Practices
-
-**1. Start with Dry Run**
-```bash
-# Always preview before applying
-npx cortex-tms auto-tier --dry-run --verbose
-```
-
-**2. Commit Tier Tags**
-```bash
-npx cortex-tms auto-tier
-git add -u  # Stage tier tag changes
-git commit -m "chore: update tier tags based on recency"
-```
-
-**3. Use in CI/CD** (Optional)
-```yaml
-# .github/workflows/update-tiers.yml
-name: Update Tier Tags
-on:
-  schedule:
-    - cron: '0 0 * * 1'  # Weekly on Monday
-jobs:
-  update-tiers:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: npx cortex-tms auto-tier --force
-      - run: git commit -am "chore: weekly tier update" || echo "No changes"
-      - run: git push
-```
-
-**4. Adjust for Your Workflow**
-
-Fast-paced projects (daily commits):
-```bash
-npx cortex-tms auto-tier --hot 3 --warm 7 --cold 30
-```
-
-Slow-paced projects (weekly commits):
-```bash
-npx cortex-tms auto-tier --hot 21 --warm 60 --cold 180
-```
-
-**5. Canonical HOT Files**
-
-These files always stay HOT regardless of git history or scoring:
-- `NEXT-TASKS.md` - Current sprint tasks (always relevant)
-- `CLAUDE.md` - Agent instructions (always needed)
-- `.github/copilot-instructions.md` - GitHub Copilot config
-- `docs/core/PATTERNS.md` - Code patterns and conventions
-- `docs/core/GLOSSARY.md` - Project terminology
-
-These count toward the `--max-hot` cap but are never demoted.
-
-#### Troubleshooting
-
-**"Not a git repository" Error**
-```bash
-# Must be run from repo root (subdirectory support coming soon)
-cd /path/to/repo/root
-npx cortex-tms auto-tier
-```
-
-**"--hot must be a positive number" Error**
-```bash
-# Invalid: non-numeric value
-npx cortex-tms auto-tier --hot foo  # ❌
-
-# Valid: numeric value
-npx cortex-tms auto-tier --hot 14   # ✅
-```
-
-**"--hot threshold must be ≤ --warm threshold" Error**
-```bash
-# Invalid: hot > warm
-npx cortex-tms auto-tier --hot 30 --warm 7  # ❌
-
-# Valid: hot ≤ warm ≤ cold
-npx cortex-tms auto-tier --hot 7 --warm 30  # ✅
-```
-
-**No Files Changed**
-```bash
-# Common causes:
-# - All files already have tier tags (use --force to overwrite)
-# - No Markdown files in repository
-# - All files are in ignored directories (node_modules, dist, .git)
-```
-
-#### Research Background
-
-Auto-tier is designed around the ["Lost in the Middle"](https://arxiv.org/abs/2307.03172) research finding:
-
-- **LLMs recall best** from the beginning and end of context
-- **LLMs recall poorly** from the middle of long contexts
-- **TMS addresses this** by placing recent/relevant files (HOT) at the beginning
-- **Git history** provides an objective signal for file relevance
-
-By keeping recently-modified files in the HOT tier (beginning of context), auto-tier optimizes AI agent performance based on actual usage patterns.
 
 ---
 
@@ -1090,7 +829,7 @@ cp node_modules/cortex-tms/templates/vscode/tms.code-snippets .vscode/
 Or from the GitHub repository:
 ```bash
 curl -o .vscode/tms.code-snippets \
-  https://raw.githubusercontent.com/yourusername/cortex-tms/main/templates/vscode/tms.code-snippets
+  https://raw.githubusercontent.com/cortex-tms/cortex-tms/main/templates/vscode/tms.code-snippets
 ```
 
 ### Benefits
@@ -1303,7 +1042,7 @@ Next Steps:
   2. Update docs/core/ with your project details
   3. Customize .github/copilot-instructions.md for AI rules
 
-📚 Learn more: https://github.com/yourusername/cortex-tms
+📚 Learn more: https://github.com/cortex-tms/cortex-tms
 ```
 
 ### Example 2: Validating Before PR
@@ -1469,8 +1208,8 @@ npm install -g cortex-tms
 
 ## Support
 
-- **Issues**: https://github.com/yourusername/cortex-tms/issues
-- **Documentation**: https://github.com/yourusername/cortex-tms
+- **Issues**: https://github.com/cortex-tms/cortex-tms/issues
+- **Documentation**: https://github.com/cortex-tms/cortex-tms
 - **Version**: Run `cortex-tms --version`
 
 ---
