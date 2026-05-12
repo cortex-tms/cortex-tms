@@ -45,7 +45,7 @@ export function createInitCommand(): Command {
     .option("-d, --dry-run", "Preview changes without writing to disk")
     .option(
       "-p, --preset <preset>",
-      "Governance pack preset for ecosystem-specific content (node)",
+      "Governance pack preset for ecosystem-specific content (node|python)",
     )
     .action(async (options: InitCommandOptions) => {
       await runInit(options);

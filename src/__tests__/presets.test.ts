@@ -375,3 +375,184 @@ describe("Node preset — package manager substitution", () => {
     expect(claude).not.toContain("pnpm run test");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Unit — Python preset directory resolution
+// ---------------------------------------------------------------------------
+
+describe("getPresetDir — python", () => {
+  it("returns a path ending in templates/presets/python", () => {
+    const dir = getPresetDir("python");
+    expect(dir).toMatch(/templates[/\\]presets[/\\]python$/);
+  });
+});
+
+describe("resolveTemplateSource — python preset", () => {
+  it("returns python preset CLAUDE.md when it exists", async () => {
+    const presetDir = getPresetDir("python");
+    const presetFile = join(presetDir, "CLAUDE.md");
+    const exists = await fs.pathExists(presetFile);
+    expect(exists).toBe(true);
+
+    const base = join(getTemplatesDir(), "CLAUDE.md");
+    const result = await resolveTemplateSource(base, "CLAUDE.md", "python");
+    expect(result).toBe(presetFile);
+  });
+
+  it("falls back to base source when python preset does not override the file", async () => {
+    // PROMPTS.md has no python preset override
+    const base = join(getTemplatesDir(), "PROMPTS.md");
+    const result = await resolveTemplateSource(base, "PROMPTS.md", "python");
+    expect(result).toBe(base);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Unit — Zod schema accepts python preset
+// ---------------------------------------------------------------------------
+
+describe("initOptionsSchema — python preset validation", () => {
+  it("accepts 'python' as a valid preset", () => {
+    expect(() =>
+      validateOptions(initOptionsSchema, { preset: "python" }, "init"),
+    ).not.toThrow();
+  });
+
+  it("rejects 'ruby' as an invalid preset (regression)", () => {
+    expect(() =>
+      validateOptions(initOptionsSchema, { preset: "ruby" }, "init"),
+    ).toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// E2E — init --preset python via CLI
+// ---------------------------------------------------------------------------
+
+describe("init E2E — --preset python", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it("succeeds with --preset python --scope standard --force", async () => {
+    const result = await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "python", "--force"],
+      tempDir,
+    );
+    expectSuccess(result);
+  });
+
+  it("records preset in .cortexrc metadata", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "python", "--force"],
+      tempDir,
+    );
+
+    const raw = await readFile(join(tempDir, ".cortexrc"), "utf-8");
+    const config = JSON.parse(raw);
+    expect(config.metadata?.preset).toBe("python");
+  });
+
+  it("--preset python --minimal uses nano scope", async () => {
+    const result = await runCommand(
+      "init",
+      ["--minimal", "--preset", "python", "--force"],
+      tempDir,
+    );
+    expectSuccess(result);
+
+    const raw = await readFile(join(tempDir, ".cortexrc"), "utf-8");
+    const config = JSON.parse(raw);
+    expect(config.scope).toBe("nano");
+    expect(config.metadata?.preset).toBe("python");
+  });
+
+  it("--preset python --scope nano uses nano scope", async () => {
+    const result = await runCommand(
+      "init",
+      ["--scope", "nano", "--preset", "python", "--force"],
+      tempDir,
+    );
+    expectSuccess(result);
+
+    const raw = await readFile(join(tempDir, ".cortexrc"), "utf-8");
+    const config = JSON.parse(raw);
+    expect(config.scope).toBe("nano");
+    expect(config.metadata?.preset).toBe("python");
+  });
+
+  it("--preset python --dry-run exits 0 and does not write .cortexrc", async () => {
+    const result = await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "python", "--force", "--dry-run"],
+      tempDir,
+    );
+    expectSuccess(result);
+    const cortexrcExists = await fileExists(join(tempDir, ".cortexrc"));
+    expect(cortexrcExists).toBe(false);
+  });
+
+  it("rejects --preset ruby with a non-zero exit code (regression)", async () => {
+    const result = await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "ruby", "--force"],
+      tempDir,
+    );
+    expectFailure(result);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Cross-contamination — Python preset must not contain Node-specific strings
+// ---------------------------------------------------------------------------
+
+describe("Python preset — no Node-specific content", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it("generated CLAUDE.md contains pytest and Stack but no Node-specific strings", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "python", "--force"],
+      tempDir,
+    );
+
+    const claude = await readFile(join(tempDir, "CLAUDE.md"), "utf-8");
+    expect(claude).toContain("pytest");
+    expect(claude).toContain("Stack");
+    expect(claude).not.toContain("process.env");
+    expect(claude).not.toContain("package.json");
+    expect(claude).not.toContain("TypeScript");
+    expect(claude).not.toContain("console.log");
+    expect(claude).not.toContain("<package-manager>");
+  });
+
+  it("generated AGENTS.md contains no Node-specific strings", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "python", "--force"],
+      tempDir,
+    );
+
+    const agents = await readFile(join(tempDir, "AGENTS.md"), "utf-8");
+    expect(agents).not.toContain("process.env");
+    // "npm" must not appear as a package manager reference
+    // (it may appear in "npm" as part of "Publish to PyPI" etc. — check exact word)
+    expect(agents).not.toMatch(/\bnpm\b/);
+  });
+});
