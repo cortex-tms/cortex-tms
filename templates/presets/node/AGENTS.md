@@ -39,7 +39,7 @@ this file, follow `AGENTS.md` and escalate to a human.
 | Refactor / rename | ✓ | | |
 | Write or update tests | ✓ | | |
 | Update documentation | ✓ | | |
-| Add / remove npm dependencies | | ✓ | |
+| Add / remove Node.js dependencies | | ✓ | |
 | Breaking API or schema changes | | ✓ | |
 | Modify CI/CD pipelines | | ✓ | |
 | Merge to main / protected branch | | | ✓ |
@@ -59,7 +59,12 @@ this file, follow `AGENTS.md` and escalate to a human.
 - No direct commits to `main`
 - Never skip linting or test runs
 
-<!-- Update for your project: add Node-specific prohibitions here -->
+**Node.js-specific prohibitions:**
+
+- Do not use `require()` in ESM modules without explicit CJS interop
+- Do not read `process.env` outside `src/config.ts`
+- Do not modify lock files (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lockb`) manually
+- Do not block the event loop with synchronous CPU-bound work — offload to worker threads or a job queue
 
 ---
 
@@ -81,3 +86,15 @@ Escalate to a human when:
 - A dependency with a security advisory must be added
 - The business rule in `DOMAIN-LOGIC.md` is ambiguous or missing
 - A breaking change to the public API or database schema is required
+
+---
+
+## Universal Prohibitions
+
+No agent, regardless of tool or trust level, may ever:
+
+- Force push to any branch
+- Merge code without human review
+- Publish packages to registries independently
+- Modify authentication, authorisation, or security configuration
+- Commit secrets, credentials, or API keys

@@ -4,9 +4,9 @@
 
 All async operations use `async/await`. Avoid mixing Promise chains with `await`.
 
-```js
+```typescript
 // preferred
-async function fetchUser(id) {
+async function fetchUser(id: string) {
   const user = await db.findById(id);
   return user;
 }
@@ -14,7 +14,7 @@ async function fetchUser(id) {
 
 Error handling wraps the async call, not the individual awaits inside:
 
-```js
+```typescript
 try {
   const result = await doWork();
 } catch (err) {
@@ -26,9 +26,9 @@ try {
 
 Throw typed errors at the source; catch and translate at boundaries (HTTP handler, CLI entrypoint, queue consumer). Never swallow errors silently.
 
-```js
+```typescript
 class NotFoundError extends Error {
-  constructor(resource) {
+  constructor(resource: string) {
     super(`${resource} not found`);
     this.name = "NotFoundError";
   }

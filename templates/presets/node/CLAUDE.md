@@ -20,10 +20,12 @@
 <!-- Update for your project: verify these match your package.json scripts -->
 
 ```bash
-npm test          # run test suite
-npm run build     # compile TypeScript
-npm run lint      # lint source files
-npm run dev       # start development server
+<package-manager> run test      # run test suite
+<package-manager> run build     # compile TypeScript
+<package-manager> run lint      # lint source files
+<package-manager> run dev       # start development server
+# Replace <package-manager> with: npm, pnpm, yarn, or bun
+# For npm, `npm test` is also acceptable if your project defines a test script.
 ```
 
 ## Code Conventions
@@ -58,5 +60,5 @@ npm run dev       # start development server
 
 - Unit tests live beside source files (`foo.test.ts`)
 - Integration tests are in `tests/integration/`
-- Tests must pass before committing: `npm test`
+- Tests must pass before committing: `<package-manager> run test`
 - Do not mock what can be tested with in-memory fixtures

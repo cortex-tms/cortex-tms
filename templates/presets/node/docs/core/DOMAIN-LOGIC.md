@@ -18,13 +18,9 @@
 
 CPU-bound work is offloaded to worker threads or a job queue — never blocked in the main thread. I/O operations are async throughout.
 
-<!-- Update for your project: list any CPU-bound operations and how they are handled -->
-
 ### Streaming
 
 Large data sets are streamed rather than buffered in memory. Node.js readable/writable streams or `AsyncIterable` are used for file and network I/O.
-
-<!-- Update for your project: list endpoints or operations that use streaming -->
 
 ### Package Manager
 
@@ -38,8 +34,6 @@ Large data sets are streamed rather than buffered in memory. Node.js readable/wr
 ### Versioning
 
 Follows semver. Breaking changes bump the major version. Internal tooling follows the Node.js LTS release schedule.
-
-<!-- Update for your project: specify your Node.js version (e.g., 20.x LTS) -->
 
 ## Business Rules
 
