@@ -1,7 +1,7 @@
 # NEXT: v4.2 Sprint — Governance Pack Expansion
 
 **Last Updated**: 2026-05-12
-**Status**: 🟡 Active — TMS-420 closed, Python pack next
+**Status**: 🟡 Active — TMS-426 closed, Python pack next
 **Current Version**: 4.1.0 (published 2026-05-10)
 
 Sprint archives:
@@ -33,13 +33,35 @@ Commit: `a6bf33d`.
 
 **Queued follow-up (TMS-426)**: auto-detect `packageManager` field from
 `package.json` during `init --preset node` and substitute `<package-manager>`
-with the real command.
+with the real command. ✅ Closed 2026-05-12.
+
+---
+
+## ✅ Closed
+
+### TMS-426 — Auto-detect package manager during `init --preset node` (Done)
+
+**Closed**: 2026-05-12
+Commit: `75a685b`.
+
+- New `src/utils/package-manager.ts`: `detectPackageManager()` reads
+  `package.json` `packageManager` field first, falls back to lockfile
+  detection (`pnpm-lock.yaml` → `yarn.lock` → `package-lock.json` → `bun.lockb`)
+- `generateReplacements()` accepts optional `packageManager` arg; adds
+  `"package-manager"` key to replacements map
+- `replacePlaceholders()` gains angle-bracket allowlist (`ANGLE_BRACKET_KEYS`);
+  `<package-manager>` is substituted in node preset templates
+- `init --preset node` detects and injects package manager automatically;
+  falls back to `<package-manager>` literal when nothing is detected
+- 15 unit tests for `detectPackageManager`; 7 E2E tests for substitution
+  behaviour; 3 unit tests for angle-bracket allowlist
+
+396 tests passing. validate --strict clean.
 
 ---
 
 ## 🔜 Queued
 
-- **TMS-426**: Auto-detect package manager during `init --preset node`
 - Python governance pack (`--preset python`)
 - Go governance pack (`--preset go`)
 - MCP Server — expose governance to any AI tool at runtime
