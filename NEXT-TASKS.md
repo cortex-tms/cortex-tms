@@ -1,7 +1,7 @@
 # NEXT: v4.2 Sprint — Governance Pack Expansion
 
 **Last Updated**: 2026-05-12
-**Status**: 🟡 Active — TMS-422 review outcome tracking next
+**Status**: 🟡 Active — TMS-424/425 queued, Phase 2 P0s closed
 **Current Version**: 4.1.0 (published 2026-05-10)
 
 Sprint archive: `docs/archive/v4.1-sprint.md`
@@ -9,6 +9,18 @@ Sprint archive: `docs/archive/v4.1-sprint.md`
 ---
 
 ## ✅ Closed
+
+### TMS-422 — Review outcome tracking in ai-planner (Done)
+
+**Closed**: 2026-05-12
+`python runner/run.py review <project> <task-id> --outcome ...` added to
+ai-planner. Appends `phase: review` entries to `runs.jsonl` with
+`model_commit_hash`, `final_commit_hash`, `review_outcome`, `review_notes`,
+`reviewer`. Status transitions: accept/revert+rewrite → done, reject → failed.
+All 5 TMS-421 tasks back-filled. Task lifecycle documented in README and
+AI-PLANNER-PLAN-v.5.md.
+
+---
 
 ### TMS-423 — Prevent live Guardian accuracy tests from running in normal verify flows (Done)
 
@@ -37,25 +49,7 @@ Phase 2 review tooling ships.
 
 ---
 
-## 🔴 Phase 2 — Review Gap (P0)
-
-### TMS-422 — Review outcome tracking in ai-planner (P0)
-
-**Goal**: Close the gap between runner verification and human review. TASK-001
-and TASK-004 both passed `install + build + test` and both should not have
-been committed; the system currently has no way to record that distinction.
-
-**Done when**:
-- `runs.jsonl` gains a `phase: review` entry per task with fields:
-  `model_commit_hash`, `final_commit_hash`, `review_outcome`
-  (`accept` | `revert+rewrite` | `reject`), `review_notes`
-- CLI command writes the review entry (no manual JSON editing)
-- Existing 5 TMS-421 runs are back-filled with review entries
-- README documents the review workflow
-
-**Lives in**: ai-planner (`runner/`, `projects/cortex-tms/logs/`)
-
----
+## 🟡 Phase 2 — P1 Remaining
 
 ### TMS-424 — Per-project `verify_env` support in ai-planner (P1)
 
