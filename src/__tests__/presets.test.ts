@@ -285,3 +285,93 @@ describe("init E2E — --preset node", () => {
     expectFailure(result);
   });
 });
+
+describe("Node preset — package manager substitution", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  async function initNodePreset(dir: string): Promise<void> {
+    const result = await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "node", "--force"],
+      dir,
+    );
+    expectSuccess(result);
+  }
+
+  async function readGeneratedClaude(dir: string): Promise<string> {
+    return readFile(join(dir, "CLAUDE.md"), "utf8");
+  }
+
+  it("substitutes pnpm when pnpm-lock.yaml is present", async () => {
+    await fs.writeFile(join(tempDir, "pnpm-lock.yaml"), "");
+    await initNodePreset(tempDir);
+    const claude = await readGeneratedClaude(tempDir);
+    expect(claude).toContain("pnpm run test");
+    expect(claude).toContain("pnpm run build");
+    expect(claude).not.toContain("<package-manager>");
+  });
+
+  it("substitutes yarn when yarn.lock is present", async () => {
+    await fs.writeFile(join(tempDir, "yarn.lock"), "");
+    await initNodePreset(tempDir);
+    const claude = await readGeneratedClaude(tempDir);
+    expect(claude).toContain("yarn run test");
+    expect(claude).not.toContain("<package-manager>");
+  });
+
+  it("substitutes npm when package-lock.json is present", async () => {
+    await fs.writeFile(join(tempDir, "package-lock.json"), "{}");
+    await initNodePreset(tempDir);
+    const claude = await readGeneratedClaude(tempDir);
+    expect(claude).toContain("npm run test");
+    expect(claude).not.toContain("<package-manager>");
+  });
+
+  it("substitutes bun when bun.lockb is present", async () => {
+    await fs.writeFile(join(tempDir, "bun.lockb"), "");
+    await initNodePreset(tempDir);
+    const claude = await readGeneratedClaude(tempDir);
+    expect(claude).toContain("bun run test");
+    expect(claude).not.toContain("<package-manager>");
+  });
+
+  it("packageManager field takes priority over lockfile", async () => {
+    await fs.writeFile(
+      join(tempDir, "package.json"),
+      JSON.stringify({ packageManager: "pnpm@8.6.0" }),
+    );
+    await fs.writeFile(join(tempDir, "package-lock.json"), "{}");
+    await initNodePreset(tempDir);
+    const claude = await readGeneratedClaude(tempDir);
+    expect(claude).toContain("pnpm run test");
+    expect(claude).not.toMatch(/^npm run test/m);
+  });
+
+  it("leaves <package-manager> literal when nothing is detected", async () => {
+    await initNodePreset(tempDir);
+    const claude = await readGeneratedClaude(tempDir);
+    expect(claude).toContain("<package-manager>");
+  });
+
+  it("does not substitute <package-manager> without --preset node", async () => {
+    await fs.writeFile(join(tempDir, "pnpm-lock.yaml"), "");
+    const result = await runCommand(
+      "init",
+      ["--scope", "standard", "--force"],
+      tempDir,
+    );
+    expectSuccess(result);
+    // Base CLAUDE.md has no <package-manager> tokens — file should be clean
+    const claude = await readGeneratedClaude(tempDir);
+    expect(claude).not.toContain("<package-manager>");
+    expect(claude).not.toContain("pnpm run test");
+  });
+});
