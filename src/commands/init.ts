@@ -9,6 +9,7 @@ import chalk from "chalk";
 import ora from "ora";
 import { basename, join } from "path";
 import { detectContext, isSafeToInitialize } from "../utils/detection.js";
+import { detectPackageManager } from "../utils/package-manager.js";
 import {
   runInitPrompts,
   showInitSummary,
@@ -187,9 +188,19 @@ async function runInit(options: InitCommandOptions): Promise<void> {
   }
 
   // Step 5: Generate replacements
+  const detectedPm =
+    validated.preset === "node" ? detectPackageManager(cwd) : null;
+  if (validated.verbose && validated.preset === "node") {
+    console.log(
+      chalk.gray(
+        `\nPackage manager: ${detectedPm ?? "<package-manager> (not detected — fill in manually)"}`,
+      ),
+    );
+  }
   const replacements = generateReplacements(
     answers.projectName,
     answers.description,
+    detectedPm,
   );
 
   if (validated.verbose) {

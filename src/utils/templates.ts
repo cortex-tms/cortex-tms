@@ -136,6 +136,11 @@ export async function resolveTemplateSource(
  * @param replacements - Map of placeholder keys to replacement values
  * @returns Content with placeholders replaced
  */
+// Allowlisted keys that use <key> angle-bracket syntax instead of [Key].
+// Kept narrow intentionally — prevents accidental substitution of HTML-like
+// content or shell redirects in user-authored template sections.
+const ANGLE_BRACKET_KEYS = new Set(["package-manager"]);
+
 export function replacePlaceholders(
   content: string,
   replacements: Record<string, string>,
@@ -143,9 +148,14 @@ export function replacePlaceholders(
   let result = content;
 
   Object.entries(replacements).forEach(([key, value]) => {
-    // Replace [Key] with Value (exact match)
+    // Replace [Key] with Value (square-bracket form, existing convention)
     const placeholder = `[${key}]`;
     result = result.replaceAll(placeholder, value);
+
+    // Replace <key> with Value (angle-bracket form, allowlisted keys only)
+    if (ANGLE_BRACKET_KEYS.has(key)) {
+      result = result.replaceAll(`<${key}>`, value);
+    }
   });
 
   return result;
@@ -488,6 +498,7 @@ function printImpactReport(changes: FileChange[]): void {
 export function generateReplacements(
   projectName: string,
   description?: string,
+  packageManager?: string | null,
 ): Record<string, string> {
   // Generate kebab-case version
   const kebabName = projectName
@@ -496,9 +507,15 @@ export function generateReplacements(
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
-  return {
+  const replacements: Record<string, string> = {
     "Project Name": projectName,
     "project-name": kebabName,
     Description: description || `A project powered by Cortex TMS`,
   };
+
+  if (packageManager) {
+    replacements["package-manager"] = packageManager;
+  }
+
+  return replacements;
 }

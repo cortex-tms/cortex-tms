@@ -224,6 +224,28 @@ describe("Init Command - Placeholder Replacement", () => {
 
     expect(replacements.Description).toBe("A project powered by Cortex TMS");
   });
+
+  it("replaces <package-manager> angle-bracket placeholder when packageManager is provided", () => {
+    const content = "<package-manager> run test\n<package-manager> run build";
+    const replacements = generateReplacements("Test", undefined, "pnpm");
+    const result = replacePlaceholders(content, replacements);
+    expect(result).toBe("pnpm run test\npnpm run build");
+    expect(result).not.toContain("<package-manager>");
+  });
+
+  it("leaves <package-manager> literal when packageManager is not provided", () => {
+    const content = "<package-manager> run test";
+    const replacements = generateReplacements("Test");
+    const result = replacePlaceholders(content, replacements);
+    expect(result).toBe("<package-manager> run test");
+  });
+
+  it("does not substitute arbitrary angle-bracket tokens (allowlist enforced)", () => {
+    const content = "<other-token> should not change";
+    const replacements = generateReplacements("Test", undefined, "pnpm");
+    const result = replacePlaceholders(content, replacements);
+    expect(result).toBe("<other-token> should not change");
+  });
 });
 
 describe("Init Command - Configuration Generation", () => {
