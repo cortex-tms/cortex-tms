@@ -1,7 +1,7 @@
 # NEXT: v4.2 Sprint — Governance Pack Expansion
 
 **Last Updated**: 2026-05-12
-**Status**: 🟡 Active — TMS-424/425 queued, Phase 2 P0s closed
+**Status**: 🟡 Active — TMS-425 queued, Phase 2 P0s closed
 **Current Version**: 4.1.0 (published 2026-05-10)
 
 Sprint archive: `docs/archive/v4.1-sprint.md`
@@ -9,6 +9,18 @@ Sprint archive: `docs/archive/v4.1-sprint.md`
 ---
 
 ## ✅ Closed
+
+### TMS-424 — Per-project `verify_env` support in ai-planner (Done)
+
+**Closed**: 2026-05-12
+`project.yaml` now accepts an optional `verify_env: { KEY: "value" }` block.
+`step_8_verify` merges it into the scrubbed subprocess env after credential
+stripping. Schema validation rejects non-string values. `cortex-tms`
+project config updated: `CORTEX_SKIP_LLM_TESTS: "1"` replaces the blanket
+credential scrub as the mechanism for suppressing live LLM test suites.
+ai-planner main at `1135da6`.
+
+---
 
 ### TMS-422 — Review outcome tracking in ai-planner (Done)
 
@@ -50,21 +62,6 @@ Phase 2 review tooling ships.
 ---
 
 ## 🟡 Phase 2 — P1 Remaining
-
-### TMS-424 — Per-project `verify_env` support in ai-planner (P1)
-
-**Goal**: Generalise the credential-strip fix. Some tests need explicit env
-opt-outs (`CORTEX_SKIP_LLM_TESTS=1`) rather than blanket scrubbing.
-
-**Done when**:
-- `project.yaml` accepts `verify_env: { KEY: value }` block
-- `step_8_verify` merges `verify_env` into the scrubbed subprocess env
-- cortex-tms project config uses it where appropriate
-- Schema validation rejects non-string values
-
-**Lives in**: ai-planner (`runner/`)
-
----
 
 ### TMS-425 — Add accurate CLI-USAGE sections for missing commands (P1)
 
