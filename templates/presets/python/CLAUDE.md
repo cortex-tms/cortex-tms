@@ -18,12 +18,12 @@
 
 <!-- Update for your project: keep the row that matches your package manager, delete the rest -->
 
-| Task | pip / venv | poetry | uv | pipenv |
-|------|-----------|--------|-----|--------|
-| Run tests | `pytest` | `poetry run pytest` | `uv run pytest` | `pipenv run pytest` |
-| Lint | `ruff check .` | `poetry run ruff check .` | `uv run ruff check .` | `pipenv run ruff check .` |
-| Format | `ruff format .` | `poetry run ruff format .` | `uv run ruff format .` | `pipenv run ruff format .` |
-| Type check | `mypy src/` | `poetry run mypy src/` | `uv run mypy src/` | `pipenv run mypy src/` |
+| Task | pip / venv | poetry | uv | pipenv | conda |
+|------|-----------|--------|-----|--------|-------|
+| Run tests | `pytest` | `poetry run pytest` | `uv run pytest` | `pipenv run pytest` | `pytest` |
+| Lint | `ruff check .` | `poetry run ruff check .` | `uv run ruff check .` | `pipenv run ruff check .` | `ruff check .` |
+| Format | `ruff format .` | `poetry run ruff format .` | `uv run ruff format .` | `pipenv run ruff format .` | `ruff format .` |
+| Type check | `mypy src/` | `poetry run mypy src/` | `uv run mypy src/` | `pipenv run mypy src/` | `mypy src/` |
 
 Tests must pass before committing.
 
