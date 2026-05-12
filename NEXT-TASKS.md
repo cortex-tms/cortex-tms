@@ -1,14 +1,24 @@
 # NEXT: v4.2 Sprint — Governance Pack Expansion
 
-**Last Updated**: 2026-05-10
-**Status**: 🟡 Active — Prepare next governance pack priorities
+**Last Updated**: 2026-05-12
+**Status**: 🟡 Active — TMS-422 review outcome tracking next
 **Current Version**: 4.1.0 (published 2026-05-10)
 
 Sprint archive: `docs/archive/v4.1-sprint.md`
 
 ---
 
-## ✅ Closed Gate
+## ✅ Closed
+
+### TMS-423 — Prevent live Guardian accuracy tests from running in normal verify flows (Done)
+
+**Closed**: 2026-05-12
+`guardian-accuracy.test.ts` `beforeAll` now checks `CORTEX_SKIP_LLM_TESTS=1`
+before `ANTHROPIC_API_KEY`. Root cause was live LLM calls (not parallel
+temp-dir contention — earlier diagnosis was wrong). 10/10 green passes
+confirmed. `max_verify_retries` lowered to 0 in ai-planner config.
+
+---
 
 ### TMS-421 — Dogfood ai-planner on Cortex TMS (Done)
 
@@ -44,23 +54,6 @@ been committed; the system currently has no way to record that distinction.
 - README documents the review workflow
 
 **Lives in**: ai-planner (`runner/`, `projects/cortex-tms/logs/`)
-
----
-
-### TMS-423 — Prevent live Guardian accuracy tests from running in normal verify flows (P0)
-
-**Goal**: `guardian-accuracy.test.ts` makes up to 24 live Anthropic API calls
-whenever `ANTHROPIC_API_KEY` is present, blowing the verify timeout. The earlier
-"parallel temp-dir contention" diagnosis was wrong — `createTempDir()` uses
-`mkdtemp()` so no collision is possible. The real cause was the live LLM path
-in `beforeAll`. Add an explicit `CORTEX_SKIP_LLM_TESTS=1` guard so the
-expensive path skips in CI/harness environments regardless of key presence.
-
-**Done when**:
-- `guardian-accuracy.test.ts` `beforeAll` checks `CORTEX_SKIP_LLM_TESTS=1`
-  before `ANTHROPIC_API_KEY` — returns early if set
-- `CORTEX_SKIP_LLM_TESTS=1 pnpm test` runs green 10x consecutively
-- `max_verify_retries` lowered to 0 in `ai-planner/projects/cortex-tms/project.yaml`
 
 ---
 
