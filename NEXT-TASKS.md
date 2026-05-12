@@ -1,7 +1,7 @@
 # NEXT: v4.2 Sprint — Governance Pack Expansion
 
 **Last Updated**: 2026-05-12
-**Status**: 🟡 Active — TMS-426 closed, Python pack next
+**Status**: 🟡 Active — TMS-427 closed, Go pack next
 **Current Version**: 4.1.0 (published 2026-05-10)
 
 Sprint archives:
@@ -60,9 +60,27 @@ Commit: `75a685b`.
 
 ---
 
+## ✅ Closed
+
+### TMS-427 — Python governance preset (`--preset python`) (Done)
+
+**Closed**: 2026-05-12
+Commit: `b165c78`.
+
+- 6 new template files in `templates/presets/python/`: CLAUDE.md, AGENTS.md,
+  PATTERNS.md, DOMAIN-LOGIC.md, ARCHITECTURE.md, copilot-instructions.md
+- Templates target modern Python 3.11+ conventions: type hints, asyncio,
+  ruff/mypy/pytest, src layout, commands table (PM auto-detection deferred TMS-428)
+- `GovernancePreset` type, Zod enum, and CLI help text extended to include `"python"`
+- 13 new tests: unit (preset dir, schema validation), E2E (scope, metadata,
+  dry-run, regression), cross-contamination (no Node strings in Python files)
+
+409 tests passing. validate --strict clean.
+
+---
+
 ## 🔜 Queued
 
-- Python governance pack (`--preset python`)
 - Go governance pack (`--preset go`)
 - MCP Server — expose governance to any AI tool at runtime
 - Agent skills scaffolding (`/cortex-validate`, `/cortex-review`)
