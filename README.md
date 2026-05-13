@@ -130,13 +130,15 @@ Scaffold TMS documentation structure with interactive scope selection.
 cortex-tms init                          # Interactive mode
 cortex-tms init --scope standard         # Non-interactive
 cortex-tms init --preset node            # Node.js governance pack
+cortex-tms init --preset python          # Python governance pack
+cortex-tms init --preset go              # Go governance pack
 cortex-tms init --preset node --scope standard --force  # CI-friendly
 cortex-tms init --dry-run                # Preview changes
 ```
 
 **Governance packs** (`--preset`) fill template content with ecosystem-specific
 patterns, conventions, and idioms. Independent of `--scope` (which controls the
-file set). Available presets: `node`.
+file set). Available presets: `node`, `python`, `go`.
 
 ### `cortex-tms validate`
 

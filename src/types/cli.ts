@@ -50,7 +50,7 @@ export interface TemplateFile {
  * Governance preset — controls ecosystem-specific content inside templates.
  * Independent of scope (which controls the file set).
  */
-export type GovernancePreset = "node" | "python";
+export type GovernancePreset = "node" | "python" | "go";
 
 /**
  * Options for the init command

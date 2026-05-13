@@ -556,3 +556,236 @@ describe("Python preset — no Node-specific content", () => {
     expect(agents).not.toMatch(/\bnpm\b/);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Unit — Go preset directory resolution
+// ---------------------------------------------------------------------------
+
+describe("getPresetDir — go", () => {
+  it("returns a path ending in templates/presets/go", () => {
+    const dir = getPresetDir("go");
+    expect(dir).toMatch(/templates[/\\]presets[/\\]go$/);
+  });
+});
+
+describe("resolveTemplateSource — go preset", () => {
+  it("returns go preset CLAUDE.md when it exists", async () => {
+    const presetDir = getPresetDir("go");
+    const presetFile = join(presetDir, "CLAUDE.md");
+    const exists = await fs.pathExists(presetFile);
+    expect(exists).toBe(true);
+
+    const base = join(getTemplatesDir(), "CLAUDE.md");
+    const result = await resolveTemplateSource(base, "CLAUDE.md", "go");
+    expect(result).toBe(presetFile);
+  });
+
+  it("falls back to base source when go preset does not override the file", async () => {
+    // PROMPTS.md has no go preset override
+    const base = join(getTemplatesDir(), "PROMPTS.md");
+    const result = await resolveTemplateSource(base, "PROMPTS.md", "go");
+    expect(result).toBe(base);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Unit — Zod schema accepts go preset
+// ---------------------------------------------------------------------------
+
+describe("initOptionsSchema — go preset validation", () => {
+  it("accepts 'go' as a valid preset", () => {
+    expect(() =>
+      validateOptions(initOptionsSchema, { preset: "go" }, "init"),
+    ).not.toThrow();
+  });
+
+  it("rejects 'rust' as an invalid preset (regression)", () => {
+    expect(() =>
+      validateOptions(initOptionsSchema, { preset: "rust" }, "init"),
+    ).toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Unit — Go preset files exist
+// ---------------------------------------------------------------------------
+
+describe("Go preset — all 6 template files exist", () => {
+  const expectedFiles = [
+    "CLAUDE.md",
+    "AGENTS.md",
+    ".github/copilot-instructions.md",
+    "docs/core/PATTERNS.md",
+    "docs/core/DOMAIN-LOGIC.md",
+    "docs/core/ARCHITECTURE.md",
+  ];
+
+  for (const file of expectedFiles) {
+    it(`${file} exists in go preset directory`, async () => {
+      const dir = getPresetDir("go");
+      const exists = await fs.pathExists(join(dir, file));
+      expect(exists).toBe(true);
+    });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// E2E — init --preset go via CLI
+// ---------------------------------------------------------------------------
+
+describe("init E2E — --preset go", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it("succeeds with --preset go --scope standard --force", async () => {
+    const result = await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force"],
+      tempDir,
+    );
+    expectSuccess(result);
+  });
+
+  it("records preset in .cortexrc metadata", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force"],
+      tempDir,
+    );
+
+    const raw = await readFile(join(tempDir, ".cortexrc"), "utf-8");
+    const config = JSON.parse(raw);
+    expect(config.metadata?.preset).toBe("go");
+  });
+
+  it("--preset go --minimal uses nano scope", async () => {
+    const result = await runCommand(
+      "init",
+      ["--minimal", "--preset", "go", "--force"],
+      tempDir,
+    );
+    expectSuccess(result);
+
+    const raw = await readFile(join(tempDir, ".cortexrc"), "utf-8");
+    const config = JSON.parse(raw);
+    expect(config.scope).toBe("nano");
+    expect(config.metadata?.preset).toBe("go");
+  });
+
+  it("--preset go --scope nano uses nano scope", async () => {
+    const result = await runCommand(
+      "init",
+      ["--scope", "nano", "--preset", "go", "--force"],
+      tempDir,
+    );
+    expectSuccess(result);
+
+    const raw = await readFile(join(tempDir, ".cortexrc"), "utf-8");
+    const config = JSON.parse(raw);
+    expect(config.scope).toBe("nano");
+    expect(config.metadata?.preset).toBe("go");
+  });
+
+  it("--preset go --dry-run exits 0 and does not write .cortexrc", async () => {
+    const result = await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force", "--dry-run"],
+      tempDir,
+    );
+    expectSuccess(result);
+    const cortexrcExists = await fileExists(join(tempDir, ".cortexrc"));
+    expect(cortexrcExists).toBe(false);
+  });
+
+  it("rejects --preset rust with a non-zero exit code (regression)", async () => {
+    const result = await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "rust", "--force"],
+      tempDir,
+    );
+    expectFailure(result);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Cross-contamination — Go preset must not contain Node/Python-specific strings
+// ---------------------------------------------------------------------------
+
+describe("Go preset — content verification", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it("generated CLAUDE.md contains Go terms and no Node/Python markers", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force"],
+      tempDir,
+    );
+
+    const claude = await readFile(join(tempDir, "CLAUDE.md"), "utf-8");
+    // Go-specific terms must be present
+    expect(claude).toContain("go test");
+    expect(claude).toContain("go.mod");
+    expect(claude).toContain("gofmt");
+    expect(claude).toContain("context.Context");
+    // Node/Python markers must be absent
+    expect(claude).not.toContain("process.env");
+    expect(claude).not.toContain("package.json");
+    expect(claude).not.toContain("pytest");
+    expect(claude).not.toContain("requirements.txt");
+    expect(claude).not.toContain("<package-manager>");
+  });
+
+  it("generated AGENTS.md contains Go terms and no Node/Python markers", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force"],
+      tempDir,
+    );
+
+    const agents = await readFile(join(tempDir, "AGENTS.md"), "utf-8");
+    // Go-specific terms must be present
+    expect(agents).toContain("go.mod");
+    expect(agents).toContain("go test");
+    // Node/Python markers must be absent
+    expect(agents).not.toMatch(/\bnpm\b/);
+    expect(agents).not.toContain("process.env");
+    expect(agents).not.toContain("pytest");
+    expect(agents).not.toContain("venv");
+    expect(agents).not.toContain("requirements.txt");
+  });
+
+  it("generated PATTERNS.md contains Go idioms", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force"],
+      tempDir,
+    );
+
+    const patterns = await readFile(
+      join(tempDir, "docs/core/PATTERNS.md"),
+      "utf-8",
+    );
+    expect(patterns).toContain("context.Context");
+    expect(patterns).toContain("goroutine");
+    expect(patterns).toContain("fmt.Errorf");
+    expect(patterns).toContain("go test");
+    // No Python or Node markers
+    expect(patterns).not.toContain("pytest");
+    expect(patterns).not.toContain("package.json");
+  });
+});
