@@ -788,4 +788,65 @@ describe("Go preset — content verification", () => {
     expect(patterns).not.toContain("pytest");
     expect(patterns).not.toContain("package.json");
   });
+
+  it("generated copilot-instructions.md contains Go terms and no Node/Python markers", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force"],
+      tempDir,
+    );
+
+    const copilot = await readFile(
+      join(tempDir, ".github/copilot-instructions.md"),
+      "utf-8",
+    );
+    expect(copilot).toContain("go test");
+    expect(copilot).toContain("gofmt");
+    expect(copilot).toContain("go.mod");
+    expect(copilot).toContain("context.Context");
+    expect(copilot).not.toContain("pytest");
+    expect(copilot).not.toContain("package.json");
+    expect(copilot).not.toContain("process.env");
+    expect(copilot).not.toContain("<package-manager>");
+  });
+
+  it("generated DOMAIN-LOGIC.md contains Go terms and no Node/Python markers", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force"],
+      tempDir,
+    );
+
+    const domain = await readFile(
+      join(tempDir, "docs/core/DOMAIN-LOGIC.md"),
+      "utf-8",
+    );
+    expect(domain).toContain("go.mod");
+    expect(domain).toContain("context.Context");
+    expect(domain).toContain("go mod tidy");
+    expect(domain).not.toContain("pytest");
+    expect(domain).not.toContain("requirements.txt");
+    expect(domain).not.toContain("package.json");
+    expect(domain).not.toContain("npm");
+  });
+
+  it("generated ARCHITECTURE.md contains Go terms and no Node/Python markers", async () => {
+    await runCommand(
+      "init",
+      ["--scope", "standard", "--preset", "go", "--force"],
+      tempDir,
+    );
+
+    const arch = await readFile(
+      join(tempDir, "docs/core/ARCHITECTURE.md"),
+      "utf-8",
+    );
+    expect(arch).toContain("go.mod");
+    expect(arch).toContain("internal/");
+    expect(arch).toContain("cmd/");
+    expect(arch).not.toContain("pytest");
+    expect(arch).not.toContain("package.json");
+    expect(arch).not.toContain("requirements.txt");
+    expect(arch).not.toContain("node_modules");
+  });
 });

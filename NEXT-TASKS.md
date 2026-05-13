@@ -1,7 +1,7 @@
 # NEXT: v4.2 Sprint — Governance Pack Expansion
 
-**Last Updated**: 2026-05-12
-**Status**: 🟡 Active — TMS-427 closed, Go pack next
+**Last Updated**: 2026-05-13
+**Status**: 🟡 Active — TMS-428 closed, MCP Server next
 **Current Version**: 4.1.0 (published 2026-05-10)
 
 Sprint archives:
@@ -79,9 +79,34 @@ Commit: `b165c78`.
 
 ---
 
+## ✅ Closed
+
+### TMS-428 — Go governance preset (`--preset go`) (Done)
+
+**Closed**: 2026-05-13
+Commit: `ebbf2d0`.
+
+- 6 new template files in `templates/presets/go/`: CLAUDE.md, AGENTS.md,
+  .github/copilot-instructions.md, docs/core/PATTERNS.md,
+  docs/core/DOMAIN-LOGIC.md, docs/core/ARCHITECTURE.md
+- Templates target Go 1.21+ conventions: context.Context propagation,
+  explicit error returns, fmt.Errorf wrapping, errgroup goroutines,
+  log/slog, go test ./..., gofmt, golangci-lint, go.mod/go.sum rules
+- ARCHITECTURE.md documents cmd/ + internal/ standard layout; pkg/ noted
+  as library-only with actionable guidance on when to use it
+- `GovernancePreset` type, Zod enum, and CLI help text extended to include `"go"`
+- README.md fixed: added python and go preset examples; corrected
+  "Available presets: node" → "node, python, go"
+- 20 new tests: unit (preset dir, all 6 files exist, schema validation),
+  E2E (scope, metadata, minimal, nano, dry-run, regression), cross-
+  contamination (Go terms present; no Node/Python markers)
+
+429 tests passing. validate --strict clean.
+
+---
+
 ## 🔜 Queued
 
-- Go governance pack (`--preset go`)
 - MCP Server — expose governance to any AI tool at runtime
 - Agent skills scaffolding (`/cortex-validate`, `/cortex-review`)
 
