@@ -5,6 +5,7 @@
 **Current Version**: 4.1.0 (published 2026-05-10)
 
 Sprint archives:
+- Phase 3 (TMS-420/426/427/428): `docs/archive/v4.2-phase3-sprint.md`
 - Phase 2 (TMS-421–425): `docs/archive/v4.2-phase2-sprint.md`
 - v4.1 sprint: `docs/archive/v4.1-sprint.md`
 
@@ -97,11 +98,11 @@ Commit: `ebbf2d0`.
 - `GovernancePreset` type, Zod enum, and CLI help text extended to include `"go"`
 - README.md fixed: added python and go preset examples; corrected
   "Available presets: node" → "node, python, go"
-- 20 new tests: unit (preset dir, all 6 files exist, schema validation),
+- 23 new tests: unit (preset dir, all 6 files exist, schema validation),
   E2E (scope, metadata, minimal, nano, dry-run, regression), cross-
-  contamination (Go terms present; no Node/Python markers)
+  contamination (Go terms present; no Node/Python markers in all 6 files)
 
-429 tests passing. validate --strict clean.
+432 tests passing. validate --strict clean.
 
 ---
 
