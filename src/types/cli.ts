@@ -62,6 +62,7 @@ export interface InitCommandOptions {
   scope?: ProjectScope; // Specify scope for non-interactive mode
   dryRun?: boolean; // Preview changes without writing to disk
   preset?: GovernancePreset; // Ecosystem-specific content preset
+  withSkills?: boolean; // Install cortex-validate and cortex-review Claude Code skills
 }
 
 /**

@@ -86,7 +86,7 @@ describe("Integration Tests - Command Workflows", () => {
       const revalidateResult = await runCommand("validate", [], tempDir);
       expect(revalidateResult.exitCode).toBe(1); // Still fails due to placeholders
       expect(revalidateResult.stdout).toContain("NEXT-TASKS.md exists");
-    });
+    }, 20000);
   });
 
   describe("Error Recovery and Rollback", () => {

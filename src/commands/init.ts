@@ -21,7 +21,7 @@ import {
   generateReplacements,
 } from "../utils/templates.js";
 import { createConfigFromScope, saveConfig } from "../utils/config.js";
-import { initOptionsSchema, validateOptions } from "../utils/validation.js";
+import { initOptionsSchema, validateOptions, validateSafePath } from "../utils/validation.js";
 import type { InitCommandOptions } from "../types/cli.js";
 
 /**
@@ -46,6 +46,10 @@ export function createInitCommand(): Command {
     .option(
       "-p, --preset <preset>",
       "Governance pack preset for ecosystem-specific content (node|python|go)",
+    )
+    .option(
+      "--with-skills",
+      "Install cortex-validate and cortex-review Claude Code skills into .claude/skills/",
     )
     .action(async (options: InitCommandOptions) => {
       await runInit(options);
@@ -290,7 +294,99 @@ async function runInit(options: InitCommandOptions): Promise<void> {
       }
     }
 
-    // Step 9: Success message
+    // Step 9: Install (or preview) Claude Code skills when --with-skills is passed.
+    // Unlike VS Code snippets, --with-skills is always explicit, so errors propagate.
+    if (validated.withSkills) {
+      const fs = (await import("fs-extra")).default;
+      const skillsTemplatesDir = join(getTemplatesDir(), "skills");
+
+      if (!(await fs.pathExists(skillsTemplatesDir))) {
+        throw new Error(
+          "--with-skills: skills templates directory not found in cortex-tms package",
+        );
+      }
+
+      // Only cortex- prefixed directories are shipped user-facing skills (naming convention)
+      const skillDirs = (await fs.readdir(skillsTemplatesDir)).filter((d) =>
+        d.startsWith("cortex-"),
+      );
+
+      if (validated.dryRun) {
+        console.log(chalk.cyan("\n  --with-skills (preview):"));
+        for (const skillDir of skillDirs) {
+          const relativeDestPath = join(".claude", "skills", skillDir);
+          const pathCheck = validateSafePath(relativeDestPath, cwd);
+          if (!pathCheck.isValid) {
+            throw new Error(pathCheck.error);
+          }
+          const exists = await fs.pathExists(pathCheck.resolvedPath!);
+          const action = exists ? "would skip (already exists)" : "would create";
+          console.log(
+            chalk.gray(`    .claude/skills/${skillDir}/SKILL.md — ${action}`),
+          );
+        }
+      } else {
+        const skillsSpinner = ora("Installing Claude Code skills...").start();
+        const conflicts: string[] = [];
+        const installed: string[] = [];
+
+        for (const skillDir of skillDirs) {
+          const relativeDestPath = join(".claude", "skills", skillDir);
+          const pathCheck = validateSafePath(relativeDestPath, cwd);
+          if (!pathCheck.isValid) {
+            skillsSpinner.fail(`Unsafe skill path: ${relativeDestPath}`);
+            throw new Error(pathCheck.error);
+          }
+
+          const destSkillDir = pathCheck.resolvedPath!;
+
+          if (await fs.pathExists(destSkillDir)) {
+            conflicts.push(skillDir);
+          } else {
+            const srcSkillDir = join(skillsTemplatesDir, skillDir);
+            await fs.ensureDir(destSkillDir);
+            await fs.copy(srcSkillDir, destSkillDir);
+            installed.push(skillDir);
+          }
+        }
+
+        if (conflicts.length > 0) {
+          skillsSpinner.warn(
+            `Installed ${installed.length} skill(s); skipped ${conflicts.length} conflict(s): ${conflicts.join(", ")} already exists`,
+          );
+          console.log(
+            chalk.gray(
+              "  To reinstall, remove the conflicting .claude/skills/ directory and re-run with --with-skills.",
+            ),
+          );
+        } else {
+          skillsSpinner.succeed(
+            `Claude Code skills installed: ${installed.map((s) => `/${s}`).join(", ")}`,
+          );
+        }
+
+        if (installed.length > 0) {
+          console.log();
+          console.log(chalk.bold("  Skills ready:"));
+          console.log(
+            chalk.cyan("    /cortex-validate"),
+            chalk.gray("— run TMS validation and report results"),
+          );
+          console.log(
+            chalk.cyan("    /cortex-review"),
+            chalk.gray("— review current diff against TMS governance docs"),
+          );
+          console.log();
+          console.log(
+            chalk.yellow(
+              "  Note: Skills take effect after accepting the Claude Code workspace trust dialog for this project.",
+            ),
+          );
+        }
+      }
+    }
+
+    // Step 10: Success message
     if (validated.dryRun) {
       console.log(
         chalk.green.bold("\n✨ Dry run complete!"),
