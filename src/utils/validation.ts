@@ -115,6 +115,7 @@ export const initOptionsSchema = z.object({
   scope: z.enum(["nano", "standard", "enterprise", "custom"]).optional(),
   dryRun: dryRunFlag,
   preset: z.enum(["node", "python", "go"]).optional(),
+  withSkills: booleanFlag,
 });
 
 /**

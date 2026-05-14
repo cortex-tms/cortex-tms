@@ -134,11 +134,21 @@ cortex-tms init --preset python          # Python governance pack
 cortex-tms init --preset go              # Go governance pack
 cortex-tms init --preset node --scope standard --force  # CI-friendly
 cortex-tms init --dry-run                # Preview changes
+cortex-tms init --with-skills            # Also install Claude Code skills
 ```
 
 **Governance packs** (`--preset`) fill template content with ecosystem-specific
 patterns, conventions, and idioms. Independent of `--scope` (which controls the
 file set). Available presets: `node`, `python`, `go`.
+
+**Claude Code skills** (`--with-skills`, opt-in) installs `/cortex-validate` and
+`/cortex-review` into `.claude/skills/` so you can invoke them as slash commands
+in Claude Code. Skills take effect after accepting the workspace trust dialog.
+
+```
+/cortex-validate   — run TMS validation and report results
+/cortex-review     — review current diff against PATTERNS.md, AGENTS.md, ARCHITECTURE.md
+```
 
 ### `cortex-tms validate`
 
@@ -494,10 +504,10 @@ See [CHANGELOG.md](CHANGELOG.md) for full version history.
 - ✅ AGENTS.md multi-agent governance template
 - 🔄 Governance packs (Node / Python / Go presets)
 
-**v4.2+** (Future):
-- 📋 MCP Server (expose docs to any AI tool)
+**v4.2** (Complete — pending release):
+- ✅ MCP Server (expose docs to any AI tool via `cortex-tms mcp`)
+- ✅ Claude Code skills (`/cortex-validate`, `/cortex-review` via `--with-skills`)
 - 📋 Multi-tool config generation (.cursorrules, .windsurfrules)
-- 📋 Skills integration
 
 See [FUTURE-ENHANCEMENTS.md](FUTURE-ENHANCEMENTS.md) for full roadmap.
 

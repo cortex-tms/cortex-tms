@@ -200,33 +200,34 @@ Cortex enforces a **three-tier hierarchy** of documentation:
 
 ## Agent Skills Integration
 
-**Status**: Experimental (Phase 1 Complete)
+**Status**: Shipped (TMS-430, v4.2) — verified 2026-05-15
 
-Cortex TMS integrates with [Anthropic Agent Skills](https://www.anthropic.com/agent-skills) as a **complementary system**:
+Cortex TMS ships two first-party Claude Code skills installable via `cortex-tms init --with-skills`:
 
-- **TMS**: Structural layer (how to organize docs)
-- **Skills**: Operational layer (how agents consume docs)
+- **`/cortex-validate`** — runs `npx -y cortex-tms validate --strict` and presents grouped results. Diagnostic only; no fix suggestions.
+- **`/cortex-review`** — reviews the current diff against the project's `PATTERNS.md`, `AGENTS.md`, and `ARCHITECTURE.md`. Reports findings by rule source with severity labels.
 
-### Guardian Skill
+### How it works
 
-The Guardian Skill (`tmp/guardian-skill/SKILL.md`) teaches Claude agents how to invoke Guardian with `--output-json` for programmatic code review.
+Skills are installed into `.claude/skills/cortex-<name>/SKILL.md` — the directory name becomes the slash command in Claude Code. Both skills carry `disable-model-invocation: true`, so they have zero token cost in idle sessions and only activate when the user types the slash command.
 
-**Use Cases**:
-- Claude Code / Agent SDK integration
-- CI/CD pipelines (automated pattern enforcement)
-- Custom automation tools (shell scripts, pre-commit hooks)
+`allowed-tools` pre-approves the narrow tool set each skill needs (e.g. `Bash(npx -y cortex-tms validate *)` for cortex-validate); all other tool calls fall back to the user's normal Claude Code permission settings.
 
-**Progressive Disclosure Alignment**:
-- TMS HOT tier ↔ Skills metadata (always loaded)
-- TMS WARM tier ↔ SKILL.md content (on-demand)
-- TMS COLD tier ↔ Linked files (rarely)
+### Install path
 
-**Key Features**:
-- `--output-json` flag for machine-readable Guardian output
-- `--safe` flag for high-confidence violations only (≥70%)
-- Structured JSON schema: `summary`, `violations`, `positiveObservations`
+```
+<user-project>/.claude/skills/
+├── cortex-validate/SKILL.md    ← /cortex-validate
+└── cortex-review/SKILL.md      ← /cortex-review
+```
 
-**See**: `docs/archive/plans/agent-skills-integration.md` for full strategy and rationale.
+**Source of truth**: `templates/skills/cortex-<name>/SKILL.md` in the cortex-tms package.
+
+**Workspace trust**: `allowed-tools` takes effect after the user accepts the Claude Code workspace trust dialog for the project folder.
+
+**Maintainer-local skills** (`/.claude/skills/validate/`, `implement/`, etc.) are development tooling for the cortex-tms repo itself and are not shipped to users.
+
+**See**: `docs/archive/plans/agent-skills-integration.md` for the earlier strategy that preceded this design.
 
 ---
 

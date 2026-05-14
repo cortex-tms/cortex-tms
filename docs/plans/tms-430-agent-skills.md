@@ -1,9 +1,9 @@
 # TMS-430: Agent Skills Scaffolding — Implementation Plan
 
-**Status**: 🟢 Scaffold v4 — verified against official Claude Code Skills docs, ready for implementation
+**Status**: ✅ Complete — Step 8 verified 2026-05-15, all six checks passed
 **Author**: Claude (Opus 4.7 planning)
-**Date**: 2026-05-14 (v1 scaffold) · v2 Q1-Q6 lock · v3 mechanism + skill design lock · v4 official-doc verification
-**Branch**: _not yet created_ — proposed `feat/tms-430-agent-skills` (planning doc commits under `docs/`)
+**Date**: 2026-05-14 (v1 scaffold) · v2 Q1-Q6 lock · v3 mechanism + skill design lock · v4 official-doc verification · 2026-05-15 implementation
+**Branch**: `feat/tms-430-agent-skills`
 **Estimate**: 6-8h implementation (excludes manual Claude Code verification)
 **Prior reviews integrated**:
 - Pass 1: GPT-5.5 + Kimi K2.6 — Q1-Q6 locks
@@ -153,13 +153,14 @@ allowed-tools: Read Grep Bash(git diff *) Bash(git log *)
 ```
 
 **Body uses dynamic context injection** (per official-doc pattern): bake the diff
-directly into the prompt via `` !`git diff HEAD` `` so the agent sees actual change
-content rather than running git itself:
+directly into the prompt so the agent sees actual change content rather than running
+git itself. The injection uses a shell fallback so it degrades gracefully when git is
+absent or the repo has no commits yet:
 
 ```markdown
 ## Current change
 
-!`git diff HEAD`
+!`git diff HEAD 2>/dev/null || echo "(no diff available — not in a git repository or no commits yet)"`
 
 ## Instructions
 
@@ -169,6 +170,11 @@ Read in order, most specific to most structural:
 1. `PATTERNS.md` — code conventions
 2. `AGENTS.md` — agent behaviour rules, trust levels, prohibitions
 3. `ARCHITECTURE.md` — structural boundaries, import direction
+
+If a governance doc is not present, note it as absent and continue reviewing against
+the docs that are available.
+
+If the diff is empty or unavailable, say so and ask the user what they would like to review.
 
 Report findings grouped by rule source with severity:
 🟡 Suggestion — non-blocking, style/clarity
@@ -276,12 +282,15 @@ step.
 3. Add `--with-skills` install path + `validateSafePath` integration + tests +
    workspace-trust install message
 4. Write `templates/skills/cortex-review/SKILL.md` per §Skill specifications
-   (including dynamic context injection for `git diff HEAD`)
+   (dynamic context injection with `2>/dev/null` fallback for no-git/no-HEAD safety)
 5. Rewrite `docs/core/ARCHITECTURE.md` Agent Skills Integration section
 6. Update README with `--with-skills` flag + skill invocation examples + trust note
 7. Content tests linking each shipped skill to its referenced doc surface
 8. Manual verification in Claude Code session against a test project (the spike
-   GPT-5.5 originally proposed — required before close)
+   GPT-5.5 originally proposed — required before close). Must cover three scenarios:
+   a. **Normal git repo with commits** — `/cortex-review` shows diff; `/cortex-validate` reports health
+   b. **Fresh git repo with no commits** (no HEAD) — `/cortex-review` shows fallback message, does not error
+   c. **Non-git folder** — `/cortex-review` shows fallback message, does not error
 9. `node bin/cortex-tms.js validate --strict` + full test suite
 10. Close & archive as v4.2 Phase 5 (`docs/archive/v4.2-phase5-skills.md`)
 
@@ -289,9 +298,7 @@ step.
 
 ## Open questions
 
-None. All design decisions locked across three reviewer passes including official-doc
-verification. Ready for implementation pending user approval to start the feature
-branch.
+None. All decisions locked, implementation complete, Step 8 verified. Closed 2026-05-15.
 
 ---
 
