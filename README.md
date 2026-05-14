@@ -244,6 +244,54 @@ cortex-tms hooks uninstall            # Remove the hook
 
 **Safety**: Never overwrites foreign hooks. Only manages hooks with its own marker. Requires `.cortexrc` (run `cortex-tms init` first).
 
+### `cortex-tms mcp` 🔌
+
+Start a read-only MCP (Model Context Protocol) server that exposes your TMS governance docs as resources to any AI tool that speaks MCP — Claude Desktop, Cursor, Windsurf, and future clients.
+
+```bash
+cortex-tms mcp                  # Start MCP server (STDIO transport)
+cortex-tms mcp --print-config   # Print paste-ready client config snippets
+```
+
+**Resources exposed** (only files that exist on disk are advertised):
+
+| URI | File | Description |
+|-----|------|-------------|
+| `cortex://next-tasks` | `NEXT-TASKS.md` | Active tasks and sprint backlog |
+| `cortex://claude` | `CLAUDE.md` | AI agent instructions and workflow |
+| `cortex://patterns` | `docs/core/PATTERNS.md` | Code patterns and conventions |
+| `cortex://architecture` | `docs/core/ARCHITECTURE.md` | System architecture |
+| `cortex://domain-logic` | `docs/core/DOMAIN-LOGIC.md` | Business logic and domain model |
+| `cortex://decisions` | `docs/core/DECISIONS.md` | Architecture decision records |
+| `cortex://troubleshooting` | `docs/core/TROUBLESHOOTING.md` | Common issues and solutions |
+| `cortex://glossary` | `docs/core/GLOSSARY.md` | Terminology and definitions |
+| `cortex://schema` | `docs/core/SCHEMA.md` | Data schemas and API contracts |
+| `cortex://copilot-instructions` | `.github/copilot-instructions.md` | Copilot instructions |
+| `cortex://prompts` | `PROMPTS.md` | Reusable prompt templates |
+| `cortex://agents` | `AGENTS.md` | Multi-agent governance registry |
+| `cortex://future-enhancements` | `FUTURE-ENHANCEMENTS.md` | Roadmap and backlog |
+
+**Client setup** — run `cortex-tms mcp --print-config` for paste-ready snippets. Quick reference:
+
+Claude Desktop (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "cortex-tms": {
+      "command": "npx",
+      "args": ["-y", "cortex-tms", "mcp"],
+      "cwd": "/path/to/your/project"
+    }
+  }
+}
+```
+
+**Notes**:
+- Read-only — no write tools exposed. URI slugs are stable across projects.
+- Respects `.cortexrc` custom paths (`paths.docs`, `paths.tasks`).
+- Requires `.cortexrc` (run `cortex-tms init` first).
+
 ---
 
 ## Documentation Structure

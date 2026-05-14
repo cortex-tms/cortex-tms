@@ -48,6 +48,7 @@ import { reviewCommand } from "./commands/review.js";
 import { archiveCommand } from "./commands/archive.js";
 import { dashboardCommand } from "./commands/dashboard.js";
 import { hooksCommand } from "./commands/hooks.js";
+import { mcpCommand } from "./commands/mcp.js";
 
 program.addCommand(initCommand);
 program.addCommand(validateCommand);
@@ -59,6 +60,7 @@ program.addCommand(reviewCommand);
 program.addCommand(archiveCommand);
 program.addCommand(dashboardCommand);
 program.addCommand(hooksCommand);
+program.addCommand(mcpCommand);
 
 // Deprecated: auto-tier command (kept as alias for backwards compatibility)
 const autoTierDeprecated = new Command("auto-tier")

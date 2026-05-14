@@ -235,3 +235,10 @@ export interface AutoTierOptions {
   force?: boolean;
   verbose?: boolean;
 }
+
+/**
+ * Options for the mcp command
+ */
+export interface McpCommandOptions {
+  printConfig?: boolean;
+}

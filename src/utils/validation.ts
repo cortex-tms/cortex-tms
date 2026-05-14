@@ -218,6 +218,15 @@ export function validateOptions<T extends z.ZodTypeAny>(
   }
 }
 
+/**
+ * Schema for mcp command options
+ */
+export const mcpOptionsSchema = z.object({
+  printConfig: z.boolean().optional(),
+});
+
+export type McpOptions = z.infer<typeof mcpOptionsSchema>;
+
 // ============================================================================
 // Path Validation Utilities
 // ============================================================================

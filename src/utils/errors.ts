@@ -63,6 +63,17 @@ export class ConfigError extends CLIError {
 }
 
 /**
+ * Missing .cortexrc — thrown by MCP server when invoked outside a TMS project
+ */
+export class CortexConfigMissingError extends CLIError {
+  constructor(cwd: string) {
+    super(`No .cortexrc found in ${cwd}. Run "cortex-tms init" first.`, 1, {
+      cwd,
+    });
+  }
+}
+
+/**
  * File system errors (file not found, permission denied, etc.)
  */
 export class FileSystemError extends CLIError {
