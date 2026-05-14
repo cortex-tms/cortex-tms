@@ -1,6 +1,6 @@
 # TMS-429: MCP Server — Implementation Plan
 
-**Status**: 🟢 Audit pass 3 complete — implementing
+**Status**: ✅ Complete — merged to main 2026-05-14, commit `94398d9`
 **Author**: Claude (Opus 4.7 planning)
 **Date**: 2026-05-14
 **Branch**: `feat/tms-429-mcp-server`

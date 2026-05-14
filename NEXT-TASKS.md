@@ -106,9 +106,27 @@ Commit: `ebbf2d0`.
 
 ---
 
+### TMS-429 — MCP Server (`cortex-tms mcp`) (Done)
+
+**Closed**: 2026-05-14
+Commit: `94398d9`.
+
+- `src/utils/resources.ts`: pure discovery, canonical allowlist (13 URIs),
+  `validateSafePath` integration, honors `.cortexrc` `paths.docs`/`paths.tasks`
+- `src/commands/mcp.ts`: read-only STDIO server, `--print-config` snippets
+  (`npx -y`), package.json version, `validateOptions` wired, early config check
+- `@modelcontextprotocol/sdk@^1.29.0` added
+- README: resource table + client config quick reference (Claude Desktop,
+  Cursor, Windsurf, Copilot stub)
+- 27 tests: all 4 scopes, path safety, allowlist intersection, custom paths,
+  full integration via SDK `Client` + `StdioClientTransport`, static regression
+
+459 tests passing. validate --strict clean.
+
+---
+
 ## 🔜 Queued
 
-- MCP Server — expose governance to any AI tool at runtime
 - Agent skills scaffolding (`/cortex-validate`, `/cortex-review`)
 
 <!-- @cortex-tms-version 4.1.0 -->
